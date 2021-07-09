@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { createUser } from '@/service';
+
 export default {
   name: 'SignUp',
   data() {
@@ -38,6 +40,12 @@ export default {
         passwordAgain: '',
       },
     };
+  },
+  methods: {
+    signup() {
+      createUser(this.input.name, this.input.email, this.input.password);
+      console.log('User creaing started...');
+    },
   },
 };
 </script>

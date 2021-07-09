@@ -12,7 +12,10 @@
 
         <div>
           <label>User</label>
-          <input v-model="input.user" placeholder="User" />
+          <select v-model="input.user">
+            <option disabled value="">Select user</option>
+            <option v-bind:value="user.id" v-for="user in users" :key="user.id">{{user.name}}</option>
+          </select>
         </div>
         <div>
           <label>Source</label>
@@ -34,13 +37,14 @@
   </div>
 </template>
 <script>
-import { getAccounts, createAccount } from '@/service';
+import { getUsers, getAccounts, createAccount } from '@/service';
 
 export default {
   name: 'AccountList',
   data() {
     return {
       accounts: [],
+      users: [],
       input: {
         user: '',
         source: '',
@@ -52,6 +56,7 @@ export default {
   methods: {
     async loadAccounts() {
       this.accounts = await getAccounts();
+      this.users = await getUsers();
     },
     async create() {
       await createAccount(

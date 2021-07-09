@@ -14,6 +14,9 @@ export const createUser = async (name, email, password) => {
 };
 
 export const getUsers = async () => {
-  const response = await fetch('http://localhost:9091/api/users');
+  const options = {
+    method: 'GET',
+  };
+  const response = await fetch('http://localhost:9091/api/users', options);
   return response.json();
 };

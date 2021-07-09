@@ -44,7 +44,6 @@ export default {
   methods: {
     signup() {
       createUser(this.input.name, this.input.email, this.input.password);
-      console.log('User creaing started...');
     },
   },
 };

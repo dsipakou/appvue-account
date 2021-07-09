@@ -1,5 +1,8 @@
 <template>
-  <SignUp />
+  <div id="nav">
+    <router-link to='/signup'>SignUp</router-link>
+  </div>
+  <router-view />
 </template>
 
 <script lang="ts">

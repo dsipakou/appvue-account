@@ -5,7 +5,7 @@
 
       <div>
         <label>Name</label>
-        <input v-model="input.name" placeholder="Name" />  
+        <input v-model="input.name" placeholder="Name" />
       </div>
       <div>
         <label>E-mail</label>
@@ -32,12 +32,12 @@ export default {
   data() {
     return {
       input: {
-        name: "",
-        email: "",
-        password: "",
-        passwordAgain: "",
-      }
-    }
-  }
-}
+        name: '',
+        email: '',
+        password: '',
+        passwordAgain: '',
+      },
+    };
+  },
+};
 </script>

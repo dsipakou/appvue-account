@@ -1,27 +1,27 @@
-# Vue 3 + Typescript + Vite
+# appvue-account
 
-This template should help get you started developing with Vue 3 and Typescript in Vite.
+> Account front-end
 
-## Recommended IDE Setup
+## Build Setup
 
-[VSCode](https://code.visualstudio.com/) + [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur). Make sure to enable `vetur.experimental.templateInterpolationService` in settings!
+``` bash
+# install dependencies
+npm install
 
-### If Using `<script setup>`
+# serve with hot reload at localhost:8080
+npm run dev
 
-[`<script setup>`](https://github.com/vuejs/rfcs/pull/227) is a feature that is currently in RFC stage. To get proper IDE support for the syntax, use [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) instead of Vetur (and disable Vetur).
+# build for production with minification
+npm run build
 
-## Type Support For `.vue` Imports in TS
+# build for production and view the bundle analyzer report
+npm run build --report
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can use the following:
+# run unit tests
+npm run unit
 
-### If Using Volar
+# run all tests
+npm test
+```
 
-Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
-
-### If Using Vetur
-
-1. Install and add `@vuedx/typescript-plugin-vue` to the [plugins section](https://www.typescriptlang.org/tsconfig#plugins) in `tsconfig.json`
-2. Delete `src/shims-vue.d.ts` as it is no longer needed to provide module info to Typescript
-3. Open `src/main.ts` in VSCode
-4. Open the VSCode command palette
-5. Search and run "Select TypeScript version" -> "Use workspace version"
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).

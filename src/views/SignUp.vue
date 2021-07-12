@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { createUser } from '@/service';
+import { createUser } from '../service';
 
 export default {
   name: 'SignUp',

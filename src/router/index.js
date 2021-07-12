@@ -1,27 +1,29 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import SignUp from '@/pages/SignUp';
-import AccountList from '@/views/AccountList';
-import Home from '@/views/Home';
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from '../views/Home.vue';
+import SignUp from '../views/SignUp.vue';
+import AccountList from '../views/AccountList.vue';
 
-Vue.use(Router);
+const routes = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home,
+  },
+  {
+    path: '/signup',
+    name: 'SignUp',
+    component: SignUp,
+  },
+  {
+    path: '/accounts',
+    name: 'Accounts',
+    component: AccountList,
+  },
+];
 
-export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'Home',
-      component: Home,
-    },
-    {
-      path: '/signup',
-      name: 'SignUp',
-      component: SignUp,
-    },
-    {
-      path: '/accounts',
-      name: 'Accounts',
-      component: AccountList,
-    },
-  ],
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
+  routes,
 });
+
+export default router;

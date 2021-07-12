@@ -14,7 +14,11 @@
           <label>User</label>
           <select v-model="input.user">
             <option disabled value="">Select user</option>
-            <option v-bind:value="user.id" v-for="user in users" :key="user.id">{{user.name}}</option>
+            <option
+              v-bind:value="user.id"
+              v-for="user in users"
+              :key="user.id">{{user.name}}
+            </option>
           </select>
         </div>
         <div>
@@ -37,7 +41,7 @@
   </div>
 </template>
 <script>
-import { getUsers, getAccounts, createAccount } from '@/service';
+import { getUsers, getAccounts, createAccount } from '../service';
 
 export default {
   name: 'AccountList',

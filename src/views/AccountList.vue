@@ -69,6 +69,7 @@ export default {
         this.input.amount,
         this.input.description,
       );
+      await this.loadAccounts();
     },
   },
   beforeMount() {

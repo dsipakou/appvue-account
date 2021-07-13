@@ -22,7 +22,8 @@ export const createUser = async (name, email, password) => {
 };
 
 export const createAccount = async (userId, source, amount, description) => {
-  const response = await postRequest('http://localhost:9091/api/accounts', { userId, source, amount, description });
+  const response = await postRequest('http://localhost:9091/api/accounts', 
+    { userId, source, amount, description });
   return response.json();
 };
 

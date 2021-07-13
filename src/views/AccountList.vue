@@ -1,42 +1,67 @@
 <template>
-  <div>
-    <h3>Account list</h3>
-    <div id="accountList">
-      <div v-for="account in accounts" :key="account.id">
-        {{ account.source }}
+  <div class="flex" style="max-width: 1100px; margin: auto;">
+    <div class="row">
+      <div class="flex md12">
+        <h3>Account list</h3>
       </div>
+      <va-list fix>
+        <div id="accountList">
+          <div v-for="account in accounts" :key="account.id">
+            <va-list-item>
+              {{ account.source }}
+            </va-list-item>
+          </div>
+        </div>
+      </va-list>
     </div>
-    <div id="accountCreate">
-      <form>
-        <h3>Create Account</h3>
+    <div class="row" id="accountCreate">
+      <div class="item">
+        <va-form>
+          <h3>Create Account</h3>
 
-        <div>
-          <label>User</label>
-          <select v-model="input.user">
-            <option disabled value="">Select user</option>
-            <option
-              v-bind:value="user.id"
-              v-for="user in users"
-              :key="user.id">{{user.name}}
-            </option>
-          </select>
-        </div>
-        <div>
-          <label>Source</label>
-          <input v-model="input.source" placeholder="Source" />
-        </div>
-        <div>
-          <label>Amount</label>
-          <input v-model="input.amount" placeholder="Amount" />
-        </div>
-        <div>
-          <label>Description</label>
-          <textarea v-model="input.description" placeholder="Description" />
-        </div>
-        <div>
-          <button type="button" v-on:click="create()">Create account</button>
-        </div>
-      </form>
+          <div>
+            <label>User</label>
+            <select v-model="input.user">
+              <option disabled value="">Select user</option>
+              <option
+                v-bind:value="user.id"
+                v-for="user in users"
+                :key="user.id">{{user.name}}
+              </option>
+            </select>
+          </div>
+          <div>
+            <va-input
+              class="mb-4"
+              v-model="input.source"
+              label="Source"
+              placeholder="Where are money come from"
+            />
+          </div>
+          <div>
+            <va-input
+              class="mb-4"
+              v-model="input.amount"
+              label="Amount"
+              placeholder="How much money"
+            />
+          </div>
+          <div>
+            <va-input
+              class="mb-4"
+              v-model="input.description"
+              type="textarea"
+              label="Description"
+              placeholder="Change description"
+              :min-rows="7"
+              :max-rows="11"
+            />
+          </div>
+          <div>
+            <va-button v-on:click="create()">Create account</va-button>
+          </div>
+        </va-form>
+      </div>
     </div>
   </div>
 </template>

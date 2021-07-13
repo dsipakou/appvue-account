@@ -22,8 +22,25 @@ export const createUser = async (name, email, password) => {
 };
 
 export const createAccount = async (userId, source, amount, description) => {
-  const response = await postRequest('http://localhost:9091/api/accounts', 
-    { userId, source, amount, description });
+  const response = await postRequest('http://localhost:9091/api/accounts',
+    {
+      userId,
+      source,
+      amount,
+      description,
+    });
+  return response.json();
+};
+
+export const createTransaction = async (userId, category, amount, accountId, description) => {
+  const response = await postRequest('http://localhost:9091/api/transactions',
+    {
+      userId,
+      category,
+      amount,
+      accountId,
+      description,
+    });
   return response.json();
 };
 
@@ -34,5 +51,10 @@ export const getUsers = async () => {
 
 export const getAccounts = async () => {
   const response = await getRequest('http://localhost:9091/api/accounts');
+  return response.json();
+};
+
+export const getTransactions = async () => {
+  const response = await getRequest('http://localhost:9091/api/transactions');
   return response.json();
 };

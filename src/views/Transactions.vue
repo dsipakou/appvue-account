@@ -1,13 +1,15 @@
 <template>
-  <div>
+  <div class="container">
+    <div class="drop-zone">
+      <div class="drag-el" v-for="account in accounts" :key="account.id" draggable="true">
+        <span>
+          {{ account.source }}
+        </span>
+      </div>
+    </div>
     <h3>Transaction list</h3>
     <div class="drag-zone" id="transactionList">
-      <div
-        class="drag-el"
-        v-for="transaction in transactions"
-        :key="transaction.id"
-        draggable="true"
-      >
+      <div v-for="transaction in transactions" :key="transaction.id">
         {{ transaction.category }} {{ transaction.amount }}
       </div>
     </div>
@@ -116,18 +118,29 @@ export default {
 </script>
 <style scoped>
 #transactionCreate {
+  margin: auto;
+}
+
+.container {
   max-width: 1200px;
   margin: auto;
 }
-  .drag-el {
-    background-color: #fff;
-    margin-bottom: 10px;
-    padding: 5px;
-  }
 
-  .drop-zone {
-    background-color: #eee;
-    margin-bottom: 10px;
-    padding: 10px;
-  }
+.drag-el {
+  width: 100px;
+  height: 100px;
+  background-color: #eee;
+  margin-bottom: 10px;
+  padding: 5px;
+  border-radius: 50%;
+  text-align: center;
+  margin: auto;
+  line-height: 50px;
+}
+
+.drop-zone {
+  display: flex;
+  margin-bottom: 10px;
+  padding: 10px;
+}
 </style>

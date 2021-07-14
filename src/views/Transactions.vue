@@ -1,8 +1,8 @@
 <template>
   <div>
     <h3>Transaction list</h3>
-    <div id="transactionList">
-      <div v-for="transaction in transactions" :key="transaction.id">
+    <div class="drag-zone" id="transactionList">
+      <div class="drag-el" v-for="transaction in transactions" :key="transaction.id" draggable>
         {{ transaction.category }} {{ transaction.amount }}
       </div>
     </div>
@@ -96,3 +96,16 @@ export default {
   },
 };
 </script>
+<style scoped>
+  .drag-el {
+    background-color: #fff;
+    margin-bottom: 10px;
+    padding: 5px;
+  }
+
+  .drop-zone {
+    background-color: #eee;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+</style>

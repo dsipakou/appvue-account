@@ -7,6 +7,8 @@
     <router-link to="/accounts">Accounts</router-link>
     <va-divider vertical />
     <router-link to="/transactions">Transactions</router-link>
+    <va-divider vertical />
+    <router-link to="/categories">Categories</router-link>
   </div>
   <router-view/>
 </template>

@@ -68,7 +68,7 @@ export const getTransactions = async () => {
   return response.json();
 };
 
-export const getCategory = async () => {
+export const getCategories = async () => {
   const response = await getRequest('http://localhost:9091/api/categories');
   return response.json();
 };

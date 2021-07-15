@@ -3,6 +3,7 @@ import Home from '../views/Home.vue';
 import SignUp from '../views/SignUp.vue';
 import AccountList from '../views/AccountList.vue';
 import Transactions from '../views/Transactions.vue';
+import Categories from '../views/Categories.vue';
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/transactions',
     name: 'Transactions',
     component: Transactions,
+  },
+  {
+    path: '/categories',
+    name: 'Categories',
+    component: Categories,
   },
 ];
 

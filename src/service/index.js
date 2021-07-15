@@ -44,6 +44,15 @@ export const createTransaction = async (userId, category, amount, accountId, des
   return response.json();
 };
 
+export const createCategory = async (name, parentName) => {
+  const response = await postRequest('http://localhost:9091/api/categories',
+    {
+      name,
+      parentName,
+    });
+  return response.json();
+};
+
 export const getUsers = async () => {
   const response = await getRequest('http://localhost:9091/api/users');
   return response.json();
@@ -56,5 +65,10 @@ export const getAccounts = async () => {
 
 export const getTransactions = async () => {
   const response = await getRequest('http://localhost:9091/api/transactions');
+  return response.json();
+};
+
+export const getCategory = async () => {
+  const response = await getRequest('http://localhost:9091/api/categories');
   return response.json();
 };

@@ -1,14 +1,26 @@
 <template>
   <div class="container">
     <div class="drop-zone">
-      <div class="drag-el" v-for="account in accounts" :key="account.id" draggable="true">
+      <div
+        class="drag-el"
+        v-for="account in accounts"
+        :key="account.id"
+        draggable="true"
+        @dragstart="startDrag($event, account)">
         <span>
           {{ account.source }}
         </span>
       </div>
     </div>
     <div class="drop-zone">
-      <div class="drag-el" v-for="category in categories" :key="category.id" draggable="true">
+      <div
+        class="drag-el"
+        v-for="category in categories"
+        :key="category.id"
+        @drop="onDrop($event)"
+        @dragover.prevent
+        @dragenter.prevent
+        >
         <span>
           {{ category.name }}
         </span>
@@ -119,6 +131,14 @@ export default {
         this.input.account,
         this.input.description,
       );
+    },
+    startDrag(evt, item) {
+      // eslint-disable-next-line
+      console.log(item.id);
+    },
+    onDrop(evt) {
+      // eslint-disable-next-line
+      console.log(evt);
     },
   },
   beforeMount() {

@@ -7,6 +7,13 @@
         </span>
       </div>
     </div>
+    <div class="drop-zone">
+      <div class="drag-el" v-for="category in categories" :key="category.id" draggable="true">
+        <span>
+          {{ category.name }}
+        </span>
+      </div>
+    </div>
     <h3>Transaction list</h3>
     <div class="drag-zone" id="transactionList">
       <div v-for="transaction in transactions" :key="transaction.id">
@@ -76,6 +83,7 @@ import {
   getUsers,
   getAccounts,
   getTransactions,
+  getCategories,
   createTransaction,
 } from '../service';
 
@@ -86,6 +94,7 @@ export default {
       transactions: [],
       users: [],
       accounts: [],
+      categories: [],
       input: {
         user: '',
         category: '',
@@ -100,6 +109,7 @@ export default {
       this.accounts = await getAccounts();
       this.users = await getUsers();
       this.transactions = await getTransactions();
+      this.categories = await getCategories();
     },
     async create() {
       await createTransaction(

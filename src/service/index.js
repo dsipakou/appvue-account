@@ -42,13 +42,22 @@ export const createAccount = async (userId, source, amount, description) => {
   return response.json();
 };
 
-export const createTransaction = async (userId, categoryId, amount, accountId, description) => {
+export const createTransaction = async (
+  userId,
+  categoryId,
+  amount,
+  accountId,
+  transactionDate,
+  description,
+) => {
+  console.log(transactionDate);
   const response = await postRequest('http://localhost:9091/api/transactions',
     {
       userId,
       categoryId,
       amount,
       accountId,
+      transactionDate,
       description,
     });
   return response.json();

@@ -24,8 +24,7 @@
           {{ category.name }}
         </span>
       </div>
-    </div>
-    <div class="drop-zone">
+    </div> <div class="drop-zone">
       <div
         class="drag-el"
         v-for="category in subCategories"
@@ -60,6 +59,12 @@
                   <td><label>Amount</label></td>
                   <td>
                     <input v-model="input.amount" placeholder="Amount" />
+                  </td>
+                </tr>
+                <tr>
+                  <td><label>Date</label></td>
+                  <td>
+                    <input type="date" v-model="input.transactionDate" placeholder="Date" />
                   </td>
                 </tr>
                 <tr>
@@ -104,6 +109,7 @@ export default {
         category: 0,
         amount: '',
         account: 0,
+        transactionDate: '',
         description: '',
       },
     };
@@ -126,6 +132,7 @@ export default {
         this.input.category,
         this.input.amount,
         this.input.account,
+        this.input.transactionDate,
         this.input.description,
       );
     },

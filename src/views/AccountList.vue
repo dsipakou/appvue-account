@@ -14,53 +14,56 @@
         </div>
       </va-list>
     </div>
+    <va-button v-on:click="showModal = true">Add</va-button>
     <div class="row" id="accountCreate">
       <div class="item">
-        <va-form>
-          <h3>Create Account</h3>
+        <va-modal size="medium" v-model="showModal">
+          <va-form>
+            <h3>Create Account</h3>
 
-          <div>
-            <label>User</label>
-            <select v-model="input.user">
-              <option disabled value="">Select user</option>
-              <option
-                v-bind:value="user.id"
-                v-for="user in users"
-                :key="user.id">{{user.name}}
-              </option>
-            </select>
-          </div>
-          <div>
-            <va-input
-              class="mb-4"
-              v-model="input.source"
-              label="Source"
-              placeholder="Where are money come from"
-            />
-          </div>
-          <div>
-            <va-input
-              class="mb-4"
-              v-model="input.amount"
-              label="Amount"
-              placeholder="How much money"
-            />
-          </div>
-          <div>
-            <va-input
-              class="mb-4"
-              v-model="input.description"
-              type="textarea"
-              label="Description"
-              placeholder="Change description"
-              :min-rows="7"
-              :max-rows="11"
-            />
-          </div>
-          <div>
-            <va-button v-on:click="create()">Create account</va-button>
-          </div>
-        </va-form>
+            <div>
+              <label>User</label>
+              <select v-model="input.user">
+                <option disabled value="">Select user</option>
+                <option
+                  v-bind:value="user.id"
+                  v-for="user in users"
+                  :key="user.id">{{user.name}}
+                </option>
+              </select>
+            </div>
+            <div>
+              <va-input
+                class="mb-4"
+                v-model="input.source"
+                label="Source"
+                placeholder="Where are money come from"
+              />
+            </div>
+            <div>
+              <va-input
+                class="mb-4"
+                v-model="input.amount"
+                label="Amount"
+                placeholder="How much money"
+              />
+            </div>
+            <div>
+              <va-input
+                class="mb-4"
+                v-model="input.description"
+                type="textarea"
+                label="Description"
+                placeholder="Change description"
+                :min-rows="7"
+                :max-rows="11"
+              />
+            </div>
+            <div>
+              <va-button v-on:click="create()">Create account</va-button>
+            </div>
+          </va-form>
+        </va-modal>
       </div>
     </div>
   </div>
@@ -74,6 +77,7 @@ export default {
     return {
       accounts: [],
       users: [],
+      showModal: false,
       input: {
         user: '',
         source: '',

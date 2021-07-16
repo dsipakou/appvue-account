@@ -17,7 +17,7 @@
         class="drag-el"
         v-for="category in categories"
         :key="category.id"
-        @drop="onDrop($event)"
+        @drop="onDrop($event, category)"
         @dragover.prevent
         @dragenter.prevent
         >
@@ -26,6 +26,8 @@
         </span>
       </div>
     </div>
+    <div>
+      <va-modal size="medium" v-model="showModal">
     <h3>Transaction list</h3>
     <div class="drag-zone" id="transactionList">
       <div v-for="transaction in transactions" :key="transaction.id">
@@ -36,39 +38,9 @@
       <h3>Add transaction</h3>
       <div class="va-table-responsive">
         <form>
+          <input type="hidden" v-model="input.category" />
+          <input type="hidden" v-model="input.account" />
           <table class="va-table">
-            <tr>
-              <td><label>User</label></td>
-              <td>
-                <select v-model="input.user">
-                  <option disabled value="">Select user</option>
-                  <option
-                    v-bind:value="user.id"
-                    v-for="user in users"
-                    :key="user.id">{{user.name}}
-                  </option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td><label>Account</label></td>
-              <td>
-                <select v-model="input.account">
-                  <option disabled value="">Select account</option>
-                  <option
-                    v-bind:value="account.id"
-                    v-for="account in accounts"
-                    :key="account.id">{{account.source}} {{account.id}}
-                  </option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td><label>Category</label></td>
-              <td>
-                <input v-model="input.category" placeholder="Category" />
-              </td>
-            </tr>
             <tr>
               <td><label>Amount</label></td>
               <td>
@@ -88,6 +60,8 @@
         </form>
       </div>
     </div>
+      </va-modal>
+    </div>
   </div>
 </template>
 <script>
@@ -103,15 +77,16 @@ export default {
   name: 'TransactionList',
   data() {
     return {
+      showModal: false,
       transactions: [],
       users: [],
       accounts: [],
       categories: [],
       input: {
-        user: '',
-        category: '',
-        amount: 0,
-        account: '',
+        user: 0,
+        category: 0,
+        amount: '',
+        account: 0,
         description: '',
       },
     };
@@ -132,13 +107,15 @@ export default {
         this.input.description,
       );
     },
-    startDrag(evt, item) {
-      // eslint-disable-next-line
-      console.log(item.id);
+    startDrag(evt, account) {
+      evt.dataTransfer.setData('accountID', account.id);
+      evt.dataTransfer.setData('userID', account.userId);
     },
-    onDrop(evt) {
-      // eslint-disable-next-line
-      console.log(evt);
+    onDrop(evt, category) {
+      this.input.category = category.id;
+      this.input.account = Number(evt.dataTransfer.getData('accountID'));
+      this.input.user = Number(evt.dataTransfer.getData('userID'));
+      this.showModal = true;
     },
   },
   beforeMount() {

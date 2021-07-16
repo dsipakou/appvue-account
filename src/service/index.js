@@ -32,11 +32,11 @@ export const createAccount = async (userId, source, amount, description) => {
   return response.json();
 };
 
-export const createTransaction = async (userId, category, amount, accountId, description) => {
+export const createTransaction = async (userId, categoryId, amount, accountId, description) => {
   const response = await postRequest('http://localhost:9091/api/transactions',
     {
       userId,
-      category,
+      categoryId,
       amount,
       accountId,
       description,

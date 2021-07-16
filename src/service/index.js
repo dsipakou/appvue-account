@@ -8,6 +8,16 @@ const postRequest = (url, requestBody) => {
   return fetch(url, options);
 };
 
+const deleteRequest = (url, requestBody) => {
+  const options = {
+    method: 'DELETE',
+    mode: 'cors',
+    body: JSON.stringify(requestBody),
+  };
+
+  return fetch(url, options);
+};
+
 const getRequest = (url) => {
   const options = {
     method: 'GET',
@@ -71,4 +81,9 @@ export const getTransactions = async () => {
 export const getCategories = async () => {
   const response = await getRequest('http://localhost:9091/api/categories');
   return response.json();
+};
+
+export const deleteTransaction = async (id) => {
+  const response = await deleteRequest('http://localhost:9091/api/transactions', { id });
+  return response.status;
 };

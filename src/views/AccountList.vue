@@ -1,5 +1,5 @@
 <template>
-  <div class="flex" style="max-width: 1100px; margin: auto;">
+  <div>
     <div class="row">
       <div class="flex md12">
         <h3>Account list</h3>

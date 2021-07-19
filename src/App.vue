@@ -10,7 +10,7 @@
     <va-divider vertical />
     <router-link to="/categories">Categories</router-link>
   </div>
-  <router-view/>
+  <router-view class="main" />
 </template>
 
 <style>
@@ -34,4 +34,13 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+
+.main {
+  display: flex;
+  max-width: 1200px;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+}
+
 </style>

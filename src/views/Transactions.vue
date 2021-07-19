@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <div class="drop-zone">
       <div
         class="drag-el"
@@ -166,11 +166,6 @@ export default {
 </script>
 <style scoped>
 #transactionCreate {
-  margin: auto;
-}
-
-.container {
-  max-width: 1200px;
   margin: auto;
 }
 

@@ -1,11 +1,19 @@
 <template>
-  <div class="container">
-    <h3>Category list</h3>
-    <div v-for="category in categories" :key="category.id">
-      {{ category.name }}  ({{ category.parentName }})
+  <div>
+    <div v-for="parent in parentCategories" :key="parent.id">
+      <h2>
+        {{ parent.name }}
+      </h2>
+      <div v-for="child in categoryByParent(parent.name)" :key="child.name">
+        <span>
+          {{ child.name }}
+        </span>
+      </div>
     </div>
     <div id="categoryCreate">
-      <h3>Add category</h3>
+      <va-button type="button" v-on:click="showModal = true" class="new-button">New</va-button>
+      <va-modal size="medium" v-model="showModal" hide-default-actions>
+      <h3>New category</h3>
       <div class="va-table-responsive">
         <form>
           <table class="va-table">
@@ -15,7 +23,16 @@
             </tr>
             <tr>
               <td><label>Parent category</label></td>
-              <td><input v-model="input.parentName" placeholder="Parent category" /></td>
+              <td>
+                <select v-model="input.parentName">
+                  <option disabled value="">No parent</option>
+                  <option
+                    v-for="category in parentCategories"
+                    v-bind:value="category.name"
+                    :key="category.id">{{category.name}}
+                  </option>
+                </select>
+              </td>
             </tr>
             <tr>
               <td colspan="2">
@@ -25,6 +42,7 @@
           </table>
         </form>
       </div>
+      </va-modal>
     </div>
   </div>
 </template>
@@ -39,6 +57,7 @@ export default {
   data() {
     return {
       categories: [],
+      showModal: false,
       input: {
         name: '',
         parentName: '',
@@ -55,9 +74,27 @@ export default {
         this.input.parentName,
       );
     },
+    categoryByParent(parentCategory) {
+      return this.categories.filter((item) => item.parentName === parentCategory);
+    },
+  },
+  computed: {
+    parentCategories() {
+      return this.categories.filter((item) => item.parentName === '');
+    },
   },
   beforeMount() {
     this.initLoad();
   },
 };
 </script>
+<style scoped>
+h2 {
+  font-size: 22px;
+  font-weight: 800;
+  text-decoration: underline;
+}
+.new-button {
+  margin-top: 20px;
+}
+</style>

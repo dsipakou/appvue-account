@@ -15,23 +15,24 @@
     <div class="drop-zone">
       <div
         class="drag-el"
-        v-for="category in mainCategories"
+        v-for="category in subCategories"
         :key="category.id"
-        :class="activeCategory === category.id ? 'active-el' : ''"
-        @dragover="onDragOver($event, category)"
+        @drop="onDrop($event, category)"
+        @dragover.prevent
         @dragenter.prevent
         >
         <span>
           {{ category.name }}
         </span>
       </div>
-    </div> <div class="drop-zone">
+    </div>
+    <div class="drop-zone">
       <div
         class="drag-el"
-        v-for="category in subCategories"
+        v-for="category in mainCategories"
         :key="category.id"
-        @drop="onDrop($event, category)"
-        @dragover.prevent
+        :class="activeCategory === category.id ? 'active-el' : ''"
+        @dragover="onDragOver($event, category)"
         @dragenter.prevent
         >
         <span>
@@ -44,7 +45,7 @@
     <form>
       <div v-for="transaction in transactions" :key="transaction.id">
         {{ transaction.category }} {{ transaction.amount }}
-        <va-button icon-right="create" class="mr-4">Edit</va-button>
+        <va-button icon-right="create" class="mr-4" gradient>Edit</va-button>
         <va-button type="button" icon="block" v-on:click="remove(transaction.id)"/>
       </div>
     </form>
@@ -137,6 +138,7 @@ export default {
         this.input.transactionDate,
         this.input.description,
       );
+      this.input.amount = 0;
     },
     async remove(id) {
       await deleteTransaction(id);
@@ -173,6 +175,9 @@ export default {
 }
 
 .drag-el {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100px;
   height: 100px;
   background-color: #eee;
@@ -180,17 +185,18 @@ export default {
   padding: 5px;
   border-radius: 50%;
   text-align: center;
-  margin: auto;
-  line-height: 50px;
+  margin: 10px;
+  line-height: auto;
 }
 
 .active-el {
-  background-color: #aaa;
+  background-color: #abc;
 }
 
 .drop-zone {
   display: flex;
   margin-bottom: 10px;
   padding: 10px;
+  justify-content: center;
 }
 </style>

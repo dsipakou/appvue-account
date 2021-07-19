@@ -17,6 +17,7 @@
         class="drag-el"
         v-for="category in mainCategories"
         :key="category.id"
+        :class="activeCategory === category.id ? 'active-el' : ''"
         @dragover="onDragOver($event, category)"
         @dragenter.prevent
         >
@@ -104,12 +105,13 @@ export default {
       accounts: [],
       categories: [],
       subCategories: [],
+      activeCategory: -1,
       input: {
         user: 0,
         category: 0,
         amount: '',
         account: 0,
-        transactionDate: '',
+        transactionDate: new Date().toISOString().substr(0, 10),
         description: '',
       },
     };
@@ -152,6 +154,7 @@ export default {
     },
     onDragOver(evt, category) {
       this.subCategories = this.categories.filter((item) => item.parentName === category.name);
+      this.activeCategory = category.id;
     },
   },
   beforeMount() {
@@ -179,6 +182,10 @@ export default {
   text-align: center;
   margin: auto;
   line-height: 50px;
+}
+
+.active-el {
+  background-color: #aaa;
 }
 
 .drop-zone {

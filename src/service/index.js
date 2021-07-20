@@ -8,6 +8,16 @@ const postRequest = (url, requestBody) => {
   return fetch(url, options);
 };
 
+const patchRequest = (url, requestBody) => {
+  const options = {
+    method: 'PATCH',
+    mode: 'cors',
+    body: JSON.stringify(requestBody),
+  };
+
+  return fetch(url, options);
+};
+
 const deleteRequest = (url, requestBody) => {
   const options = {
     method: 'DELETE',
@@ -53,6 +63,28 @@ export const createTransaction = async (
   console.log(transactionDate);
   const response = await postRequest('http://localhost:9091/api/transactions',
     {
+      userId,
+      categoryId,
+      amount,
+      accountId,
+      transactionDate,
+      description,
+    });
+  return response.json();
+};
+
+export const updateTransaction = async (
+  id,
+  userId,
+  categoryId,
+  amount,
+  accountId,
+  transactionDate,
+  description,
+) => {
+  const response = await patchRequest('http://localhost:9091/api/transactions',
+    {
+      id,
       userId,
       categoryId,
       amount,

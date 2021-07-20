@@ -41,48 +41,71 @@
       </div>
     </div>
     <div>
+      <slot name="transactionList"></slot>
     <h3>Transaction list</h3>
     <form>
       <div v-for="transaction in transactions" :key="transaction.id">
         {{ transaction.category }} {{ transaction.amount }}
-        <va-button icon-right="create" class="mr-4" gradient>Edit</va-button>
+        <va-button type="button" icon="create" gradient v-on:click="edit(transaction)"/>
         <va-button type="button" icon="block" v-on:click="remove(transaction.id)"/>
       </div>
     </form>
-      <va-modal size="medium" v-model="showModal" hide-default-actions>
-        <div id="transactionCreate">
-          <h3>Add transaction</h3>
-          <div class="va-table-responsive">
-            <form>
-              <input type="hidden" v-model="input.category" />
-              <input type="hidden" v-model="input.account" />
-              <table class="va-table">
-                <tr>
-                  <td><label>Amount</label></td>
-                  <td>
-                    <input v-model="input.amount" placeholder="Amount" />
-                  </td>
-                </tr>
-                <tr>
-                  <td><label>Date</label></td>
-                  <td>
-                    <input type="date" v-model="input.transactionDate" placeholder="Date" />
-                  </td>
-                </tr>
-                <tr>
-                  <td><label>Description</label></td>
-                  <td><textarea v-model="input.description" placeholder="Description" /></td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <va-button type="button" v-on:click="create()">Save transaction</va-button>
-                  </td>
-                </tr>
-              </table>
-            </form>
-          </div>
+    <va-modal size="medium" v-model="createModal" hide-default-actions>
+      <div id="transactionCreate">
+        <h3>Add transaction</h3>
+        <div class="va-table-responsive">
+          <form>
+            <input type="hidden" v-model="input.category" />
+            <input type="hidden" v-model="input.account" />
+            <table class="va-table">
+              <tr>
+                <td><label>Amount</label></td>
+                <td>
+                  <input v-model="input.amount" placeholder="Amount" />
+                </td>
+              </tr>
+              <tr>
+                <td><label>Date</label></td>
+                <td>
+                  <input type="date" v-model="input.transactionDate" placeholder="Date" />
+                </td>
+              </tr>
+              <tr>
+                <td><label>Description</label></td>
+                <td><textarea v-model="input.description" placeholder="Description" /></td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <va-button type="button" v-on:click="save()">Save transaction</va-button>
+                </td>
+              </tr>
+            </table>
+          </form>
         </div>
-      </va-modal>
+      </div>
+    </va-modal>
+    <va-modal size="medium" v-model="updateModal" hide-default-actions>
+      <div id="transactionUpdate">
+        <va-form>
+          <input type="hidden" v-model="input.id" />
+          <va-list>
+            <va-list-label>Edit transaction</va-list-label>
+            <va-list-item>
+              <va-input label="User" v-model="input.user" />
+            </va-list-item>
+            <va-list-item>
+              <va-input label="Category" v-model="input.category" />
+            </va-list-item>
+            <va-list-item>
+              <va-input label="Amount" v-model="input.amount" />
+            </va-list-item>
+            <va-list-item>
+              <va-button type="button" v-on:click="save()">Save</va-button>
+            </va-list-item>
+          </va-list>
+        </va-form>
+      </div>
+    </va-modal>
     </div>
   </div>
 </template>
@@ -94,14 +117,17 @@ import {
   getCategories,
   createTransaction,
   deleteTransaction,
+  updateTransaction,
 } from '../service';
 
 export default {
   name: 'TransactionList',
   data() {
     return {
-      showModal: false,
+      createModal: false,
+      updateModal: false,
       transactions: [],
+      id: -1,
       users: [],
       accounts: [],
       categories: [],
@@ -129,20 +155,53 @@ export default {
       this.transactions = await getTransactions();
       this.categories = await getCategories();
     },
-    async create() {
-      await createTransaction(
-        this.input.user,
-        this.input.category,
-        this.input.amount,
-        this.input.account,
-        this.input.transactionDate,
-        this.input.description,
-      );
+    async save() {
+      if (this.input.id !== -1) {
+        await updateTransaction(
+          this.input.id,
+          this.input.user,
+          this.input.category,
+          this.input.amount,
+          this.input.account,
+          this.input.transactionDate,
+          this.input.description,
+        );
+      } else {
+        await createTransaction(
+          this.input.user,
+          this.input.category,
+          this.input.amount,
+          this.input.account,
+          this.input.transactionDate,
+          this.input.description,
+        );
+      }
       this.input.amount = 0;
+      this.input.id = -1;
     },
     async remove(id) {
       await deleteTransaction(id);
       await this.initLoad();
+    },
+    async edit(transaction) {
+      const {
+        id,
+        user,
+        category,
+        amount,
+        account,
+        transactionDate,
+        description,
+      } = transaction;
+
+      this.input.id = id;
+      this.input.user = user;
+      this.input.category = category;
+      this.input.amount = amount;
+      this.input.account = account;
+      this.input.transactionDate = transactionDate.substr(0, 10);
+      this.input.description = description;
+      this.updateModal = true;
     },
     startDrag(evt, account) {
       evt.dataTransfer.setData('accountID', account.id);

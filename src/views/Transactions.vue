@@ -94,10 +94,24 @@
               <va-input label="User" v-model="input.user" />
             </va-list-item>
             <va-list-item>
+              <va-input label="Account" v-model="input.account" />
+            </va-list-item>
+            <va-list-item>
               <va-input label="Category" v-model="input.category" />
             </va-list-item>
             <va-list-item>
-              <va-input label="Amount" v-model="input.amount" />
+              <va-input
+                label="Amount"
+                v-model="input.amount"
+                focused
+                :rules="[value => (value && value.length > 0 && value > 0)] || 'Wrong value'"
+                />
+            </va-list-item>
+            <va-list-item>
+              <va-input type="date" label="Date" v-model="input.transactionDate" />
+            </va-list-item>
+            <va-list-item>
+              <va-input type="textarea" label="Description" v-model="input.description" />
             </va-list-item>
             <va-list-item>
               <va-button type="button" v-on:click="save()">Save</va-button>
@@ -166,6 +180,7 @@ export default {
           this.input.transactionDate,
           this.input.description,
         );
+        this.updateModal = false;
       } else {
         await createTransaction(
           this.input.user,
@@ -175,6 +190,7 @@ export default {
           this.input.transactionDate,
           this.input.description,
         );
+        this.createModal = false;
       }
       this.input.amount = 0;
       this.input.id = -1;
@@ -186,19 +202,19 @@ export default {
     async edit(transaction) {
       const {
         id,
-        user,
-        category,
+        userId,
+        categoryId,
         amount,
-        account,
+        accountId,
         transactionDate,
         description,
       } = transaction;
 
       this.input.id = id;
-      this.input.user = user;
-      this.input.category = category;
-      this.input.amount = amount;
-      this.input.account = account;
+      this.input.user = userId;
+      this.input.category = categoryId;
+      this.input.amount = amount.toString();
+      this.input.account = accountId;
       this.input.transactionDate = transactionDate.substr(0, 10);
       this.input.description = description;
       this.updateModal = true;
@@ -211,7 +227,7 @@ export default {
       this.input.category = category.id;
       this.input.account = Number(evt.dataTransfer.getData('accountID'));
       this.input.user = Number(evt.dataTransfer.getData('userID'));
-      this.showModal = true;
+      this.createModal = true;
     },
     onDragOver(evt, category) {
       this.subCategories = this.categories.filter((item) => item.parentName === category.name);

@@ -92,7 +92,7 @@ export const updateTransaction = async (
       transactionDate,
       description,
     });
-  return response.json();
+  return response.status;
 };
 
 export const createCategory = async (name, parentName) => {

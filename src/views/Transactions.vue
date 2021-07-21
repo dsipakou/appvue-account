@@ -47,15 +47,16 @@
       </div>
     </div>
     <div>
-      <slot name="transactionList"></slot>
-    <h3>Transaction list</h3>
-    <form>
-      <div v-for="transaction in transactionList" :key="transaction.id">
-        {{ transaction.category }} {{ transaction.amount }}
-        <va-button type="button" icon="create" gradient v-on:click="edit(transaction)"/>
-        <va-button type="button" icon="block" v-on:click="remove(transaction.id)"/>
-      </div>
-    </form>
+      <h3>Transaction list</h3>
+      <va-inner-loading :loading="isTransactionListLoading">
+        <form>
+          <div v-for="transaction in transactionList" :key="transaction.id">
+            {{ transaction.category }} {{ transaction.amount }}
+            <va-button type="button" icon="create" gradient v-on:click="edit(transaction)"/>
+            <va-button type="button" icon="block" v-on:click="remove(transaction.id)"/>
+          </div>
+        </form>
+      </va-inner-loading>
     <va-modal size="medium" v-model="createModal" hide-default-actions>
       <div id="transactionCreate">
         <h3>Add transaction</h3>
@@ -167,7 +168,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['transactionList']),
+    ...mapGetters(['transactionList', 'isTransactionListLoading']),
     mainCategories() {
       return this.categories.filter((item) => item.parentName === '');
     },

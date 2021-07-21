@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import transactions from './modules/transactions';
 
 export default createStore({
   state: {
@@ -8,5 +9,6 @@ export default createStore({
   actions: {
   },
   modules: {
+    transactions,
   },
 });

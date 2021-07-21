@@ -50,7 +50,7 @@
       <slot name="transactionList"></slot>
     <h3>Transaction list</h3>
     <form>
-      <div v-for="transaction in transactions" :key="transaction.id">
+      <div v-for="transaction in transactionList" :key="transaction.id">
         {{ transaction.category }} {{ transaction.amount }}
         <va-button type="button" icon="create" gradient v-on:click="edit(transaction)"/>
         <va-button type="button" icon="block" v-on:click="remove(transaction.id)"/>
@@ -132,6 +132,7 @@
   </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import {
   getUsers,
   getAccounts,
@@ -166,11 +167,13 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['transactionList']),
     mainCategories() {
       return this.categories.filter((item) => item.parentName === '');
     },
   },
   methods: {
+    ...mapActions(['fetchTransactions']),
     async initLoad() {
       this.accounts = await getAccounts();
       this.users = await getUsers();
@@ -244,6 +247,7 @@ export default {
   },
   beforeMount() {
     this.initLoad();
+    this.fetchTransactions();
   },
 };
 </script>

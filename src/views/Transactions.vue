@@ -1,43 +1,49 @@
 <template>
-  <div>
-    <div class="drop-zone">
-      <div
-        class="drag-el"
-        v-for="account in accounts"
-        :key="account.id"
-        draggable="true"
-        @dragstart="startDrag($event, account)">
-        <span>
-          {{ account.source }}
-        </span>
+  <div class="container">
+    <div ckass="accounts">
+      <div class="main-area">
+        <div class="drop-zone">
+          <div
+            class="drag-el"
+            v-for="account in accounts"
+            :key="account.id"
+            draggable="true"
+            @dragstart="startDrag($event, account)">
+            <span>
+              {{ account.source }}
+            </span>
+          </div>
+        </div>
+        <div class="drop-zone">
+          <div
+            class="drag-el"
+            v-for="category in subCategories"
+            :key="category.id"
+            @drop="onDrop($event, category)"
+            @dragover.prevent
+            @dragenter.prevent
+            >
+            <span>
+              {{ category.name }}
+            </span>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="drop-zone">
-      <div
-        class="drag-el"
-        v-for="category in subCategories"
-        :key="category.id"
-        @drop="onDrop($event, category)"
-        @dragover.prevent
-        @dragenter.prevent
-        >
-        <span>
-          {{ category.name }}
-        </span>
-      </div>
-    </div>
-    <div class="drop-zone">
-      <div
-        class="drag-el"
-        v-for="category in mainCategories"
-        :key="category.id"
-        :class="activeCategory === category.id ? 'active-el' : ''"
-        @dragover="onDragOver($event, category)"
-        @dragenter.prevent
-        >
-        <span>
-          {{ category.name }}
-        </span>
+      <div class="parent-categories">
+        <div class="drop-zone">
+          <div
+            class="drag-el"
+            v-for="category in mainCategories"
+            :key="category.id"
+            :class="activeCategory === category.id ? 'active-el' : ''"
+            @dragover="onDragOver($event, category)"
+            @dragenter.prevent
+            >
+            <span>
+              {{ category.name }}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
     <div>
@@ -86,7 +92,7 @@
     </va-modal>
     <va-modal size="medium" v-model="updateModal" hide-default-actions>
       <div id="transactionUpdate">
-        <va-form>
+        <va-form ref="udpateForm">
           <input type="hidden" v-model="input.id" />
           <va-list>
             <va-list-label>Edit transaction</va-list-label>
@@ -114,7 +120,9 @@
               <va-input type="textarea" label="Description" v-model="input.description" />
             </va-list-item>
             <va-list-item>
-              <va-button type="button" v-on:click="save()">Save</va-button>
+              <va-button type="button" v-on:click="save()">
+                Save
+              </va-button>
             </va-list-item>
           </va-list>
         </va-form>
@@ -242,6 +250,21 @@ export default {
 <style scoped>
 #transactionCreate {
   margin: auto;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+}
+
+.main-area {
+  width: 80%;
+}
+
+.parent-categories {
+  width: 20%;
+  display: flex;
+  flex-direction: vertical;
 }
 
 .drag-el {

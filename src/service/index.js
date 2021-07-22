@@ -1,3 +1,13 @@
+/* General requests */
+
+const getRequest = (url) => {
+  const options = {
+    method: 'GET',
+  };
+
+  return fetch(url, options);
+};
+
 const postRequest = (url, requestBody) => {
   const options = {
     method: 'POST',
@@ -28,12 +38,11 @@ const deleteRequest = (url, requestBody) => {
   return fetch(url, options);
 };
 
-const getRequest = (url) => {
-  const options = {
-    method: 'GET',
-  };
+/* Users section */
 
-  return fetch(url, options);
+export const getUsers = async () => {
+  const response = await getRequest('http://localhost:9091/api/users');
+  return response.json();
 };
 
 export const createUser = async (name, email, password) => {
@@ -41,26 +50,21 @@ export const createUser = async (name, email, password) => {
   return response.json();
 };
 
-export const createAccount = async (userId, source, amount, description) => {
-  const response = await postRequest('http://localhost:9091/api/accounts',
-    {
-      userId,
-      source,
-      amount,
-      description,
-    });
+/* Transactions section */
+
+export const getTransactions = async () => {
+  const response = await getRequest('http://localhost:9091/api/transactions');
   return response.json();
 };
 
-export const createTransaction = async (
+export const createTransaction = async ({
   userId,
   categoryId,
   amount,
   accountId,
   transactionDate,
   description,
-) => {
-  console.log(transactionDate);
+}) => {
   const response = await postRequest('http://localhost:9091/api/transactions',
     {
       userId,
@@ -70,10 +74,10 @@ export const createTransaction = async (
       transactionDate,
       description,
     });
-  return response.json();
+  return response;
 };
 
-export const updateTransaction = async (
+export const updateTransaction = async ({
   id,
   userId,
   categoryId,
@@ -81,7 +85,8 @@ export const updateTransaction = async (
   accountId,
   transactionDate,
   description,
-) => {
+}) => {
+  console.log(id, userId, categoryId);
   const response = await patchRequest('http://localhost:9091/api/transactions',
     {
       id,
@@ -95,6 +100,18 @@ export const updateTransaction = async (
   return response.status;
 };
 
+export const deleteTransaction = async (id) => {
+  const response = await deleteRequest('http://localhost:9091/api/transactions', { id });
+  return response.status;
+};
+
+/* Categories section */
+
+export const getCategories = async () => {
+  const response = await getRequest('http://localhost:9091/api/categories');
+  return response.json();
+};
+
 export const createCategory = async (name, parentName) => {
   const response = await postRequest('http://localhost:9091/api/categories',
     {
@@ -104,27 +121,20 @@ export const createCategory = async (name, parentName) => {
   return response.json();
 };
 
-export const getUsers = async () => {
-  const response = await getRequest('http://localhost:9091/api/users');
-  return response.json();
-};
+/* Accounts section */
 
 export const getAccounts = async () => {
   const response = await getRequest('http://localhost:9091/api/accounts');
   return response.json();
 };
 
-export const getTransactions = async () => {
-  const response = await getRequest('http://localhost:9091/api/transactions');
+export const createAccount = async (userId, source, amount, description) => {
+  const response = await postRequest('http://localhost:9091/api/accounts',
+    {
+      userId,
+      source,
+      amount,
+      description,
+    });
   return response.json();
-};
-
-export const getCategories = async () => {
-  const response = await getRequest('http://localhost:9091/api/categories');
-  return response.json();
-};
-
-export const deleteTransaction = async (id) => {
-  const response = await deleteRequest('http://localhost:9091/api/transactions', { id });
-  return response.status;
 };

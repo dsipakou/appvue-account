@@ -49,51 +49,51 @@
     <div>
       <h3>Transaction list</h3>
       <va-inner-loading :loading="isTransactionListLoading">
-        <form>
+        <va-form>
           <div v-for="transaction in transactionList" :key="transaction.id">
             {{ transaction.category }} {{ transaction.amount }}
             <va-button type="button" icon="create" gradient v-on:click="edit(transaction)"/>
-            <va-button type="button" icon="block" v-on:click="remove(transaction.id)"/>
+            <va-button type="button" icon="block" @click="deleteTransaction(transaction.id)"/>
           </div>
-        </form>
+        </va-form>
       </va-inner-loading>
     <va-modal size="medium" v-model="createModal" hide-default-actions>
       <div id="transactionCreate">
         <h3>Add transaction</h3>
         <div class="va-table-responsive">
-          <form>
+          <va-form>
             <input type="hidden" v-model="input.category" />
             <input type="hidden" v-model="input.account" />
-            <table class="va-table">
-              <tr>
-                <td><label>Amount</label></td>
-                <td>
-                  <input v-model="input.amount" placeholder="Amount" />
-                </td>
-              </tr>
-              <tr>
-                <td><label>Date</label></td>
-                <td>
-                  <input type="date" v-model="input.transactionDate" placeholder="Date" />
-                </td>
-              </tr>
-              <tr>
-                <td><label>Description</label></td>
-                <td><textarea v-model="input.description" placeholder="Description" /></td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <va-button type="button" v-on:click="save()">Save transaction</va-button>
-                </td>
-              </tr>
-            </table>
-          </form>
+            <va-list>
+              <va-list-label>Add transaction</va-list-label>
+              <va-list-item>
+                <va-input label="Amount" v-model="input.amount" placeholder="Amount" />
+              </va-list-item>
+              <va-list-item>
+                <va-input
+                  label="Date"
+                  type="date"
+                  v-model="input.transactionDate"
+                  placeholder="Date" />
+              </va-list-item>
+              <va-list-item>
+                <va-input
+                  label="Description"
+                  type="textarea"
+                  v-model="input.description"
+                  placeholder="Description" />
+              </va-list-item>
+              <va-list-item>
+                <va-button type="button" @click="save()">Save</va-button>
+              </va-list-item>
+            </va-list>
+          </va-form>
         </div>
       </div>
     </va-modal>
     <va-modal size="medium" v-model="updateModal" hide-default-actions>
       <div id="transactionUpdate">
-        <va-form ref="udpateForm">
+        <va-form>
           <input type="hidden" v-model="input.id" />
           <va-list>
             <va-list-label>Edit transaction</va-list-label>
@@ -121,7 +121,7 @@
               <va-input type="textarea" label="Description" v-model="input.description" />
             </va-list-item>
             <va-list-item>
-              <va-button type="button" v-on:click="save()">
+              <va-button type="button" v-on:click="update()">
                 Save
               </va-button>
             </va-list-item>
@@ -137,11 +137,7 @@ import { mapActions, mapGetters } from 'vuex';
 import {
   getUsers,
   getAccounts,
-  getTransactions,
   getCategories,
-  createTransaction,
-  deleteTransaction,
-  updateTransaction,
 } from '../service';
 
 export default {
@@ -150,7 +146,6 @@ export default {
     return {
       createModal: false,
       updateModal: false,
-      transactions: [],
       id: -1,
       users: [],
       accounts: [],
@@ -174,44 +169,47 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchTransactions']),
+    ...mapActions([
+      'fetchTransactions',
+      'createTransaction',
+      'deleteTransaction',
+      'updateTransaction',
+    ]),
+
     async initLoad() {
       this.accounts = await getAccounts();
       this.users = await getUsers();
-      this.transactions = await getTransactions();
       this.categories = await getCategories();
     },
-    async save() {
-      if (this.input.id !== -1) {
-        await updateTransaction(
-          this.input.id,
-          this.input.user,
-          this.input.category,
-          this.input.amount,
-          this.input.account,
-          this.input.transactionDate,
-          this.input.description,
-        );
-        this.updateModal = false;
-      } else {
-        await createTransaction(
-          this.input.user,
-          this.input.category,
-          this.input.amount,
-          this.input.account,
-          this.input.transactionDate,
-          this.input.description,
-        );
-        this.createModal = false;
-      }
-      this.input.amount = 0;
-      this.input.id = -1;
+
+    save() {
+      const transaction = {
+        userId: this.input.user,
+        categoryId: this.input.category,
+        amount: this.input.amount,
+        accountId: this.input.account,
+        transactionDate: this.input.transactionDate,
+        description: this.input.description,
+      };
+      this.createTransaction(transaction);
+      this.createModal = false;
     },
-    async remove(id) {
-      await deleteTransaction(id);
-      await this.initLoad();
+
+    update() {
+      const transaction = {
+        id: this.input.id,
+        userId: this.input.user,
+        categoryId: this.input.category,
+        amount: this.input.amount,
+        accountId: this.input.account,
+        transactionDate: this.input.transactionDate,
+        description: this.input.description,
+      };
+      this.updateTransaction(transaction);
+      this.updateModal = false;
     },
-    async edit(transaction) {
+
+    edit(transaction) {
       const {
         id,
         userId,
@@ -231,21 +229,25 @@ export default {
       this.input.description = description;
       this.updateModal = true;
     },
+
     startDrag(evt, account) {
       evt.dataTransfer.setData('accountID', account.id);
       evt.dataTransfer.setData('userID', account.userId);
     },
+
     onDrop(evt, category) {
       this.input.category = category.id;
       this.input.account = Number(evt.dataTransfer.getData('accountID'));
       this.input.user = Number(evt.dataTransfer.getData('userID'));
       this.createModal = true;
     },
+
     onDragOver(evt, category) {
       this.subCategories = this.categories.filter((item) => item.parentName === category.name);
       this.activeCategory = category.id;
     },
   },
+
   beforeMount() {
     this.initLoad();
     this.fetchTransactions();

@@ -1,9 +1,9 @@
 import { createApp } from 'vue';
 import { VuesticPlugin } from 'vuestic-ui';
-import 'vuestic-ui/dist/vuestic-ui.css';
 import router from './router';
 import store from './store';
 import App from './App.vue';
+import 'vuestic-ui/dist/vuestic-ui.css';
 
 createApp(App)
   .use(store)

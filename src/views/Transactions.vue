@@ -228,7 +228,6 @@ export default {
       this.input.transactionDate = transactionDate.substr(0, 10);
       this.input.description = description;
       this.updateModal = true;
-      console.log(typeof this.input.amount);
     },
 
     startDrag(evt, account) {

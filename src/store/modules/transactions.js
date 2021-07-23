@@ -23,15 +23,19 @@ const actions = {
   async fetchTransactions({ commit }) {
     commit('setTransactionsLoading', true);
     const response = await getTransactions();
-    commit('setTransactionsLoading', false);
-    commit('setTransactions', response);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setTransactionsLoading', false);
+      commit('setTransactions', body);
+      console.log(body);
+    }
   },
 
   async createTransaction({ commit }, payload) {
     const response = await createTransaction(payload);
     if (response.status === 201) {
       const body = await response.json();
-      const transaction = { ...payload, id: body.id };
+      const transaction = { ...body };
       commit('createTransaction', transaction);
     }
   },
@@ -45,8 +49,10 @@ const actions = {
 
   async updateTransaction({ commit }, payload) {
     const response = await updateTransaction(payload);
-    if (response === 200) {
-      commit('updateTransaction', payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      console.log(body);
+      commit('updateTransaction', body);
     }
   },
 };

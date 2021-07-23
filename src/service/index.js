@@ -54,7 +54,7 @@ export const createUser = async (name, email, password) => {
 
 export const getTransactions = async () => {
   const response = await getRequest('http://localhost:9091/api/transactions');
-  return response.json();
+  return response;
 };
 
 export const createTransaction = async ({
@@ -97,7 +97,7 @@ export const updateTransaction = async ({
       transactionDate,
       description,
     });
-  return response.status;
+  return response;
 };
 
 export const deleteTransaction = async (id) => {

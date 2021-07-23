@@ -200,7 +200,7 @@ export default {
         id: this.input.id,
         userId: this.input.user,
         categoryId: this.input.category,
-        amount: this.input.amount,
+        amount: this.input.amount.toString(),
         accountId: this.input.account,
         transactionDate: this.input.transactionDate,
         description: this.input.description,
@@ -223,11 +223,12 @@ export default {
       this.input.id = id;
       this.input.user = userId;
       this.input.category = categoryId;
-      this.input.amount = amount.toString();
+      this.input.amount = amount;
       this.input.account = accountId;
       this.input.transactionDate = transactionDate.substr(0, 10);
       this.input.description = description;
       this.updateModal = true;
+      console.log(typeof this.input.amount);
     },
 
     startDrag(evt, account) {

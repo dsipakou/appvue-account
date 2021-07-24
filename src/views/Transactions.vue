@@ -3,16 +3,15 @@
     <div ckass="accounts">
       <div class="main-area">
         <div class="drop-zone">
-          <div
-            class="drag-el"
+          <q-avatar
+            color="red"
             v-for="account in accounts"
             :key="account.id"
+            size="100px"
+            font-size="20px"
             draggable="true"
             @dragstart="startDrag($event, account)">
-            <span>
-              {{ account.source }}
-            </span>
-          </div>
+            >{{ account.source }}</q-avatar>
         </div>
         <div class="drop-zone">
           <div
@@ -67,21 +66,25 @@
             <va-list>
               <va-list-label>Add transaction</va-list-label>
               <va-list-item>
-                <va-input label="Amount" v-model="input.amount" placeholder="Amount" />
+                <q-input outlined label="Amount" stack-label v-model="input.amount" dence="true"/>
               </va-list-item>
               <va-list-item>
-                <va-input
+                <q-input
+                  outlined
                   label="Date"
+                  stack-label
+                  dence=true
                   type="date"
-                  v-model="input.transactionDate"
-                  placeholder="Date" />
+                  v-model="input.transactionDate" />
               </va-list-item>
               <va-list-item>
-                <va-input
+                <q-input
+                  outlined
                   label="Description"
+                  stack-label
+                  dence="true"
                   type="textarea"
-                  v-model="input.description"
-                  placeholder="Description" />
+                  v-model="input.description" />
               </va-list-item>
               <va-list-item>
                 <va-button type="button" @click="save()">Save</va-button>

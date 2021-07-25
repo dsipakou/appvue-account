@@ -60,7 +60,7 @@
       <div id="transactionCreate">
         <h3>Add transaction</h3>
         <div class="va-table-responsive">
-          <va-form>
+          <form>
             <input type="hidden" v-model="input.category" />
             <input type="hidden" v-model="input.account" />
             <va-list>
@@ -87,10 +87,10 @@
                   v-model="input.description" />
               </va-list-item>
               <va-list-item>
-                <va-button type="button" @click="save()">Save</va-button>
+                <q-btn label="Save" type="button" color="primary" @click="save()" />
               </va-list-item>
             </va-list>
-          </va-form>
+          </form>
         </div>
       </div>
     </va-modal>

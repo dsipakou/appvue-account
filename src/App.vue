@@ -19,25 +19,41 @@
       overlay
       persistent
       bordered>
-      <q-list>
-        <q-item>
+      <q-list padding class="text-primary">
+        <q-item to="/" exact clickable>
           <q-item-secion>
             <q-item-label>
-              <router-link to="/">Home</router-link>
+              Home
             </q-item-label>
           </q-item-secion>
         </q-item>
-        <q-item>
-          <router-link to="/signup">SignUp</router-link>
+        <q-item to="/signup" exact clickable>
+          <q-item-section>
+            <q-item-label>
+              SignUp
+            </q-item-label>
+          </q-item-section>
         </q-item>
-        <q-item>
-          <router-link to="/accounts">Accounts</router-link>
+        <q-item to="/accounts" exact clickable>
+          <q-item-section>
+            <q-item-label>
+              Accounts
+            </q-item-label>
+          </q-item-section>
         </q-item>
-        <q-item>
-          <router-link to="/transactions">Transactions</router-link>
+        <q-item to="/transactions" exact clickable>
+          <q-item-section>
+            <q-item-label>
+              Transactions
+            </q-item-label>
+          </q-item-section>
         </q-item>
-        <q-item>
-          <router-link to="/categories">Categories</router-link>
+        <q-item to="/categories" exact clickable>
+          <q-item-section>
+            <q-item-label>
+              Categories
+            </q-item-label>
+          </q-item-section>
         </q-item>
       </q-list>
     </q-drawer>

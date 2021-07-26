@@ -1,48 +1,47 @@
 <template>
-  <div class="container">
-    <div ckass="accounts">
-      <div class="main-area">
-        <div class="drop-zone">
-          <q-avatar
-            color="red"
-            v-for="account in accounts"
-            :key="account.id"
-            size="100px"
-            font-size="20px"
-            draggable="true"
-            @dragstart="startDrag($event, account)">
-            >{{ account.source }}</q-avatar>
-        </div>
-        <div class="drop-zone">
-          <div
-            class="drag-el"
-            v-for="category in subCategories"
-            :key="category.id"
-            @drop="onDrop($event, category)"
-            @dragover.prevent
-            @dragenter.prevent
-            >
-            <span>
+  <div class="q-pa-md">
+    <div class="row">
+      <div class="col-9">
+        <div class="column">
+          <div class="col">
+            <q-avatar
+              color="red"
+              v-for="account in accounts"
+              :key="account.id"
+              size="100px"
+              font-size="20px"
+              draggable="true"
+              @dragstart="startDrag($event, account)">
+              {{ account.source }}
+            </q-avatar>
+          </div>
+          <div class="col categories-list">
+            <q-avatar
+              color="yellow"
+              v-for="category in subCategories"
+              size="100px"
+              font-size="16px"
+              :key="category.id"
+              @drop="onDrop($event, category)"
+              @dragover.prevent
+              @dragenter.prevent>
               {{ category.name }}
-            </span>
+            </q-avatar>
           </div>
         </div>
       </div>
-      <div class="parent-categories">
-        <div class="drop-zone">
-          <div
-            class="drag-el"
-            v-for="category in mainCategories"
-            :key="category.id"
-            :class="activeCategory === category.id ? 'active-el' : ''"
-            @dragover="onDragOver($event, category)"
-            @dragenter.prevent
-            >
-            <span>
-              {{ category.name }}
-            </span>
-          </div>
-        </div>
+      <div class="col-3 main-categories-list">
+        <q-avatar
+          color="blue"
+          v-for="category in mainCategories"
+          :key="category.id"
+          size="70px"
+          font-size="12px"
+          :class="activeCategory === category.id ? 'active-el' : ''"
+          @dragover="onDragOver($event, category)"
+          @dragenter.prevent>
+          {{ category.name }}
+        </q-avatar>
       </div>
     </div>
     <div>
@@ -262,21 +261,6 @@ export default {
   margin: auto;
 }
 
-.container {
-  display: flex;
-  width: 100%;
-}
-
-.main-area {
-  width: 80%;
-}
-
-.parent-categories {
-  width: 20%;
-  display: flex;
-  flex-direction: vertical;
-}
-
 .drag-el {
   display: flex;
   align-items: center;
@@ -296,10 +280,16 @@ export default {
   background-color: #abc;
 }
 
-.drop-zone {
+.categories-list {
   display: flex;
-  margin-bottom: 10px;
-  padding: 10px;
+  margin-top: 100px;
   justify-content: center;
 }
+
+.main-categories-list {
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
 </style>

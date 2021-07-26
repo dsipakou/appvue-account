@@ -17,7 +17,7 @@
           </div>
           <div class="col categories-list">
             <q-avatar
-              color="yellow"
+              color="teal-10"
               v-for="category in subCategories"
               size="100px"
               font-size="16px"
@@ -44,17 +44,19 @@
         </q-avatar>
       </div>
     </div>
-    <div>
-      <h3>Transaction list</h3>
-      <va-inner-loading :loading="isTransactionListLoading">
-        <va-form>
-          <div v-for="transaction in transactionList" :key="transaction.id">
-            {{ transaction.category }} {{ transaction.amount }}
-            <va-button type="button" icon="create" gradient v-on:click="edit(transaction)"/>
-            <va-button type="button" icon="block" @click="deleteTransaction(transaction.id)"/>
-          </div>
-        </va-form>
-      </va-inner-loading>
+    <h3>Transaction list</h3>
+    <div class="transaction-list">
+      <q-list bordered separator padding class="rounded-borders" style="max-width: 350px">
+        <q-item>
+          <va-form>
+            <div v-for="transaction in transactionList" :key="transaction.id">
+              {{ transaction.category }} {{ transaction.amount }}
+              <va-button type="button" icon="create" gradient v-on:click="edit(transaction)"/>
+              <va-button type="button" icon="block" @click="deleteTransaction(transaction.id)"/>
+            </div>
+          </va-form>
+        </q-item>
+      </q-list>
     <va-modal size="medium" v-model="createModal" hide-default-actions>
       <div id="transactionCreate">
         <h3>Add transaction</h3>
@@ -261,6 +263,13 @@ export default {
   margin: auto;
 }
 
+.transaction-list {
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  margin-top: 20px;
+  padding: 20px;
+}
+
 .drag-el {
   display: flex;
   align-items: center;
@@ -284,6 +293,8 @@ export default {
   display: flex;
   margin-top: 100px;
   justify-content: center;
+  color: white;
+  line-height: 1.1em;
 }
 
 .main-categories-list {

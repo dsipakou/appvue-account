@@ -42,7 +42,7 @@ const deleteRequest = (url, requestBody) => {
 
 export const getUsers = async () => {
   const response = await getRequest('http://localhost:9091/api/users');
-  return response.json();
+  return response;
 };
 
 export const createUser = async (name, email, password) => {
@@ -74,6 +74,7 @@ export const createTransaction = async ({
       transactionDate,
       description,
     });
+
   return response;
 };
 
@@ -86,7 +87,6 @@ export const updateTransaction = async ({
   transactionDate,
   description,
 }) => {
-  console.log(id, userId, categoryId);
   const response = await patchRequest('http://localhost:9091/api/transactions',
     {
       id,
@@ -125,10 +125,15 @@ export const createCategory = async (name, parentName) => {
 
 export const getAccounts = async () => {
   const response = await getRequest('http://localhost:9091/api/accounts');
-  return response.json();
+  return response;
 };
 
-export const createAccount = async (userId, source, amount, description) => {
+export const createAccount = async ({
+  userId,
+  source,
+  amount,
+  description,
+}) => {
   const response = await postRequest('http://localhost:9091/api/accounts',
     {
       userId,
@@ -136,5 +141,5 @@ export const createAccount = async (userId, source, amount, description) => {
       amount,
       description,
     });
-  return response.json();
+  return response;
 };

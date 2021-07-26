@@ -5,8 +5,8 @@
         <h3>Account list</h3>
       </div>
       <va-list fix>
-        <div id="accountList">
-          <div v-for="account in accounts" :key="account.id">
+        <div id="account-list">
+          <div v-for="account in accountList" :key="account.id">
             <va-list-item>
               {{ account.source }}
             </va-list-item>
@@ -27,7 +27,7 @@
                 <option disabled value="">Select user</option>
                 <option
                   v-bind:value="user.id"
-                  v-for="user in users"
+                  v-for="user in userList"
                   :key="user.id">{{user.name}}
                 </option>
               </select>
@@ -60,7 +60,7 @@
               />
             </div>
             <div>
-              <va-button v-on:click="create()">Create account</va-button>
+              <va-button v-on:click="save()">Create account</va-button>
             </div>
           </va-form>
         </va-modal>
@@ -69,7 +69,10 @@
   </div>
 </template>
 <script>
-import { getUsers, getAccounts, createAccount } from '../service';
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex';
 
 export default {
   name: 'AccountList',
@@ -86,23 +89,25 @@ export default {
       },
     };
   },
-  methods: {
-    async loadAccounts() {
-      this.accounts = await getAccounts();
-      this.users = await getUsers();
-    },
-    async create() {
-      await createAccount(
-        this.input.user,
-        this.input.source,
-        this.input.amount,
-        this.input.description,
-      );
-      await this.loadAccounts();
-    },
+  computed: {
+    ...mapGetters([
+      'accountList',
+      'isAccountListLoading',
+      'userList',
+      'isUserListLoading',
+    ]),
   },
-  beforeMount() {
-    this.loadAccounts();
+  methods: {
+    ...mapActions(['createAccount']),
+    save() {
+      const account = {
+        userId: this.input.user,
+        source: this.input.source,
+        amount: this.input.amount,
+        description: this.input.description,
+      };
+      this.createAccount(account);
+    },
   },
 };
 </script>

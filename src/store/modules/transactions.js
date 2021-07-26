@@ -27,7 +27,6 @@ const actions = {
       const body = await response.json();
       commit('setTransactionsLoading', false);
       commit('setTransactions', body);
-      console.log(body);
     }
   },
 
@@ -35,8 +34,7 @@ const actions = {
     const response = await createTransaction(payload);
     if (response.status === 201) {
       const body = await response.json();
-      const transaction = { ...body };
-      commit('createTransaction', transaction);
+      commit('createTransaction', body);
     }
   },
 
@@ -51,7 +49,6 @@ const actions = {
     const response = await updateTransaction(payload);
     if (response.status === 200) {
       const body = await response.json();
-      console.log(body);
       commit('updateTransaction', body);
     }
   },

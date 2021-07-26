@@ -174,7 +174,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'fetchTransactions',
       'createTransaction',
       'deleteTransaction',
       'updateTransaction',
@@ -254,7 +253,6 @@ export default {
 
   beforeMount() {
     this.initLoad();
-    this.fetchTransactions();
   },
 };
 </script>

@@ -21,11 +21,11 @@
       bordered>
       <q-list padding class="text-primary">
         <q-item to="/" exact clickable>
-          <q-item-secion>
+          <q-item-section>
             <q-item-label>
               Home
             </q-item-label>
-          </q-item-secion>
+          </q-item-section>
         </q-item>
         <q-item to="/signup" exact clickable>
           <q-item-section>
@@ -66,6 +66,9 @@
 
 <script>
 import { ref } from 'vue';
+import {
+  mapActions,
+} from 'vuex';
 
 export default {
   setup() {
@@ -77,6 +80,18 @@ export default {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
     };
+  },
+  methods: {
+    ...mapActions([
+      'fetchAccounts',
+      'fetchTransactions',
+      'fetchUsers',
+    ]),
+  },
+  beforeMount() {
+    this.fetchAccounts();
+    this.fetchTransactions();
+    this.fetchUsers();
   },
 };
 </script>

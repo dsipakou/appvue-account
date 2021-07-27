@@ -9,6 +9,20 @@
           <div v-for="account in accountList" :key="account.id">
             <va-list-item>
               {{ account.source }}
+              <q-btn-dropdown flat dropdown-icon="more_vert">
+                <q-list>
+                  <q-item clickable v-close-popup>
+                    <q-item-section>
+                      <q-item-label>Edit</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="deleteAccount(account.id)">
+                    <q-item-section>
+                      <q-item-label>Delete</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
             </va-list-item>
           </div>
         </div>
@@ -98,7 +112,7 @@ export default {
     ]),
   },
   methods: {
-    ...mapActions(['createAccount']),
+    ...mapActions(['createAccount', 'deleteAccount']),
     save() {
       const account = {
         userId: this.input.user,

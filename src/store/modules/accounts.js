@@ -3,6 +3,7 @@
 import {
   getAccounts,
   createAccount,
+  deleteAccount,
 } from '../../service';
 
 const state = {
@@ -36,6 +37,13 @@ const actions = {
       commit('createAccount', body);
     }
   },
+
+  async deleteAccount({ commit }, id) {
+    const response = await deleteAccount(id);
+    if (response.status === 204) {
+      commit('deleteAccount', id);
+    }
+  },
 };
 
 const mutations = {
@@ -45,6 +53,10 @@ const mutations = {
 
   createAccount(state, account) {
     state.accounts.items.unshift({ ...account });
+  },
+
+  deleteAccount(state, id) {
+    state.accounts.items = state.accounts.items.filter((account) => account.id !== id);
   },
 
   setAccountsLoading(state, isLoading) {

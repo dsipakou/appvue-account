@@ -40,7 +40,7 @@ const actions = {
 
   async deleteTransaction({ commit }, id) {
     const response = await deleteTransaction(id);
-    if (response === 204) {
+    if (response.status === 204) {
       commit('deleteTransaction', id);
     }
   },

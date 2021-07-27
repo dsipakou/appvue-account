@@ -1,9 +1,7 @@
 <template>
   <div class="q-pa-md">
     <div class="row">
-      <div class="col-9">
-        <div class="column">
-          <div class="col">
+      <div class="col-9"> <div class="column"> <div class="col">
             <q-avatar
               color="red"
               v-for="account in accounts"

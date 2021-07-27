@@ -102,7 +102,7 @@ export const updateTransaction = async ({
 
 export const deleteTransaction = async (id) => {
   const response = await deleteRequest('http://localhost:9091/api/transactions', { id });
-  return response.status;
+  return response;
 };
 
 /* Categories section */
@@ -141,5 +141,10 @@ export const createAccount = async ({
       amount,
       description,
     });
+  return response;
+};
+
+export const deleteAccount = async (id) => {
+  const response = await deleteRequest('http://localhost:9091/api/accounts', { id });
   return response;
 };

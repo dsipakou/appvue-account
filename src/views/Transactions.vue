@@ -4,7 +4,7 @@
       <div class="col-9"> <div class="column"> <div class="col">
             <q-avatar
               color="red"
-              v-for="account in accounts"
+              v-for="account in accountList"
               :key="account.id"
               size="100px"
               font-size="20px"
@@ -138,7 +138,6 @@
 import { mapActions, mapGetters } from 'vuex';
 import {
   getUsers,
-  getAccounts,
   getCategories,
 } from '../service';
 
@@ -150,7 +149,6 @@ export default {
       updateModal: false,
       id: -1,
       users: [],
-      accounts: [],
       categories: [],
       subCategories: [],
       activeCategory: -1,
@@ -165,7 +163,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['transactionList', 'isTransactionListLoading']),
+    ...mapGetters([
+      'transactionList',
+      'isTransactionListLoading',
+      'accountList',
+      'isAccountListLoading',
+    ]),
     mainCategories() {
       return this.categories.filter((item) => item.parentName === '');
     },
@@ -178,7 +181,6 @@ export default {
     ]),
 
     async initLoad() {
-      this.accounts = await getAccounts();
       this.users = await getUsers();
       this.categories = await getCategories();
     },

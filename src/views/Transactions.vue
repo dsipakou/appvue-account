@@ -1,7 +1,9 @@
 <template>
   <div class="q-pa-md">
     <div class="row">
-      <div class="col-9"> <div class="column"> <div class="col">
+      <div class="col-9">
+        <div class="column">
+          <div class="col">
             <q-avatar
               color="red"
               v-for="account in accountList"
@@ -44,17 +46,48 @@
     </div>
     <h3>Transaction list</h3>
     <div class="transaction-list">
-      <q-list bordered separator padding class="rounded-borders" style="max-width: 350px">
-        <q-item>
-          <va-form>
-            <div v-for="transaction in transactionList" :key="transaction.id">
-              {{ transaction.category }} {{ transaction.amount }}
-              <va-button type="button" icon="create" gradient v-on:click="edit(transaction)"/>
-              <va-button type="button" icon="block" @click="deleteTransaction(transaction.id)"/>
-            </div>
-          </va-form>
-        </q-item>
-      </q-list>
+      <q-card flat class="item">
+        <q-card-section horizontal class="item-content">
+          <q-card-section class="item-header">
+            Account
+          </q-card-section>
+          <q-card-section class="item-header">
+            Amount
+          </q-card-section>
+          <q-card-section class="item-header">
+            Actions
+          </q-card-section>
+        </q-card-section>
+      </q-card>
+      <div v-for="transaction in transactionList" :key="transaction.id">
+        <q-card flat bordered class="item">
+          <q-card-section horizontal class="item-content">
+            <q-card-section class="item-title">
+              {{ getAccount(transaction.accountId).source }}
+              {{ transaction.transactionDate }}
+            </q-card-section>
+            <q-card-section class="item-title">
+              {{ transaction.amount }}
+            </q-card-section>
+            <q-card-section>
+              <q-btn-dropdown flat dropdown-icon="more_horiz">
+                <q-list>
+                  <q-item clickable v-close-popup @click="edit(transaction)">
+                    <q-item-section>
+                      <q-item-label>Edit</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
+                    <q-item-section>
+                      <q-item-label>Delete</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </q-btn-dropdown>
+            </q-card-section>
+          </q-card-section>
+        </q-card>
+      </div>
     <va-modal size="medium" v-model="createModal" hide-default-actions>
       <div id="transactionCreate">
         <h3>Add transaction</h3>
@@ -180,6 +213,10 @@ export default {
       'updateTransaction',
     ]),
 
+    getAccount(id) {
+      return this.accountList.filter((item) => item.id === id)[0];
+    },
+
     async initLoad() {
       this.users = await getUsers();
       this.categories = await getCategories();
@@ -301,4 +338,24 @@ export default {
   color: white;
 }
 
+.item {
+  margin-bottom: 20px;
+}
+
+.item-content {
+  justify-content: space-between;
+}
+
+.item-title {
+  display: flex;
+  align-items: center;
+  padding-left: 50px;
+}
+
+.item-header {
+  display: flex;
+  justify-content: left;
+  font-size: 18px;
+  font-weight: 800;
+}
 </style>

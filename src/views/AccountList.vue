@@ -7,14 +7,14 @@
       <va-list fix>
         <div id="account-list">
           <div v-for="account in accountList" :key="account.id">
-            <q-card flat bordered class="item">
+            <q-card flat class="item">
               <q-card-section horizontal class="item-content">
                 <q-card-section class="item-title">
                   {{ account.source }}
                   {{ account.amount }}
                 </q-card-section>
                 <q-card-section>
-                  <q-btn-dropdown flat dropdown-icon="more_vert">
+                  <q-btn-dropdown flat dropdown-icon="more_horiz">
                     <q-list>
                       <q-item clickable v-close-popup @click="edit(account)">
                         <q-item-section>

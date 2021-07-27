@@ -4,6 +4,7 @@ import {
   getAccounts,
   createAccount,
   deleteAccount,
+  updateAccount,
 } from '../../service';
 
 const state = {
@@ -44,6 +45,15 @@ const actions = {
       commit('deleteAccount', id);
     }
   },
+
+  async updateAccount({ commit }, payload) {
+    const response = await updateAccount(payload);
+    console.log(response.status);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('updateAccount', body);
+    }
+  },
 };
 
 const mutations = {
@@ -57,6 +67,15 @@ const mutations = {
 
   deleteAccount(state, id) {
     state.accounts.items = state.accounts.items.filter((account) => account.id !== id);
+  },
+
+  updateAccount(state, account) {
+    state.accounts.items = state.accounts.items.map((item) => {
+      if (item.id === account.id) {
+        return account;
+      }
+      return item;
+    });
   },
 
   setAccountsLoading(state, isLoading) {

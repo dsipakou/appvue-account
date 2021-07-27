@@ -148,3 +148,21 @@ export const deleteAccount = async (id) => {
   const response = await deleteRequest('http://localhost:9091/api/accounts', { id });
   return response;
 };
+
+export const updateAccount = async ({
+  id,
+  userId,
+  source,
+  amount,
+  description,
+}) => {
+  const response = await patchRequest('http://localhost:9091/api/accounts',
+    {
+      id,
+      userId,
+      source,
+      amount,
+      description,
+    });
+  return response;
+};

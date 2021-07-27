@@ -7,23 +7,30 @@
       <va-list fix>
         <div id="account-list">
           <div v-for="account in accountList" :key="account.id">
-            <va-list-item>
-              {{ account.source }}
-              <q-btn-dropdown flat dropdown-icon="more_vert">
-                <q-list>
-                  <q-item clickable v-close-popup @click="edit(account)">
-                    <q-item-section>
-                      <q-item-label>Edit</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup @click="deleteAccount(account.id)">
-                    <q-item-section>
-                      <q-item-label>Delete</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-            </va-list-item>
+            <q-card flat bordered class="item">
+              <q-card-section horizontal class="item-content">
+                <q-card-section class="item-title">
+                  {{ account.source }}
+                  {{ account.amount }}
+                </q-card-section>
+                <q-card-section>
+                  <q-btn-dropdown flat dropdown-icon="more_vert">
+                    <q-list>
+                      <q-item clickable v-close-popup @click="edit(account)">
+                        <q-item-section>
+                          <q-item-label>Edit</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item clickable v-close-popup @click="deleteAccount(account.id)">
+                        <q-item-section>
+                          <q-item-label>Delete</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-btn-dropdown>
+                </q-card-section>
+              </q-card-section>
+            </q-card>
           </div>
         </div>
       </va-list>
@@ -220,5 +227,19 @@ export default {
 <style scoped>
 .action-buttons {
   margin-bottom: 10px;
+}
+
+.item {
+  margin-bottom: 20px;
+}
+
+.item-content {
+  justify-content: space-between;
+}
+
+.item-title {
+  display: flex;
+  align-items: center;
+  padding-left: 50px;
 }
 </style>

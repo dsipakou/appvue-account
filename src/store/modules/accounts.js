@@ -31,7 +31,6 @@ const actions = {
   },
 
   async createAccount({ commit }, payload) {
-    console.log(payload);
     const response = await createAccount(payload);
     if (response.status === 201) {
       const body = await response.json();
@@ -48,7 +47,6 @@ const actions = {
 
   async updateAccount({ commit }, payload) {
     const response = await updateAccount(payload);
-    console.log(response.status);
     if (response.status === 200) {
       const body = await response.json();
       commit('updateAccount', body);

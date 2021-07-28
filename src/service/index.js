@@ -121,6 +121,29 @@ export const createCategory = async (name, parentName) => {
   return response.json();
 };
 
+export const updateCategory = async ({
+  id,
+  userId,
+  categoryId,
+  amount,
+  accountId,
+  transactionDate,
+  description,
+}) => {
+  const response = await patchRequest('http://localhost:9091/api/categories',
+    {
+      id,
+      name,
+      parentName,
+    });
+  return response;
+};
+
+export const deleteCategory = async (id) => {
+  const response = await deleteRequest('http://localhost:9091/api/categories', { id });
+  return response;
+};
+
 /* Accounts section */
 
 export const getAccounts = async () => {

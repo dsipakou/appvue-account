@@ -14,86 +14,33 @@
           </q-btn>
         </div>
       </div>
-      <va-list fix>
-        <div id="account-list">
-          <div v-for="account in accountList" :key="account.id">
-            <q-card flat class="item">
-              <q-card-section horizontal class="item-content">
-                <q-card-section class="item-title">
-                  {{ account.source }}
-                  {{ account.amount }}
-                </q-card-section>
-                <q-card-section>
-                  <q-btn-dropdown flat dropdown-icon="more_horiz">
-                    <q-list>
-                      <q-item clickable v-close-popup @click="edit(account)">
-                        <q-item-section>
-                          <q-item-label>Edit</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                      <q-item clickable v-close-popup @click="deleteAccount(account.id)">
-                        <q-item-section>
-                          <q-item-label>Delete</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-btn-dropdown>
-                </q-card-section>
+      <div id="account-list">
+        <div v-for="account in accountList" :key="account.id">
+          <q-card flat class="item">
+            <q-card-section horizontal class="item-content">
+              <q-card-section class="item-title">
+                {{ account.source }}
+                {{ account.amount }}
               </q-card-section>
-            </q-card>
-          </div>
+              <q-card-section>
+                <q-btn-dropdown flat dropdown-icon="more_horiz">
+                  <q-list>
+                    <q-item clickable v-close-popup @click="edit(account)">
+                      <q-item-section>
+                        <q-item-label>Edit</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup @click="deleteAccount(account.id)">
+                      <q-item-section>
+                        <q-item-label>Delete</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-btn-dropdown>
+              </q-card-section>
+            </q-card-section>
+          </q-card>
         </div>
-      </va-list>
-    </div>
-    <div class="row" id="accountCreate">
-      <div class="item">
-        <va-modal size="medium" v-model="showModal">
-          <va-form>
-            <h3>Create Account</h3>
-
-            <div>
-              <label>User</label>
-              <select v-model="input.user">
-                <option disabled value="">Select user</option>
-                <option
-                  v-bind:value="user.id"
-                  v-for="user in userList"
-                  :key="user.id">{{user.name}}
-                </option>
-              </select>
-            </div>
-            <div>
-              <va-input
-                class="mb-4"
-                v-model="input.source"
-                label="Source"
-                placeholder="Where are money come from"
-              />
-            </div>
-            <div>
-              <va-input
-                class="mb-4"
-                v-model="input.amount"
-                label="Amount"
-                placeholder="How much money"
-              />
-            </div>
-            <div>
-              <va-input
-                class="mb-4"
-                v-model="input.description"
-                type="textarea"
-                label="Description"
-                placeholder="Change description"
-                :min-rows="7"
-                :max-rows="11"
-              />
-            </div>
-            <div>
-              <va-button v-on:click="save()">Create account</va-button>
-            </div>
-          </va-form>
-        </va-modal>
       </div>
     </div>
     <q-dialog v-model="createForm">
@@ -110,10 +57,10 @@
               clearable
               outlined
               map-options
-              selected-item="1"
               v-model="input.user"
               :options="users"
-              label="User" /> </q-card-section>
+              label="User" />
+          </q-card-section>
           <q-card-section>
             <q-input outlined stack-label label="Source" v-model="input.source" />
           </q-card-section>
@@ -150,7 +97,6 @@
               clearable
               outlined
               map-options
-              selected-item="1"
               v-model="input.user"
               :options="users"
               label="User" /> </q-card-section>
@@ -177,6 +123,7 @@
     </q-dialog>
   </div>
 </template>
+
 <script>
 import {
   mapActions,
@@ -284,6 +231,11 @@ export default {
 };
 </script>
 <style scoped>
+#account-list {
+  width: 100%;
+  margin-top: 30px;
+}
+
 .header {
   display: flex;
   justify-content: space-between;

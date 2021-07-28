@@ -17,7 +17,11 @@
       </div>
     </div>
     <div class="row justify-between">
-        <div class="col-9 items-center">
+      <div class="col-10 items-center sub-categories">
+        <div style="margin-bottom: 20px;">
+          <h4>Drag on category</h4>
+        </div>
+        <div>
           <q-avatar
             color="teal-5"
             v-for="category in subCategories"
@@ -30,19 +34,26 @@
             {{ category.name }}
           </q-avatar>
         </div>
-        <div class="col-3 main-categories-list self-end">
-          <q-tabs
-            v-model="tab"
-            vertical
-            class="text-teal">
-            <q-tab
-              v-for="category in mainCategories"
-              name="categories"
-              :label="category.name"
-              :key="category.id"
-              @click="chooseCategory(category)"/>
-          </q-tabs>
-        </div>
+      </div>
+      <div class="col-2 main-categories-list self-end">
+        <q-tabs
+          v-model="categoryTabs"
+          vertical
+          indicator-color="white"
+          active-bg-color="white"
+          active-color="primary"
+          switch-indicator
+          no-caps
+          class="text-dark">
+          <q-tab
+            v-for="category in mainCategories"
+            :name="category.id"
+            :label="category.name"
+            :key="category.id"
+            class="main-category-tab"
+            @click="chooseCategory(category)"/>
+        </q-tabs>
+      </div>
     </div>
     <div class="row">
       <div class="header">
@@ -162,8 +173,8 @@
             v-model="input.description"
             />
         </q-card-section>
-        <q-card-actions>
-          <q-btn color="primary" rouded style="width: 100px;" @click="create()">Save</q-btn>
+        <q-card-actions align="center" class="action-buttons">
+          <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -234,6 +245,7 @@ export default {
     return {
       createForm: ref(false),
       updateForm: ref(false),
+      categoryTabs: ref(''),
     };
   },
 
@@ -414,7 +426,7 @@ export default {
 .main-categories-list {
   display: flex;
   flex-direction: column;
-  color: white;
+  margin-top: 30px;
 }
 
 .item {
@@ -450,5 +462,20 @@ export default {
   align-items: center;
   font-size: 18px;
   font-weight: 800;
+}
+
+.action-buttons {
+  margin-bottom: 10px;
+}
+
+.sub-categories {
+  margin-top: 30px;
+  border-radius: 10px 0 0 10px;
+  background-color: white;
+  padding: 20px 0;
+}
+
+.main-category-tab {
+  border-radius: 0 10px 10px 0
 }
 </style>

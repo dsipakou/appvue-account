@@ -51,35 +51,33 @@
 
         <q-separator />
 
-        <q-form>
-          <q-card-section>
-            <q-select
-              clearable
-              outlined
-              map-options
-              v-model="input.user"
-              :options="users"
-              label="User" />
-          </q-card-section>
-          <q-card-section>
-            <q-input outlined stack-label label="Source" v-model="input.source" />
-          </q-card-section>
-          <q-card-section>
-            <q-input outlined stack-label label="Amount" v-model="input.amount" />
-          </q-card-section>
-          <q-card-section>
-            <q-input
-              outlined
-              stack-label
-              type="textarea"
-              label="Description"
-              v-model="input.description" />
-          </q-card-section>
+        <q-card-section>
+          <q-select
+            clearable
+            outlined
+            map-options
+            v-model="input.user"
+            :options="users"
+            label="User" />
+        </q-card-section>
+        <q-card-section>
+          <q-input outlined stack-label label="Source" v-model="input.source" />
+        </q-card-section>
+        <q-card-section>
+          <q-input outlined stack-label label="Amount" v-model="input.amount" />
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            outlined
+            stack-label
+            type="textarea"
+            label="Description"
+            v-model="input.description" />
+        </q-card-section>
 
-          <q-card-actions align="center" class="action-buttons">
-            <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
-          </q-card-actions>
-        </q-form>
+        <q-card-actions align="center" class="action-buttons">
+          <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
+        </q-card-actions>
       </q-card>
     </q-dialog>
     <q-dialog v-model="updateForm">

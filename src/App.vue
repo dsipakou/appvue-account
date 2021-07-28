@@ -84,6 +84,7 @@ export default {
   methods: {
     ...mapActions([
       'fetchAccounts',
+      'fetchCategories',
       'fetchTransactions',
       'fetchUsers',
     ]),

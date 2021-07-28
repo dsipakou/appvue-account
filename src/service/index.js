@@ -123,12 +123,8 @@ export const createCategory = async (name, parentName) => {
 
 export const updateCategory = async ({
   id,
-  userId,
-  categoryId,
-  amount,
-  accountId,
-  transactionDate,
-  description,
+  name,
+  parentName,
 }) => {
   const response = await patchRequest('http://localhost:9091/api/categories',
     {

@@ -1,8 +1,18 @@
 <template>
   <div>
     <div class="row">
-      <div class="flex md12">
-        <h3>Account list</h3>
+      <div class="header">
+        <span>Your accounts</span>
+        <div>
+          <q-btn
+            rounded
+            color="primary"
+            icon="add"
+            unelevated
+            @click="add()">
+            Add account
+          </q-btn>
+        </div>
       </div>
       <va-list fix>
         <div id="account-list">
@@ -35,7 +45,6 @@
         </div>
       </va-list>
     </div>
-    <va-button v-on:click="showModal = true">Add</va-button>
     <div class="row" id="accountCreate">
       <div class="item">
         <va-modal size="medium" v-model="showModal">
@@ -87,6 +96,45 @@
         </va-modal>
       </div>
     </div>
+    <q-dialog v-model="createForm">
+      <q-card class="shadow-24" style="width: 400px;">
+        <q-card-section>
+          <h4>Create account</h4>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-form>
+          <q-card-section>
+            <q-select
+              clearable
+              outlined
+              map-options
+              selected-item="1"
+              v-model="input.user"
+              :options="users"
+              label="User" /> </q-card-section>
+          <q-card-section>
+            <q-input outlined stack-label label="Source" v-model="input.source" />
+          </q-card-section>
+          <q-card-section>
+            <q-input outlined stack-label label="Amount" v-model="input.amount" />
+          </q-card-section>
+          <q-card-section>
+            <q-input
+              outlined
+              stack-label
+              type="textarea"
+              label="Description"
+              v-model="input.description" />
+          </q-card-section>
+
+          <q-card-actions align="center" class="action-buttons">
+            <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-dialog>
     <q-dialog v-model="updateForm">
       <q-card class="shadow-24" style="width: 400px;">
         <q-card-section>
@@ -140,6 +188,7 @@ export default {
   name: 'AccountList',
   setup() {
     return {
+      createForm: ref(false),
       updateForm: ref(false),
     };
   },
@@ -181,14 +230,13 @@ export default {
       'updateAccount',
     ]),
 
-    save() {
-      const account = {
-        userId: this.input.user,
-        source: this.input.source,
-        amount: this.input.amount,
-        description: this.input.description,
-      };
-      this.createAccount(account);
+    add() {
+      this.input.user = '';
+      this.input.source = '';
+      this.input.amount = '';
+      this.input.description = '';
+
+      this.createForm = true;
     },
 
     edit(account) {
@@ -208,6 +256,17 @@ export default {
       this.updateForm = true;
     },
 
+    create() {
+      const account = {
+        userId: this.input.user.value,
+        source: this.input.source,
+        amount: this.input.amount,
+        description: this.input.description,
+      };
+      this.createAccount(account);
+      this.createForm = false;
+    },
+
     update() {
       const account = {
         id: this.input.id,
@@ -225,6 +284,20 @@ export default {
 };
 </script>
 <style scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.header span {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 800;
+}
+
 .action-buttons {
   margin-bottom: 10px;
 }

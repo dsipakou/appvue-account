@@ -254,7 +254,6 @@ export default {
       createModal: false,
       updateModal: false,
       id: -1,
-      categories: [],
       subCategories: [],
       activeCategory: -1,
       input: {
@@ -272,13 +271,15 @@ export default {
       'transactionList',
       'accountList',
       'userList',
+      'categoryList',
       'isTransactionListLoading',
       'isAccountListLoading',
       'isUserListLoading',
+      'isCategoryListLoading',
     ]),
 
     mainCategories() {
-      return this.categories.filter((item) => item.parentName === '');
+      return this.categoryList.filter((item) => item.parentName === '');
     },
 
     accounts() {
@@ -378,7 +379,7 @@ export default {
     },
 
     chooseCategory(category) {
-      this.subCategories = this.categories.filter((item) => item.parentName === category.name);
+      this.subCategories = this.categoryList.filter((item) => item.parentName === category.name);
       this.activeCategory = category.id;
     },
   },

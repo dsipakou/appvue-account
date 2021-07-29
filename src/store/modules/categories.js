@@ -76,7 +76,7 @@ const mutations = {
     });
   },
 
-  setCategoryLoading(state, isLoading) {
+  setCategoriesLoading(state, isLoading) {
     state.categories.isLoading = isLoading;
   },
 };

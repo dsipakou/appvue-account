@@ -47,9 +47,9 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 import {
   createCategory,
-  getCategories,
 } from '../service';
 
 export default {
@@ -65,9 +65,6 @@ export default {
     };
   },
   methods: {
-    async initLoad() {
-      this.categories = await getCategories();
-    },
     async create() {
       await createCategory(
         this.input.name,
@@ -75,16 +72,17 @@ export default {
       );
     },
     categoryByParent(parentCategory) {
-      return this.categories.filter((item) => item.parentName === parentCategory);
+      return this.categoryList.filter((item) => item.parentName === parentCategory);
     },
   },
   computed: {
+    ...mapGetters([
+      'categoryList',
+    ]),
+
     parentCategories() {
-      return this.categories.filter((item) => item.parentName === '');
+      return this.categoryList.filter((item) => item.parentName === '');
     },
-  },
-  beforeMount() {
-    this.initLoad();
   },
 };
 </script>

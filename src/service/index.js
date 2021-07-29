@@ -109,7 +109,7 @@ export const deleteTransaction = async (id) => {
 
 export const getCategories = async () => {
   const response = await getRequest('http://localhost:9091/api/categories');
-  return response.json();
+  return response;
 };
 
 export const createCategory = async (name, parentName) => {
@@ -118,7 +118,7 @@ export const createCategory = async (name, parentName) => {
       name,
       parentName,
     });
-  return response.json();
+  return response;
 };
 
 export const updateCategory = async ({

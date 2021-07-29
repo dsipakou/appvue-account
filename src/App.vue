@@ -91,6 +91,7 @@ export default {
   },
   beforeMount() {
     this.fetchAccounts();
+    this.fetchCategories();
     this.fetchTransactions();
     this.fetchUsers();
   },

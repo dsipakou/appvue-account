@@ -1,14 +1,35 @@
 <template>
-  <div>
-    <div v-for="parent in parentCategories" :key="parent.id">
-      <h2>
-        {{ parent.name }}
-      </h2>
-      <div v-for="child in categoryByParent(parent.name)" :key="child.name">
-        <span>
-          {{ child.name }}
-        </span>
-      </div>
+  <div class="q-pa-md">
+    <div class="categories-block" v-for="parent in parentCategories" :key="parent.id">
+      <q-card flat>
+        <div class="row justify-center">
+          <div class="col-2 categories-block--main">
+            <q-card bordered flat class="parent-card">
+              {{ parent.name }}
+              <q-separator color="white" />
+              <q-action-button>
+                <q-btn size="12px" flat icon="edit" />
+                <q-btn size="12px" flat icon="delete" />
+              </q-action-button>
+            </q-card>
+          </div>
+        </div>
+        <div class="row justify-center">
+          <div
+            class="col-2 categories-block--child"
+            v-for="child in categoryByParent(parent.name)"
+            :key="child.name">
+            <q-card flat bordered class="sub-card">
+              {{ child.name }}
+              <q-separator color="white" />
+              <q-action-button>
+                <q-btn size="12px" flat icon="edit" />
+                <q-btn size="12px" flat icon="delete" />
+              </q-action-button>
+            </q-card>
+          </div>
+        </div>
+      </q-card>
     </div>
     <div id="categoryCreate">
       <va-button type="button" v-on:click="showModal = true" class="new-button">New</va-button>
@@ -94,5 +115,28 @@ h2 {
 }
 .new-button {
   margin-top: 20px;
+}
+
+.categories-block {
+  margin: 10px 0;
+}
+
+.categories-block--main {
+  font-size: 20px;
+  margin: 10px 0;
+  font-weight: 700;
+}
+
+.parent-card {
+  padding-top: 20px;
+}
+
+.sub-card {
+  padding-top: 10px;
+  font-size: 12px;
+}
+
+.categories-block--child {
+  margin: 10px;
 }
 </style>

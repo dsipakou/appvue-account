@@ -2,30 +2,25 @@
   <div class="q-pa-md">
     <div class="categories-block" v-for="parent in parentCategories" :key="parent.id">
       <q-card flat>
-        <div class="row justify-center">
+        <div class="row justify-left">
           <div class="col-2 categories-block--main">
-            <q-card bordered flat class="parent-card">
+            <q-card
+              v-ripple
+              class="q-hoverable cursor-pointer parent-card"
+              bordered
+              flat
+              @click="edit(parent)">
               {{ parent.name }}
               <q-separator color="white" />
-              <q-action-button>
-                <q-btn size="12px" flat icon="edit" />
-                <q-btn size="12px" flat icon="delete" />
-              </q-action-button>
             </q-card>
           </div>
-        </div>
-        <div class="row justify-center">
           <div
             class="col-2 categories-block--child"
             v-for="child in categoryByParent(parent.name)"
             :key="child.name">
-            <q-card flat bordered class="sub-card">
+            <q-card flat bordered class="sub-card" @click="edit(child)">
               {{ child.name }}
               <q-separator color="white" />
-              <q-action-button>
-                <q-btn size="12px" flat icon="edit" />
-                <q-btn size="12px" flat icon="delete" />
-              </q-action-button>
             </q-card>
           </div>
         </div>
@@ -65,9 +60,17 @@
       </div>
       </va-modal>
     </div>
+    <q-dialog v-model="updateForm">
+      <q-card>
+        <q-card-section>
+          Editing {{ input.name || input.parentName }}
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 <script>
+import { ref } from 'vue';
 import { mapGetters } from 'vuex';
 import {
   createCategory,
@@ -75,6 +78,12 @@ import {
 
 export default {
   name: 'CategoryList',
+  setup() {
+    return {
+      updateForm: ref(false),
+    };
+  },
+
   data() {
     return {
       categories: [],
@@ -92,6 +101,13 @@ export default {
         this.input.parentName,
       );
     },
+
+    edit(category) {
+      this.input.name = category.name;
+      this.input.parentName = category.parentName;
+      this.updateForm = true;
+    },
+
     categoryByParent(parentCategory) {
       return this.categoryList.filter((item) => item.parentName === parentCategory);
     },

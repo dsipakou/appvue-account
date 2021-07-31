@@ -112,11 +112,12 @@ export const getCategories = async () => {
   return response;
 };
 
-export const createCategory = async (name, parentName) => {
+export const createCategory = async (name, parentName, isParent) => {
   const response = await postRequest('http://localhost:9091/api/categories',
     {
       name,
       parentName,
+      isParent,
     });
   return response;
 };
@@ -125,12 +126,14 @@ export const updateCategory = async ({
   id,
   name,
   parentName,
+  isParent,
 }) => {
   const response = await patchRequest('http://localhost:9091/api/categories',
     {
       id,
       name,
       parentName,
+      isParent,
     });
   return response;
 };

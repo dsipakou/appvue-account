@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <div class="categories-block" v-for="parent in parentCategories" :key="parent.id">
       <div class="row justify-left">
-        <div class="col-2 categories-block--main">
+        <div class="q-my-sm col-2 categories-block--main">
           <q-card
             v-ripple
             class="q-hoverable cursor-pointer parent-card"
@@ -77,11 +77,15 @@
           <q-input outlined stack-label label="Name" v-model="input.name" />
         </q-card-section>
         <q-card-section>
+          <q-checkbox v-model="input.isParent" label="Parent category" />
+        </q-card-section>
+        <q-card-section>
           <q-select
             clearable
             outlined
             map-options
             v-model="input.parentName"
+            :disable="input.isParent"
             :options="parents"
             label="Parent name" />
         </q-card-section>
@@ -114,6 +118,7 @@ export default {
       input: {
         name: '',
         parentName: '',
+        isParent: false,
       },
     };
   },
@@ -128,6 +133,7 @@ export default {
     edit(category) {
       this.input.name = category.name;
       this.input.parentName = category.parentName;
+      this.input.isParent = category.isParent;
       this.updateForm = true;
     },
 
@@ -142,6 +148,15 @@ export default {
 
     parentCategories() {
       return this.categoryList.filter((item) => item.parentName === '');
+    },
+
+    parents() {
+      return this.parentCategories.map((item) => {
+        const obj = {};
+        obj.label = item.name;
+        obj.value = item.id;
+        return obj;
+      });
     },
   },
 };
@@ -158,7 +173,6 @@ h2 {
 
 .categories-block--main {
   font-size: 20px;
-  margin: 20px 0;
   font-weight: 700;
 }
 

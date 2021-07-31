@@ -1,30 +1,33 @@
 <template>
   <div class="q-pa-md">
     <div class="categories-block" v-for="parent in parentCategories" :key="parent.id">
-      <q-card flat>
-        <div class="row justify-left">
-          <div class="col-2 categories-block--main">
-            <q-card
-              v-ripple
-              class="q-hoverable cursor-pointer parent-card"
-              bordered
-              flat
-              @click="edit(parent)">
-              {{ parent.name }}
-              <q-separator color="white" />
-            </q-card>
-          </div>
-          <div
-            class="col-2 categories-block--child"
-            v-for="child in categoryByParent(parent.name)"
-            :key="child.name">
-            <q-card flat bordered class="sub-card" @click="edit(child)">
-              {{ child.name }}
-              <q-separator color="white" />
-            </q-card>
-          </div>
+      <div class="row justify-left">
+        <div class="col-2 categories-block--main">
+          <q-card
+            v-ripple
+            class="q-hoverable cursor-pointer parent-card"
+            bordered
+            flat
+            @click="edit(parent)">
+            {{ parent.name }}
+            <q-separator color="white" />
+          </q-card>
         </div>
-      </q-card>
+        <div
+          class="col-2 categories-block--child"
+          v-for="child in categoryByParent(parent.name)"
+          :key="child.name">
+          <q-card
+            v-ripple
+            class="q-hoverable cursor-pointer sub-card"
+            flat
+            bordered
+            @click="edit(child)">
+            {{ child.name }}
+            <q-separator color="white" />
+          </q-card>
+        </div>
+      </div>
     </div>
     <div id="categoryCreate">
       <va-button type="button" v-on:click="showModal = true" class="new-button">New</va-button>
@@ -63,8 +66,28 @@
     <q-dialog v-model="updateForm">
       <q-card>
         <q-card-section>
-          Editing {{ input.name || input.parentName }}
+          <h4>
+            Editing {{ input.name || input.parentName }}
+          </h4>
         </q-card-section>
+
+        <q-separator />
+
+        <q-card-section>
+          <q-input outlined stack-label label="Name" v-model="input.name" />
+        </q-card-section>
+        <q-card-section>
+          <q-select
+            clearable
+            outlined
+            map-options
+            v-model="input.parentName"
+            :options="parents"
+            label="Parent name" />
+        </q-card-section>
+        <q-card-actions align="center" class="action-buttons">
+          <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
@@ -133,26 +156,35 @@ h2 {
   margin-top: 20px;
 }
 
-.categories-block {
-  margin: 10px 0;
-}
-
 .categories-block--main {
   font-size: 20px;
-  margin: 10px 0;
+  margin: 20px 0;
   font-weight: 700;
 }
 
 .parent-card {
-  padding-top: 20px;
+  display: flex;
+  min-height: 100px;
+  justify-content: left;
+  padding-left: 20px;
+  text-align: left;
+  align-items: center;
 }
 
 .sub-card {
-  padding-top: 10px;
-  font-size: 12px;
+  display: flex;
+  min-height: 80px;
+  justify-content: left;
+  padding-left: 30px;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  font-size: 14px;
 }
 
 .categories-block--child {
-  margin: 10px;
+  display: flex;
+  align-items: center;
+  margin-left: 40px;
 }
 </style>

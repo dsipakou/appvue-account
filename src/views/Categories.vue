@@ -9,6 +9,7 @@
             bordered
             flat
             @click="edit(parent)">
+            <div tabindex="-1" class="q-focus-helper"></div>
             {{ parent.name }}
             <q-separator color="white" />
           </q-card>
@@ -23,6 +24,7 @@
             flat
             bordered
             @click="edit(child)">
+            <div tabindex="-1" class="q-focus-helper"></div>
             {{ child.name }}
             <q-separator color="white" />
           </q-card>

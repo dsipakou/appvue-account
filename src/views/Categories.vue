@@ -67,6 +67,7 @@
     </div>
     <q-dialog v-model="updateForm">
       <q-card>
+        <input type="hidden" v-model="input.id" />
         <q-card-section>
           <h4>
             Editing {{ input.name || input.parentName }}
@@ -92,7 +93,14 @@
             label="Parent name" />
         </q-card-section>
         <q-card-actions align="center" class="action-buttons">
-          <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
+          <q-btn
+            color="primary"
+            rounded
+            :disabled="!isAllowedToSave"
+            style="width: 100px;"
+            @click="update()">
+            Save
+          </q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -100,7 +108,7 @@
 </template>
 <script>
 import { ref } from 'vue';
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import {
   createCategory,
 } from '../service';
@@ -117,6 +125,7 @@ export default {
     return {
       categories: [],
       showModal: false,
+      currentCategory: {},
       input: {
         name: '',
         parentName: '',
@@ -125,6 +134,10 @@ export default {
     };
   },
   methods: {
+    ...mapActions([
+      'updateCategory',
+    ]),
+
     async create() {
       await createCategory(
         this.input.name,
@@ -133,10 +146,23 @@ export default {
     },
 
     edit(category) {
+      this.currentCategory = category;
+      this.input.id = category.id;
       this.input.name = category.name;
       this.input.parentName = category.parentName;
       this.input.isParent = category.isParent;
       this.updateForm = true;
+    },
+
+    update() {
+      const category = {
+        id: this.input.id,
+        name: this.input.name,
+        parentName: this.input.isParent ? '' : this.input.parentName,
+        isParent: this.input.isParent,
+      };
+      this.updateCategory(category);
+      this.updateForm = false;
     },
 
     categoryByParent(parentCategory) {
@@ -148,6 +174,12 @@ export default {
       'categoryList',
     ]),
 
+    isAllowedToSave() {
+      return (
+        this.currentCategory.name !== this.input.name
+        || this.currentCategory.parentName !== this.input.parentName
+      );
+    },
     parentCategories() {
       return this.categoryList.filter((item) => item.parentName === '');
     },

@@ -108,7 +108,7 @@
         <input type="hidden" v-model="input.id" />
         <q-card-section>
           <h4>
-            Editing {{ input.name || input.parentName }}
+            {{ formTitle }}
           </h4>
         </q-card-section>
 
@@ -162,6 +162,7 @@ export default {
       categories: [],
       showModal: false,
       currentCategory: {},
+      formTitle: '',
       input: {
         name: '',
         parentName: '',
@@ -187,6 +188,9 @@ export default {
 
     edit(category) {
       this.currentCategory = category;
+      this.formTitle = category.parentName
+        ? `${category.name} (${category.parentName})`
+        : `${category.name}`;
       this.input.id = category.id;
       this.input.name = category.name;
       this.input.parentName = category.parentName;
@@ -216,8 +220,11 @@ export default {
 
     isAllowedToSave() {
       return (
-        this.currentCategory.name !== this.input.name
-        || this.currentCategory.parentName !== this.input.parentName
+        !this.categoryList.some((item) => (
+          item.name === this.input.name
+          && item.parentName === this.input.parentName
+          && item.isParent === this.input.isParent
+        ))
       );
     },
     parentCategories() {

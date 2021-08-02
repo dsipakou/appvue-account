@@ -112,7 +112,7 @@ export const getCategories = async () => {
   return response;
 };
 
-export const createCategory = async (name, parentName, isParent) => {
+export const createCategory = async ({ name, parentName, isParent }) => {
   const response = await postRequest('http://localhost:9091/api/categories',
     {
       name,

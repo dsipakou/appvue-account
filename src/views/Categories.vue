@@ -32,7 +32,7 @@
       </div>
     </div>
     <div id="categoryCreate">
-      <va-button type="button" v-on:click="showModal = true" class="new-button">New</va-button>
+      <va-button type="button" @click="createForm = true" class="new-button">New</va-button>
       <va-modal size="medium" v-model="showModal" hide-default-actions>
       <h3>New category</h3>
       <div class="va-table-responsive">
@@ -65,6 +65,44 @@
       </div>
       </va-modal>
     </div>
+    <q-dialog v-model="createForm">
+      <q-card>
+        <q-card-section>
+          <h4>
+            Create a category
+          </h4>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section>
+          <q-input outlined stack-label label="Name" v-model="input.name" />
+        </q-card-section>
+        <q-card-section>
+          <q-checkbox v-model="input.isParent" label="Parent category" />
+        </q-card-section>
+        <q-card-section>
+          <q-select
+            clearable
+            outlined
+            map-options
+            v-model="input.parentName"
+            :disable="input.isParent"
+            :options="parents"
+            label="Parent name" />
+        </q-card-section>
+        <q-card-actions align="center" class="action-buttons">
+          <q-btn
+            color="primary"
+            rounded
+            :disabled="!isAllowedToSave"
+            style="width: 100px;"
+            @click="create()">
+            Save
+          </q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <q-dialog v-model="updateForm">
       <q-card>
         <input type="hidden" v-model="input.id" />
@@ -109,14 +147,12 @@
 <script>
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-import {
-  createCategory,
-} from '../service';
 
 export default {
   name: 'CategoryList',
   setup() {
     return {
+      createForm: ref(false),
       updateForm: ref(false),
     };
   },
@@ -135,14 +171,18 @@ export default {
   },
   methods: {
     ...mapActions([
+      'createCategory',
       'updateCategory',
     ]),
 
-    async create() {
-      await createCategory(
-        this.input.name,
-        this.input.parentName,
-      );
+    create() {
+      const category = {
+        name: this.input.name,
+        parentName: this.input.isParent ? '' : this.input.parentName.label || this.input.parentName,
+        isParent: this.input.isParent,
+      };
+      this.createCategory(category);
+      this.createForm = false;
     },
 
     edit(category) {
@@ -158,7 +198,7 @@ export default {
       const category = {
         id: this.input.id,
         name: this.input.name,
-        parentName: this.input.isParent ? '' : this.input.parentName,
+        parentName: this.input.isParent ? '' : this.input.parentName.label || this.input.parentName,
         isParent: this.input.isParent,
       };
       this.updateCategory(category);

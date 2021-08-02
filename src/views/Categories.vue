@@ -235,9 +235,11 @@ export default {
       return (
         !this.categoryList.some((item) => (
           item.name === this.input.name
-          && item.parentName === this.input.parentName
+          && (item.parentName === this.input.parentName
+            || item.parentName === this.input.parentName?.label)
           && item.isParent === this.input.isParent
         ))
+        && !(!this.input.isParent && !this.input.parentName)
       );
     },
     parentCategories() {

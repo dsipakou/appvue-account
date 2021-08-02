@@ -139,6 +139,13 @@
             @click="update()">
             Save
           </q-btn>
+          <q-btn
+            color="negative"
+            rounded
+            style="width: 100px;"
+            @click="remove()">
+            Remove
+          </q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -174,6 +181,7 @@ export default {
     ...mapActions([
       'createCategory',
       'updateCategory',
+      'deleteCategory',
     ]),
 
     create() {
@@ -206,6 +214,11 @@ export default {
         isParent: this.input.isParent,
       };
       this.updateCategory(category);
+      this.updateForm = false;
+    },
+
+    remove() {
+      this.deleteCategory(this.input.id);
       this.updateForm = false;
     },
 

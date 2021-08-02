@@ -205,6 +205,15 @@
             label="Account" />
         </q-card-section>
         <q-card-section>
+          <q-select
+            clearable
+            outlined
+            map-options
+            v-model="input.category"
+            :options="categories"
+            label="Category" />
+        </q-card-section>
+        <q-card-section>
           <q-input outlined stack-label label="Amount" v-model="input.amount" />
         </q-card-section>
         <q-card-section>
@@ -225,6 +234,13 @@
             v-model="input.description"
             />
         </q-card-section>
+        <q-card-actions align="center">
+          <q-btn
+            color="primary"
+            rounded
+            style="width: 100px;"
+            @click="update()">Save</q-btn>
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
@@ -287,6 +303,13 @@ export default {
       return accounts;
     },
 
+    categories() {
+      const categories = this.makeSelectList(this.categoryList.filter((item) => (
+        !item.isParent
+      )), 'name', 'parentName');
+      return categories;
+    },
+
     users() {
       const users = this.makeSelectList(this.userList, 'name');
       return users;
@@ -308,10 +331,11 @@ export default {
       this.categories = await getCategories();
     },
 
-    makeSelectList(items, labelField) {
+    makeSelectList(items, labelField, optional = '') {
       return items.map((item) => {
         const obj = {};
-        obj.label = item[labelField];
+        console.log(optional, item[optional], items);
+        obj.label = item[optional] ? `${item[optional]}/${item[labelField]}` : `${item[labelField]}`;
         obj.value = item.id;
         return obj;
       });
@@ -334,14 +358,14 @@ export default {
       const transaction = {
         id: this.input.id,
         userId: this.input.user,
-        categoryId: this.input.category,
+        categoryId: this.input.category.value || this.input.category,
         amount: this.input.amount.toString(),
         accountId: this.input.account,
         transactionDate: this.input.transactionDate,
         description: this.input.description,
       };
       this.updateTransaction(transaction);
-      this.updateModal = false;
+      this.updateForm = false;
     },
 
     edit(transaction) {

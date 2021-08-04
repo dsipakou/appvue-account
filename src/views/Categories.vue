@@ -1,5 +1,20 @@
 <template>
   <div class="q-pa-md">
+    <div class="row">
+      <div class="header">
+        <span>Your categories</span>
+        <div>
+          <q-btn
+            rounded
+            color="primary"
+            icon="add"
+            unelevated
+            @click="add()">
+            Add category
+          </q-btn>
+        </div>
+      </div>
+    </div>
     <div class="categories-block" v-for="parent in parentCategories" :key="parent.id">
       <div class="row justify-left">
         <div class="q-my-sm col-2 categories-block--main">
@@ -30,40 +45,6 @@
           </q-card>
         </div>
       </div>
-    </div>
-    <div id="categoryCreate">
-      <va-button type="button" @click="createForm = true" class="new-button">New</va-button>
-      <va-modal size="medium" v-model="showModal" hide-default-actions>
-      <h3>New category</h3>
-      <div class="va-table-responsive">
-        <form>
-          <table class="va-table">
-            <tr>
-              <td><label>Name</label></td>
-              <td><input v-model="input.name" placeholder="Name" /></td>
-            </tr>
-            <tr>
-              <td><label>Parent category</label></td>
-              <td>
-                <select v-model="input.parentName">
-                  <option disabled value="">No parent</option>
-                  <option
-                    v-for="category in parentCategories"
-                    v-bind:value="category.name"
-                    :key="category.id">{{category.name}}
-                  </option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <button type="button" v-on:click="create()">Create category</button>
-              </td>
-            </tr>
-          </table>
-        </form>
-      </div>
-      </va-modal>
     </div>
     <q-dialog v-model="createForm">
       <q-card>
@@ -184,6 +165,10 @@ export default {
       'deleteCategory',
     ]),
 
+    add() {
+      this.createForm = true;
+    },
+
     create() {
       const category = {
         name: this.input.name,
@@ -296,5 +281,19 @@ h2 {
   display: flex;
   align-items: center;
   margin-left: 40px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.header span {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 800;
 }
 </style>

@@ -1,19 +1,20 @@
 <template>
   <div class="q-pa-md">
     <div class="row justify-center">
-      <div class="column">
-        <div class="col-12">
-          <q-avatar
-            color="red"
+        <div class="row justify-center">
+          <div
             v-for="account in accountList"
             :key="account.id"
-            size="100px"
-            font-size="20px"
-            draggable="true"
-            @dragstart="startDrag($event, account)">
-            {{ account.source }}
-          </q-avatar>
-        </div>
+            class="avatar-container">
+            <span>{{ account.source }}</span>
+            <q-avatar
+              color="red"
+              size="80px"
+              font-size="20px"
+              draggable="true"
+              @dragstart="startDrag($event, account)">
+            </q-avatar>
+          </div>
       </div>
     </div>
     <div class="row justify-between">
@@ -21,18 +22,18 @@
         <div style="margin-bottom: 20px;">
           <h4>Drag on category</h4>
         </div>
-        <div>
-          <q-avatar
-            color="teal-5"
-            v-for="category in subCategories"
-            size="100px"
-            font-size="16px"
-            :key="category.id"
-            @drop="onDrop($event, category)"
-            @dragover.prevent
-            @dragenter.prevent>
-            {{ category.name }}
-          </q-avatar>
+        <div class="row justify-center">
+          <div v-for="category in subCategories" :key="category.id" class="avatar-container">
+            <span>{{ category.name }}</span>
+            <q-avatar
+              color="teal-5"
+              size="80px"
+              font-size="16px"
+              @drop="onDrop($event, category)"
+              @dragover.prevent
+              @dragenter.prevent>
+            </q-avatar>
+          </div>
         </div>
       </div>
       <div class="col-2 main-categories-list self-end">
@@ -296,7 +297,20 @@ export default {
     ]),
 
     mainCategories() {
-      return this.categoryList.filter((item) => item.parentName === '');
+      const categories = this.categoryList.filter((item) => (
+        item.parentName === '' && !item.isSystem
+      )).sort((a, b) => {
+        const left = a.name;
+        const right = b.name;
+        if (left > right) {
+          return 1;
+        }
+        if (left < right) {
+          return -1;
+        }
+        return 0;
+      });
+      return categories;
     },
 
     accounts() {
@@ -306,7 +320,7 @@ export default {
 
     categories() {
       const categories = this.makeSelectList(this.categoryList.filter((item) => (
-        !item.isParent
+        !item.isParent && !item.isSystem
       )), 'name', 'parentName');
       return categories;
     },
@@ -335,7 +349,6 @@ export default {
     makeSelectList(items, labelField, optional = '') {
       return items.map((item) => {
         const obj = {};
-        console.log(optional, item[optional], items);
         obj.label = item[optional] ? `${item[optional]}/${item[labelField]}` : `${item[labelField]}`;
         obj.value = item.id;
         return obj;
@@ -362,7 +375,7 @@ export default {
         userId: this.input.user,
         categoryId: this.input.category.value || this.input.category,
         amount: this.input.amount.toString(),
-        accountId: this.input.account,
+        accountId: this.input.account.value || this.input.account,
         transactionDate: this.input.transactionDate,
         type: transactionTypes.OUTCOME,
         description: this.input.description,
@@ -505,5 +518,17 @@ export default {
 
 .main-category-tab {
   border-radius: 0 10px 10px 0
+}
+
+.avatar-container {
+  display: flex;
+  flex-direction: column;
+  width: 120px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.avatar-container span {
+  font-size: 0.9em;
 }
 </style>

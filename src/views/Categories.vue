@@ -229,7 +229,19 @@ export default {
       );
     },
     parentCategories() {
-      return this.categoryList.filter((item) => item.parentName === '' && !item.isSystem);
+      return this.categoryList.filter((item) => (
+        item.parentName === '' && !item.isSystem
+      )).sort((a, b) => {
+        const left = a.name;
+        const right = b.name;
+        if (left < right) {
+          return -1;
+        }
+        if (left > right) {
+          return 1;
+        }
+        return 0;
+      });
     },
 
     parents() {

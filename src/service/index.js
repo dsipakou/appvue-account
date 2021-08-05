@@ -63,6 +63,7 @@ export const createTransaction = async ({
   amount,
   accountId,
   transactionDate,
+  type,
   description,
 }) => {
   const response = await postRequest('http://localhost:9091/api/transactions',
@@ -72,6 +73,7 @@ export const createTransaction = async ({
       amount,
       accountId,
       transactionDate,
+      type,
       description,
     });
 
@@ -85,6 +87,7 @@ export const updateTransaction = async ({
   amount,
   accountId,
   transactionDate,
+  type,
   description,
 }) => {
   const response = await patchRequest('http://localhost:9091/api/transactions',
@@ -95,6 +98,7 @@ export const updateTransaction = async ({
       amount,
       accountId,
       transactionDate,
+      type,
       description,
     });
   return response;
@@ -127,6 +131,7 @@ export const updateCategory = async ({
   name,
   parentName,
   isParent,
+  isSystem,
 }) => {
   const response = await patchRequest('http://localhost:9091/api/categories',
     {
@@ -134,6 +139,7 @@ export const updateCategory = async ({
       name,
       parentName,
       isParent,
+      isSystem,
     });
   return response;
 };

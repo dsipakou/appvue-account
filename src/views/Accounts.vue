@@ -9,7 +9,17 @@
             color="primary"
             icon="add"
             unelevated
-            @click="add()">
+            @click="addIncome()">
+            Add income
+          </q-btn>
+        </div>
+        <div>
+          <q-btn
+            rounded
+            color="primary"
+            icon="add"
+            unelevated
+            @click="addAccount()">
             Add account
           </q-btn>
         </div>
@@ -43,7 +53,7 @@
         </div>
       </div>
     </div>
-    <q-dialog v-model="createForm">
+    <q-dialog v-model="createAccountForm">
       <q-card class="shadow-24" style="width: 400px;">
         <q-card-section>
           <h4>Create account</h4>
@@ -80,7 +90,68 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <q-dialog v-model="updateForm">
+    <q-dialog v-model="createIncomeForm">
+      <q-card class="shadow-24" style="width: 400px;">
+        <q-card-section>
+          <h4>Add income</h4>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section>
+          <q-select
+            clearable
+            outlined
+            map-options
+            v-model="input.account"
+            :options="accounts"
+            label="Account" />
+        </q-card-section>
+        <q-card-section>
+          <q-select
+            clearable
+            outlined
+            map-options
+            v-model="input.category"
+            :options="systemCategories"
+            label="Category" />
+        </q-card-section>
+        <q-card-section>
+          <q-select
+            clearable
+            outlined
+            map-options
+            v-model="input.user"
+            :options="users"
+            label="User" />
+        </q-card-section>
+        <q-card-section>
+          <q-input outlined stack-label label="Amount" v-model="input.amount" />
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            outlined
+            type="date"
+            stack-label
+            label="Date"
+            v-model="input.transactionDate"
+            />
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            outlined
+            stack-label
+            type="textarea"
+            label="Description"
+            v-model="input.description" />
+        </q-card-section>
+
+        <q-card-actions align="center" class="action-buttons">
+          <q-btn color="primary" rounded style="width: 100px;" @click="createIncome()">Save</q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="updateAccountForm">
       <q-card class="shadow-24" style="width: 400px;">
         <q-card-section>
           <h4>Edit account</h4>
@@ -128,13 +199,15 @@ import {
   mapGetters,
 } from 'vuex';
 import { ref } from 'vue';
+import { transactionTypes } from '../utils/constants';
 
 export default {
   name: 'AccountList',
   setup() {
     return {
-      createForm: ref(false),
-      updateForm: ref(false),
+      createAccountForm: ref(false),
+      createIncomeForm: ref(false),
+      updateAccountForm: ref(false),
     };
   },
 
@@ -145,6 +218,7 @@ export default {
         user: '',
         source: '',
         amount: 0,
+        transactionDate: new Date().toISOString().substr(0, 10),
         description: '',
       },
     };
@@ -152,6 +226,7 @@ export default {
   computed: {
     ...mapGetters([
       'accountList',
+      'categoryList',
       'userList',
       'isAccountListLoading',
       'isUserListLoading',
@@ -166,22 +241,40 @@ export default {
       });
     },
 
+    accounts() {
+      const accounts = this.makeSelectList(this.accountList, 'source');
+      return accounts;
+    },
+
+    systemCategories() {
+      const categories = this.makeSelectList(this.categoryList.filter((item) => (
+        item.isSystem
+      )), 'name');
+      return categories;
+    },
+
   },
 
   methods: {
     ...mapActions([
       'createAccount',
+      'createTransaction',
       'deleteAccount',
       'updateAccount',
     ]),
+    addIncome() {
+      const category = this.systemCategories[0];
+      this.input.category = category;
+      this.createIncomeForm = true;
+    },
 
-    add() {
+    addAccount() {
       this.input.user = '';
       this.input.source = '';
       this.input.amount = '';
       this.input.description = '';
 
-      this.createForm = true;
+      this.createAccountForm = true;
     },
 
     edit(account) {
@@ -198,7 +291,7 @@ export default {
       this.input.source = source;
       this.input.amount = amount;
       this.input.description = description;
-      this.updateForm = true;
+      this.updateAccountForm = true;
     },
 
     create() {
@@ -209,7 +302,22 @@ export default {
         description: this.input.description,
       };
       this.createAccount(account);
-      this.createForm = false;
+      this.createAccountForm = false;
+    },
+
+    createIncome() {
+      const transaction = {
+        userId: this.input.user.value || this.input.user,
+        categoryId: this.input.category.value || this.input.category,
+        amount: this.input.amount,
+        accountId: this.input.account.value || this.input.account,
+        transactionDate: this.input.transactionDate,
+        type: transactionTypes.INCOME,
+        description: this.input.description,
+      };
+
+      this.createTransaction(transaction);
+      this.createIncomeForm = false;
     },
 
     update() {
@@ -222,9 +330,18 @@ export default {
       };
 
       this.updateAccount(account);
-      this.updateForm = false;
+      this.updateAccountForm = false;
     },
 
+    makeSelectList(items, labelField, optional = '') {
+      return items.map((item) => {
+        const obj = {};
+        console.log(optional, item[optional], items);
+        obj.label = item[optional] ? `${item[optional]}/${item[labelField]}` : `${item[labelField]}`;
+        obj.value = item.id;
+        return obj;
+      });
+    },
   },
 };
 </script>

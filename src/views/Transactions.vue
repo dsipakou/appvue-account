@@ -253,6 +253,7 @@ import {
   getUsers,
   getCategories,
 } from '../service';
+import { transactionTypes } from '../utils/constants';
 
 export default {
   name: 'TransactionList',
@@ -348,6 +349,7 @@ export default {
         amount: this.input.amount,
         accountId: this.input.account,
         transactionDate: this.input.transactionDate,
+        type: transactionTypes.OUTCOME,
         description: this.input.description,
       };
       this.createTransaction(transaction);
@@ -362,6 +364,7 @@ export default {
         amount: this.input.amount.toString(),
         accountId: this.input.account,
         transactionDate: this.input.transactionDate,
+        type: transactionTypes.OUTCOME,
         description: this.input.description,
       };
       this.updateTransaction(transaction);

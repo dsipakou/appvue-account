@@ -197,6 +197,7 @@ export default {
         name: this.input.name,
         parentName: this.input.isParent ? '' : this.input.parentName.label || this.input.parentName,
         isParent: this.input.isParent,
+        isSystem: false,
       };
       this.updateCategory(category);
       this.updateForm = false;

@@ -1,20 +1,20 @@
 <template>
   <div class="q-pa-md">
     <div class="row justify-center">
-        <div class="row justify-center">
-          <div
-            v-for="account in accountList"
-            :key="account.id"
-            class="avatar-container">
-            <span>{{ account.source }}</span>
-            <q-avatar
-              color="red"
-              size="80px"
-              font-size="20px"
-              draggable="true"
-              @dragstart="startDrag($event, account)">
-            </q-avatar>
-          </div>
+      <div class="row justify-center">
+        <div
+          v-for="account in accountList"
+          :key="account.id"
+          class="avatar-container">
+          <span>{{ account.source }}</span>
+          <q-avatar
+            color="red"
+            size="80px"
+            font-size="20px"
+            draggable="true"
+            @dragstart="startDrag($event, account)">
+          </q-avatar>
+        </div>
       </div>
     </div>
     <div class="row justify-between">
@@ -104,44 +104,6 @@
           </q-card-section>
         </q-card>
       </div>
-    <va-modal size="medium" v-model="updateModal" hide-default-actions>
-      <div id="transactionUpdate">
-        <va-form>
-          <input type="hidden" v-model="input.id" />
-          <va-list>
-            <va-list-label>Edit transaction</va-list-label>
-            <va-list-item>
-              <va-input label="User" v-model="input.user" />
-            </va-list-item>
-            <va-list-item>
-              <va-input label="Account" v-model="input.account" />
-            </va-list-item>
-            <va-list-item>
-              <va-input label="Category" v-model="input.category" />
-            </va-list-item>
-            <va-list-item>
-              <va-input
-                label="Amount"
-                v-model="input.amount"
-                focused
-                :rules="[value => (value && value.length > 0 && value > 0)] || 'Wrong value'"
-                />
-            </va-list-item>
-            <va-list-item>
-              <va-input type="date" label="Date" v-model="input.transactionDate" />
-            </va-list-item>
-            <va-list-item>
-              <va-input type="textarea" label="Description" v-model="input.description" />
-            </va-list-item>
-            <va-list-item>
-              <va-button type="button" v-on:click="update()">
-                Save
-              </va-button>
-            </va-list-item>
-          </va-list>
-        </va-form>
-      </div>
-    </va-modal>
     </div>
     <q-dialog v-model="createForm">
       <input type="hidden" v-model="input.category" />
@@ -154,7 +116,7 @@
         <q-separator />
 
         <q-card-section>
-          <q-input outlined stack-label label="Amount" v-model="input.amount" />
+          <q-input outlined stack-label ref="mainInput" label="Amount" v-model="input.amount" />
         </q-card-section>
         <q-card-section>
           <q-input
@@ -250,10 +212,6 @@
 <script>
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-import {
-  getUsers,
-  getCategories,
-} from '../service';
 import { transactionTypes } from '../utils/constants';
 
 export default {
@@ -284,6 +242,15 @@ export default {
       },
     };
   },
+
+  watch: {
+    createForm(value) {
+      if (value) {
+        console.log(this.$refs);
+      }
+    },
+  },
+
   computed: {
     ...mapGetters([
       'transactionList',
@@ -339,11 +306,6 @@ export default {
 
     getAccount(id) {
       return this.accountList.filter((item) => item.id === id)[0];
-    },
-
-    async initLoad() {
-      this.users = await getUsers();
-      this.categories = await getCategories();
     },
 
     makeSelectList(items, labelField, optional = '') {
@@ -422,10 +384,6 @@ export default {
       this.subCategories = this.categoryList.filter((item) => item.parentName === category.name);
       this.activeCategory = category.id;
     },
-  },
-
-  beforeMount() {
-    this.initLoad();
   },
 };
 </script>
@@ -531,4 +489,9 @@ export default {
 .avatar-container span {
   font-size: 0.9em;
 }
+
+.over {
+  background-color: black;
+}
+
 </style>

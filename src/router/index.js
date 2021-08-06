@@ -4,6 +4,7 @@ import SignUp from '../views/SignUp.vue';
 import Accounts from '../views/Accounts.vue';
 import Transactions from '../views/Transactions.vue';
 import Categories from '../views/Categories.vue';
+import Currencies from '../views/Currencies.vue';
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/categories',
     name: 'Categories',
     component: Categories,
+  },
+  {
+    path: '/currencies',
+    name: 'Currencies',
+    component: Currencies,
   },
 ];
 

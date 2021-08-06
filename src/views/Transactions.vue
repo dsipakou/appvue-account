@@ -101,7 +101,7 @@
                 class="text-bold">
                 {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount }}
               </span>
-          </q-card-section>
+            </q-card-section>
             <q-card-section>
               <q-btn-dropdown flat dropdown-icon="more_horiz">
                 <q-list>

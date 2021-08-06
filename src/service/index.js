@@ -208,3 +208,27 @@ export const getRates = async () => {
   const response = await getRequest('http://localhost:9091/api/rates');
   return response;
 };
+
+export const createRate = async ({
+  currencyId,
+  rateDate,
+  rate,
+  description,
+}) => {
+  console.log(currencyId, rateDate, rate, description);
+  const response = await postRequest('http://localhost:9091/api/rates',
+    {
+      currencyId,
+      rateDate,
+      rate,
+      description,
+    });
+  return response;
+};
+
+/* nbrb.by section */
+export const getRate = async (code, date) => {
+  const response = await getRequest(`https://www.nbrb.by/api/exrates/rates/${code.toLowerCase()}?paramMode=2&onDate=${date}`);
+  const body = await response.json();
+  return body.Cur_OfficialRate;
+};

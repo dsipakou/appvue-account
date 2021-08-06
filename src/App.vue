@@ -55,6 +55,13 @@
             </q-item-label>
           </q-item-section>
         </q-item>
+        <q-item to="/currencies" exact clickable>
+          <q-item-section>
+            <q-item-label>
+              Currencies
+            </q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 

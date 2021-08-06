@@ -336,7 +336,6 @@ export default {
     makeSelectList(items, labelField, optional = '') {
       return items.map((item) => {
         const obj = {};
-        console.log(optional, item[optional], items);
         obj.label = item[optional] ? `${item[optional]}/${item[labelField]}` : `${item[labelField]}`;
         obj.value = item.id;
         return obj;

@@ -2,6 +2,7 @@
 
 import {
   getRates,
+  createRate,
 } from '../../service';
 
 const state = {
@@ -26,11 +27,23 @@ const actions = {
       commit('setRates', body);
     }
   },
+
+  async createRate({ commit }, payload) {
+    const response = await createRate(payload);
+    if (response.status === 201) {
+      const body = await response.json();
+      commit('createRate', body);
+    }
+  },
 };
 
 const mutations = {
   setRates(state, rates) {
     state.rates.items = rates;
+  },
+
+  createRate(state, rate) {
+    state.rates.items.unshift({ ...rate });
   },
 
   setRatesLoading(state, isLoading) {

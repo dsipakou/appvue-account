@@ -87,6 +87,7 @@ export default {
       'fetchCategories',
       'fetchTransactions',
       'fetchUsers',
+      'fetchCurrencies',
     ]),
   },
   beforeMount() {
@@ -94,6 +95,7 @@ export default {
     this.fetchCategories();
     this.fetchTransactions();
     this.fetchUsers();
+    this.fetchCurrencies();
   },
 };
 </script>

@@ -78,13 +78,30 @@
       <div v-for="transaction in transactionList" :key="transaction.id">
         <q-card flat bordered class="item">
           <q-card-section horizontal class="item-content">
-            <q-card-section class="item-title">
+            <q-card-section>
+              <q-avatar
+                color="primary"
+                text-color="white">
+                {{ getCategory(transaction.categoryId).name[0] }}
+              </q-avatar>
+            </q-card-section>
+            <q-card-section class="q-ml-xl absolute-left item-title">
+              <div class="text-h6">{{
+                transaction.type === 'income' ?
+                  getAccount(transaction.accountId).source :
+                  getCategory(transaction.categoryId).name }}</div>
+              <div class="text-subtitle2">{{ transaction.transactionDate }}</div>
+            </q-card-section>
+            <q-card-section class="item-title justify-center">
               {{ getAccount(transaction.accountId).source }}
-              {{ transaction.transactionDate }}
             </q-card-section>
-            <q-card-section class="item-title">
-              {{ transaction.amount }}
-            </q-card-section>
+            <q-card-section class="relative-left item-title justify-center">
+              <span
+                :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
+                class="text-bold">
+                {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount }}
+              </span>
+          </q-card-section>
             <q-card-section>
               <q-btn-dropdown flat dropdown-icon="more_horiz">
                 <q-list>
@@ -116,7 +133,7 @@
         <q-separator />
 
         <q-card-section>
-          <q-input outlined stack-label ref="mainInput" label="Amount" v-model="input.amount" />
+          <q-input outlined stack-label label="Amount" v-model="input.amount" />
         </q-card-section>
         <q-card-section>
           <q-input
@@ -243,14 +260,6 @@ export default {
     };
   },
 
-  watch: {
-    createForm(value) {
-      if (value) {
-        console.log(this.$refs);
-      }
-    },
-  },
-
   computed: {
     ...mapGetters([
       'transactionList',
@@ -306,6 +315,10 @@ export default {
 
     getAccount(id) {
       return this.accountList.filter((item) => item.id === id)[0];
+    },
+
+    getCategory(id) {
+      return this.categoryList.filter((item) => item.id === id)[0];
     },
 
     makeSelectList(items, labelField, optional = '') {
@@ -438,7 +451,8 @@ export default {
 
 .item-title {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   padding-left: 50px;
 }
 

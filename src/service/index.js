@@ -194,3 +194,10 @@ export const updateAccount = async ({
     });
   return response;
 };
+
+/* Currencies section */
+
+export const getCurrencies = async () => {
+  const response = await getRequest('http://localhost:9091/api/currencies');
+  return response;
+};

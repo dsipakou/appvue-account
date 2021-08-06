@@ -201,3 +201,10 @@ export const getCurrencies = async () => {
   const response = await getRequest('http://localhost:9091/api/currencies');
   return response;
 };
+
+/* Rates section */
+
+export const getRates = async () => {
+  const response = await getRequest('http://localhost:9091/api/rates');
+  return response;
+};

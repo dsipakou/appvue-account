@@ -88,6 +88,7 @@ export default {
       'fetchTransactions',
       'fetchUsers',
       'fetchCurrencies',
+      'fetchRates',
     ]),
   },
   beforeMount() {
@@ -96,6 +97,7 @@ export default {
     this.fetchTransactions();
     this.fetchUsers();
     this.fetchCurrencies();
+    this.fetchRates();
   },
 };
 </script>

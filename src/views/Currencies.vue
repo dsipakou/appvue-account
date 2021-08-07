@@ -43,6 +43,18 @@
         <q-card-section>
           <q-input outlined stack-label label="Code" v-model="input.code" />
         </q-card-section>
+        <q-card-section>
+          <q-input outlined stack-label label="Sign" v-model="input.sign" />
+        </q-card-section>
+        <q-card-section>
+          <q-input outlined stack-label label="Verbal Name" v-model="input.verbalName" />
+        </q-card-section>
+        <q-card-section>
+          <q-checkbox v-model="input.isDefault" label="Default currency"></q-checkbox>
+        </q-card-section>
+        <q-card-actions align="center" class="action-buttons">
+          <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
@@ -61,6 +73,9 @@ export default {
       ratesInProgress: false,
       input: {
         code: '',
+        sign: '',
+        verbalName: '',
+        isDefault: false,
       },
     };
   },

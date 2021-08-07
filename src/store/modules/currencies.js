@@ -2,6 +2,7 @@
 
 import {
   getCurrencies,
+  createCurrency,
 } from '../../service';
 
 const state = {
@@ -26,11 +27,23 @@ const actions = {
       commit('setCurrencies', body);
     }
   },
+
+  async createCurrency({ commit }, payload) {
+    const response = await createCurrency(payload);
+    if (response.status === 201) {
+      const body = await response.json();
+      commit('createCurrency', body);
+    }
+  },
 };
 
 const mutations = {
   setCurrencies(state, currencies) {
     state.currencies.items = currencies;
+  },
+
+  createCurrency(state, currency) {
+    state.currencies.items.unshift({ ...currency });
   },
 
   setCurrenciesLoading(state, isLoading) {

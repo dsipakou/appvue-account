@@ -202,6 +202,24 @@ export const getCurrencies = async () => {
   return response;
 };
 
+export const createCurrency = async ({
+  code,
+  sign,
+  verbalName,
+  isDefault,
+  comments,
+}) => {
+  const response = await postRequest('http://localhost:9091/api/currencies',
+    {
+      code,
+      sign,
+      verbalName,
+      isDefault,
+      comments,
+    });
+  return response;
+};
+
 /* Rates section */
 
 export const getRates = async () => {
@@ -215,7 +233,6 @@ export const createRate = async ({
   rate,
   description,
 }) => {
-  console.log(currencyId, rateDate, rate, description);
   const response = await postRequest('http://localhost:9091/api/rates',
     {
       currencyId,

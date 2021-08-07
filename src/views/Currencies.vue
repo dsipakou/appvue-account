@@ -17,7 +17,7 @@
         rounded
         color="primary"
         class="q-ml-lg"
-        @click="createCurrency = true">
+        @click="createForm = true">
         Add currency
       </q-btn>
     </div>
@@ -26,13 +26,13 @@
     </div>
     <div class="column q-mt-lg">
       <q-toggle
-        v-for="currency in currenciesList"
+        v-for="currency in notDefaultCurrencies"
         :key="currency.id"
         v-model="selectedCurrencies"
         :label="currency.verbalName"
         :val="currency"/>
     </div>
-    <q-dialog v-model="createCurrency">
+    <q-dialog v-model="createForm">
       <q-card class="shadow-24" style="width: 400px;">
         <q-card-section>
           <h4>Add currency</h4>
@@ -52,6 +52,15 @@
         <q-card-section>
           <q-checkbox v-model="input.isDefault" label="Default currency"></q-checkbox>
         </q-card-section>
+        <q-card-section>
+          <q-input
+            outlined
+            stack-label
+            type="textarea"
+            label="Comments"
+            v-model="input.comments" />
+        </q-card-section>
+
         <q-card-actions align="center" class="action-buttons">
           <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
         </q-card-actions>
@@ -84,7 +93,7 @@ export default {
     return {
       days: ref([]),
       selectedCurrencies: ref([]),
-      createCurrency: ref(false),
+      createForm: ref(false),
     };
   },
 
@@ -95,11 +104,16 @@ export default {
       'isCurrencyListLoading',
       'isRatesListLoading',
     ]),
+
+    notDefaultCurrencies() {
+      return this.currenciesList.filter((item) => !item.isDefault);
+    },
   },
 
   methods: {
     ...mapActions([
       'createRate',
+      'createCurrency',
     ]),
 
     async getCurrentRate() {
@@ -109,7 +123,7 @@ export default {
           const existingRate = this.ratesList.find((item) => {
             const itemDate = moment(day).startOf('day');
             const rateDate = moment(item.rateDate).startOf('day');
-            return itemDate.isSame(rateDate);
+            return itemDate.isSame(rateDate) && currency.id === item.currencyId;
           });
           if (!existingRate) {
             const rate = await getRate(currency.code, day);
@@ -125,6 +139,19 @@ export default {
         }));
       }));
       this.ratesInProgress = false;
+    },
+
+    create() {
+      const currency = {
+        code: this.input.code,
+        sign: this.input.sign,
+        verbalName: this.input.verbalName,
+        isDefault: this.input.isDefault,
+        comments: this.input.comments,
+      };
+
+      this.createCurrency(currency);
+      this.createForm = false;
     },
   },
 };

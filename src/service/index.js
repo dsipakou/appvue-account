@@ -247,5 +247,5 @@ export const createRate = async ({
 export const getRate = async (code, date) => {
   const response = await getRequest(`https://www.nbrb.by/api/exrates/rates/${code.toLowerCase()}?paramMode=2&onDate=${date}`);
   const body = await response.json();
-  return body.Cur_OfficialRate;
+  return body.Cur_OfficialRate / body.Cur_Scale;
 };

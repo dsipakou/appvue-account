@@ -58,7 +58,38 @@
     </div>
     <div class="row">
       <div class="header">
-        <span>Latest transactions</span>
+        <div>
+          <span>Latest transactions</span>
+        </div>
+        <div>
+          <q-select
+            :options="currenciesListSelect"
+            v-model="selectedCurrencies"
+            map-options
+            multiple
+            stack-label
+            style="width: 400px;">
+            <template v-slot:selected>
+              Currency:
+              <q-chip
+                v-for="currency in selectedCurrencies"
+                :key="currency.id"
+                dense
+                square
+                color="white"
+                text-color="primary"
+                class="q-ma-none"
+                >
+                <q-avatar color="primary" text-color="white" class="vertical-middle">
+                  <span class="text-weight-bold text-body1">
+                    {{ getCurrency(currency.value).sign }}
+                  </span>
+                </q-avatar>
+                {{ currency.label }}
+              </q-chip>
+            </template>
+          </q-select>
+        </div>
       </div>
     </div>
     <div class="transaction-list">
@@ -98,8 +129,11 @@
             <q-card-section class="relative-left item-title justify-center">
               <span
                 :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
+                v-for="amount in transactionCurrencyList(transaction)"
+                :key="amount.id"
                 class="text-bold">
-                {{ transaction.type === 'income' ? '+' : '-' }}{{ transaction.amount }}
+                {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.amount }}
+                {{ amount.sign }}
               </span>
             </q-card-section>
             <q-card-section>
@@ -229,6 +263,7 @@
 <script>
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+import moment from 'moment';
 import { transactionTypes } from '../utils/constants';
 
 export default {
@@ -239,6 +274,7 @@ export default {
       createForm: ref(false),
       updateForm: ref(false),
       categoryTabs: ref(''),
+      selectedCurrencies: ref([]),
     };
   },
 
@@ -266,10 +302,13 @@ export default {
       'accountList',
       'userList',
       'categoryList',
+      'currencyList',
+      'ratesList',
       'isTransactionListLoading',
       'isAccountListLoading',
       'isUserListLoading',
       'isCategoryListLoading',
+      'isCurrencyListLoading',
     ]),
 
     mainCategories() {
@@ -287,6 +326,13 @@ export default {
         return 0;
       });
       return categories;
+    },
+
+    currenciesListSelect() {
+      const currencies = this.makeSelectList(this.currencyList.filter((item) => (
+        !item.isDefault
+      )), 'verbalName');
+      return currencies;
     },
 
     accounts() {
@@ -328,6 +374,44 @@ export default {
         obj.value = item.id;
         return obj;
       });
+    },
+
+    getCurrency(id) {
+      return this.currencyList?.find((item) => item.id === id);
+    },
+
+    getRate(id, date) {
+      return this.ratesList.find((item) => {
+        const transactionDate = moment(date).startOf('day');
+        const rateDate = moment(item.rateDate).startOf('day');
+        return transactionDate.isSame(rateDate) && item.currencyId === id;
+      });
+    },
+
+    transactionCurrencyList(transaction) {
+      const currencies = [];
+      if (!this.isCurrencyListLoading) {
+        const defaultCurrency = this.currencyList.find((item) => item.isDefault);
+        const objDefault = {
+          id: transaction.currencyId,
+          amount: transaction.amount,
+          sign: defaultCurrency.sign,
+        };
+
+        currencies.push(objDefault);
+
+        Object.values(this.selectedCurrencies).forEach((currency) => {
+          const rate = this.getRate(currency.value, transaction.transactionDate);
+          const obj = {
+            id: currency.value,
+            amount: rate ? (transaction.amount / rate.rate).toFixed(2) : '-',
+            sign: this.getCurrency(currency.value).sign,
+          };
+
+          currencies.push(obj);
+        });
+      }
+      return currencies;
     },
 
     create() {
@@ -467,6 +551,7 @@ export default {
   display: flex;
   justify-content: space-between;
   margin-top: 30px;
+  align-items: center;
   width: 100%;
 }
 

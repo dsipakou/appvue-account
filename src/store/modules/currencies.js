@@ -8,12 +8,12 @@ import {
 const state = {
   currencies: {
     items: [],
-    isLoading: false,
+    isLoading: true,
   },
 };
 
 const getters = {
-  currenciesList: (state) => state.currencies.items,
+  currencyList: (state) => state.currencies.items,
   isCurrencyListLoading: (state) => state.currencies.isLoading,
 };
 

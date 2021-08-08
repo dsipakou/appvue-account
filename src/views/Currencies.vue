@@ -99,14 +99,14 @@ export default {
 
   computed: {
     ...mapGetters([
-      'currenciesList',
+      'currencyList',
       'ratesList',
       'isCurrencyListLoading',
       'isRatesListLoading',
     ]),
 
     notDefaultCurrencies() {
-      return this.currenciesList.filter((item) => !item.isDefault);
+      return this.currencyList.filter((item) => !item.isDefault);
     },
   },
 

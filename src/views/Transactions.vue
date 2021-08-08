@@ -59,7 +59,7 @@
     <div class="row">
       <div class="header">
         <div>
-          <span>Latest transactions</span>
+          <span class="header__title">Latest transactions</span>
         </div>
         <div>
           <q-select
@@ -68,7 +68,7 @@
             map-options
             multiple
             stack-label
-            style="width: 400px;">
+            style="width: 600px;">
             <template v-slot:selected>
               Currency:
               <q-chip
@@ -78,14 +78,15 @@
                 square
                 color="white"
                 text-color="primary"
-                class="q-ma-none"
+                style="max-width: 100px;"
+                class="q-ml-sm overflow-hidden align-center"
                 >
                 <q-avatar color="primary" text-color="white" class="vertical-middle">
-                  <span class="text-weight-bold text-body1">
+                  <span class="text-weight-bold text-body1 align-center">
                     {{ getCurrency(currency.value).sign }}
                   </span>
                 </q-avatar>
-                {{ currency.label }}
+                <span class="text-weight-light header__span">{{ currency.label }}</span>
               </q-chip>
             </template>
           </q-select>
@@ -116,6 +117,7 @@
                 {{ getCategory(transaction.categoryId).name[0] }}
               </q-avatar>
             </q-card-section>
+
             <q-card-section class="q-ml-xl absolute-left item-title">
               <div class="text-h6">{{
                 transaction.type === 'income' ?
@@ -179,6 +181,14 @@
             />
         </q-card-section>
         <q-card-section>
+          <q-select
+            outlined
+            label="Currency"
+            label-stacked
+            :options="currenciesListWithDefault"
+            v-model="input.currency" />
+        </q-card-section>
+        <q-card-section>
           <q-input
             outlined
             type="textarea"
@@ -231,6 +241,14 @@
           <q-input outlined stack-label label="Amount" v-model="input.amount" />
         </q-card-section>
         <q-card-section>
+          <q-select
+            outlined
+            label="Currency"
+            label-stacked
+            :options="currenciesListWithDefault"
+            v-model="input.currency" />
+        </q-card-section>
+        <q-card-section>
           <q-input
             outlined
             type="date"
@@ -264,6 +282,7 @@
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import moment from 'moment';
+import { makeSelectList } from '../utils';
 import { transactionTypes } from '../utils/constants';
 
 export default {
@@ -280,8 +299,6 @@ export default {
 
   data() {
     return {
-      createModal: false,
-      updateModal: false,
       id: -1,
       subCategories: [],
       activeCategory: -1,
@@ -291,6 +308,7 @@ export default {
         amount: '',
         account: 0,
         transactionDate: new Date().toISOString().substr(0, 10),
+        currency: '',
         description: '',
       },
     };
@@ -329,26 +347,35 @@ export default {
     },
 
     currenciesListSelect() {
-      const currencies = this.makeSelectList(this.currencyList.filter((item) => (
+      const currencies = makeSelectList(this.currencyList.filter((item) => (
         !item.isDefault
       )), 'verbalName');
       return currencies;
     },
 
+    currenciesListWithDefault() {
+      return makeSelectList(this.currencyList, 'verbalName');
+    },
+
+    defaultCurrency() {
+      const defaultId = this.currencyList.find((item) => item.isDefault)?.id;
+      return this.currenciesListWithDefault.find((item) => item.value === defaultId);
+    },
+
     accounts() {
-      const accounts = this.makeSelectList(this.accountList, 'source');
+      const accounts = makeSelectList(this.accountList, 'source');
       return accounts;
     },
 
     categories() {
-      const categories = this.makeSelectList(this.categoryList.filter((item) => (
+      const categories = makeSelectList(this.categoryList.filter((item) => (
         !item.isParent && !item.isSystem
       )), 'name', 'parentName');
       return categories;
     },
 
     users() {
-      const users = this.makeSelectList(this.userList, 'name');
+      const users = makeSelectList(this.userList, 'name');
       return users;
     },
   },
@@ -365,15 +392,6 @@ export default {
 
     getCategory(id) {
       return this.categoryList.filter((item) => item.id === id)[0];
-    },
-
-    makeSelectList(items, labelField, optional = '') {
-      return items.map((item) => {
-        const obj = {};
-        obj.label = item[optional] ? `${item[optional]}/${item[labelField]}` : `${item[labelField]}`;
-        obj.value = item.id;
-        return obj;
-      });
     },
 
     getCurrency(id) {
@@ -482,6 +500,11 @@ export default {
       this.activeCategory = category.id;
     },
   },
+
+  mounted() {
+    this.input.currency = this.defaultCurrency;
+  },
+
 };
 </script>
 <style scoped>
@@ -555,11 +578,15 @@ export default {
   width: 100%;
 }
 
-.header span {
+.header__title {
   display: flex;
   align-items: center;
   font-size: 18px;
   font-weight: 800;
+}
+
+.header__span {
+  align-self: flex-end;
 }
 
 .action-buttons {

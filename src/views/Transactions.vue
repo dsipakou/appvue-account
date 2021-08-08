@@ -387,11 +387,11 @@ export default {
     ]),
 
     getAccount(id) {
-      return this.accountList.filter((item) => item.id === id)[0];
+      return this.accountList?.find((item) => item.id === id);
     },
 
     getCategory(id) {
-      return this.categoryList.filter((item) => item.id === id)[0];
+      return this.categoryList?.find((item) => item.id === id);
     },
 
     getCurrency(id) {
@@ -449,10 +449,10 @@ export default {
     update() {
       const transaction = {
         id: this.input.id,
-        userId: this.input.user,
-        categoryId: this.input.category.value || this.input.category,
+        userId: this.input.user.value,
+        categoryId: this.input.category.value,
         amount: this.input.amount.toString(),
-        accountId: this.input.account.value || this.input.account,
+        accountId: this.input.account.value,
         transactionDate: this.input.transactionDate,
         type: transactionTypes.OUTCOME,
         description: this.input.description,
@@ -472,11 +472,23 @@ export default {
         description,
       } = transaction;
 
+      const account = this.accounts.find((item) => (
+        item.value === accountId
+      ));
+
+      const category = this.categories.find((item) => (
+        item.value === categoryId
+      ));
+
+      const user = this.users.find((item) => (
+        item.value === userId
+      ));
+
       this.input.id = id;
-      this.input.user = userId;
-      this.input.category = categoryId;
+      this.input.user = user;
+      this.input.category = category;
       this.input.amount = amount;
-      this.input.account = accountId;
+      this.input.account = account;
       this.input.transactionDate = transactionDate.substr(0, 10);
       this.input.description = description;
       this.updateForm = true;

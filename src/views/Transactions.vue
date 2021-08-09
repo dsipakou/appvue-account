@@ -68,6 +68,8 @@
             map-options
             multiple
             stack-label
+            option-value="id"
+            option-label="verbalName"
             style="width: 600px;">
             <template v-slot:selected>
               Currency:
@@ -83,10 +85,11 @@
                 >
                 <q-avatar color="primary" text-color="white" class="vertical-middle">
                   <span class="text-weight-bold text-body1 align-center">
-                    {{ getCurrency(currency.value).sign }}
+                    {{ currency.sign }}
                   </span>
                 </q-avatar>
-                <span class="text-weight-light header__span">{{ currency.label }}</span>
+                <span class="text-weight-light header__span q-ml-xs">
+                  {{ currency.verbalName }}</span>
               </q-chip>
             </template>
           </q-select>
@@ -187,7 +190,9 @@
             label-stacked
             :loading="!currencyListLoaded"
             :readonly="!currencyListLoaded"
-            :options="currenciesListWithDefault"
+            :options="availableCurrencies"
+            option-value="id"
+            option-label="verbalName"
             v-model="input.currency" />
         </q-card-section>
         <q-card-section>
@@ -247,7 +252,9 @@
             outlined
             label="Currency"
             label-stacked
-            :options="currenciesListWithDefault"
+            :options="availableCurrencies"
+            option-value="id"
+            option-label="verbalName"
             v-model="input.currency" />
         </q-card-section>
         <q-card-section>
@@ -304,15 +311,15 @@ export default {
       id: -1,
       subCategories: [],
       activeCategory: -1,
-      currenciesListWithDefault: [],
       currenciesListSelect: [],
-      defCurrency: '',
+      availableCurrencies: [],
+      defaultCurrency: '',
       input: {
         user: 0,
         category: 0,
         amount: '',
         account: 0,
-        transactionDate: new Date().toISOString().substr(0, 10),
+        transactionDate: '',
         currency: '',
         description: '',
       },
@@ -367,31 +374,25 @@ export default {
       const users = makeSelectList(this.userList, 'name');
       return users;
     },
+  },
 
-    defaultCurrency: {
-      get() {
-        return this.defCurrency;
-      },
-
-      set(value) {
-        this.defCurrency = value;
-        this.input.currency = this.defCurrency;
-      },
-    },
+  mounted() {
+    this.initCurrencies();
   },
 
   watch: {
-    currencyList(updatedList) {
-      const defaultId = updatedList.find((item) => item.isDefault)?.id;
-      this.currenciesListWithDefault = makeSelectList(updatedList, 'verbalName');
+    currencyList() {
+      this.initCurrencies();
+    },
 
-      this.defaultCurrency = this.currenciesListWithDefault.find((item) => (
-        item.value === defaultId
-      ));
+    ratesList() {
+      this.initCurrencies();
+    },
 
-      this.currenciesListSelect = makeSelectList(updatedList.filter((item) => (
-        !item.isDefault
-      )), 'verbalName');
+    'input.transactionDate': {
+      handler() {
+        this.getAvailableCurrencies();
+      },
     },
   },
 
@@ -401,6 +402,13 @@ export default {
       'deleteTransaction',
       'updateTransaction',
     ]),
+
+    initCurrencies() {
+      this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
+      this.currenciesListSelect = this.currencyList.filter((item) => (
+        !item.isDefault
+      ));
+    },
 
     getAccount(id) {
       return this.accountList?.find((item) => item.id === id);
@@ -422,10 +430,26 @@ export default {
       });
     },
 
-    getAvailableCurrencies(date) {
-      // Complete this method
-      console.log(date);
-      return this.currenciesListWithDefault;
+    getAvailableCurrencies() {
+      const isRateExist = (id) => this.ratesList.some((item) => {
+        const inputDate = moment(this.input.transactionDate).startOf('day');
+        const rateDate = moment(item.rateDate).startOf('day');
+        return rateDate.isSame(inputDate) && item.currencyId === id;
+      });
+      const newList = this.currencyList.map((item) => {
+        if (item === this.defaultCurrency) {
+          return item;
+        }
+        if (!isRateExist(item.id)) {
+          return {
+            ...item,
+            verbalName: `${item.verbalName} (no exchange rate)`,
+            disable: true,
+          };
+        }
+        return item;
+      });
+      this.availableCurrencies = newList;
     },
 
     transactionCurrencyList(transaction) {
@@ -441,11 +465,11 @@ export default {
         currencies.push(objDefault);
 
         Object.values(this.selectedCurrencies).forEach((currency) => {
-          const rate = this.getRate(currency.value, transaction.transactionDate);
+          const rate = this.getRate(currency.id, transaction.transactionDate);
           const obj = {
             id: currency.value,
             amount: rate ? (transaction.amount / rate.rate).toFixed(2) : '-',
-            sign: this.getCurrency(currency.value).sign,
+            sign: currency.sign,
           };
 
           currencies.push(obj);
@@ -526,6 +550,7 @@ export default {
       this.input.category = category.id;
       console.log({ ...this.defaultCurrency });
       this.input.currency = this.defaultCurrency;
+      this.input.transactionDate = new Date().toISOString().substr(0, 10);
       this.input.amount = '';
       this.input.account = Number(evt.dataTransfer.getData('accountID'));
       this.input.user = Number(evt.dataTransfer.getData('userID'));

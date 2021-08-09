@@ -6,26 +6,27 @@ import {
   updateTransaction,
   createTransaction,
 } from '../../service';
+import { itemStatus } from '../constants';
 
 const state = {
   transactions: {
     items: [],
-    isLoading: false,
+    status: itemStatus.INIT,
   },
 };
 
 const getters = {
   transactionList: (state) => state.transactions.items,
-  isTransactionListLoading: (state) => state.transactions.isLoading,
+  transactionListLoaded: (state) => state.transactions.status === itemStatus.LOADED,
 };
 
 const actions = {
   async fetchTransactions({ commit }) {
-    commit('setTransactionsLoading', true);
+    commit('setTransactionsStatus', itemStatus.LOADING);
     const response = await getTransactions();
     if (response.status === 200) {
       const body = await response.json();
-      commit('setTransactionsLoading', false);
+      commit('setTransactionsStatus', itemStatus.LOADED);
       commit('setTransactions', body);
     }
   },
@@ -76,8 +77,8 @@ const mutations = {
     });
   },
 
-  setTransactionsLoading(state, isLoading) {
-    state.transactions.isLoading = isLoading;
+  setTransactionsStatus(state, status) {
+    state.transactions.status = status;
   },
 };
 

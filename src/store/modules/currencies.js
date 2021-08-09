@@ -4,26 +4,27 @@ import {
   getCurrencies,
   createCurrency,
 } from '../../service';
+import { itemStatus } from '../constants';
 
 const state = {
   currencies: {
     items: [],
-    isLoading: true,
+    status: itemStatus.INIT,
   },
 };
 
 const getters = {
   currencyList: (state) => state.currencies.items,
-  isCurrencyListLoading: (state) => state.currencies.isLoading,
+  currencyListLoaded: (state) => state.currencies.status === itemStatus.LOADED,
 };
 
 const actions = {
   async fetchCurrencies({ commit }) {
-    commit('setCurrenciesLoading', true);
+    commit('setCurrenciesStatus', itemStatus.LOADING);
     const response = await getCurrencies();
     if (response.status === 200) {
       const body = await response.json();
-      commit('setCurrenciesLoading', false);
+      commit('setCurrenciesStatus', itemStatus.LOADED);
       commit('setCurrencies', body);
     }
   },
@@ -46,8 +47,8 @@ const mutations = {
     state.currencies.items.unshift({ ...currency });
   },
 
-  setCurrenciesLoading(state, isLoading) {
-    state.currencies.isLoading = isLoading;
+  setCurrenciesStatus(state, status) {
+    state.currencies.status = status;
   },
 };
 

@@ -185,6 +185,8 @@
             outlined
             label="Currency"
             label-stacked
+            :loading="!currencyListLoaded"
+            :readonly="!currencyListLoaded"
             :options="currenciesListWithDefault"
             v-model="input.currency" />
         </q-card-section>
@@ -302,6 +304,9 @@ export default {
       id: -1,
       subCategories: [],
       activeCategory: -1,
+      currenciesListWithDefault: [],
+      currenciesListSelect: [],
+      defCurrency: '',
       input: {
         user: 0,
         category: 0,
@@ -322,11 +327,11 @@ export default {
       'categoryList',
       'currencyList',
       'ratesList',
-      'isTransactionListLoading',
+      'currencyListLoaded',
+      'transactionListLoaded',
       'isAccountListLoading',
       'isUserListLoading',
       'isCategoryListLoading',
-      'isCurrencyListLoading',
     ]),
 
     mainCategories() {
@@ -346,22 +351,6 @@ export default {
       return categories;
     },
 
-    currenciesListSelect() {
-      const currencies = makeSelectList(this.currencyList.filter((item) => (
-        !item.isDefault
-      )), 'verbalName');
-      return currencies;
-    },
-
-    currenciesListWithDefault() {
-      return makeSelectList(this.currencyList, 'verbalName');
-    },
-
-    defaultCurrency() {
-      const defaultId = this.currencyList.find((item) => item.isDefault)?.id;
-      return this.currenciesListWithDefault.find((item) => item.value === defaultId);
-    },
-
     accounts() {
       const accounts = makeSelectList(this.accountList, 'source');
       return accounts;
@@ -378,7 +367,34 @@ export default {
       const users = makeSelectList(this.userList, 'name');
       return users;
     },
+
+    defaultCurrency: {
+      get() {
+        return this.defCurrency;
+      },
+
+      set(value) {
+        this.defCurrency = value;
+        this.input.currency = this.defCurrency;
+      },
+    },
   },
+
+  watch: {
+    currencyList(updatedList) {
+      const defaultId = updatedList.find((item) => item.isDefault)?.id;
+      this.currenciesListWithDefault = makeSelectList(updatedList, 'verbalName');
+
+      this.defaultCurrency = this.currenciesListWithDefault.find((item) => (
+        item.value === defaultId
+      ));
+
+      this.currenciesListSelect = makeSelectList(updatedList.filter((item) => (
+        !item.isDefault
+      )), 'verbalName');
+    },
+  },
+
   methods: {
     ...mapActions([
       'createTransaction',
@@ -406,9 +422,15 @@ export default {
       });
     },
 
+    getAvailableCurrencies(date) {
+      // Complete this method
+      console.log(date);
+      return this.currenciesListWithDefault;
+    },
+
     transactionCurrencyList(transaction) {
       const currencies = [];
-      if (!this.isCurrencyListLoading) {
+      if (this.currencyListLoaded) {
         const defaultCurrency = this.currencyList.find((item) => item.isDefault);
         const objDefault = {
           id: transaction.currencyId,
@@ -487,6 +509,7 @@ export default {
       this.input.id = id;
       this.input.user = user;
       this.input.category = category;
+      this.input.currency = this.defaultCurrency;
       this.input.amount = amount;
       this.input.account = account;
       this.input.transactionDate = transactionDate.substr(0, 10);
@@ -501,6 +524,8 @@ export default {
 
     onDrop(evt, category) {
       this.input.category = category.id;
+      console.log({ ...this.defaultCurrency });
+      this.input.currency = this.defaultCurrency;
       this.input.amount = '';
       this.input.account = Number(evt.dataTransfer.getData('accountID'));
       this.input.user = Number(evt.dataTransfer.getData('userID'));
@@ -512,11 +537,6 @@ export default {
       this.activeCategory = category.id;
     },
   },
-
-  mounted() {
-    this.input.currency = this.defaultCurrency;
-  },
-
 };
 </script>
 <style scoped>

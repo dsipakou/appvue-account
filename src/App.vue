@@ -19,43 +19,73 @@
       overlay
       persistent
       bordered>
-      <q-list padding class="text-primary">
-        <q-item to="/" exact clickable>
+      <q-list class="q-pt-md q-ml-xl">
+        <q-item
+          class="menu-item"
+          active-class="menu-item__active"
+          to="/"
+          exact
+          clickable>
           <q-item-section>
             <q-item-label>
               Home
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/signup" exact clickable>
+        <q-item
+          class="menu-item"
+          active-class="menu-item__active"
+          to="/signup"
+          exact
+          clickable>
           <q-item-section>
             <q-item-label>
               SignUp
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/accounts" exact clickable>
+        <q-item
+          class="menu-item"
+          active-class="menu-item__active"
+          to="/accounts"
+          exact
+          clickable>
           <q-item-section>
             <q-item-label>
               Accounts
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/transactions" exact clickable>
+        <q-item
+          class="menu-item"
+          active-class="menu-item__active"
+          to="/transactions"
+          exact
+          clickable>
           <q-item-section>
             <q-item-label>
               Transactions
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/categories" exact clickable>
+        <q-item
+          class="menu-item"
+          active-class="menu-item__active"
+          to="/categories"
+          exact
+          clickable>
           <q-item-section>
             <q-item-label>
               Categories
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/currencies" exact clickable>
+        <q-item
+          class="menu-item"
+          active-class="menu-item__active"
+          to="/currencies"
+          exact
+          clickable>
           <q-item-section>
             <q-item-label>
               Currencies
@@ -116,7 +146,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 
@@ -139,6 +168,19 @@ export default {
   flex-direction: column;
   justify-content: center;
   margin: auto;
+}
+
+.menu-item {
+  color: #141715;
+  font-size: 16px;
+  font-weight: bolder;
+  justify-content: left;
+}
+
+.menu-item__active {
+  color: #7D83E0 !important;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 </style>

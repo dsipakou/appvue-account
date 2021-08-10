@@ -112,6 +112,8 @@
             clearable
             outlined
             map-options
+            option-value="id"
+            option-label="name"
             v-model="input.category"
             :options="systemCategories"
             label="Category" />
@@ -127,6 +129,18 @@
         </q-card-section>
         <q-card-section>
           <q-input outlined stack-label label="Amount" v-model="input.amount" />
+        </q-card-section>
+        <q-card-section>
+          <q-select
+            outlined
+            label="Currency"
+            label-stacked
+            :loading="!currencyListLoaded"
+            :readonly="!currencyListLoaded"
+            :options="availableCurrencies"
+            option-value="id"
+            option-label="verbalName"
+            v-model="input.currency" />
         </q-card-section>
         <q-card-section>
           <q-input
@@ -198,6 +212,7 @@ import {
   mapActions,
   mapGetters,
 } from 'vuex';
+import moment from 'moment';
 import { ref } from 'vue';
 import { transactionTypes } from '../utils/constants';
 
@@ -214,11 +229,13 @@ export default {
   data() {
     return {
       showModal: false,
+      availableCurrencies: [],
+      defaultCurrency: '',
       input: {
         user: '',
         source: '',
         amount: 0,
-        transactionDate: new Date().toISOString().substr(0, 10),
+        transactionDate: '',
         description: '',
       },
     };
@@ -227,7 +244,10 @@ export default {
     ...mapGetters([
       'accountList',
       'categoryList',
+      'currencyList',
+      'ratesList',
       'userList',
+      'currencyListLoaded',
       'isAccountListLoading',
       'isUserListLoading',
     ]),
@@ -247,12 +267,26 @@ export default {
     },
 
     systemCategories() {
-      const categories = this.makeSelectList(this.categoryList.filter((item) => (
-        item.isSystem
-      )), 'name');
-      return categories;
+      return this.categoryList.filter((item) => item.isSystem);
     },
 
+  },
+
+  watch: {
+    currencyList() {
+      this.initCurrencies();
+    },
+
+    ratesList() {
+      this.initCurrencies();
+    },
+
+    'input.transactionDate': {
+      handler() {
+        this.getAvailableCurrencies();
+        this.input.currency = this.defaultCurrency;
+      },
+    },
   },
 
   methods: {
@@ -262,9 +296,16 @@ export default {
       'deleteAccount',
       'updateAccount',
     ]),
+
+    initCurrencies() {
+      this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
+    },
+
     addIncome() {
       const category = this.systemCategories[0];
       this.input.category = category;
+      this.input.transactionDate = new Date().toISOString().substr(0, 10);
+      this.input.amount = '';
       this.createIncomeForm = true;
     },
 
@@ -306,12 +347,18 @@ export default {
     },
 
     createIncome() {
+      const rate = this.getRate(
+        this.input.currency.id,
+        this.input.transactionDate,
+      );
+
       const transaction = {
         userId: this.input.user.value || this.input.user,
-        categoryId: this.input.category.value || this.input.category,
+        categoryId: this.input.category.id,
         amount: this.input.amount,
+        rate: rate?.rate || 1,
         accountId: this.input.account.value || this.input.account,
-        transactionDate: this.input.transactionDate,
+        transactionDate: new Date().toISOString().substr(0, 10),
         type: transactionTypes.INCOME,
         description: this.input.description,
       };
@@ -333,6 +380,14 @@ export default {
       this.updateAccountForm = false;
     },
 
+    getRate(id, date) {
+      return this.ratesList.find((item) => {
+        const transactionDate = moment(date).startOf('day');
+        const rateDate = moment(item.rateDate).startOf('day');
+        return transactionDate.isSame(rateDate) && item.currencyId === id;
+      });
+    },
+
     makeSelectList(items, labelField, optional = '') {
       return items.map((item) => {
         const obj = {};
@@ -341,6 +396,33 @@ export default {
         return obj;
       });
     },
+
+    getAvailableCurrencies() {
+      const isRateExist = (id) => this.ratesList.some((item) => {
+        const inputDate = moment(this.input.transactionDate).startOf('day');
+        const rateDate = moment(item.rateDate).startOf('day');
+        return rateDate.isSame(inputDate) && item.currencyId === id;
+      });
+      console.log(isRateExist);
+      const newList = this.currencyList.map((item) => {
+        if (item === this.defaultCurrency) {
+          return item;
+        }
+        if (!isRateExist(item.id)) {
+          return {
+            ...item,
+            verbalName: `${item.verbalName} (no exchange rate)`,
+            disable: true,
+          };
+        }
+        return item;
+      });
+      this.availableCurrencies = newList;
+    },
+  },
+
+  mounted() {
+    this.initCurrencies();
   },
 };
 </script>

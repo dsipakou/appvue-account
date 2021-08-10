@@ -97,19 +97,6 @@
       </div>
     </div>
     <div class="transaction-list">
-      <q-card flat class="item">
-        <q-card-section horizontal class="item-content">
-          <q-card-section class="item-header">
-            Account
-          </q-card-section>
-          <q-card-section class="item-header">
-            Amount
-          </q-card-section>
-          <q-card-section class="item-header">
-            Actions
-          </q-card-section>
-        </q-card-section>
-      </q-card>
       <div v-for="transaction in transactionList" :key="transaction.id">
         <q-card flat bordered class="item">
           <q-card-section horizontal class="item-content">
@@ -121,12 +108,16 @@
               </q-avatar>
             </q-card-section>
 
-            <q-card-section class="q-ml-xl absolute-left item-title">
+            <q-card-section
+              class="q-ml-xl absolute-left item-title overflow-hidden"
+              style="max-width: 310px;">
               <div class="text-h6">{{
                 transaction.type === 'income' ?
                   getAccount(transaction.accountId).source :
-                  getCategory(transaction.categoryId).name }}</div>
-              <div class="text-subtitle2">{{ transaction.transactionDate }}</div>
+                  getFullCategoryName(transaction.categoryId) }}</div>
+              <div class="text-subtitle2">
+                {{ getFormattedDate(transaction.transactionDate) }}
+              </div>
             </q-card-section>
             <q-card-section class="item-title justify-center">
               {{ getAccount(transaction.accountId).source }}
@@ -144,7 +135,7 @@
             <q-card-section>
               <q-btn-dropdown flat dropdown-icon="more_horiz">
                 <q-list>
-                  <q-item clickable v-close-popup @click="edit(transaction)">
+                  <q-item clickable v-close-popup @click="openEditForm(transaction)">
                     <q-item-section>
                       <q-item-label>Edit</q-item-label>
                     </q-item-section>
@@ -392,6 +383,7 @@ export default {
     'input.transactionDate': {
       handler() {
         this.getAvailableCurrencies();
+        this.input.currency = this.defaultCurrency;
       },
     },
   },
@@ -418,6 +410,14 @@ export default {
       return this.categoryList?.find((item) => item.id === id);
     },
 
+    getFullCategoryName(categoryId) {
+      const category = this.categoryList.find((item) => (
+        item.id === categoryId
+      ));
+
+      return `${category.parentName} / ${category.name}`;
+    },
+
     getCurrency(id) {
       return this.currencyList?.find((item) => item.id === id);
     },
@@ -428,6 +428,10 @@ export default {
         const rateDate = moment(item.rateDate).startOf('day');
         return transactionDate.isSame(rateDate) && item.currencyId === id;
       });
+    },
+
+    getFormattedDate(date) {
+      return moment(date).calendar().split(' at')[0];
     },
 
     getAvailableCurrencies() {
@@ -458,7 +462,7 @@ export default {
         const defaultCurrency = this.currencyList.find((item) => item.isDefault);
         const objDefault = {
           id: transaction.currencyId,
-          amount: transaction.amount,
+          amount: transaction.amount.toFixed(2),
           sign: defaultCurrency.sign,
         };
 
@@ -479,10 +483,16 @@ export default {
     },
 
     create() {
+      const rate = this.getRate(
+        this.input.currency.id,
+        this.input.transactionDate,
+      );
+
       const transaction = {
         userId: this.input.user,
         categoryId: this.input.category,
         amount: this.input.amount,
+        rate: rate?.rate || 1,
         accountId: this.input.account,
         transactionDate: this.input.transactionDate,
         type: transactionTypes.OUTCOME,
@@ -493,11 +503,17 @@ export default {
     },
 
     update() {
+      const rate = this.getRate(
+        this.input.currency.id,
+        this.input.transactionDate,
+      );
+
       const transaction = {
         id: this.input.id,
         userId: this.input.user.value,
         categoryId: this.input.category.value,
         amount: this.input.amount.toString(),
+        rate: rate?.rate || 1,
         accountId: this.input.account.value,
         transactionDate: this.input.transactionDate,
         type: transactionTypes.OUTCOME,
@@ -507,7 +523,7 @@ export default {
       this.updateForm = false;
     },
 
-    edit(transaction) {
+    openEditForm(transaction) {
       const {
         id,
         userId,
@@ -548,7 +564,6 @@ export default {
 
     onDrop(evt, category) {
       this.input.category = category.id;
-      console.log({ ...this.defaultCurrency });
       this.input.currency = this.defaultCurrency;
       this.input.transactionDate = new Date().toISOString().substr(0, 10);
       this.input.amount = '';

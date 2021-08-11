@@ -17,9 +17,9 @@
         </div>
       </div>
     </div>
-    <div class="row justify-between">
+    <div class="row justify-center">
       <div class="col-10 items-center sub-categories">
-        <div style="margin-bottom: 20px;">
+        <div class="justify-center" style="margin-bottom: 20px;">
           <h4>Drag on category</h4>
         </div>
         <div class="row justify-center">
@@ -681,6 +681,7 @@ export default {
   border-radius: 10px 0 0 10px;
   background-color: white;
   padding: 20px 0;
+  justify-content: center;
 }
 
 .main-category-tab {

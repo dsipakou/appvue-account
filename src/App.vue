@@ -19,9 +19,9 @@
       overlay
       persistent
       bordered>
-      <q-list class="q-pt-md q-ml-xl">
+      <q-list class="q-pt-md">
         <q-item
-          class="menu-item"
+          class="menu-item q-pl-xl"
           active-class="menu-item__active"
           to="/"
           exact
@@ -33,7 +33,7 @@
           </q-item-section>
         </q-item>
         <q-item
-          class="menu-item"
+          class="menu-item q-pl-xl"
           active-class="menu-item__active"
           to="/signup"
           exact
@@ -45,7 +45,7 @@
           </q-item-section>
         </q-item>
         <q-item
-          class="menu-item"
+          class="menu-item q-pl-xl"
           active-class="menu-item__active"
           to="/accounts"
           exact
@@ -57,7 +57,7 @@
           </q-item-section>
         </q-item>
         <q-item
-          class="menu-item"
+          class="menu-item q-pl-xl"
           active-class="menu-item__active"
           to="/transactions"
           exact
@@ -69,7 +69,7 @@
           </q-item-section>
         </q-item>
         <q-item
-          class="menu-item"
+          class="menu-item q-pl-xl"
           active-class="menu-item__active"
           to="/categories"
           exact
@@ -81,7 +81,7 @@
           </q-item-section>
         </q-item>
         <q-item
-          class="menu-item"
+          class="menu-item q-pl-xl"
           active-class="menu-item__active"
           to="/currencies"
           exact

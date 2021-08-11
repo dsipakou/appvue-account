@@ -201,6 +201,7 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="updateForm">
+      <input type="hidden" v-model="input.type" />
       <q-card style="width: 400px;">
         <q-card-section>
           <h4>Edit transaction</h4>
@@ -232,7 +233,7 @@
             outlined
             map-options
             v-model="input.category"
-            :options="categories"
+            :options="input.type === 'income' ? systemCategories : categories"
             label="Category" />
         </q-card-section>
         <q-card-section>
@@ -357,6 +358,13 @@ export default {
     categories() {
       const categories = makeSelectList(this.categoryList.filter((item) => (
         !item.isParent && !item.isSystem
+      )), 'name', 'parentName');
+      return categories;
+    },
+
+    systemCategories() {
+      const categories = makeSelectList(this.categoryList.filter((item) => (
+        item.isSystem
       )), 'name', 'parentName');
       return categories;
     },
@@ -499,7 +507,6 @@ export default {
         description: this.input.description,
       };
       this.createTransaction(transaction);
-      this.createForm = false;
     },
 
     update() {
@@ -516,7 +523,7 @@ export default {
         rate: rate?.rate || 1,
         accountId: this.input.account.value,
         transactionDate: this.input.transactionDate,
-        type: transactionTypes.OUTCOME,
+        type: this.input.type,
         description: this.input.description,
       };
       this.updateTransaction(transaction);
@@ -531,6 +538,7 @@ export default {
         amount,
         accountId,
         transactionDate,
+        type,
         description,
       } = transaction;
 
@@ -539,6 +547,8 @@ export default {
       ));
 
       const category = this.categories.find((item) => (
+        item.value === categoryId
+      )) || this.systemCategories.find((item) => (
         item.value === categoryId
       ));
 
@@ -553,6 +563,7 @@ export default {
       this.input.amount = amount;
       this.input.account = account;
       this.input.transactionDate = transactionDate.substr(0, 10);
+      this.input.type = type;
       this.input.description = description;
       this.updateForm = true;
     },

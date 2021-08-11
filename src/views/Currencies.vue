@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <div class="row justify-center">
+    <div class="q-pb-md row justify-center">
       <div class="header">
         <h3>Currencies</h3>
       </div>
@@ -24,13 +24,15 @@
     <div class="row justify-center q-mt-lg">
       <q-date v-model="days" multiple mask="YYYY-MM-DD"></q-date>
     </div>
-    <div class="column q-mt-lg">
-      <q-toggle
-        v-for="currency in notDefaultCurrencies"
-        :key="currency.id"
-        v-model="selectedCurrencies"
-        :label="currency.verbalName"
-        :val="currency"/>
+    <div class="row justify-center q-mt-lg">
+      <div class="column">
+        <q-toggle
+          v-for="currency in notDefaultCurrencies"
+          :key="currency.id"
+          v-model="selectedCurrencies"
+          :label="currency.verbalName"
+          :val="currency"/>
+      </div>
     </div>
     <q-dialog v-model="createForm">
       <q-card class="shadow-24" style="width: 400px;">

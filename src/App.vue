@@ -92,6 +92,18 @@
             </q-item-label>
           </q-item-section>
         </q-item>
+        <q-item
+          class="menu-item q-pl-xl"
+          active-class="menu-item__active"
+          to="/reports"
+          exact
+          clickable>
+          <q-item-section>
+            <q-item-label>
+              Reports
+            </q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 

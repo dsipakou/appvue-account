@@ -30,7 +30,7 @@
           <td
             v-for="month in monthSequence"
             :key="month">
-            {{ month }}
+            {{ currentDayAmount(month, dayNumber) }}
           </td>
         </tr>
       </tbody>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
 
 export default {
@@ -48,6 +48,7 @@ export default {
   computed: {
     ...mapGetters([
       'categoryList',
+      'groupedTransactionList',
     ]),
 
     mainCategories() {
@@ -68,11 +69,33 @@ export default {
     monthSequence() {
       const months = [];
       for (let i = 11; i >= 0; i -= 1) {
-        months.push(`${moment().subtract(i, 'month').year()} / 
-          ${moment().subtract(i, 'month').month() + 1}`);
+        months.push(`${moment().subtract(i, 'month').year()}-${moment().subtract(i, 'month').month() + 1}`);
       }
       return months;
     },
+  },
+
+  methods: {
+    ...mapActions([
+      'fetchGroupedTransaction',
+    ]),
+
+    currentDayAmount(month, day) {
+      const sums = this.groupedTransactionList.filter((item) => (
+        item.day <= day && item.month === month
+      ));
+      const overall = sums.reduce((acc, item) => (
+        acc + item.amountSum
+      ), 0);
+      return overall.toFixed(2);
+    },
+  },
+
+  mounted() {
+    const dateFrom = this.monthSequence[0];
+    const rawDateTo = moment(dateFrom).add(13, 'month');
+    const dateTo = `${rawDateTo.year()}-${rawDateTo.month()}`;
+    this.fetchGroupedTransaction({ dateFrom, dateTo });
   },
 };
 </script>

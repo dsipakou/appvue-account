@@ -57,6 +57,11 @@ export const getTransactions = async () => {
   return response;
 };
 
+export const getGroupedTransactions = async ({ dateFrom, dateTo }) => {
+  const response = await getRequest(`http://localhost:9091/api/transactions/month/${dateFrom}/${dateTo}`);
+  return response;
+};
+
 export const createTransaction = async ({
   userId,
   categoryId,

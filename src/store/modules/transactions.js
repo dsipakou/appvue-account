@@ -2,6 +2,7 @@
 
 import {
   getTransactions,
+  getGroupedTransactions,
   deleteTransaction,
   updateTransaction,
   createTransaction,
@@ -13,10 +14,16 @@ const state = {
     items: [],
     status: itemStatus.INIT,
   },
+
+  groupedTransactions: {
+    items: [],
+    status: itemStatus.INIT,
+  },
 };
 
 const getters = {
   transactionList: (state) => state.transactions.items,
+  groupedTransactionList: (state) => state.groupedTransactions.items,
   transactionListLoaded: (state) => state.transactions.status === itemStatus.LOADED,
 };
 
@@ -28,6 +35,16 @@ const actions = {
       const body = await response.json();
       commit('setTransactionsStatus', itemStatus.LOADED);
       commit('setTransactions', body);
+    }
+  },
+
+  async fetchGroupedTransaction({ commit }, payload) {
+    commit('setGroupedTransactionsStatus', itemStatus.LOADING);
+    const response = await getGroupedTransactions(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setGroupedTransactionsStatus', itemStatus.LOADING);
+      commit('setGroupedTransactions', body);
     }
   },
 
@@ -60,6 +77,10 @@ const mutations = {
     state.transactions.items = transactions;
   },
 
+  setGroupedTransactions(state, amounts) {
+    state.groupedTransactions.items = amounts;
+  },
+
   createTransaction(state, transaction) {
     state.transactions.items.unshift({ ...transaction });
   },
@@ -79,6 +100,10 @@ const mutations = {
 
   setTransactionsStatus(state, status) {
     state.transactions.status = status;
+  },
+
+  setGroupedTransactionsStatus(state, status) {
+    state.groupedTransactions.status = status;
   },
 };
 

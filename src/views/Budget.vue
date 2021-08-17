@@ -18,10 +18,33 @@
     </div>
     <q-dialog v-model="createForm">
       <q-card style="width: 400px;">
-        <div>Make your plans</div>
-        <div class="q-pa-md">
-          <q-input></q-input>
-        </div>
+        <q-card-section>
+          <h4>Make your plans</h4>
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            outlined
+            type="date"
+            stack-label
+            label="Date"
+            v-model="input.date"
+            />
+        </q-card-section>
+        <q-card-section>
+          <q-input outlined stack-label label="Name" v-model="input.name" />
+        </q-card-section>
+        <q-card-section>
+          <q-input outlined stack-label label="Amount" v-model="input.amount" />
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            outlined
+            stack-label
+            label="Description"
+            type="textarea"
+            v-model="input.description"
+            />
+        </q-card-section>
       </q-card>
     </q-dialog>
   </div>
@@ -35,6 +58,17 @@ export default {
   setup() {
     return {
       createForm: ref(false),
+    };
+  },
+
+  data() {
+    return {
+      input: {
+        date: '',
+        amount: 0,
+        name: '',
+        description: '',
+      },
     };
   },
 

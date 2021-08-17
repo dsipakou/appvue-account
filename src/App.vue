@@ -27,9 +27,7 @@
           exact
           clickable>
           <q-item-section>
-            <q-item-label>
-              Home
-            </q-item-label>
+            Home
           </q-item-section>
         </q-item>
         <q-item
@@ -50,6 +48,11 @@
           to="/accounts"
           exact
           clickable>
+          <q-item-section avatar>
+              <q-avatar>
+                <img src="../dist/icons/accounts.png" />
+              </q-avatar>
+          </q-item-section>
           <q-item-section>
             <q-item-label>
               Accounts
@@ -74,6 +77,11 @@
           to="/budget"
           exact
           clickable>
+          <q-item-section avatar>
+              <q-avatar>
+                <img src="../dist/icons/budget.png" />
+              </q-avatar>
+          </q-item-section>
           <q-item-section>
             <q-item-label>
               Budget
@@ -110,6 +118,11 @@
           to="/reports"
           exact
           clickable>
+          <q-item-section avatar>
+              <q-avatar>
+                <img src="../dist/icons/reports.png" />
+              </q-avatar>
+          </q-item-section>
           <q-item-section>
             <q-item-label>
               Reports

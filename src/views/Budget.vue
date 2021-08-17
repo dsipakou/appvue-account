@@ -45,6 +45,9 @@
             v-model="input.description"
             />
         </q-card-section>
+        <q-card-actions align="center" class="action-buttons">
+          <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </div>

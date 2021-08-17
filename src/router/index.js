@@ -6,6 +6,7 @@ import Transactions from '../views/Transactions.vue';
 import Categories from '../views/Categories.vue';
 import Currencies from '../views/Currencies.vue';
 import Reports from '../views/Reports.vue';
+import Budget from '../views/Budget.vue';
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: '/reports',
     name: 'Reports',
     component: Reports,
+  },
+  {
+    path: '/budget',
+    name: 'Budget',
+    component: Budget,
   },
 ];
 

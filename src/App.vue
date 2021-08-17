@@ -71,6 +71,18 @@
         <q-item
           class="menu-item q-pl-xl"
           active-class="menu-item__active"
+          to="/budget"
+          exact
+          clickable>
+          <q-item-section>
+            <q-item-label>
+              Budget
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item
+          class="menu-item q-pl-xl"
+          active-class="menu-item__active"
           to="/categories"
           exact
           clickable>

@@ -163,6 +163,7 @@ export default {
       'fetchUsers',
       'fetchCurrencies',
       'fetchRates',
+      'fetchBudget',
     ]),
   },
   beforeMount() {
@@ -172,6 +173,7 @@ export default {
     this.fetchUsers();
     this.fetchCurrencies();
     this.fetchRates();
+    this.fetchBudget();
   },
 };
 </script>

@@ -252,6 +252,29 @@ export const createRate = async ({
   return response;
 };
 
+/* Budget section */
+
+export const getBudget = async () => {
+  const response = await getRequest('http://localhost:9091/api/budget');
+  return response;
+};
+
+export const createBudget = async ({
+  budgetDate,
+  title,
+  amount,
+  description,
+}) => {
+  const response = await postRequest('http://localhost:9091/api/budget',
+    {
+      budgetDate,
+      title,
+      amount,
+      description,
+    });
+  return response;
+};
+
 /* nbrb.by section */
 export const getRate = async (code, date) => {
   const response = await getRequest(`https://www.nbrb.by/api/exrates/rates/${code.toLowerCase()}?paramMode=2&onDate=${date}`);

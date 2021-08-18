@@ -5,6 +5,7 @@ import categories from './modules/categories';
 import users from './modules/users';
 import currencies from './modules/currencies';
 import rates from './modules/rates';
+import budget from './modules/budget';
 
 export default createStore({
   state: {
@@ -20,5 +21,6 @@ export default createStore({
     users,
     currencies,
     rates,
+    budget,
   },
 });

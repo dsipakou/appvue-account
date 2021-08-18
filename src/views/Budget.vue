@@ -5,7 +5,7 @@
         <div class="col-9 q-px-md">
           <div class="row justify-between">
             <h5>Monthly Budget</h5>
-            <q-btn round color="primary" label="+" @click="openAddForm"></q-btn>
+            <q-btn round color="primary" label="+" @click="createForm = true"></q-btn>
           </div>
         </div>
         <div class="col-3 q-px-md">
@@ -31,7 +31,7 @@
             />
         </q-card-section>
         <q-card-section>
-          <q-input outlined stack-label label="Name" v-model="input.name" />
+          <q-input outlined stack-label label="Name" v-model="input.title" />
         </q-card-section>
         <q-card-section>
           <q-input outlined stack-label label="Amount" v-model="input.amount" />
@@ -46,7 +46,7 @@
             />
         </q-card-section>
         <q-card-actions align="center" class="action-buttons">
-          <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
+          <q-btn color="primary" rounded style="width: 100px;" @click="save()">Save</q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -54,6 +54,7 @@
 </template>
 <script>
 import { ref } from 'vue';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'Budget',
@@ -76,8 +77,19 @@ export default {
   },
 
   methods: {
-    openAddForm() {
-      this.createForm = true;
+    ...mapActions([
+      'createBudget',
+    ]),
+
+    save() {
+      const budget = {
+        budgetDate: this.input.date,
+        title: this.input.title,
+        amount: this.input.amount,
+        description: this.input.description,
+      };
+      this.createBudget(budget);
+      this.createForm = false;
     },
   },
 };

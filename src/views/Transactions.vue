@@ -19,7 +19,7 @@
     </div>
     <div class="row justify-center">
       <div class="col-10 items-center sub-categories">
-        <div class="justify-center" style="margin-bottom: 20px;">
+        <div class="justify-center q-mb-lg">
           <h4>Drag on category</h4>
         </div>
         <div class="row justify-center">
@@ -97,9 +97,9 @@
       </div>
     </div>
     <div class="transaction-list">
-      <div v-for="transaction in transactionList" :key="transaction.id">
-        <q-card flat bordered class="item">
-          <q-card-section horizontal class="item-content">
+      <div v-for="transaction in transactionList.slice(0, 15)" :key="transaction.id">
+        <q-card flat bordered class="q-mb-lg">
+          <q-card-section horizontal class="justify-between">
             <q-card-section>
               <q-avatar
                 color="primary"
@@ -162,29 +162,41 @@
 
         <q-separator />
 
-        <q-card-section>
-          <q-input outlined stack-label label="Amount" v-model="input.amount" />
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            outlined
-            type="date"
-            stack-label
-            label="Date"
-            v-model="input.transactionDate"
-            />
+        <q-card-section horizontal class="justify-between">
+          <q-card-section>
+            <q-input outlined stack-label label="Amount" v-model="input.amount" />
+          </q-card-section>
+          <q-card-section>
+            <q-select
+              outlined
+              label="Currency"
+              label-stacked
+              :loading="!currencyListLoaded"
+              :readonly="!currencyListLoaded"
+              :options="availableCurrencies"
+              option-value="id"
+              option-label="verbalName"
+              v-model="input.currency" />
+          </q-card-section>
+          <q-card-section>
+            <q-input
+              outlined
+              type="date"
+              stack-label
+              label="Date"
+              v-model="input.transactionDate"
+              />
+          </q-card-section>
         </q-card-section>
         <q-card-section>
           <q-select
             outlined
-            label="Currency"
+            label="Budget items"
             label-stacked
-            :loading="!currencyListLoaded"
-            :readonly="!currencyListLoaded"
-            :options="availableCurrencies"
+            :options="currentWeekBudget"
             option-value="id"
-            option-label="verbalName"
-            v-model="input.currency" />
+            option-label="title"
+            v-model="input.budget" />
         </q-card-section>
         <q-card-section>
           <q-input
@@ -235,6 +247,16 @@
             v-model="input.category"
             :options="input.type === 'income' ? systemCategories : categories"
             label="Category" />
+        </q-card-section>
+        <q-card-section>
+          <q-select
+            outlined
+            label="Budget items"
+            label-stacked
+            :options="currentWeekBudget"
+            option-value="id"
+            option-label="title"
+            v-model="input.budget" />
         </q-card-section>
         <q-card-section>
           <q-input outlined stack-label label="Amount" v-model="input.amount" />
@@ -311,6 +333,7 @@ export default {
         category: 0,
         amount: '',
         account: 0,
+        budget: null,
         transactionDate: '',
         currency: '',
         description: '',
@@ -326,6 +349,7 @@ export default {
       'categoryList',
       'currencyList',
       'ratesList',
+      'budgetList',
       'currencyListLoaded',
       'transactionListLoaded',
       'isAccountListLoading',
@@ -360,6 +384,11 @@ export default {
         !item.isParent && !item.isSystem
       )), 'name', 'parentName');
       return categories;
+    },
+
+    currentWeekBudget() {
+      const items = this.budgetList;
+      return items;
     },
 
     systemCategories() {
@@ -502,6 +531,7 @@ export default {
         amount: this.input.amount,
         rate: rate?.rate || 1,
         accountId: this.input.account,
+        budgetId: this.input.budget?.id,
         transactionDate: this.input.transactionDate,
         type: transactionTypes.OUTCOME,
         description: this.input.description,
@@ -519,6 +549,7 @@ export default {
         id: this.input.id,
         userId: this.input.user.value,
         categoryId: this.input.category.value,
+        budgetId: this.input.budget?.id,
         amount: this.input.amount.toString(),
         rate: rate?.rate || 1,
         accountId: this.input.account.value,
@@ -629,14 +660,6 @@ export default {
   display: flex;
   flex-direction: column;
   margin-top: 30px;
-}
-
-.item {
-  margin-bottom: 20px;
-}
-
-.item-content {
-  justify-content: space-between;
 }
 
 .item-title {

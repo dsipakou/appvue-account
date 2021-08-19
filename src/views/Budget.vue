@@ -2,16 +2,39 @@
   <div>
     <div class="q-pa-md">
       <div class="row q-mt-lg justify-center">
-        <div class="col-9 q-px-md">
+        <div class="col-8 q-px-md">
           <div class="row justify-between">
             <h5>Monthly Budget</h5>
             <q-btn round color="primary" label="+" @click="createForm = true"></q-btn>
           </div>
         </div>
-        <div class="col-3 q-px-md">
+        <div class="col-4 q-px-md">
           <div class="row justify-between">
             <h5>This week</h5>
             <span>'$1000'</span>
+          </div>
+          <div class="row">
+            <div class="col">
+              <q-card flat bordered class="q-mt-lg">
+                <q-card-section>
+                  <q-card
+                    v-for="item in currentWeek"
+                    :key="item.id"
+                    class="q-my-md"
+                    flat
+                    bordered>
+                    <q-card-section horizontal class="justify-between">
+                      <q-card-section>
+                        {{ item.title }}
+                      </q-card-section>
+                      <q-card-section>
+                        {{ item.amount }}
+                      </q-card-section>
+                    </q-card-section>
+                  </q-card>
+                </q-card-section>
+              </q-card>
+            </div>
           </div>
         </div>
       </div>
@@ -54,7 +77,7 @@
 </template>
 <script>
 import { ref } from 'vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'Budget',
@@ -74,6 +97,16 @@ export default {
         description: '',
       },
     };
+  },
+
+  computed: {
+    ...mapGetters([
+      'budgetList',
+    ]),
+
+    currentWeek() {
+      return this.budgetList;
+    },
   },
 
   methods: {

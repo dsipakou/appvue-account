@@ -49,9 +49,9 @@
           exact
           clickable>
           <q-item-section avatar>
-              <q-avatar>
-                <img src="../dist/icons/accounts.png" />
-              </q-avatar>
+            <q-avatar>
+              <img src="../dist/icons/accounts.png" />
+            </q-avatar>
           </q-item-section>
           <q-item-section>
             <q-item-label>
@@ -65,6 +65,11 @@
           to="/transactions"
           exact
           clickable>
+          <q-item-section avatar>
+            <q-avatar>
+              <img src="../dist/icons/transactions.png" />
+            </q-avatar>
+          </q-item-section>
           <q-item-section>
             <q-item-label>
               Transactions
@@ -106,6 +111,11 @@
           to="/currencies"
           exact
           clickable>
+          <q-item-section avatar>
+            <q-avatar>
+              <img src="../dist/icons/currency.png" />
+            </q-avatar>
+          </q-item-section>
           <q-item-section>
             <q-item-label>
               Currencies

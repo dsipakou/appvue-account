@@ -37,15 +37,50 @@
           </div>
           <div class="row">
             <div class="col">
-              <q-card flat bordered class="q-mt-lg">
+              <q-card
+                flat
+                bordered
+                class="q-mt-lg">
                 <q-card-section>
                   <q-card
                     v-for="item in budgetCurrentWeek"
                     :key="item.id"
                     class="q-my-md"
+                    @mouseover="setItemOver(item.id, true)"
+                    @mouseleave="setItemOver(item.id, false)"
                     flat
                     bordered>
                     <q-card-section horizontal class="justify-between">
+                      <div
+                        class="column"
+                        v-if="itemsState[item.id]">
+                        <q-btn
+                          flat
+                          outlined
+                          no-caps
+                          size="sm"
+                          @click="completeItem(item)"
+                          dense>
+                          Complete
+                        </q-btn>
+                        <q-btn
+                          flat
+                          outlined
+                          no-caps
+                          size="sm"
+                          dense
+                          @click="deleteBudget(item.id)">
+                          Delete
+                        </q-btn>
+                        <q-btn
+                          flat
+                          outlined
+                          no-caps
+                          size="sm"
+                          dense>
+                          Edit
+                        </q-btn>
+                      </div>
                       <q-card-section>
                         {{ item.title }}
                       </q-card-section>
@@ -64,7 +99,7 @@
                         rounded
                         size="5px"
                         :value="spentOnItem(item) / item.amount"
-                        color="secondary" />
+                        :color="spentOnItem(item) / item.amount > 1 ? 'red' : 'secondary'" />
                     </div>
                   </q-card>
                 </q-card-section>
@@ -126,6 +161,7 @@ export default {
 
   data() {
     return {
+      itemsState: {},
       input: {
         date: '',
         amount: 0,
@@ -179,6 +215,8 @@ export default {
   methods: {
     ...mapActions([
       'createBudget',
+      'updateStatusBudget',
+      'deleteBudget',
     ]),
 
     spentOnItem(budgetItem) {
@@ -187,6 +225,18 @@ export default {
       )).reduce((acc, item) => (
         acc + item.amount
       ), 0).toFixed(2);
+    },
+
+    setItemOver(id, state) {
+      this.itemsState[id] = state;
+    },
+
+    completeItem(item) {
+      this.updateStatusBudget(item);
+    },
+
+    deleteItem(id) {
+      this.deleteBudget(id);
     },
 
     save() {

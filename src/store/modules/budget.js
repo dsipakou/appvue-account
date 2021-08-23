@@ -3,6 +3,8 @@
 import {
   getBudget,
   createBudget,
+  updateBudget,
+  deleteBudget,
 } from '../../service';
 
 const state = {
@@ -35,6 +37,21 @@ const actions = {
       commit('createBudget', body);
     }
   },
+
+  async updateStatusBudget({ commit }, payload) {
+    const response = await updateBudget(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('updateBudget', body);
+    }
+  },
+
+  async deleteBudget({ commit }, id) {
+    const response = await deleteBudget(id);
+    if (response.status === 204) {
+      commit('deleteBudget', id);
+    }
+  },
 };
 
 const mutations = {
@@ -44,6 +61,19 @@ const mutations = {
 
   createBudget(state, budget) {
     state.budget.items.unshift({ ...budget });
+  },
+
+  updateBudget(state, budget) {
+    state.budget.items = state.budget.items.map((item) => {
+      if (item.id === budget.id) {
+        return budget;
+      }
+      return item;
+    });
+  },
+
+  deleteBudget(state, id) {
+    state.budget.items = state.budget.items.filter((budget) => budget.id !== id);
   },
 
   setBudgetLoading(state, isLoading) {

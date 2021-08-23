@@ -279,6 +279,31 @@ export const createBudget = async ({
   return response;
 };
 
+export const updateBudget = async ({
+  id,
+  budgetDate,
+  title,
+  amount,
+  description,
+  isCompleted,
+}) => {
+  const response = await patchRequest('http://localhost:9091/api/budget',
+    {
+      id,
+      budgetDate,
+      title,
+      amount,
+      description,
+      isCompleted,
+    });
+  return response;
+};
+
+export const deleteBudget = async (id) => {
+  const response = await deleteRequest('http://localhost:9091/api/budget', { id });
+  return response;
+};
+
 /* nbrb.by section */
 export const getRate = async (code, date) => {
   const response = await getRequest(`https://www.nbrb.by/api/exrates/rates/${code.toLowerCase()}?paramMode=2&onDate=${date}`);

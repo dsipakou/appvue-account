@@ -1,5 +1,5 @@
 <template>
-  <div :class="classNames">
+  <div>
     <div class="row justify-between">
       <div>
         <h5>This week</h5>
@@ -53,22 +53,21 @@
                     @click="completeItem(item)"
                     :label="item.isCompleted ? 'Incomplete' : 'Complete'"
                     dense />
-                    <q-btn
-                      flat
-                      outlined
-                      no-caps
-                      size="sm"
-                      dense
-                      label="Delete"
-                      @click="deleteBudget(item.id)" />
-                      <q-btn
-                        flat
-                        outlined
-                        no-caps
-                        size="sm"
-                        dense>
-                        Edit
-                      </q-btn>
+                  <q-btn
+                    flat
+                    outlined
+                    no-caps
+                    size="sm"
+                    dense
+                    label="Delete"
+                    @click="deleteItem(item.id)" />
+                  <q-btn
+                    flat
+                    outlined
+                    no-caps
+                    size="sm"
+                    dense
+                    label="Edit" />
                 </div>
                 <q-card-section>
                   {{ item.title }}
@@ -104,10 +103,6 @@ import moment from 'moment';
 
 export default {
   name: 'WeekBudget',
-
-  props: {
-    classNames: Array,
-  },
 
   data() {
     return {

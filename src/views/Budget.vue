@@ -22,7 +22,7 @@
             </q-card>
           </div>
         </div>
-        <WeekBudget :className="['col-4', 'q-px-md']"/>
+        <WeekBudget class="col-4 q-px-md" />
       </div>
     </div>
     <q-dialog v-model="createForm">

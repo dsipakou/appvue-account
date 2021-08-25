@@ -37,13 +37,15 @@
               v-for="item in currentWeek"
               :key="item.id"
               class="q-my-md"
+              :class="item.isCompleted ? 'completed' : ''"
               @mouseover="setItemOver(item.id, true)"
               @mouseleave="setItemOver(item.id, false)"
               flat
               bordered>
               <q-card-section horizontal class="justify-between">
                 <div
-                  class="column"
+                  class="absolute-left justify-between"
+                  style="z-index: 1;"
                   v-if="itemsState[item.id]">
                   <q-btn
                     flat
@@ -117,9 +119,13 @@ export default {
     ]),
 
     currentWeek() {
-      return this.budgetList.filter((item) => (
+      const thisWeek = this.budgetList.filter((item) => (
         moment(item.budgetDate).week() === moment().week()
       ));
+      return [
+        ...thisWeek.filter((item) => !item.isCompleted),
+        ...thisWeek.filter((item) => item.isCompleted),
+      ];
     },
 
     transactionsCurrentWeek() {
@@ -183,3 +189,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.completed {
+  background-color: lightgrey;
+  color: darkgray;
+}
+</style>

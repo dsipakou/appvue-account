@@ -406,6 +406,7 @@ export default {
     currentWeekBudget() {
       const items = this.budgetList.filter((item) => (
         moment(item.budgetDate).week() === moment().week()
+        && !item.isCompleted
       ));
       items.unshift({ id: null, title: 'Default' });
       return items;

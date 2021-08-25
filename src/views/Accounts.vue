@@ -29,7 +29,7 @@
             color="primary"
             icon="add"
             unelevated
-            @click="addAccount()">
+            @click="transferMoneyClick()">
             Transfer money
           </q-btn>
         </div>
@@ -214,6 +214,52 @@
         </q-form>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="transferMoneyForm">
+      <q-card class="shadow-24" style="width: 400px;">
+        <q-card-section>
+          <h4>Transfer money</h4>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-form>
+          <input type="hidden" v-model="input.id" />
+          <q-card-section>
+            <q-select
+              outlined
+              map-options
+              v-model="input.sourceAccount"
+              :options="accounts"
+              label="Source" />
+          </q-card-section>
+          <q-card-section>
+            <q-select
+              outlined
+              map-options
+              v-model="input.destinationAccount"
+              :options="accounts"
+              label="Destination" />
+          </q-card-section>
+          <q-card-section>
+            <q-input outlined stack-label label="Amount" v-model="input.amount" />
+          </q-card-section>
+          <q-card-section>
+            <q-input
+              outlined
+              stack-label
+              type="textarea"
+              label="Description"
+              v-model="input.description" />
+          </q-card-section>
+
+          <q-card-actions align="center" class="action-buttons">
+            <q-btn color="primary" rounded style="width: 100px;" @click="transfer()">
+              Transfer
+            </q-btn>
+          </q-card-actions>
+        </q-form>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -233,6 +279,7 @@ export default {
       createAccountForm: ref(false),
       createIncomeForm: ref(false),
       updateAccountForm: ref(false),
+      transferMoneyForm: ref(false),
     };
   },
 
@@ -428,6 +475,10 @@ export default {
         return item;
       });
       this.availableCurrencies = newList;
+    },
+
+    transferMoneyClick() {
+      this.transferMoneyForm = true;
     },
   },
 

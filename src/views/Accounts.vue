@@ -23,6 +23,16 @@
             Add account
           </q-btn>
         </div>
+        <div>
+          <q-btn
+            rounded
+            color="primary"
+            icon="add"
+            unelevated
+            @click="addAccount()">
+            Transfer money
+          </q-btn>
+        </div>
       </div>
       <div id="account-list">
         <div v-for="account in accountList" :key="account.id">

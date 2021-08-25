@@ -60,7 +60,7 @@ const mutations = {
   },
 
   createBudget(state, budget) {
-    state.budget.items.unshift({ ...budget });
+    state.budget.items.push({ ...budget });
   },
 
   updateBudget(state, budget) {

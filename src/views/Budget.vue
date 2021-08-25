@@ -3,110 +3,26 @@
     <div class="q-pa-md">
       <div class="row q-mt-lg justify-center">
         <div class="col-8 q-px-md">
-          <div class="row justify-between">
-            <h5>Monthly Budget</h5>
+          <div class="row justify-between"> <h5>Monthly Budget</h5>
             <q-btn round color="primary" label="+" @click="createForm = true"></q-btn>
           </div>
-        </div>
-        <div class="col-4 q-px-md">
-          <div class="row justify-between">
-            <div>
-              <h5>This week</h5>
-            </div>
-            <div class="align-center">
-              <span>{{ spentSum }}</span>
-              <span class="q-mx-sm">/</span>
-              <span class="text-weight-bold">{{ plannedSum }}</span>
-            </div>
-          </div>
-          <div>
-            <q-linear-progress
-              stripe
-              rounded
-              size="25px"
-              :value="progressBarValue"
-              color="primary"
-              class="q-mt-sm" >
-              <div class="absolute-center flex flex-center">
-                <q-badge
-                  color="white"
-                  text-color="primary"
-                  :label="budgetPercentRemains" />
-              </div>
-            </q-linear-progress>
-          </div>
           <div class="row">
-            <div class="col">
-              <q-card
-                flat
-                bordered
-                class="q-mt-lg">
-                <q-card-section>
-                  <q-card
-                    v-for="item in budgetCurrentWeek"
-                    :key="item.id"
-                    class="q-my-md"
-                    @mouseover="setItemOver(item.id, true)"
-                    @mouseleave="setItemOver(item.id, false)"
-                    flat
-                    bordered>
-                    <q-card-section horizontal class="justify-between">
-                      <div
-                        class="column"
-                        v-if="itemsState[item.id]">
-                        <q-btn
-                          flat
-                          outlined
-                          no-caps
-                          size="sm"
-                          @click="completeItem(item)"
-                          dense>
-                          Complete
-                        </q-btn>
-                        <q-btn
-                          flat
-                          outlined
-                          no-caps
-                          size="sm"
-                          dense
-                          @click="deleteBudget(item.id)">
-                          Delete
-                        </q-btn>
-                        <q-btn
-                          flat
-                          outlined
-                          no-caps
-                          size="sm"
-                          dense>
-                          Edit
-                        </q-btn>
-                      </div>
-                      <q-card-section>
-                        {{ item.title }}
-                      </q-card-section>
-                      <q-card-section>
-                        <span class="text-caption">
-                          {{ spentOnItem(item) }}
-                        </span>
-                        <span class="q-mx-xs">/</span>
-                        <span class="text-weight-bold">
-                          {{ item.amount }}
-                        </span>
-                      </q-card-section>
-                    </q-card-section>
-                    <div class="q-mb-xs q-px-xs">
-                      <q-linear-progress
-                        rounded
-                        size="5px"
-                        :value="spentOnItem(item) / item.amount"
-                        :color="spentOnItem(item) / item.amount > 1 ? 'red' : 'secondary'" />
-                    </div>
-                  </q-card>
-                </q-card-section>
-              </q-card>
-            </div>
+            <q-card
+              v-for="budget in budgetCurrentMonth"
+              :key="budget.id"
+              flat
+              class="q-ma-sm monthly-card"
+              >
+              <q-card-section>
+                {{ budget.title }}
+              </q-card-section>
+              <q-card-section>
+                {{ budget.amount }}
+              </q-card-section>
+            </q-card>
           </div>
         </div>
+        <WeekBudget :className="['col-4', 'q-px-md']"/>
       </div>
     </div>
     <q-dialog v-model="createForm">
@@ -149,9 +65,14 @@
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import moment from 'moment';
+import WeekBudget from './budget/WeekBudget.vue';
 
 export default {
   name: 'Budget',
+
+  components: {
+    WeekBudget,
+  },
 
   setup() {
     return {
@@ -174,70 +95,19 @@ export default {
   computed: {
     ...mapGetters([
       'budgetList',
-      'transactionList',
     ]),
 
-    budgetCurrentWeek() {
+    budgetCurrentMonth() {
       return this.budgetList.filter((item) => (
-        moment(item.budgetDate).week() === moment().week()
+        moment(item.budgetDate).month() === moment().month()
       ));
-    },
-
-    plannedSum() {
-      return this.budgetCurrentWeek.reduce((acc, item) => (
-        acc + item.amount
-      ), 0);
-    },
-
-    spentSum() {
-      return this.transactionsCurrentWeek.reduce((acc, item) => (
-        acc + item.amount
-      ), 0).toFixed(2);
-    },
-
-    progressBarValue() {
-      return (this.spentSum / this.plannedSum);
-    },
-
-    budgetPercentRemains() {
-      return `${(this.progressBarValue * 100).toFixed(2)}%`;
-    },
-
-    transactionsCurrentWeek() {
-      const resultList = this.transactionList.filter((item) => (
-        item.budgetId !== null
-        && moment(item.transactionDate).week() === moment().week()
-      ));
-      return resultList;
     },
   },
 
   methods: {
     ...mapActions([
       'createBudget',
-      'updateStatusBudget',
-      'deleteBudget',
     ]),
-
-    spentOnItem(budgetItem) {
-      return this.transactionsCurrentWeek.filter((item) => (
-        item.budgetId === budgetItem.id
-      )).reduce((acc, item) => (
-        acc + item.amount
-      ), 0).toFixed(2);
-    },
-
-    setItemOver(id, state) {
-      this.itemsState[id] = state;
-    },
-
-    completeItem(item) {
-      this.updateStatusBudget(item);
-    },
-
-    deleteItem(id) {
-      this.deleteBudget(id);
-    },
 
     save() {
       const budget = {
@@ -252,3 +122,12 @@ export default {
   },
 };
 </script>
+<style scoped>
+.monthly-card {
+  width: 190px;
+  height: 100px;
+  font-size: 1.2em;
+  display: flex;
+  justify-content: center;
+}
+</style>

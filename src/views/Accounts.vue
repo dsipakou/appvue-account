@@ -241,6 +241,14 @@
               label="Destination" />
           </q-card-section>
           <q-card-section>
+            <q-input
+              outlined
+              type="date"
+              stack-label
+              label="Date"
+              v-model="input.transactionDate" />
+          </q-card-section>
+          <q-card-section>
             <q-input outlined stack-label label="Amount" v-model="input.amount" />
           </q-card-section>
           <q-card-section>
@@ -274,6 +282,7 @@ import { transactionTypes } from '../utils/constants';
 
 export default {
   name: 'AccountList',
+
   setup() {
     return {
       createAccountForm: ref(false),
@@ -294,6 +303,8 @@ export default {
         amount: 0,
         transactionDate: '',
         description: '',
+        sourceAccount: '',
+        destinationAccount: '',
       },
     };
   },

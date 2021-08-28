@@ -56,6 +56,10 @@ const actions = {
     }
   },
 
+  async transferBetweenAccounts({ commit }, payload) {
+
+  },
+
   async deleteTransaction({ commit }, id) {
     const response = await deleteTransaction(id);
     if (response.status === 204) {

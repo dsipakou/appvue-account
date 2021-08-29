@@ -46,6 +46,14 @@ const actions = {
     }
   },
 
+  async updateBudget({ commit }, payload) {
+    const response = await updateBudget(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('updateBudget', body);
+    }
+  },
+
   async deleteBudget({ commit }, id) {
     const response = await deleteBudget(id);
     if (response.status === 204) {

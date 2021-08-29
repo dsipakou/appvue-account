@@ -12,7 +12,7 @@
               :key="budget.id"
               flat
               class="q-ma-sm monthly-card"
-              @click="editForm = true"
+              @click="budgetItemClick(budget)"
               >
               <q-card-section>
                 {{ budget.title }}
@@ -37,14 +37,14 @@
             type="date"
             stack-label
             label="Date"
-            v-model="input.date"
+            v-model="input.budgetDate"
             />
         </q-card-section>
         <q-card-section>
           <q-input outlined stack-label label="Name" v-model="input.title" />
         </q-card-section>
         <q-card-section>
-          <q-input outlined stack-label label="Amount" v-model="input.amount" />
+          <q-input outlined stack-label label="Amount" v-model.number="input.amount" />
         </q-card-section>
         <q-card-section>
           <q-input
@@ -61,9 +61,10 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="editForm">
+      <input type="hidden" v-model="input.id" />
       <q-card style="width: 400px;">
         <q-card-section>
-          <h4>Make your plans</h4>
+          <h4>Update your plans</h4>
         </q-card-section>
         <q-card-section>
           <q-input
@@ -71,14 +72,14 @@
             type="date"
             stack-label
             label="Date"
-            v-model="input.date"
+            v-model="input.budgetDate"
             />
         </q-card-section>
         <q-card-section>
           <q-input outlined stack-label label="Name" v-model="input.title" />
         </q-card-section>
         <q-card-section>
-          <q-input outlined stack-label label="Amount" v-model="input.amount" />
+          <q-input outlined stack-label label="Amount" v-model.number="input.amount" />
         </q-card-section>
         <q-card-section>
           <q-input
@@ -90,7 +91,8 @@
             />
         </q-card-section>
         <q-card-actions align="center" class="action-buttons">
-          <q-btn color="primary" rounded style="width: 100px;" @click="save()">Save</q-btn>
+          <q-btn color="primary" rounded style="width: 100px;" @click="update()">Update</q-btn>
+          <q-btn color="primary" rounded style="width: 100px;" @click="remove()">Delete</q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -120,9 +122,9 @@ export default {
     return {
       itemsState: {},
       input: {
-        date: '',
+        budgetDate: '',
         amount: 0,
-        name: '',
+        title: '',
         description: '',
       },
     };
@@ -143,17 +145,46 @@ export default {
   methods: {
     ...mapActions([
       'createBudget',
+      'updateBudget',
+      'deleteBudget',
     ]),
+
+    budgetItemClick(item) {
+      this.input.id = item.id;
+      this.input.budgetDate = item.budgetDate.substr(0, 10);
+      this.input.title = item.title;
+      this.input.amount = item.amount;
+      this.input.description = item.description;
+      this.editForm = true;
+    },
 
     save() {
       const budget = {
-        budgetDate: this.input.date,
+        id: this.input.id,
+        budgetDate: this.input.budgetDate,
         title: this.input.title,
         amount: this.input.amount,
         description: this.input.description,
       };
       this.createBudget(budget);
       this.createForm = false;
+    },
+
+    update() {
+      const budget = {
+        id: this.input.id,
+        budgetDate: this.input.budgetDate,
+        title: this.input.title,
+        amount: this.input.amount,
+        description: this.input.description,
+      };
+      this.updateBudget(budget);
+      this.editForm = false;
+    },
+
+    remove() {
+      this.deleteBudget(this.input.id);
+      this.editForm = false;
     },
   },
 };

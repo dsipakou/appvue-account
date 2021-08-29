@@ -471,7 +471,6 @@ export default {
         const rateDate = moment(item.rateDate).startOf('day');
         return rateDate.isSame(inputDate) && item.currencyId === id;
       });
-      console.log(isRateExist);
       const newList = this.currencyList.map((item) => {
         if (item === this.defaultCurrency) {
           return item;

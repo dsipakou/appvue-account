@@ -62,9 +62,11 @@ export const getGroupedTransactions = async ({ dateFrom, dateTo }) => {
   return response;
 };
 
-export const transferBetweenAccounts = async({
-
-});
+export const transferBetweenAccounts = async ({
+  userId,
+}) => {
+  console.log(userId);
+};
 
 export const createTransaction = async ({
   userId,

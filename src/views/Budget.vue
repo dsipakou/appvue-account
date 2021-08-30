@@ -9,17 +9,40 @@
           <div class="row">
             <q-card
               v-for="budget in budgetCurrentMonth"
-              :key="budget.id"
+              :key="budget[0].id"
               flat
               class="q-ma-sm monthly-card"
-              @click="budgetItemClick(budget)"
               >
               <q-card-section>
-                {{ budget.title }}
+                <div class="text-h6 overflow-hidden">
+                  {{ budget[0].title }}
+                </div>
+                <div class="text-subtitle2">
+                  {{ budget[0].amount }}
+                </div>
               </q-card-section>
-              <q-card-section>
-                {{ budget.amount }}
-              </q-card-section>
+              <q-card-actions class="align-bottom" align="around">
+                <div v-if="budget.length > 1">
+                  <q-btn
+                    color="primary"
+                    rounded
+                    dense
+                    flat
+                    v-for="(item, index) in budget"
+                    :key="item.id"
+                    @click="budgetItemClick(item)"
+                    :label="index + 1" />
+                </div>
+                <div v-else>
+                  <q-btn
+                    color="primary"
+                    rounded
+                    dense
+                    flat
+                    @click="budgetItemClick(budget[0])"
+                    label="Edit" />
+                </div>
+              </q-card-actions>
             </q-card>
           </div>
         </div>
@@ -136,9 +159,18 @@ export default {
     ]),
 
     budgetCurrentMonth() {
-      return this.budgetList.filter((item) => (
+      const thisMonth = this.budgetList.filter((item) => (
         moment(item.budgetDate).month() === moment().month()
       ));
+
+      const groupedMonth = thisMonth.reduce((acc, item) => {
+        const arr = acc[item.title] || [];
+        arr.push(item);
+        acc[item.title] = arr;
+        return acc;
+      }, {});
+
+      return groupedMonth;
     },
   },
 
@@ -150,6 +182,7 @@ export default {
     ]),
 
     budgetItemClick(item) {
+      console.log(item);
       this.input.id = item.id;
       this.input.budgetDate = item.budgetDate.substr(0, 10);
       this.input.title = item.title;
@@ -192,9 +225,8 @@ export default {
 <style scoped>
 .monthly-card {
   width: 190px;
-  height: 100px;
+  height: 150px;
   font-size: 1.2em;
-  display: flex;
   justify-content: center;
 }
 </style>

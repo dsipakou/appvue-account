@@ -174,14 +174,25 @@
       <input type="hidden" v-model="input.account" />
       <q-card style="width: 400px;">
         <q-card-section>
-          <h4>Add transaction</h4>
+          <span class="text-h5">
+            {{ getCategory(input.category).name }}
+          </span>
+          <q-chip dense class="q-ml-sm">
+            {{ getCategory(input.category).parentName }}
+          </q-chip>
         </q-card-section>
 
         <q-separator />
 
         <q-card-section horizontal class="justify-between">
           <q-card-section>
-            <q-input outlined stack-label label="Amount" v-model="input.amount" />
+            <q-input
+              outlined
+              stack-label
+              autofocus
+              ref="price"
+              label="Amount"
+              v-model="input.amount" />
           </q-card-section>
           <q-card-section>
             <q-select
@@ -558,6 +569,8 @@ export default {
         description: this.input.description,
       };
       this.createTransaction(transaction);
+      this.$refs.price.focus();
+      this.$refs.price.select();
     },
 
     update() {

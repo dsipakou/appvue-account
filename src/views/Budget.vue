@@ -3,7 +3,9 @@
     <div class="q-pa-md">
       <div class="row q-mt-lg justify-center">
         <div class="col-8 q-px-md">
-          <div class="row justify-between"> <h5>Monthly Budget</h5>
+          <div class="row justify-between">
+            <h5>Monthly Budget</h5>
+            <span class="text-subtitle2">Planned {{ monthSum }}</span>
             <q-btn round color="primary" label="+" @click="createForm = true"></q-btn>
           </div>
           <div class="row">
@@ -158,12 +160,20 @@ export default {
       'budgetList',
     ]),
 
-    budgetCurrentMonth() {
-      const thisMonth = this.budgetList.filter((item) => (
+    currentMonth() {
+      return this.budgetList.filter((item) => (
         moment(item.budgetDate).month() === moment().month()
       ));
+    },
 
-      const groupedMonth = thisMonth.reduce((acc, item) => {
+    monthSum() {
+      return this.currentMonth.reduce((acc, item) => (
+        acc + item.amount
+      ), 0);
+    },
+
+    budgetCurrentMonth() {
+      const groupedMonth = this.currentMonth.reduce((acc, item) => {
         const arr = acc[item.title] || [];
         arr.push(item);
         acc[item.title] = arr;

@@ -4,10 +4,22 @@
       <div>
         <h5>This week</h5>
       </div>
-      <div class="align-center">
-        <span>{{ spentSum }}</span>
-        <span class="q-mx-sm">/</span>
-        <span class="text-weight-bold">{{ plannedSum }}</span>
+      <div class="align-center justify-right">
+        <div>
+          <span class="q-mr-sm">Planned</span>
+          <span>{{ spentSum }}</span>
+          <span class="q-mx-sm">/</span>
+          <span class="text-weight-bold">{{ plannedSum }}</span>
+        </div>
+        <div>
+          <span>Unplanned</span>
+          <span class="q-ml-sm">{{ unplannedSum }}</span>
+        </div>
+        <q-separator />
+        <div>
+          <span>Overall</span>
+          <span class="q-ml-sm text-weight-bold">{{ overallSum }}</span>
+        </div>
       </div>
     </div>
     <div>
@@ -129,11 +141,21 @@ export default {
     },
 
     transactionsCurrentWeek() {
-      const resultList = this.transactionList.filter((item) => (
-        item.budgetId !== null
-        && moment(item.transactionDate).week() === moment().week()
+      return this.transactionList.filter((item) => (
+        moment(item.transactionDate).week() === moment().week()
       ));
-      return resultList;
+    },
+
+    plannedTransactions() {
+      return this.transactionsCurrentWeek.filter((item) => (
+        item.budgetId !== null
+      ));
+    },
+
+    unplannedTransactions() {
+      return this.transactionsCurrentWeek.filter((item) => (
+        item.budgetId === null
+      ));
     },
 
     plannedSum() {
@@ -143,6 +165,18 @@ export default {
     },
 
     spentSum() {
+      return this.plannedTransactions.reduce((acc, item) => (
+        acc + item.amount
+      ), 0).toFixed(2);
+    },
+
+    unplannedSum() {
+      return this.unplannedTransactions.reduce((acc, item) => (
+        acc + item.amount
+      ), 0).toFixed(2);
+    },
+
+    overallSum() {
       return this.transactionsCurrentWeek.reduce((acc, item) => (
         acc + item.amount
       ), 0).toFixed(2);

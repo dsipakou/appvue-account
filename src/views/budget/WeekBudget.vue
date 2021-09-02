@@ -11,12 +11,12 @@
           <span class="q-mx-sm">/</span>
           <span class="text-weight-bold">{{ plannedSum }}</span>
         </div>
-        <div>
+        <div class="row justify-between">
           <span>Unplanned</span>
           <span class="q-ml-sm">{{ unplannedSum }}</span>
         </div>
         <q-separator />
-        <div>
+        <div class="row justify-between">
           <span>Overall</span>
           <span class="q-ml-sm text-weight-bold">{{ overallSum }}</span>
         </div>

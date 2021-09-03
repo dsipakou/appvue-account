@@ -34,29 +34,13 @@
           </q-btn>
         </div>
       </div>
-      <div id="account-list">
-        <div v-for="account in accountList" :key="account.id">
-          <q-card flat class="item">
+      <div id="account-list" class="row">
+        <div v-for="account in accountList" class="col-3 q-ml-sm" :key="account.id">
+          <q-card flat class="item" @click="edit(account)">
             <q-card-section horizontal class="item-content">
-              <q-card-section class="item-title">
-                {{ account.source }}
-                {{ account.amount }}
-              </q-card-section>
-              <q-card-section>
-                <q-btn-dropdown flat dropdown-icon="more_horiz">
-                  <q-list>
-                    <q-item clickable v-close-popup @click="edit(account)">
-                      <q-item-section>
-                        <q-item-label>Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item clickable v-close-popup @click="deleteAccount(account.id)">
-                      <q-item-section>
-                        <q-item-label>Delete</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-btn-dropdown>
+              <q-card-section class="item-title row">
+                <span>{{ account.source }}</span>
+                <span>{{ account.amount }}</span>
               </q-card-section>
             </q-card-section>
           </q-card>
@@ -216,6 +200,13 @@
 
           <q-card-actions align="center" class="action-buttons">
             <q-btn color="primary" rounded style="width: 100px;" @click="update()">Save</q-btn>
+            <q-btn
+              color="negative"
+              rounded
+              style="width: 100px;"
+              label="Remove"
+              @click="removeAccount(input.id)"
+              />
           </q-card-actions>
         </q-form>
       </q-card>
@@ -502,6 +493,11 @@ export default {
 
     transferMoneyClick() {
       this.transferMoneyForm = true;
+    },
+
+    removeAccount(id) {
+      this.deleteAccount(id);
+      this.updateAccountForm = false;
     },
   },
 

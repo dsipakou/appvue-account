@@ -87,6 +87,9 @@
           <q-input outlined stack-label label="Amount" v-model="input.amount" />
         </q-card-section>
         <q-card-section>
+          <q-checkbox outlined stack-label label="Main Account" v-model="input.isMain" />
+        </q-card-section>
+        <q-card-section>
           <q-input
             outlined
             stack-label
@@ -200,6 +203,9 @@
             <q-input outlined stack-label label="Amount" v-model="input.amount" />
           </q-card-section>
           <q-card-section>
+            <q-checkbox outlined stack-label label="Main Account" v-model="input.isMain" />
+          </q-card-section>
+          <q-card-section>
             <q-input
               outlined
               stack-label
@@ -302,6 +308,7 @@ export default {
         source: '',
         amount: 0,
         transactionDate: '',
+        isMain: false,
         description: '',
         sourceAccount: '',
         destinationAccount: '',
@@ -382,6 +389,7 @@ export default {
       this.input.source = '';
       this.input.amount = '';
       this.input.description = '';
+      this.input.isMain = false;
 
       this.createAccountForm = true;
     },
@@ -393,13 +401,16 @@ export default {
         source,
         amount,
         description,
+        isMain,
       } = account;
 
+      console.log(isMain);
       this.input.id = id;
       this.input.user = userId;
       this.input.source = source;
       this.input.amount = amount;
       this.input.description = description;
+      this.input.isMain = isMain;
       this.updateAccountForm = true;
     },
 
@@ -409,6 +420,7 @@ export default {
         source: this.input.source,
         amount: this.input.amount,
         description: this.input.description,
+        isMain: this.input.isMain,
       };
       this.createAccount(account);
       this.createAccountForm = false;
@@ -442,6 +454,7 @@ export default {
         source: this.input.source,
         amount: this.input.amount.toString(),
         description: this.input.description,
+        isMain: this.input.isMain,
       };
 
       this.updateAccount(account);

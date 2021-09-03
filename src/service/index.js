@@ -180,6 +180,7 @@ export const createAccount = async ({
   source,
   amount,
   description,
+  isMain,
 }) => {
   const response = await postRequest('http://localhost:9091/api/accounts',
     {
@@ -187,6 +188,7 @@ export const createAccount = async ({
       source,
       amount,
       description,
+      isMain,
     });
   return response;
 };
@@ -202,6 +204,7 @@ export const updateAccount = async ({
   source,
   amount,
   description,
+  isMain,
 }) => {
   const response = await patchRequest('http://localhost:9091/api/accounts',
     {
@@ -210,6 +213,7 @@ export const updateAccount = async ({
       source,
       amount,
       description,
+      isMain,
     });
   return response;
 };

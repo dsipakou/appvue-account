@@ -3,7 +3,7 @@
     <div class="row justify-center">
       <div class="row justify-center">
         <div
-          v-for="account in accountList"
+          v-for="account in mainAccounts"
           :key="account.id"
           class="avatar-container">
           <span>{{ account.source }}</span>
@@ -18,13 +18,40 @@
       </div>
     </div>
     <div class="row justify-center">
+      <q-expansion-item
+        expand-separator
+        dense
+        label="Additional accounts"
+        class="q-mt-sm row justify-center"
+      >
+        <div class="row justify-center q-mt-sm">
+          <div
+            v-for="account in secondaryAccounts"
+            :key="account.id"
+            class="avatar-container col justify-center">
+            <span>{{ account.source }}</span>
+            <q-avatar
+              color="red"
+              size="60px"
+              font-size="20px"
+              draggable="true"
+              @dragstart="startDrag($event, account)">
+            </q-avatar>
+          </div>
+        </div>
+      </q-expansion-item>
+    </div>
+    <div class="row justify-center">
       <div class="col-10 items-center sub-categories">
-        <div class="justify-center q-mb-lg">
+        <div class="row justify-center q-mb-lg">
           <h4>Drag on category</h4>
         </div>
         <div class="row justify-center">
-          <div v-for="category in subCategories" :key="category.id" class="avatar-container">
-            <span>{{ category.name }}</span>
+          <div
+            v-for="category in subCategories"
+            :key="category.id"
+            class="column q-pb-sm avatar-container align-center">
+            <span class="justify-center">{{ category.name }}</span>
             <q-avatar
               color="teal-5"
               size="80px"
@@ -405,6 +432,14 @@ export default {
     accounts() {
       const accounts = makeSelectList(this.accountList, 'source');
       return accounts;
+    },
+
+    mainAccounts() {
+      return this.accountList.filter((item) => item.isMain);
+    },
+
+    secondaryAccounts() {
+      return this.accountList.filter((item) => !item.isMain);
     },
 
     categories() {

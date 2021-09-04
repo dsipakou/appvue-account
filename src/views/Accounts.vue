@@ -36,7 +36,16 @@
       </div>
       <div id="account-list" class="row">
         <div v-for="account in accountList" class="col-3 q-ml-sm" :key="account.id">
-          <q-card flat class="item" @click="edit(account)">
+          <q-card
+            flat
+            class="item"
+            @click="edit(account)"
+            draggable="true"
+            @dragstart="startDrag($event, account)"
+            @drop="onDrop($event, account)"
+            @dragover.prevent
+            @dragenter.prevent
+            >
             <q-card-section horizontal class="item-content">
               <q-card-section class="item-title row">
                 <span>{{ account.source }}</span>
@@ -214,7 +223,9 @@
     <q-dialog v-model="transferMoneyForm">
       <q-card class="shadow-24" style="width: 400px;">
         <q-card-section>
-          <h4>Transfer money</h4>
+          <span class="text-h5">{{ getAccount(input.sourceAccount).source }}</span>
+          <span class="text-h5"> -> </span>
+          <span class="text-h5">{{ getAccount(input.destinationAccount).source }}</span>
         </q-card-section>
 
         <q-separator />
@@ -335,7 +346,6 @@ export default {
     systemCategories() {
       return this.categoryList.filter((item) => item.isSystem);
     },
-
   },
 
   watch: {
@@ -395,7 +405,6 @@ export default {
         isMain,
       } = account;
 
-      console.log(isMain);
       this.input.id = id;
       this.input.user = userId;
       this.input.source = source;
@@ -452,6 +461,10 @@ export default {
       this.updateAccountForm = false;
     },
 
+    getAccount(id) {
+      return this.accountList.find((item) => item.id === id);
+    },
+
     getRate(id, date) {
       return this.ratesList.find((item) => {
         const transactionDate = moment(date).startOf('day');
@@ -498,6 +511,17 @@ export default {
     removeAccount(id) {
       this.deleteAccount(id);
       this.updateAccountForm = false;
+    },
+
+    startDrag(evt, account) {
+      evt.dataTransfer.setData('fromAccount', account.id);
+    },
+
+    onDrop(evt, account) {
+      this.input.sourceAccount = Number(evt.dataTransfer.getData('fromAccount'));
+      this.input.destinationAccount = account.id;
+      this.input.transactionDate ||= new Date().toISOString().substr(0, 10);
+      this.transferMoneyForm = true;
     },
   },
 

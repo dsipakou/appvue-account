@@ -60,6 +60,13 @@
         </div>
         <WeekBudget class="col-4 q-px-md" />
       </div>
+      <div>
+        <q-date
+          v-model="dateModel"
+          ref="budgetCal"
+          @update:model-value="dateSelected"
+          />
+      </div>
     </div>
     <q-dialog v-model="createForm">
       <q-card style="width: 400px;">
@@ -150,6 +157,7 @@ export default {
     return {
       createForm: ref(false),
       editForm: ref(false),
+      dateModel: ref(''),
     };
   },
 
@@ -201,8 +209,21 @@ export default {
       'deleteBudget',
     ]),
 
+    dateSelected(value) {
+      // console.log(`${year}-${month}-${day}`);
+      // const finalDate = moment(`${year}-${month}-${day}`, 'YYYY-M-D').format('YYYY-MM-DD');
+      // console.log(finalDate);
+
+      const selectedDate = moment(value, 'YYYY-MM-DD');
+      const fromDate = selectedDate.add(-selectedDate.day(), 'days').format('YYYY/MM/DD');
+      const toDate = selectedDate.add(6 - selectedDate.day(), 'days').format('YYYY/MM/DD');
+      this.dateModel = {
+        from: fromDate,
+        to: toDate,
+      };
+    },
+
     budgetItemClick(item) {
-      console.log(item);
       this.input.id = item.id;
       this.input.budgetDate = item.budgetDate.substr(0, 10);
       this.input.title = item.title;

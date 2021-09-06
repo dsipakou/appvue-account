@@ -44,6 +44,16 @@
                     @click="budgetItemClick(budget[0])"
                     label="Edit" />
                 </div>
+                <div
+                  v-if="budget.every((item) => item.isCompleted)"
+                  class="absolute-right q-pt-sm q-pr-sm">
+                  <q-icon name="fas fa-check" color="green" />
+                </div>
+                <div
+                  class="absolute-right q-pt-sm q-pr-sm"
+                  v-else>
+                  <q-btn no-caps flat dense label="Done" />
+                </div>
               </q-card-actions>
             </q-card>
           </div>

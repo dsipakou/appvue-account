@@ -42,6 +42,7 @@
             @click="edit(account)"
             draggable="true"
             @dragstart="startDrag($event, account)"
+            @dragend="endDrag($event)"
             @drop="onDrop($event, account)"
             @dragover.prevent
             @dragenter.prevent
@@ -280,6 +281,8 @@
 </template>
 
 <script>
+/* eslint no-param-reassign: ["error", { "props": false }] */
+
 import {
   mapActions,
   mapGetters,
@@ -515,6 +518,12 @@ export default {
 
     startDrag(evt, account) {
       evt.dataTransfer.setData('fromAccount', account.id);
+      evt.target.classList.add('hide');
+      console.log(evt.target.classList);
+    },
+
+    endDrag(evt) {
+      evt.srcElement.classList.remove('hide');
     },
 
     onDrop(evt, account) {
@@ -534,6 +543,11 @@ export default {
 #account-list {
   width: 100%;
   margin-top: 30px;
+}
+
+.hide {
+  transition: 0.01s;
+  transform: translateX(-9999px);
 }
 
 .header {

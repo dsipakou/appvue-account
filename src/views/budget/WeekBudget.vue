@@ -171,13 +171,17 @@ export default {
     },
 
     unplannedSum() {
-      return this.unplannedTransactions.reduce((acc, item) => (
+      return this.unplannedTransactions.filter((item) => (
+        item.type === 'outcome'
+      )).reduce((acc, item) => (
         acc + item.amount
       ), 0).toFixed(2);
     },
 
     overallSum() {
-      return this.transactionsCurrentWeek.reduce((acc, item) => (
+      return this.transactionsCurrentWeek.filter((item) => (
+        item.type === 'outcome'
+      )).reduce((acc, item) => (
         acc + item.amount
       ), 0).toFixed(2);
     },

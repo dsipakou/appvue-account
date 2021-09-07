@@ -43,24 +43,20 @@
     </div>
     <div class="row justify-center">
       <div class="col-10 items-center sub-categories">
-        <div class="row justify-center q-mb-lg">
-          <h4>Drag on category</h4>
-        </div>
         <div class="row justify-center">
-          <div
+          <q-card
             v-for="category in subCategories"
             :key="category.id"
-            class="column q-pb-sm avatar-container align-center">
-            <span class="justify-center">{{ category.name }}</span>
-            <q-avatar
-              color="teal-5"
-              size="80px"
-              font-size="16px"
-              @drop="onDrop($event, category)"
-              @dragover.prevent
-              @dragenter.prevent>
-            </q-avatar>
-          </div>
+            flat
+            bordered
+            @drop="onDrop($event, category)"
+            @dragover.prevent
+            @dragenter.prevent
+            class="column bg-secondary q-pb-sm q-ma-sm avatar-container align-center">
+            <div class="row text-center">
+              <span>{{ category.name }}</span>
+            </div>
+          </q-card>
         </div>
       </div>
       <div class="col-2 main-categories-list self-end">
@@ -786,10 +782,11 @@ export default {
   width: 120px;
   align-items: center;
   justify-content: flex-end;
+  min-height: 100px;
 }
 
 .avatar-container span {
-  font-size: 0.9em;
+  font-size: 1.1em;
 }
 
 .over {

@@ -47,12 +47,17 @@
                 <div
                   v-if="budget.every((item) => item.isCompleted)"
                   class="absolute-right q-pt-sm q-pr-sm">
-                  <q-icon name="fas fa-check" color="green" />
+                  <q-btn
+                    flat
+                    dense
+                    icon="fas fa-check"
+                    color="green"
+                    @click="completeItems(budget)" />
                 </div>
                 <div
                   class="absolute-right q-pt-sm q-pr-sm"
                   v-else>
-                  <q-btn no-caps flat dense label="Done" />
+                  <q-btn no-caps flat dense label="Done" @click="completeItems(budget)" />
                 </div>
               </q-card-actions>
             </q-card>
@@ -206,6 +211,7 @@ export default {
     ...mapActions([
       'createBudget',
       'updateBudget',
+      'updateStatusBudget',
       'deleteBudget',
     ]),
 
@@ -230,6 +236,16 @@ export default {
       this.input.amount = item.amount;
       this.input.description = item.description;
       this.editForm = true;
+    },
+
+    completeItems(items) {
+      items.forEach((item) => {
+        const completedItem = {
+          ...item,
+          isCompleted: !item.isCompleted,
+        };
+        this.updateStatusBudget(completedItem);
+      });
     },
 
     save() {

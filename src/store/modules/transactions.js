@@ -28,9 +28,9 @@ const getters = {
 };
 
 const actions = {
-  async fetchTransactions({ commit }) {
+  async fetchTransactions({ commit }, payload) {
     commit('setTransactionsStatus', itemStatus.LOADING);
-    const response = await getTransactions();
+    const response = await getTransactions(payload);
     if (response.status === 200) {
       const body = await response.json();
       commit('setTransactionsStatus', itemStatus.LOADED);

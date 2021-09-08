@@ -52,8 +52,8 @@ export const createUser = async (name, email, password) => {
 
 /* Transactions section */
 
-export const getTransactions = async () => {
-  const response = await getRequest('http://localhost:9091/api/transactions');
+export const getTransactions = async ({ sorting }) => {
+  const response = await getRequest(`http://localhost:9091/api/transactions?sorting=${sorting}`);
   return response;
 };
 

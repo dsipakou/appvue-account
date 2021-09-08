@@ -169,7 +169,6 @@ export default {
     ...mapActions([
       'fetchAccounts',
       'fetchCategories',
-      'fetchTransactions',
       'fetchUsers',
       'fetchCurrencies',
       'fetchRates',
@@ -179,7 +178,6 @@ export default {
   beforeMount() {
     this.fetchAccounts();
     this.fetchCategories();
-    this.fetchTransactions();
     this.fetchUsers();
     this.fetchCurrencies();
     this.fetchRates();

@@ -89,7 +89,7 @@
             v-model="transactionsSorting"
             map-options
             emit-value
-            style="width: 250px;">
+            style="width: 249px;">
           </q-select>
         </div>
         <div>
@@ -376,18 +376,15 @@ export default {
       updateForm: ref(false),
       categoryTabs: ref(''),
       selectedCurrencies: ref([]),
-      transactionsSorting: ref({
-        label: 'Last Added',
-        value: 'lastAdded',
-      }),
+      transactionsSorting: ref('added'),
       sortingOptions: [
         {
-          label: 'Date',
-          value: 'date',
+          label: 'Last Added',
+          value: 'added',
         },
         {
-          label: 'Last Added',
-          value: 'dateAdded',
+          label: 'By Date',
+          value: 'date',
         },
       ],
     };
@@ -491,6 +488,9 @@ export default {
 
   mounted() {
     this.initCurrencies();
+    this.fetchTransactions({
+      sorting: this.transactionsSorting,
+    });
   },
 
   watch: {
@@ -500,6 +500,12 @@ export default {
 
     ratesList() {
       this.initCurrencies();
+    },
+
+    transactionsSorting() {
+      this.fetchTransactions({
+        sorting: this.transactionsSorting,
+      });
     },
 
     'input.transactionDate': {
@@ -512,6 +518,7 @@ export default {
 
   methods: {
     ...mapActions([
+      'fetchTransactions',
       'createTransaction',
       'deleteTransaction',
       'updateTransaction',

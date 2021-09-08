@@ -22,8 +22,7 @@
         expand-separator
         dense
         label="Additional accounts"
-        class="q-mt-sm row justify-center"
-      >
+        class="q-mt-sm row justify-center">
         <div class="row justify-center q-mt-sm">
           <div
             v-for="account in secondaryAccounts"
@@ -83,6 +82,15 @@
       <div class="header">
         <div>
           <span class="header__title">Latest transactions</span>
+        </div>
+        <div>
+          <q-select
+            :options="sortingOptions"
+            v-model="transactionsSorting"
+            map-options
+            emit-value
+            style="width: 250px;">
+          </q-select>
         </div>
         <div>
           <q-select
@@ -368,6 +376,20 @@ export default {
       updateForm: ref(false),
       categoryTabs: ref(''),
       selectedCurrencies: ref([]),
+      transactionsSorting: ref({
+        label: 'Last Added',
+        value: 'lastAdded',
+      }),
+      sortingOptions: [
+        {
+          label: 'Date',
+          value: 'date',
+        },
+        {
+          label: 'Last Added',
+          value: 'dateAdded',
+        },
+      ],
     };
   },
 

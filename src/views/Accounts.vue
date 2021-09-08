@@ -519,7 +519,6 @@ export default {
     startDrag(evt, account) {
       evt.dataTransfer.setData('fromAccount', account.id);
       evt.target.classList.add('hide');
-      console.log(evt.target.classList);
     },
 
     endDrag(evt) {
@@ -546,7 +545,7 @@ export default {
 }
 
 .hide {
-  transition: 0.01s;
+  transition: 0.001s;
   transform: translateX(-9999px);
 }
 

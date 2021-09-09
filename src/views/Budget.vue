@@ -79,19 +79,34 @@
           <h4>Make your plans</h4>
         </q-card-section>
         <q-card-section>
-          <q-input
-            outlined
-            type="date"
-            stack-label
-            label="Date"
-            v-model="input.budgetDate"
-            />
-        </q-card-section>
-        <q-card-section>
           <q-input outlined stack-label label="Name" v-model="input.title" />
         </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label label="Amount" v-model.number="input.amount" />
+        <q-card-section horizontal class="justify-between">
+          <q-card-section>
+            <q-input outlined stack-label label="Amount" v-model.number="input.amount" />
+          </q-card-section>
+          <q-card-section>
+            <q-input
+              outlined
+              type="date"
+              stack-label
+              label="Date"
+              v-model="input.budgetDate"
+              />
+          </q-card-section>
+          <q-card-section>
+            <q-select
+              outlined
+              label="Category"
+              label-stacked
+              map-options
+              emit-value
+              option-value="id"
+              option-label="name"
+              :options="categories"
+              style="width: 200px;"
+              v-model="input.category" />
+          </q-card-section>
         </q-card-section>
         <q-card-section>
           <q-input
@@ -109,24 +124,39 @@
     </q-dialog>
     <q-dialog v-model="editForm">
       <input type="hidden" v-model="input.id" />
+      <input type="hidden" v-model="input.isCompleted" />
       <q-card style="width: 400px;">
         <q-card-section>
           <h4>Update your plans</h4>
         </q-card-section>
+        <q-card-section horizontal class="justify-between">
+          <q-card-section>
+            <q-input outlined stack-label label="Name" v-model="input.title" />
+          </q-card-section>
+          <q-card-section>
+            <q-input outlined stack-label label="Amount" v-model.number="input.amount" />
+          </q-card-section>
+          <q-card-section>
+            <q-input
+              outlined
+              type="date"
+              stack-label
+              label="Date"
+              v-model="input.budgetDate"
+              />
+          </q-card-section>
+        </q-card-section>
         <q-card-section>
-          <q-input
+          <q-select
             outlined
-            type="date"
-            stack-label
-            label="Date"
-            v-model="input.budgetDate"
-            />
-        </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label label="Name" v-model="input.title" />
-        </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label label="Amount" v-model.number="input.amount" />
+            label="Category"
+            label-stacked
+            map-options
+            emit-value
+            option-value="id"
+            option-label="name"
+            :options="categories"
+            v-model="input.category" />
         </q-card-section>
         <q-card-section>
           <q-input
@@ -181,12 +211,17 @@ export default {
   computed: {
     ...mapGetters([
       'budgetList',
+      'categoryList',
     ]),
 
     currentMonth() {
       return this.budgetList.filter((item) => (
         moment(item.budgetDate).month() === moment().month()
       ));
+    },
+
+    categories() {
+      return this.categoryList.filter((item) => item.isParent);
     },
 
     monthSum() {
@@ -234,7 +269,9 @@ export default {
       this.input.budgetDate = item.budgetDate.substr(0, 10);
       this.input.title = item.title;
       this.input.amount = item.amount;
+      this.input.categoryId = item.categoryId;
       this.input.description = item.description;
+      this.input.isCompleted = item.isCompleted;
       this.editForm = true;
     },
 
@@ -254,8 +291,11 @@ export default {
         budgetDate: this.input.budgetDate,
         title: this.input.title,
         amount: this.input.amount,
+        categoryId: this.input.category,
         description: this.input.description,
       };
+
+      console.log(this.input);
       this.createBudget(budget);
       this.createForm = false;
     },
@@ -266,7 +306,9 @@ export default {
         budgetDate: this.input.budgetDate,
         title: this.input.title,
         amount: this.input.amount,
+        categoryId: this.input.category,
         description: this.input.description,
+        isCompleted: this.input.isCompleted,
       };
       this.updateBudget(budget);
       this.editForm = false;

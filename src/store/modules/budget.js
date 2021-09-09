@@ -47,6 +47,7 @@ const actions = {
   },
 
   async updateBudget({ commit }, payload) {
+    console.log(payload);
     const response = await updateBudget(payload);
     if (response.status === 200) {
       const body = await response.json();

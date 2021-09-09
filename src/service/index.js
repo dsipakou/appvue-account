@@ -277,12 +277,14 @@ export const createBudget = async ({
   budgetDate,
   title,
   amount,
+  categoryId,
   description,
 }) => {
   const response = await postRequest('http://localhost:9091/api/budget',
     {
       budgetDate,
       title,
+      categoryId,
       amount,
       description,
     });
@@ -294,6 +296,7 @@ export const updateBudget = async ({
   budgetDate,
   title,
   amount,
+  categoryId,
   description,
   isCompleted,
 }) => {
@@ -303,6 +306,7 @@ export const updateBudget = async ({
       budgetDate,
       title,
       amount,
+      categoryId,
       description,
       isCompleted,
     });

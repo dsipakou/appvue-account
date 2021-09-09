@@ -9,58 +9,22 @@
             <q-btn round color="primary" label="+" @click="createForm = true"></q-btn>
           </div>
           <div class="row">
-            <q-card
-              v-for="budget in budgetCurrentMonth"
-              :key="budget[0].id"
-              flat
-              class="q-ma-sm monthly-card"
-              >
-              <q-card-section>
-                <div class="text-h6 overflow-hidden">
-                  {{ budget[0].title }}
-                </div>
-                <div class="text-subtitle2">
-                  {{ budget[0].amount }}
-                </div>
-              </q-card-section>
-              <q-card-actions class="align-bottom" align="around">
-                <div v-if="budget.length > 1">
-                  <q-btn
-                    color="primary"
-                    rounded
-                    dense
-                    flat
-                    v-for="(item, index) in budget"
-                    :key="item.id"
-                    @click="budgetItemClick(item)"
-                    :label="index + 1" />
-                </div>
-                <div v-else>
-                  <q-btn
-                    color="primary"
-                    rounded
-                    dense
-                    flat
-                    @click="budgetItemClick(budget[0])"
-                    label="Edit" />
-                </div>
-                <div
-                  v-if="budget.every((item) => item.isCompleted)"
-                  class="absolute-right q-pt-sm q-pr-sm">
-                  <q-btn
-                    flat
-                    dense
-                    icon="fas fa-check"
-                    color="green"
-                    @click="completeItems(budget)" />
-                </div>
-                <div
-                  class="absolute-right q-pt-sm q-pr-sm"
-                  v-else>
-                  <q-btn no-caps flat dense label="Done" @click="completeItems(budget)" />
-                </div>
-              </q-card-actions>
-            </q-card>
+            <div
+              v-for="(category, index) in groupedByCategory"
+              :key="category.name">
+              <q-card
+                class="q-ma-sm monthly-card"
+                @mouseover="hover = index"
+                @mouseleave="hover = -1"
+                :flat="hover !== index"
+                @click="categoryClick(category)">
+                <q-card-section>
+                  <span class="text-h6 overflow-hidden">
+                    {{ category.name }}
+                  </span>
+                </q-card-section>
+              </q-card>
+            </div>
           </div>
         </div>
         <WeekBudget class="col-4 q-px-md" />
@@ -73,6 +37,71 @@
           />
       </div>
     </div>
+    <q-dialog
+      v-model="categoryForm">
+      <q-card style="width: 900px; max-width: 60vw;">
+        <q-card-section>
+          <span class="text-h6">
+            {{ category.name }}
+          </span>
+        </q-card-section>
+        <q-card-section horizontal>
+          <q-card
+            v-for="budget in category.value"
+            :key="budget.value[0].id"
+            flat
+            bordered
+            class="q-ma-lg monthly-card"
+            >
+            <q-card-section>
+              <div class="text-h6 overflow-hidden">
+                {{ budget.value[0].title }}
+              </div>
+              <div class="text-subtitle2">
+                {{ budget.value[0].amount }}
+              </div>
+            </q-card-section>
+            <q-card-actions class="align-bottom" align="around">
+              <div v-if="budget.value.length > 1">
+                <q-btn
+                  color="primary"
+                  rounded
+                  dense
+                  flat
+                  v-for="(item, index) in budget.value"
+                  :key="item.id"
+                  @click="budgetItemClick(item)"
+                  :label="index + 1" />
+              </div>
+              <div v-else>
+                <q-btn
+                  color="primary"
+                  rounded
+                  dense
+                  flat
+                  @click="budgetItemClick(budget.value[0])"
+                  label="Edit" />
+              </div>
+              <div
+                v-if="budget.value.every((item) => item.isCompleted)"
+                class="absolute-right q-pt-sm q-pr-sm">
+                <q-btn
+                  flat
+                  dense
+                  icon="fas fa-check"
+                  color="green"
+                  @click="completeItems(budget.value)" />
+              </div>
+              <div
+                class="absolute-right q-pt-sm q-pr-sm"
+                v-else>
+                <q-btn no-caps flat dense label="Done" @click="completeItems(budget.value)" />
+              </div>
+            </q-card-actions>
+          </q-card>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
     <q-dialog v-model="createForm">
       <q-card style="width: 400px;">
         <q-card-section>
@@ -192,6 +221,7 @@ export default {
     return {
       createForm: ref(false),
       editForm: ref(false),
+      categoryForm: ref(false),
       dateModel: ref(''),
     };
   },
@@ -199,6 +229,8 @@ export default {
   data() {
     return {
       itemsState: {},
+      category: null,
+      hover: -1,
       input: {
         budgetDate: '',
         amount: 0,
@@ -237,8 +269,43 @@ export default {
         acc[item.title] = arr;
         return acc;
       }, {});
-
       return groupedMonth;
+    },
+
+    groupedByCategory() {
+      const groupedMonth = this.currentMonth.reduce((acc, item) => {
+        const arr = acc[item.title] || [];
+        arr.push(item);
+        acc[item.title] = arr;
+        return acc;
+      }, {});
+
+      const categoryClass = {};
+      Object.entries(groupedMonth).forEach((item) => {
+        const { categoryId } = item[1][0];
+        const categoryName = categoryId === null
+          ? 'undefined'
+          : this.categories.find((category) => category.id === categoryId).name;
+        const arr = categoryClass[categoryName] || [];
+        arr.push({ name: item[0], value: item[1] });
+        categoryClass[categoryName] = arr;
+      });
+
+      const groupedList = [];
+      Object.entries(categoryClass).forEach((item) => {
+        const categoryItem = {
+          name: item[0],
+          value: item[1],
+        };
+        if (categoryItem.name === 'undefined') {
+          groupedList.unshift(categoryItem);
+        } else {
+          groupedList.push(categoryItem);
+        }
+      });
+
+      console.log(groupedList);
+      return groupedList;
     },
   },
 
@@ -251,10 +318,6 @@ export default {
     ]),
 
     dateSelected(value) {
-      // console.log(`${year}-${month}-${day}`);
-      // const finalDate = moment(`${year}-${month}-${day}`, 'YYYY-M-D').format('YYYY-MM-DD');
-      // console.log(finalDate);
-
       const selectedDate = moment(value, 'YYYY-MM-DD');
       const fromDate = selectedDate.add(-selectedDate.day(), 'days').format('YYYY/MM/DD');
       const toDate = selectedDate.add(6 - selectedDate.day(), 'days').format('YYYY/MM/DD');
@@ -269,10 +332,15 @@ export default {
       this.input.budgetDate = item.budgetDate.substr(0, 10);
       this.input.title = item.title;
       this.input.amount = item.amount;
-      this.input.categoryId = item.categoryId;
+      this.input.category = item.categoryId;
       this.input.description = item.description;
       this.input.isCompleted = item.isCompleted;
       this.editForm = true;
+    },
+
+    categoryClick(category) {
+      this.category = category;
+      this.categoryForm = true;
     },
 
     completeItems(items) {

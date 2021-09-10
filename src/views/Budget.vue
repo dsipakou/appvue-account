@@ -11,19 +11,82 @@
           <div class="row">
             <div
               v-for="(category, index) in groupedByCategory"
+              class="col-4"
               :key="category.name">
               <q-card
                 class="q-ma-sm monthly-card"
                 @mouseover="hover = index"
                 @mouseleave="hover = -1"
                 :flat="hover !== index"
-                @click="categoryClick(category)">
+                @click="categoryClick(category, index)">
                 <q-card-section>
                   <span class="text-h6 overflow-hidden">
                     {{ category.name }}
                   </span>
                 </q-card-section>
               </q-card>
+              <q-slide-transition>
+                <div class="col-8" v-show="selectedCategory === index">
+                  <q-card
+                    v-for="budget in category.value"
+                    :key="budget.value[0].id"
+                    flat
+                    bordered
+                    class="q-ma-lg monthly-card"
+                    >
+                    <q-card-section>
+                      <div class="text-h6 overflow-hidden">
+                        {{ budget.value[0].title }}
+                      </div>
+                    <div class="text-subtitle2">
+                      {{ budget.value[0].amount }}
+                    </div>
+                    </q-card-section>
+                    <q-card-actions class="align-bottom" align="around">
+                      <div v-if="budget.value.length > 1">
+                        <q-btn
+                          color="primary"
+                          rounded
+                          dense
+                          flat
+                          v-for="(item, index) in budget.value"
+                          :key="item.id"
+                          @click="budgetItemClick(item)"
+                          :label="index + 1" />
+                      </div>
+                      <div v-else>
+                        <q-btn
+                          color="primary"
+                          rounded
+                          dense
+                          flat
+                          @click="budgetItemClick(budget.value[0])"
+                          label="Edit" />
+                      </div>
+                      <div
+                        v-if="budget.value.every((item) => item.isCompleted)"
+                        class="absolute-right q-pt-sm q-pr-sm">
+                        <q-btn
+                          flat
+                          dense
+                          icon="fas fa-check"
+                          color="green"
+                          @click="completeItems(budget.value)" />
+                      </div>
+                      <div
+                        class="absolute-right q-pt-sm q-pr-sm"
+                        v-else>
+                        <q-btn
+                          no-caps
+                          flat
+                          dense
+                          label="Done"
+                          @click="completeItems(budget.value)" />
+                      </div>
+                    </q-card-actions>
+                  </q-card>
+                </div>
+              </q-slide-transition>
             </div>
           </div>
         </div>
@@ -46,59 +109,61 @@
           </span>
         </q-card-section>
         <q-card-section horizontal>
-          <q-card
-            v-for="budget in category.value"
-            :key="budget.value[0].id"
-            flat
-            bordered
-            class="q-ma-lg monthly-card"
-            >
-            <q-card-section>
-              <div class="text-h6 overflow-hidden">
-                {{ budget.value[0].title }}
-              </div>
-              <div class="text-subtitle2">
-                {{ budget.value[0].amount }}
-              </div>
-            </q-card-section>
-            <q-card-actions class="align-bottom" align="around">
-              <div v-if="budget.value.length > 1">
-                <q-btn
-                  color="primary"
-                  rounded
-                  dense
-                  flat
-                  v-for="(item, index) in budget.value"
-                  :key="item.id"
-                  @click="budgetItemClick(item)"
-                  :label="index + 1" />
-              </div>
-              <div v-else>
-                <q-btn
-                  color="primary"
-                  rounded
-                  dense
-                  flat
-                  @click="budgetItemClick(budget.value[0])"
-                  label="Edit" />
-              </div>
-              <div
-                v-if="budget.value.every((item) => item.isCompleted)"
-                class="absolute-right q-pt-sm q-pr-sm">
-                <q-btn
-                  flat
-                  dense
-                  icon="fas fa-check"
-                  color="green"
-                  @click="completeItems(budget.value)" />
-              </div>
-              <div
-                class="absolute-right q-pt-sm q-pr-sm"
-                v-else>
-                <q-btn no-caps flat dense label="Done" @click="completeItems(budget.value)" />
-              </div>
-            </q-card-actions>
-          </q-card>
+          <div>
+            <q-card
+              v-for="budget in category.value"
+              :key="budget.value[0].id"
+              flat
+              bordered
+              class="q-ma-lg monthly-card"
+              >
+              <q-card-section>
+                <div class="text-h6 overflow-hidden">
+                  {{ budget.value[0].title }}
+                </div>
+                <div class="text-subtitle2">
+                  {{ budget.value[0].amount }}
+                </div>
+              </q-card-section>
+              <q-card-actions class="align-bottom" align="around">
+                <div v-if="budget.value.length > 1">
+                  <q-btn
+                    color="primary"
+                    rounded
+                    dense
+                    flat
+                    v-for="(item, index) in budget.value"
+                    :key="item.id"
+                    @click="budgetItemClick(item)"
+                    :label="index + 1" />
+                </div>
+                <div v-else>
+                  <q-btn
+                    color="primary"
+                    rounded
+                    dense
+                    flat
+                    @click="budgetItemClick(budget.value[0])"
+                    label="Edit" />
+                </div>
+                <div
+                  v-if="budget.value.every((item) => item.isCompleted)"
+                  class="absolute-right q-pt-sm q-pr-sm">
+                  <q-btn
+                    flat
+                    dense
+                    icon="fas fa-check"
+                    color="green"
+                    @click="completeItems(budget.value)" />
+                </div>
+                <div
+                  class="absolute-right q-pt-sm q-pr-sm"
+                  v-else>
+                  <q-btn no-caps flat dense label="Done" @click="completeItems(budget.value)" />
+                </div>
+              </q-card-actions>
+            </q-card>
+          </div>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -231,6 +296,7 @@ export default {
       itemsState: {},
       category: null,
       hover: -1,
+      selectedCategory: -1,
       input: {
         budgetDate: '',
         amount: 0,
@@ -338,9 +404,9 @@ export default {
       this.editForm = true;
     },
 
-    categoryClick(category) {
+    categoryClick(category, index) {
       this.category = category;
-      this.categoryForm = true;
+      this.selectedCategory = this.selectedCategory === index ? -1 : index;
     },
 
     completeItems(items) {

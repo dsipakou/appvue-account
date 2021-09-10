@@ -1,72 +1,71 @@
 <template>
-  <div>
-    <div class="row justify-between">
+  <div class="row justify-between">
+    <div>
+      <h5>This week</h5>
+    </div>
+    <div class="align-center justify-right">
       <div>
-        <h5>This week</h5>
+        <span class="q-mr-sm">Planned</span>
+        <span>{{ spentSum }}</span>
+        <span class="q-mx-sm">/</span>
+        <span class="text-weight-bold">{{ plannedSum }}</span>
       </div>
-      <div class="align-center justify-right">
-        <div>
-          <span class="q-mr-sm">Planned</span>
-          <span>{{ spentSum }}</span>
-          <span class="q-mx-sm">/</span>
-          <span class="text-weight-bold">{{ plannedSum }}</span>
-        </div>
-        <div class="row justify-between">
-          <span>Unplanned</span>
-          <span class="q-ml-sm">{{ unplannedSum }}</span>
-        </div>
-        <q-separator />
+      <div class="row justify-between">
+        <span>Unplanned</span>
+        <span class="q-ml-sm">{{ unplannedSum }}</span>
+      </div>
+      <q-separator />
         <div class="row justify-between">
           <span>Overall</span>
           <span class="q-ml-sm text-weight-bold">{{ overallSum }}</span>
         </div>
+    </div>
+  </div>
+  <div>
+    <q-linear-progress
+      stripe
+      rounded
+      size="25px"
+      :value="progressBarValue"
+      color="primary"
+      class="q-mt-sm" >
+      <div class="absolute-center flex flex-center">
+        <q-badge
+          color="white"
+          text-color="primary"
+          :label="budgetPercentRemains" />
       </div>
-    </div>
-    <div>
-      <q-linear-progress
-        stripe
-        rounded
-        size="25px"
-        :value="progressBarValue"
-        color="primary"
-        class="q-mt-sm" >
-        <div class="absolute-center flex flex-center">
-          <q-badge
-            color="white"
-            text-color="primary"
-            :label="budgetPercentRemains" />
-        </div>
-      </q-linear-progress>
-    </div>
-    <div class="row">
-      <div class="col">
-        <q-card
-          flat
-          bordered
-          class="q-mt-lg">
-          <q-card-section>
-            <q-card
-              v-for="item in currentWeek"
-              :key="item.id"
-              class="q-my-md"
-              :class="item.isCompleted ? 'completed' : ''"
-              @mouseover="setItemOver(item.id, true)"
-              @mouseleave="setItemOver(item.id, false)"
-              flat
-              bordered>
-              <q-card-section horizontal class="justify-between">
-                <div
-                  class="absolute-left justify-between"
-                  style="z-index: 1;"
-                  v-if="itemsState[item.id]">
-                  <q-btn
-                    flat
-                    outlined
-                    no-caps
-                    size="sm"
-                    @click="completeItem(item)"
-                    :label="item.isCompleted ? 'Incomplete' : 'Complete'"
-                    dense />
+    </q-linear-progress>
+  </div>
+  <div class="row">
+    <div class="col">
+      <q-card
+        flat
+        bordered
+        class="q-mt-lg">
+        <q-card-section>
+          <q-card
+            v-for="item in currentWeek"
+            :key="item.id"
+            class="q-my-md"
+            :class="item.isCompleted ? 'completed' : ''"
+            @mouseover="setItemOver(item.id, true)"
+            @mouseleave="setItemOver(item.id, false)"
+            flat
+            bordered>
+            <q-card-section horizontal class="justify-between">
+              <div
+                class="absolute-left justify-between"
+                style="z-index: 1;"
+                v-if="itemsState[item.id]">
+                <q-btn
+                  flat
+                  outlined
+                  no-caps
+                  size="sm"
+                  @click="completeItem(item)"
+                  :label="item.isCompleted ? 'Incomplete' : 'Complete'"
+                  dense />
                   <q-btn
                     flat
                     outlined
@@ -75,38 +74,37 @@
                     dense
                     label="Delete"
                     @click="deleteItem(item.id)" />
-                  <q-btn
-                    flat
-                    outlined
-                    no-caps
-                    size="sm"
-                    dense
-                    label="Edit" />
-                </div>
-                <q-card-section>
-                  {{ item.title }}
-                </q-card-section>
-                <q-card-section>
-                  <span class="text-caption">
-                    {{ spentOnItem(item) }}
-                  </span>
-                  <span class="q-mx-xs">/</span>
-                  <span class="text-weight-bold">
-                    {{ item.amount }}
-                  </span>
-                </q-card-section>
-              </q-card-section>
-              <div class="q-mb-xs q-px-xs">
-                <q-linear-progress
-                  rounded
-                  size="5px"
-                  :value="spentOnItem(item) / item.amount"
-                  :color="spentOnItem(item) / item.amount > 1 ? 'red' : 'secondary'" />
+                    <q-btn
+                      flat
+                      outlined
+                      no-caps
+                      size="sm"
+                      dense
+                      label="Edit" />
               </div>
-            </q-card>
-          </q-card-section>
-        </q-card>
-      </div>
+              <q-card-section>
+                {{ item.title }}
+              </q-card-section>
+              <q-card-section>
+                <span class="text-caption">
+                  {{ spentOnItem(item) }}
+                </span>
+                <span class="q-mx-xs">/</span>
+                <span class="text-weight-bold">
+                  {{ item.amount }}
+                </span>
+              </q-card-section>
+            </q-card-section>
+            <div class="q-mb-xs q-px-xs">
+              <q-linear-progress
+                rounded
+                size="5px"
+                :value="spentOnItem(item) / item.amount"
+                :color="spentOnItem(item) / item.amount > 1 ? 'red' : 'secondary'" />
+            </div>
+          </q-card>
+        </q-card-section>
+      </q-card>
     </div>
   </div>
 </template>

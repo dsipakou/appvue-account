@@ -3,94 +3,13 @@
     <div class="q-pa-md">
       <div class="row q-mt-lg justify-center">
         <div class="col-8 q-px-md">
-          <div class="row justify-between">
-            <h5>Monthly Budget</h5>
-            <span class="text-subtitle2">Planned {{ monthSum }}</span>
-            <q-btn round color="primary" label="+" @click="createForm = true"></q-btn>
-          </div>
-          <div class="row">
-            <div
-              v-for="(category, index) in groupedByCategory"
-              class="col-4"
-              :key="category.name">
-              <q-card
-                class="q-ma-sm monthly-card"
-                @mouseover="hover = index"
-                @mouseleave="hover = -1"
-                :flat="hover !== index"
-                @click="categoryClick(category, index)">
-                <q-card-section>
-                  <span class="text-h6 overflow-hidden">
-                    {{ category.name }}
-                  </span>
-                </q-card-section>
-              </q-card>
-              <q-slide-transition>
-                <div class="col-8" v-show="selectedCategory === index">
-                  <q-card
-                    v-for="budget in category.value"
-                    :key="budget.value[0].id"
-                    flat
-                    bordered
-                    class="q-ma-lg monthly-card"
-                    >
-                    <q-card-section>
-                      <div class="text-h6 overflow-hidden">
-                        {{ budget.value[0].title }}
-                      </div>
-                    <div class="text-subtitle2">
-                      {{ budget.value[0].amount }}
-                    </div>
-                    </q-card-section>
-                    <q-card-actions class="align-bottom" align="around">
-                      <div v-if="budget.value.length > 1">
-                        <q-btn
-                          color="primary"
-                          rounded
-                          dense
-                          flat
-                          v-for="(item, index) in budget.value"
-                          :key="item.id"
-                          @click="budgetItemClick(item)"
-                          :label="index + 1" />
-                      </div>
-                      <div v-else>
-                        <q-btn
-                          color="primary"
-                          rounded
-                          dense
-                          flat
-                          @click="budgetItemClick(budget.value[0])"
-                          label="Edit" />
-                      </div>
-                      <div
-                        v-if="budget.value.every((item) => item.isCompleted)"
-                        class="absolute-right q-pt-sm q-pr-sm">
-                        <q-btn
-                          flat
-                          dense
-                          icon="fas fa-check"
-                          color="green"
-                          @click="completeItems(budget.value)" />
-                      </div>
-                      <div
-                        class="absolute-right q-pt-sm q-pr-sm"
-                        v-else>
-                        <q-btn
-                          no-caps
-                          flat
-                          dense
-                          label="Done"
-                          @click="completeItems(budget.value)" />
-                      </div>
-                    </q-card-actions>
-                  </q-card>
-                </div>
-              </q-slide-transition>
-            </div>
-          </div>
+          <MonthlyBudget
+            :budgetItems="budgetList"
+            :categoryItems="categoryList"/>
         </div>
-        <WeekBudget class="col-4 q-px-md" />
+        <div class="col-4 q-px-md">
+          <WeekBudget class="col-4 q-px-md" />
+        </div>
       </div>
       <div>
         <q-date
@@ -274,12 +193,14 @@ import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import moment from 'moment';
 import WeekBudget from './budget/WeekBudget.vue';
+import MonthlyBudget from './budget/MonthlyBudget.vue';
 
 export default {
   name: 'Budget',
 
   components: {
     WeekBudget,
+    MonthlyBudget,
   },
 
   setup() {
@@ -370,7 +291,6 @@ export default {
         }
       });
 
-      console.log(groupedList);
       return groupedList;
     },
   },
@@ -391,6 +311,18 @@ export default {
         from: fromDate,
         to: toDate,
       };
+    },
+
+    chunked(items, len) {
+      const chunks = [];
+      let i = 0;
+      const n = items.length;
+
+      while (i < n) {
+        chunks.push(items.slice(i, i += len));
+      }
+
+      return chunks;
     },
 
     budgetItemClick(item) {
@@ -455,11 +387,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.monthly-card {
-  width: 190px;
-  height: 150px;
-  font-size: 1.2em;
-  justify-content: center;
-}
-</style>

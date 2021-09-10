@@ -17,22 +17,23 @@
         @mouseover="hover = colIndex + rowIndex * 3"
         @mouseleave="hover = -1"
         :flat="hover !== colIndex + rowIndex * 3"
-        @click="categoryClick(category, colIndex + rowIndex * 3)">
+        @click="categoryClick(category, colIndex, rowIndex)">
         <q-card-section>
           <span class="text-h6 overflow-hidden">
             {{ category.name }}
           </span>
         </q-card-section>
       </q-card>
+    </div>
+    <div class="row">
       <q-slide-transition>
-        <div class="col-8" v-show="selectedCategory === colIndex + rowIndex * 3">
+        <div class="row bg-white" v-show="rowIndex === row">
           <q-card
-            v-for="budget in category.value"
+            v-for="budget in selectedCategory?.value"
             :key="budget.value[0].id"
             flat
             bordered
-            class="q-ma-lg monthly-card"
-            >
+            class="q-ma-lg monthly-card">
             <q-card-section>
               <div class="text-h6 overflow-hidden">
                 {{ budget.value[0].title }}
@@ -109,7 +110,11 @@ export default {
   data() {
     return {
       hover: -1,
+      row: -1,
+      column: -1,
       clicked: -1,
+      selectedCategory: null,
+      selectedCategoryIndex: -1,
     };
   },
 
@@ -173,9 +178,19 @@ export default {
       return chunks;
     },
 
-    categoryClick(category, index) {
-      this.category = category;
-      this.selectedCategory = this.selectedCategory === index ? -1 : index;
+    categoryClick(category, column, row) {
+      this.selectedCategory = category;
+      this.row = row;
+      this.column = column;
+      const index = column + row * 3;
+      if (this.selectedCategoryIndex === index) {
+        this.selectedCategoryIndex = -1;
+        this.selectedCategory = null;
+        this.row = -1;
+        this.column = -1;
+      } else {
+        this.selectedCategoryIndex = index;
+      }
     },
   },
 };

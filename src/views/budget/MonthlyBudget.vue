@@ -89,12 +89,27 @@
       </q-slide-transition>
     </div>
   </div>
+  <q-dialog v-model="createForm">
+    <AddForm :categories="categories" :createBudget="createBudget" />
+  </q-dialog>
 </template>
 <script>
+import { ref } from 'vue';
 import moment from 'moment';
+import AddForm from './forms/AddForm.vue';
 
 export default {
   name: 'Monthly Budget',
+
+  components: {
+    AddForm,
+  },
+
+  setup() {
+    return {
+      createForm: ref(false),
+    };
+  },
 
   props: {
     budgetItems: {
@@ -103,6 +118,10 @@ export default {
     },
     categoryItems: {
       type: Array,
+      required: true,
+    },
+    createBudget: {
+      type: Function,
       required: true,
     },
   },
@@ -127,6 +146,12 @@ export default {
       return this.budgetItems.filter((item) => (
         moment(item.budgetDate).month() === moment().month()
       ));
+    },
+
+    monthSum() {
+      return this.currentMonth.reduce((acc, item) => (
+        acc + item.amount
+      ), 0);
     },
 
     groupedByCategory() {

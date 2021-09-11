@@ -5,7 +5,8 @@
         <div class="col-8 q-px-md">
           <MonthlyBudget
             :budgetItems="budgetList"
-            :categoryItems="categoryList"/>
+            :categoryItems="categoryList"
+            :createBudget="createBudget" />
         </div>
         <div class="col-4 q-px-md">
           <WeekBudget class="col-4 q-px-md" />
@@ -86,55 +87,6 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    <q-dialog v-model="createForm">
-      <q-card style="width: 400px;">
-        <q-card-section>
-          <h4>Make your plans</h4>
-        </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label label="Name" v-model="input.title" />
-        </q-card-section>
-        <q-card-section horizontal class="justify-between">
-          <q-card-section>
-            <q-input outlined stack-label label="Amount" v-model.number="input.amount" />
-          </q-card-section>
-          <q-card-section>
-            <q-input
-              outlined
-              type="date"
-              stack-label
-              label="Date"
-              v-model="input.budgetDate"
-              />
-          </q-card-section>
-          <q-card-section>
-            <q-select
-              outlined
-              label="Category"
-              label-stacked
-              map-options
-              emit-value
-              option-value="id"
-              option-label="name"
-              :options="categories"
-              style="width: 200px;"
-              v-model="input.category" />
-          </q-card-section>
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            outlined
-            stack-label
-            label="Description"
-            type="textarea"
-            v-model="input.description"
-            />
-        </q-card-section>
-        <q-card-actions align="center" class="action-buttons">
-          <q-btn color="primary" rounded style="width: 100px;" @click="save()">Save</q-btn>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
     <q-dialog v-model="editForm">
       <input type="hidden" v-model="input.id" />
       <input type="hidden" v-model="input.isCompleted" />
@@ -205,7 +157,6 @@ export default {
 
   setup() {
     return {
-      createForm: ref(false),
       editForm: ref(false),
       categoryForm: ref(false),
       dateModel: ref(''),
@@ -361,7 +312,6 @@ export default {
         description: this.input.description,
       };
 
-      console.log(this.input);
       this.createBudget(budget);
       this.createForm = false;
     },

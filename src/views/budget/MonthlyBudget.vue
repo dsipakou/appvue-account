@@ -109,6 +109,8 @@ import EditForm from './forms/EditForm.vue';
 export default {
   name: 'Monthly Budget',
 
+  inheritAttrs: false,
+
   components: {
     AddForm,
     EditForm,

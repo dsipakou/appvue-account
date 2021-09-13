@@ -54,6 +54,8 @@
 export default {
   name: 'EditForm',
 
+  inheritAttrs: false,
+
   props: {
     updateBudget: {
       type: Function,

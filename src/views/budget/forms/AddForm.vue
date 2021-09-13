@@ -52,6 +52,8 @@
 export default {
   name: 'AddForm',
 
+  inheritAttrs: false,
+
   props: {
     categories: {
       type: Array,

@@ -116,6 +116,8 @@ import moment from 'moment';
 export default {
   name: 'WeekBudget',
 
+  inheritAttrs: false,
+
   data() {
     return {
       itemsState: {},

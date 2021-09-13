@@ -23,6 +23,11 @@
             {{ category.name }}
           </span>
         </q-card-section>
+        <q-card-section>
+          <span class="text-h3">
+            {{ category.amount }}
+          </span>
+        </q-card-section>
       </q-card>
     </div>
     <div class="row" style="width: 100%;">
@@ -197,7 +202,11 @@ export default {
           ? 'undefined'
           : this.categories.find((category) => category.id === categoryId).name;
         const arr = categoryClass[categoryName] || [];
-        arr.push({ name: item[0], value: item[1] });
+        arr.push({
+          name: item[0],
+          value: item[1],
+          amount: item[1].reduce((acc, subItem) => acc + subItem.amount, 0),
+        });
         categoryClass[categoryName] = arr;
       });
 
@@ -206,6 +215,7 @@ export default {
         const categoryItem = {
           name: item[0],
           value: item[1],
+          amount: item[1].reduce((acc, subItem) => acc + subItem.amount, 0),
         };
         if (categoryItem.name === 'undefined') {
           groupedList.unshift(categoryItem);
@@ -213,6 +223,8 @@ export default {
           groupedList.push(categoryItem);
         }
       });
+
+      console.log(groupedList);
 
       return groupedList;
     },
@@ -281,8 +293,8 @@ export default {
 </script>
 <style scoped>
 .monthly-card {
-  width: 190px;
-  height: 150px;
+  width: 200px;
+  height: 180px;
   font-size: 1.2em;
   justify-content: center;
 }

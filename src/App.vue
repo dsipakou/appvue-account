@@ -99,6 +99,11 @@
           to="/categories"
           exact
           clickable>
+          <q-item-section avatar>
+              <q-avatar>
+                <img src="../dist/icons/categories.png" />
+              </q-avatar>
+          </q-item-section>
           <q-item-section>
             <q-item-label>
               Categories

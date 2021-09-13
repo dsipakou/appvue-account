@@ -10,12 +10,13 @@
     :key="rowIndex">
     <div
       v-for="(category, colIndex) in chunk"
-      class="col-4"
+      class="col-4 align-center"
       :key="category.name">
       <q-card
         class="q-ma-sm monthly-card"
         @mouseover="hover = colIndex + rowIndex * 3"
         @mouseleave="hover = -1"
+        :class="category.name === selectedCategoryName ? 'bg-blue-grey-4 text-white' : ''"
         :flat="hover !== colIndex + rowIndex * 3"
         @click="categoryClick(category.name, colIndex, rowIndex)">
         <q-card-section>
@@ -29,9 +30,13 @@
           </span>
         </q-card-section>
       </q-card>
+      <div
+        class="arrow text-blue-grey-4"
+        v-show="category.name === selectedCategoryName">
+      </div>
     </div>
-    <div class="row" style="width: 100%;">
-      <div class="row bg-white" v-show="rowIndex === row">
+    <div class="row justify-center">
+      <div class="row bg-blue-grey-4 justify-center sub-categories" v-show="rowIndex === row">
         <q-card
           v-for="budget in selectedCategoryItems"
           :key="budget.value[0].id"
@@ -297,5 +302,18 @@ export default {
   height: 180px;
   font-size: 1.2em;
   justify-content: center;
+}
+
+.arrow {
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 15px solid;
+  margin: 0 70px;
+  width: 50px;
+}
+
+.sub-categories {
+  width: 100%;
+  border-radius: 10px;
 }
 </style>

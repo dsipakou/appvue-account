@@ -52,7 +52,7 @@
             @dragover.prevent
             @dragenter.prevent
             class="column bg-secondary q-pb-sm q-ma-sm avatar-container align-center">
-            <div class="row text-center">
+            <div class="row text-center text-white text-weight-bolder">
               <span>{{ category.name }}</span>
             </div>
           </q-card>

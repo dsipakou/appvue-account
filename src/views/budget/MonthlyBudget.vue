@@ -35,7 +35,7 @@
         v-show="category.name === selectedCategoryName">
       </div>
     </div>
-    <div class="row justify-center">
+    <div class="row justify-center" style="width: 100%;">
       <div class="row bg-blue-grey-4 justify-center sub-categories" v-show="rowIndex === row">
         <q-card
           v-for="budget in selectedCategoryItems"

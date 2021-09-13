@@ -71,6 +71,7 @@ export default {
         amount: 0,
         title: '',
         description: '',
+        categoryId: 0,
       },
     };
   },

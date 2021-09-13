@@ -92,22 +92,32 @@
   <q-dialog v-model="createForm">
     <AddForm :categories="categories" :createBudget="createBudget" />
   </q-dialog>
+  <q-dialog v-model="editForm">
+    <EditForm
+    :categories="categories"
+    :item="selectedBudget"
+    :updateBudget="updateBudget"
+    :deleteBudget="deleteBudget" />
+  </q-dialog>
 </template>
 <script>
 import { ref } from 'vue';
 import moment from 'moment';
 import AddForm from './forms/AddForm.vue';
+import EditForm from './forms/EditForm.vue';
 
 export default {
   name: 'Monthly Budget',
 
   components: {
     AddForm,
+    EditForm,
   },
 
   setup() {
     return {
       createForm: ref(false),
+      editForm: ref(false),
     };
   },
 
@@ -116,11 +126,28 @@ export default {
       type: Array,
       required: true,
     },
+
     categoryItems: {
       type: Array,
       required: true,
     },
+
     createBudget: {
+      type: Function,
+      required: true,
+    },
+
+    updateBudget: {
+      type: Function,
+      required: true,
+    },
+
+    deleteBudget: {
+      type: Function,
+      required: true,
+    },
+
+    updateStatusBudget: {
       type: Function,
       required: true,
     },
@@ -133,6 +160,7 @@ export default {
       column: -1,
       clicked: -1,
       selectedCategory: null,
+      selectedBudget: {},
       selectedCategoryIndex: -1,
     };
   },
@@ -207,7 +235,9 @@ export default {
       this.selectedCategory = category;
       this.row = row;
       this.column = column;
+
       const index = column + row * 3;
+
       if (this.selectedCategoryIndex === index) {
         this.selectedCategoryIndex = -1;
         this.selectedCategory = null;
@@ -216,6 +246,27 @@ export default {
       } else {
         this.selectedCategoryIndex = index;
       }
+    },
+
+    budgetItemClick(item) {
+      this.selectedBudget.id = item.id;
+      this.selectedBudget.budgetDate = item.budgetDate.substr(0, 10);
+      this.selectedBudget.title = item.title;
+      this.selectedBudget.amount = item.amount;
+      this.selectedBudget.categoryId = item.categoryId;
+      this.selectedBudget.description = item.description;
+      this.selectedBudget.isCompleted = item.isCompleted;
+      this.editForm = true;
+    },
+
+    completeItems(items) {
+      items.forEach((item) => {
+        const completedItem = {
+          ...item,
+          isCompleted: !item.isCompleted,
+        };
+        this.updateStatusBudget(completedItem);
+      });
     },
   },
 };

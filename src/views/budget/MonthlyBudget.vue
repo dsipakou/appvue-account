@@ -20,28 +20,27 @@
           ? 'bg-blue-grey-4 text-white' : ''"
         :flat="hover !== colIndex + rowIndex * 3"
         @click="categoryClick(category.name, colIndex, rowIndex)">
-        <div class="q-pl-sm">
+        <q-card-section>
           <span class="text-h6 overflow-hidden">
             {{ category.name }}
           </span>
-        </div>
-        <div class="q-pl-lg">
-          <div class="text-h4">
-            {{ category.amount }}
-          </div>
-          <div>
+        </q-card-section>
+        <div>
+          <div class="flex flex-center">
             <q-circular-progress
               show-value
-              class="text-black q-ma-md"
+              class="text-black q-pb-sm"
               :value="getUsage(category).usagePercent"
-              size="100px"
-              :color="getUsage(category).usagePercent >= 100 ? 'red-5' : 'light-blue'"
-              track-color="grey-2"
+              size="120px"
+              :color="getUsage(category).mainColor"
+              :track-color="getUsage(category).trackColor"
               thickness="0.2">
-              <div class="circular-inner text-subtitle1">
+              <div class="circular-inner text-subtitle1 text-blue-grey-8">
                 {{ getUsage(category).usageAmount }}
               </div>
-              <div class="circular-inner text-subtitle2">spent</div>
+              <div class="circular-inner text-h5 text-weight-bold">
+                {{ category.amount }}
+              </div>
             </q-circular-progress>
           </div>
         </div>
@@ -276,13 +275,32 @@ export default {
         const usageAmount = this.budgetUsage.find((item) => (
           item.name === category.name
         )).amount.toFixed(2);
-        const usagePercent = Math.floor((usageAmount * 100) / category.amount);
+        let usagePercent = Math.floor((usageAmount * 100) / category.amount);
+        let mainColor = '';
+        let trackColor = '';
+        if (usagePercent > 100) {
+          const grade = Math.floor((usagePercent % 100) / 10);
+          mainColor = `red-${grade + 4}`;
+          trackColor = `red-${grade + 1}`;
+          console.log(trackColor);
+          usagePercent %= 100;
+        } else {
+          mainColor = `green-${Math.floor(usagePercent / 10) + 1}`;
+          trackColor = 'grey-2';
+        }
         return {
           usageAmount,
           usagePercent,
+          mainColor,
+          trackColor,
         };
       }
-      return { usageAmount: 0, usagePercent: 0 };
+      return {
+        usageAmount: 0,
+        usagePercent: 0,
+        className: '',
+        trackColor: '',
+      };
     },
 
     categoryClick(categoryName, column, row) {
@@ -331,7 +349,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   width: 200px;
-  height: 250px;
+  height: 220px;
   cursor: pointer;
   -webkit-user-select: none;
 }

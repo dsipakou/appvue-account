@@ -2,6 +2,7 @@
 
 import {
   getBudget,
+  getBudgetUsage,
   createBudget,
   updateBudget,
   deleteBudget,
@@ -10,12 +11,14 @@ import {
 const state = {
   budget: {
     items: [],
+    usage: [],
     isLoading: false,
   },
 };
 
 const getters = {
   budgetList: (state) => state.budget.items,
+  budgetUsage: (state) => state.budget.usage,
   isBudgetListLoading: (state) => state.budget.isLoading,
 };
 
@@ -28,6 +31,16 @@ const actions = {
       commit('setBudgetLoading', false);
       commit('setBudget', body);
     }
+  },
+
+  async fetchBudgetUsage({ commit }, payload) {
+    commit('setBudgetLoading', true);
+    const response = await getBudgetUsage(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setBudgetUsage', body);
+    }
+    commit('setBudgetLoading', false);
   },
 
   async createBudget({ commit }, payload) {
@@ -47,7 +60,6 @@ const actions = {
   },
 
   async updateBudget({ commit }, payload) {
-    console.log(payload);
     const response = await updateBudget(payload);
     if (response.status === 200) {
       const body = await response.json();
@@ -66,6 +78,10 @@ const actions = {
 const mutations = {
   setBudget(state, budget) {
     state.budget.items = budget;
+  },
+
+  setBudgetUsage(state, budget) {
+    state.budget.usage = budget;
   },
 
   createBudget(state, budget) {

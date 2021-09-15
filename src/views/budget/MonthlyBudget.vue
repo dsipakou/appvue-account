@@ -26,9 +26,22 @@
           </span>
         </q-card-section>
         <q-card-section>
-          <span class="text-h3">
+          <div class="text-h4">
             {{ category.amount }}
-          </span>
+          </div>
+          <q-circular-progress
+            show-value
+            class="text-black q-ma-md"
+            :value="getUsage(category).usagePercent"
+            size="100px"
+            :color="getUsage(category).usagePercent >= 100 ? 'red-5' : 'light-blue'"
+            track-color="grey-2"
+            thickness="0.1"
+          >
+          <span class="text-subtitle1">{{ getUsage(category).usageAmount }}</span>
+          </q-circular-progress>
+            <div>
+            </div>
         </q-card-section>
       </q-card>
       <div
@@ -155,6 +168,11 @@ export default {
       required: true,
     },
 
+    budgetUsage: {
+      type: Array,
+      required: true,
+    },
+
     updateStatusBudget: {
       type: Function,
       required: true,
@@ -227,8 +245,6 @@ export default {
         }
       });
 
-      console.log(groupedList);
-
       return groupedList;
     },
 
@@ -236,7 +252,6 @@ export default {
       const filteredCategories = this.groupedByCategory.find((item) => (
         item.name === this.selectedCategoryName
       ));
-      console.log(filteredCategories);
       return filteredCategories?.value;
     },
   },
@@ -252,6 +267,20 @@ export default {
       }
 
       return chunks;
+    },
+
+    getUsage(category) {
+      if (this.budgetUsage.length > 0) {
+        const usageAmount = this.budgetUsage.find((item) => (
+          item.name === category.name
+        )).amount.toFixed(2);
+        const usagePercent = Math.floor((usageAmount * 100) / category.amount);
+        return {
+          usageAmount,
+          usagePercent,
+        };
+      }
+      return { usageAmount: 0, usagePercent: 0 };
     },
 
     categoryClick(categoryName, column, row) {
@@ -300,7 +329,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   width: 200px;
-  height: 180px;
+  height: 250px;
   cursor: pointer;
   -webkit-user-select: none;
 }

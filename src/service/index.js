@@ -291,6 +291,14 @@ export const createBudget = async ({
   return response;
 };
 
+export const getBudgetUsage = async ({
+  dateFrom,
+  dateTo,
+}) => {
+  const response = await getRequest(`http://localhost:9091/api/budget/period?dateFrom=${dateFrom}&dateTo=${dateTo}`);
+  return response;
+};
+
 export const updateBudget = async ({
   id,
   budgetDate,

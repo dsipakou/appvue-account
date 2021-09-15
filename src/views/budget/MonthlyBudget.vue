@@ -16,7 +16,8 @@
         class="q-ma-sm monthly-card"
         @mouseover="hover = colIndex + rowIndex * 3"
         @mouseleave="hover = -1"
-        :class="category.name === selectedCategoryName ? 'bg-blue-grey-4 text-white' : ''"
+        :class="category.name === selectedCategoryName && selectedCategoryIndex >= 0
+          ? 'bg-blue-grey-4 text-white' : ''"
         :flat="hover !== colIndex + rowIndex * 3"
         @click="categoryClick(category.name, colIndex, rowIndex)">
         <q-card-section>
@@ -32,7 +33,7 @@
       </q-card>
       <div
         class="arrow text-blue-grey-4"
-        v-show="category.name === selectedCategoryName">
+        v-show="category.name === selectedCategoryName && selectedCategoryIndex >= 0">
       </div>
     </div>
     <div class="row justify-center" style="width: 100%;">
@@ -40,18 +41,19 @@
         <q-card
           v-for="budget in selectedCategoryItems"
           :key="budget.value[0].id"
+          :class="budget.value.every((item) => item.isCompleted) ? 'bg-blue-grey-3': ''"
           flat
           bordered
-          class="q-ma-lg monthly-card">
+          class="q-ma-lg monthly-card--sub">
           <q-card-section>
-            <div class="text-h6 overflow-hidden">
+            <div class="text-subtitle1 text-weight-bold overflow-hidden">
               {{ budget.value[0].title }}
             </div>
-            <div class="text-subtitle2">
+            <div class="text-h6">
               {{ budget.value[0].amount }}
             </div>
           </q-card-section>
-          <q-card-actions class="align-bottom" align="around">
+          <q-card-actions style="max-height: 40px;" align="around">
             <div v-if="budget.value.length > 1">
               <q-btn
                 color="primary"
@@ -68,29 +70,25 @@
                 color="primary"
                 rounded
                 dense
+                no-caps
                 flat
                 @click="budgetItemClick(budget.value[0])"
                 label="Edit" />
+              <q-btn
+                :color="budget.value.every((item) => item.isCompleted) ? 'negative': 'secondary'"
+                rounded
+                dense
+                no-caps
+                flat
+                :label="budget.value.every((item) => item.isCompleted) ? 'Incomplete' : 'Complete'"
+                @click=completeItems(budget.value) />
             </div>
             <div
               v-if="budget.value.every((item) => item.isCompleted)"
               class="absolute-right q-pt-sm q-pr-sm">
-              <q-btn
-                flat
-                dense
-                icon="fas fa-check"
-                color="green"
-                @click="completeItems(budget.value)" />
-            </div>
-            <div
-              class="absolute-right q-pt-sm q-pr-sm"
-              v-else>
-              <q-btn
-                no-caps
-                flat
-                dense
-                label="Done"
-                @click="completeItems(budget.value)" />
+              <q-icon
+                name="fas fa-check"
+                color="green" />
             </div>
           </q-card-actions>
         </q-card>
@@ -298,10 +296,21 @@ export default {
 </script>
 <style scoped>
 .monthly-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 200px;
   height: 180px;
-  font-size: 1.2em;
-  justify-content: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+}
+
+.monthly-card--sub {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 180px;
+  height: 160px;
 }
 
 .arrow {

@@ -20,29 +20,31 @@
           ? 'bg-blue-grey-4 text-white' : ''"
         :flat="hover !== colIndex + rowIndex * 3"
         @click="categoryClick(category.name, colIndex, rowIndex)">
-        <q-card-section>
+        <div class="q-pl-sm">
           <span class="text-h6 overflow-hidden">
             {{ category.name }}
           </span>
-        </q-card-section>
-        <q-card-section>
+        </div>
+        <div class="q-pl-lg">
           <div class="text-h4">
             {{ category.amount }}
           </div>
-          <q-circular-progress
-            show-value
-            class="text-black q-ma-md"
-            :value="getUsage(category).usagePercent"
-            size="100px"
-            :color="getUsage(category).usagePercent >= 100 ? 'red-5' : 'light-blue'"
-            track-color="grey-2"
-            thickness="0.1"
-          >
-          <span class="text-subtitle1">{{ getUsage(category).usageAmount }}</span>
-          </q-circular-progress>
-            <div>
-            </div>
-        </q-card-section>
+          <div>
+            <q-circular-progress
+              show-value
+              class="text-black q-ma-md"
+              :value="getUsage(category).usagePercent"
+              size="100px"
+              :color="getUsage(category).usagePercent >= 100 ? 'red-5' : 'light-blue'"
+              track-color="grey-2"
+              thickness="0.2">
+              <div class="circular-inner text-subtitle1">
+                {{ getUsage(category).usageAmount }}
+              </div>
+              <div class="circular-inner text-subtitle2">spent</div>
+            </q-circular-progress>
+          </div>
+        </div>
       </q-card>
       <div
         class="arrow text-blue-grey-4"
@@ -353,5 +355,11 @@ export default {
 .sub-categories {
   width: 100%;
   border-radius: 10px;
+}
+
+.circular-inner {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

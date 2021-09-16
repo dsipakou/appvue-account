@@ -16,7 +16,11 @@
             :updateStatusBudget="updateStatusBudget" />
         </div>
         <div class="col-4 q-px-md">
-          <WeekBudget class="col-4 q-px-md" />
+          <WeekBudget
+            class="col-4 q-px-md"
+            :updateBudget="updateBudget"
+            :deleteBudget="deleteBudget"
+            :updateStatusBudget="updateStatusBudget" />
         </div>
       </div>
       <div>

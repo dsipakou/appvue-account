@@ -67,6 +67,7 @@
           active-color="primary"
           switch-indicator
           no-caps
+          dense
           class="text-dark">
           <q-tab
             v-for="category in mainCategories"
@@ -802,7 +803,7 @@ export default {
 }
 
 .main-category-tab {
-  border-radius: 0 10px 10px 0
+  border-radius: 0 10px 10px 0;
 }
 
 .avatar-container {

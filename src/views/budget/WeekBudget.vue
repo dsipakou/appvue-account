@@ -66,21 +66,22 @@
                   @click="completeItem(item)"
                   :label="item.isCompleted ? 'Incomplete' : 'Complete'"
                   dense />
-                  <q-btn
-                    flat
-                    outlined
-                    no-caps
-                    size="sm"
-                    dense
-                    label="Delete"
-                    @click="deleteItem(item.id)" />
-                    <q-btn
-                      flat
-                      outlined
-                      no-caps
-                      size="sm"
-                      dense
-                      label="Edit" />
+                <q-btn
+                  flat
+                  outlined
+                  no-caps
+                  size="sm"
+                  dense
+                  label="Delete"
+                  @click="deleteItem(item.id)" />
+                <q-btn
+                  flat
+                  outlined
+                  no-caps
+                  size="sm"
+                  dense
+                  @click="editItemClick(item)"
+                  label="Edit" />
               </div>
               <q-card-section>
                 {{ item.title }}
@@ -107,21 +108,56 @@
       </q-card>
     </div>
   </div>
+  <q-dialog v-model="editForm">
+    <EditForm
+      :categories="categories"
+      :item="selectedBudget"
+      :updateBudget="updateBudget"
+      :deleteBudget="deleteBudget" />
+  </q-dialog>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { ref } from 'vue';
+import { mapGetters } from 'vuex';
 import moment from 'moment';
+import EditForm from './forms/EditForm.vue';
 
 export default {
   name: 'WeekBudget',
 
   inheritAttrs: false,
 
+  components: {
+    EditForm,
+  },
+
   data() {
     return {
       itemsState: {},
+      selectedBudget: {},
     };
+  },
+
+  setup() {
+    return {
+      editForm: ref(false),
+    };
+  },
+
+  props: {
+    updateBudget: {
+      type: Function,
+      required: true,
+    },
+    deleteBudget: {
+      type: Function,
+      required: true,
+    },
+    updateStatusBudget: {
+      type: Function,
+      required: true,
+    },
   },
 
   computed: {
@@ -196,11 +232,6 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      'updateStatusBudget',
-      'deleteBudget',
-    ]),
-
     spentOnItem(budgetItem) {
       return this.transactionsCurrentWeek.filter((item) => (
         item.budgetId === budgetItem.id
@@ -223,6 +254,18 @@ export default {
 
     deleteItem(id) {
       this.deleteBudget(id);
+    },
+
+    editItemClick(item) {
+      console.log(item);
+      this.selectedBudget.id = item.id;
+      this.selectedBudget.budgetDate = item.budgetDate.substr(0, 10);
+      this.selectedBudget.title = item.title;
+      this.selectedBudget.amount = item.amount;
+      this.selectedBudget.categoryId = item.categoryId;
+      this.selectedBudget.description = item.description;
+      this.selectedBudget.isCompleted = item.isCompleted;
+      this.editForm = true;
     },
   },
 };

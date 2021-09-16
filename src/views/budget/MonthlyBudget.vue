@@ -16,7 +16,9 @@
         class="q-ma-sm monthly-card"
         @mouseover="hover = colIndex + rowIndex * 3"
         @mouseleave="hover = -1"
-        :class="category.name === selectedCategoryName && selectedCategoryIndex >= 0
+        :style="selectedCategoryIndex >= 0 && !isActiveCategory(category)
+          ? 'filter: blur(3px);' : ''"
+        :class="isActiveCategory(category)
           ? 'bg-blue-grey-4 text-white' : ''"
         :flat="hover !== colIndex + rowIndex * 3"
         @click="categoryClick(category.name, colIndex, rowIndex)">
@@ -34,7 +36,7 @@
               size="120px"
               :color="getUsage(category).mainColor"
               :track-color="getUsage(category).trackColor"
-              thickness="0.2">
+              :thickness="0.2">
               <div class="circular-inner text-subtitle1 text-blue-grey-8">
                 {{ getUsage(category).usageAmount }}
               </div>
@@ -274,15 +276,14 @@ export default {
       if (this.budgetUsage.length > 0) {
         const usageAmount = this.budgetUsage.find((item) => (
           item.name === category.name
-        )).amount.toFixed(2);
+        ))?.amount?.toFixed(2) || 0;
         let usagePercent = Math.floor((usageAmount * 100) / category.amount);
         let mainColor = '';
         let trackColor = '';
         if (usagePercent > 100) {
           const grade = Math.floor((usagePercent % 100) / 10);
-          mainColor = `red-${grade + 4}`;
-          trackColor = `red-${grade + 1}`;
-          console.log(trackColor);
+          mainColor = `red-${grade + 5}`;
+          trackColor = `red-${Math.floor(usagePercent / 100) + 1}`;
           usagePercent %= 100;
         } else {
           mainColor = `green-${Math.floor(usagePercent / 10) + 1}`;
@@ -301,6 +302,10 @@ export default {
         className: '',
         trackColor: '',
       };
+    },
+
+    isActiveCategory(category) {
+      return category.name === this.selectedCategoryName && this.selectedCategoryIndex >= 0;
     },
 
     categoryClick(categoryName, column, row) {

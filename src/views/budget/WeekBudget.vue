@@ -146,14 +146,21 @@ export default {
   },
 
   props: {
+    categoryItems: {
+      type: Array,
+      required: true,
+    },
+
     updateBudget: {
       type: Function,
       required: true,
     },
+
     deleteBudget: {
       type: Function,
       required: true,
     },
+
     updateStatusBudget: {
       type: Function,
       required: true,
@@ -165,6 +172,10 @@ export default {
       'budgetList',
       'transactionList',
     ]),
+
+    categories() {
+      return this.categoryItems.filter((item) => item.isParent);
+    },
 
     currentWeek() {
       const thisWeek = this.budgetList.filter((item) => (
@@ -257,7 +268,6 @@ export default {
     },
 
     editItemClick(item) {
-      console.log(item);
       this.selectedBudget.id = item.id;
       this.selectedBudget.budgetDate = item.budgetDate.substr(0, 10);
       this.selectedBudget.title = item.title;

@@ -18,6 +18,7 @@
         <div class="col-4 q-px-md">
           <WeekBudget
             class="col-4 q-px-md"
+            :categoryItems="categoryList"
             :updateBudget="updateBudget"
             :deleteBudget="deleteBudget"
             :updateStatusBudget="updateStatusBudget" />

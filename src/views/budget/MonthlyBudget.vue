@@ -326,6 +326,7 @@ export default {
     },
 
     budgetItemClick(item) {
+      console.log(item);
       this.selectedBudget.id = item.id;
       this.selectedBudget.budgetDate = item.budgetDate.substr(0, 10);
       this.selectedBudget.title = item.title;

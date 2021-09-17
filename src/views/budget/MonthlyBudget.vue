@@ -33,10 +33,13 @@
               show-value
               class="text-black q-pb-sm"
               :value="getUsage(category).usagePercent"
-              size="120px"
+              size="130px"
               :color="getUsage(category).mainColor"
               :track-color="getUsage(category).trackColor"
               :thickness="0.2">
+              <div class="circular-inner text-subtitle2 text-weight-bold">
+                {{ Math.floor(getUsage(category).usageAmount * 100 / category.amount) }}%
+              </div>
               <div class="circular-inner text-subtitle1 text-blue-grey-8">
                 {{ getUsage(category).usageAmount }}
               </div>
@@ -57,56 +60,61 @@
         <q-card
           v-for="budget in selectedCategoryItems"
           :key="budget.value[0].id"
-          :class="budget.value.every((item) => item.isCompleted) ? 'bg-blue-grey-3': ''"
           flat
           bordered
           class="q-ma-lg monthly-card--sub">
-          <q-card-section>
-            <div class="text-subtitle1 text-weight-bold overflow-hidden">
-              {{ budget.value[0].title }}
-            </div>
-            <div class="text-h6">
-              {{ budget.value[0].amount }}
-            </div>
-          </q-card-section>
-          <q-card-actions style="max-height: 40px;" align="around">
-            <div v-if="budget.value.length > 1">
-              <q-btn
-                color="primary"
-                rounded
-                dense
-                flat
-                v-for="(item, index) in budget.value"
-                :key="item.id"
-                @click="budgetItemClick(item)"
-                :label="index + 1" />
-            </div>
-            <div v-else>
-              <q-btn
-                color="primary"
-                rounded
-                dense
-                no-caps
-                flat
-                @click="budgetItemClick(budget.value[0])"
-                label="Edit" />
-              <q-btn
-                :color="budget.value.every((item) => item.isCompleted) ? 'negative': 'secondary'"
-                rounded
-                dense
-                no-caps
-                flat
-                :label="budget.value.every((item) => item.isCompleted) ? 'Incomplete' : 'Complete'"
-                @click=completeItems(budget.value) />
-            </div>
-            <div
-              v-if="budget.value.every((item) => item.isCompleted)"
-              class="absolute-right q-pt-sm q-pr-sm">
-              <q-icon
-                name="fas fa-check"
-                color="green" />
-            </div>
-          </q-card-actions>
+          <q-carousel
+            v-model="slide"
+            transition-prev="slide-right"
+            transition-next="slide-left"
+            swipeable
+            animated
+            control-color="blue-grey-6"
+            navigation
+            :class="budget.value.every((item) => item.isCompleted) ? 'bg-blue-grey-3': ''"
+            class="shadow-1 rounded-borders">
+            <q-carousel-slide
+              :name="index"
+              v-for="(item, index) in budget.value"
+              class="q-pa-xs"
+              :key="item.id">
+              <q-card-section class="q-pa-xs">
+                <div class="text-subtitle1 no-wrap text-weight-bold overflow-hidden">
+                  {{ item.title }}
+                </div>
+                <div class="text-h6">
+                  {{ item.amount }}
+                </div>
+              </q-card-section>
+              <q-card-actions style="max-height: 40px;" align="around">
+                <q-btn
+                  color="primary"
+                  rounded
+                  dense
+                  no-caps
+                  flat
+                  @click="budgetItemClick(item)"
+                  label="Edit" />
+                  <q-btn
+                    :color="budget.value.every((item) =>
+                            item.isCompleted) ? 'negative': 'secondary'"
+                    rounded
+                    dense
+                    no-caps
+                    flat
+                    :label="budget.value.every((item) =>
+                            item.isCompleted) ? 'Incomplete' : 'Complete'"
+                    @click=completeItems(budget.value) />
+                  <div
+                    v-if="budget.value.every((item) => item.isCompleted)"
+                    class="absolute-right q-pt-sm q-pr-sm">
+                    <q-icon
+                      name="fas fa-check"
+                      color="green" />
+                  </div>
+              </q-card-actions>
+            </q-carousel-slide>
+          </q-carousel>
         </q-card>
       </div>
     </div>
@@ -142,6 +150,7 @@ export default {
     return {
       createForm: ref(false),
       editForm: ref(false),
+      slide: ref(0),
     };
   },
 
@@ -326,7 +335,6 @@ export default {
     },
 
     budgetItemClick(item) {
-      console.log(item);
       this.selectedBudget.id = item.id;
       this.selectedBudget.budgetDate = item.budgetDate.substr(0, 10);
       this.selectedBudget.title = item.title;

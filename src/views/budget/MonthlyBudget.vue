@@ -58,27 +58,29 @@
     <div class="row justify-center" style="width: 100%;">
       <div class="row bg-blue-grey-4 justify-center sub-categories" v-show="rowIndex === row">
         <q-card
-          v-for="budget in selectedCategoryItems"
-          :key="budget.value[0].id"
+          v-for="(budgetItem, budgetIndex) in selectedCategoryItems"
+          :key="budgetItem.name"
           flat
           bordered
           class="q-ma-lg monthly-card--sub">
           <q-carousel
-            v-model="slide"
+            v-model="selectedCategorySlideIndexes[budgetIndex].model"
             transition-prev="slide-right"
             transition-next="slide-left"
             swipeable
             animated
             control-color="blue-grey-6"
             navigation
-            :class="budget.value.every((item) => item.isCompleted) ? 'bg-blue-grey-3': ''"
+            :class="budgetItem.value.every((item) => item.isCompleted) ? 'bg-blue-grey-3': ''"
             class="shadow-1 rounded-borders">
             <q-carousel-slide
               :name="index"
-              v-for="(item, index) in budget.value"
+              v-for="(item, index) in budgetItem.value"
               class="q-pa-xs"
               :key="item.id">
-              <q-card-section class="q-pa-xs">
+              <q-card-section
+                @click="budgetItemClick(item)"
+                class="q-pa-xs cursor-pointer">
                 <div class="text-subtitle1 no-wrap text-weight-bold overflow-hidden">
                   {{ item.title }}
                 </div>
@@ -88,30 +90,22 @@
               </q-card-section>
               <q-card-actions style="max-height: 40px;" align="around">
                 <q-btn
-                  color="primary"
+                  :color="budgetItem.value.every((item) =>
+                          item.isCompleted) ? 'negative': 'secondary'"
                   rounded
                   dense
                   no-caps
                   flat
-                  @click="budgetItemClick(item)"
-                  label="Edit" />
-                  <q-btn
-                    :color="budget.value.every((item) =>
-                            item.isCompleted) ? 'negative': 'secondary'"
-                    rounded
-                    dense
-                    no-caps
-                    flat
-                    :label="budget.value.every((item) =>
-                            item.isCompleted) ? 'Incomplete' : 'Complete'"
-                    @click=completeItems(budget.value) />
-                  <div
-                    v-if="budget.value.every((item) => item.isCompleted)"
-                    class="absolute-right q-pt-sm q-pr-sm">
-                    <q-icon
-                      name="fas fa-check"
-                      color="green" />
-                  </div>
+                  :label="budgetItem.value.every((item) =>
+                          item.isCompleted) ? 'Incomplete' : 'Complete'"
+                  @click=completeItems(budgetItem.value) />
+                <div
+                  v-if="budgetItem.value.every((item) => item.isCompleted)"
+                  class="absolute-right q-pt-sm q-pr-sm">
+                  <q-icon
+                    name="fas fa-check"
+                    color="green" />
+                </div>
               </q-card-actions>
             </q-carousel-slide>
           </q-carousel>
@@ -150,7 +144,6 @@ export default {
     return {
       createForm: ref(false),
       editForm: ref(false),
-      slide: ref(0),
     };
   },
 
@@ -199,6 +192,7 @@ export default {
       clicked: -1,
       selectedCategoryName: '',
       selectedBudget: {},
+      selectedCategorySlideIndexes: [],
       selectedCategoryIndex: -1,
     };
   },
@@ -261,10 +255,10 @@ export default {
     },
 
     selectedCategoryItems() {
-      const filteredCategories = this.groupedByCategory.find((item) => (
+      const selectedCategory = this.groupedByCategory.find((item) => (
         item.name === this.selectedCategoryName
       ));
-      return filteredCategories?.value;
+      return selectedCategory?.value;
     },
   },
 
@@ -332,6 +326,13 @@ export default {
       } else {
         this.selectedCategoryIndex = index;
       }
+
+      const selectedCategory = this.groupedByCategory.find((item) => (
+        item.name === this.selectedCategoryName
+      ));
+      this.selectedCategorySlideIndexes = selectedCategory?.value.map((item) => (
+        { ...item, model: 0 }
+      ));
     },
 
     budgetItemClick(item) {

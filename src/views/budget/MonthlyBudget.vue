@@ -372,7 +372,6 @@ export default {
 .monthly-card--sub {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   width: 180px;
   height: 160px;
 }

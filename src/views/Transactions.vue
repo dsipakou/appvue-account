@@ -704,6 +704,7 @@ export default {
       this.input.currency = this.defaultCurrency;
       this.input.transactionDate ||= new Date().toISOString().substr(0, 10);
       this.input.amount = '';
+      this.input.description = '';
       this.input.account = Number(evt.dataTransfer.getData('accountID'));
       this.input.user = Number(evt.dataTransfer.getData('userID'));
       this.createForm = true;

@@ -73,7 +73,7 @@
             transition-next="slide-left"
             swipeable
             animated
-            control-color="blue-grey-6"
+            control-color="blue-grey-7"
             navigation
             :class="budgetItem.value.every((item) => item.isCompleted) ? 'bg-blue-grey-3': ''"
             class="shadow-1 rounded-borders">
@@ -81,6 +81,8 @@
               :name="index"
               v-for="(item, index) in budgetItem.value"
               class="q-pa-xs"
+              :class="budgetItem.value.every((item) => item.isCompleted) ? 'bg-blue-grey-4':
+                       item.isCompleted ? 'bg-blue-grey-2' : ''"
               :key="item.id">
               <q-card-section
                 @click="budgetItemClick(item)"
@@ -109,7 +111,8 @@
                   class="absolute-right q-pt-sm q-pr-sm">
                   <q-icon
                     name="fas fa-check"
-                    color="green" />
+                    style="font-size: 4.4em;"
+                    color="green-9" />
                 </div>
               </q-card-actions>
             </q-carousel-slide>
@@ -266,7 +269,11 @@ export default {
         }
       });
 
-      return groupedList;
+      return groupedList.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      });
     },
 
     selectedCategoryItems() {
@@ -350,7 +357,7 @@ export default {
         item.name === this.selectedCategoryName
       ));
       this.selectedCategorySlideIndexes = selectedCategory?.value.map((item) => (
-        { ...item, model: 0 }
+        { ...item, model: item.value.length - 1 }
       ));
     },
 

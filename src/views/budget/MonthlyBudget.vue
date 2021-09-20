@@ -90,17 +90,15 @@
               </q-card-section>
               <q-card-actions style="max-height: 40px;" align="around">
                 <q-btn
-                  :color="budgetItem.value.every((item) =>
-                          item.isCompleted) ? 'negative': 'secondary'"
+                  :color="item.isCompleted ? 'negative': 'secondary'"
                   rounded
                   dense
                   no-caps
                   flat
-                  :label="budgetItem.value.every((item) =>
-                          item.isCompleted) ? 'Incomplete' : 'Complete'"
-                  @click=completeItems(budgetItem.value) />
+                  :label="item.isCompleted ? 'Incomplete' : 'Complete'"
+                  @click=completeItem(item) />
                 <div
-                  v-if="budgetItem.value.every((item) => item.isCompleted)"
+                  v-if="item.isCompleted"
                   class="absolute-right q-pt-sm q-pr-sm">
                   <q-icon
                     name="fas fa-check"
@@ -344,6 +342,15 @@ export default {
       this.selectedBudget.description = item.description;
       this.selectedBudget.isCompleted = item.isCompleted;
       this.editForm = true;
+    },
+
+    completeItem(item) {
+      const completedItem = {
+        ...item,
+        isCompleted: !item.isCompleted,
+      };
+
+      this.updateStatusBudget(completedItem);
     },
 
     completeItems(items) {

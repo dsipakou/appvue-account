@@ -23,7 +23,7 @@
         :flat="hover !== colIndex + rowIndex * 3"
         @click="categoryClick(category.name, colIndex, rowIndex)">
         <q-card-section>
-          <span class="text-h6 overflow-hidden">
+          <span class="text-h6 flex no-wrap overflow-hidden">
             {{ category.name }}
           </span>
         </q-card-section>
@@ -33,7 +33,7 @@
               show-value
               class="text-black q-pb-sm"
               :value="getUsage(category).usagePercent"
-              size="130px"
+              size="140px"
               :color="getUsage(category).mainColor"
               :track-color="getUsage(category).trackColor"
               :thickness="0.2">
@@ -57,6 +57,10 @@
     </div>
     <div class="row justify-center" style="width: 100%;">
       <div class="row bg-blue-grey-4 justify-center sub-categories" v-show="rowIndex === row">
+        <div class="row justify-center text-h4 text-white q-pt-md">
+          {{ selectedCategoryName }}
+        </div>
+        <div class="row justify-center" style="width: 100%;">
         <q-card
           v-for="(budgetItem, budgetIndex) in selectedCategoryItems"
           :key="budgetItem.name"
@@ -85,7 +89,10 @@
                   {{ item.title }}
                 </div>
                 <div class="text-h6">
-                  {{ item.amount }}
+                  <span>{{ item.amount }}</span>
+                  <span class="q-ml-sm text-subtitle2">
+                    {{ getShortDate(item.budgetDate) }}
+                  </span>
                 </div>
               </q-card-section>
               <q-card-actions style="max-height: 40px;" align="around">
@@ -108,6 +115,7 @@
             </q-carousel-slide>
           </q-carousel>
         </q-card>
+        </div>
       </div>
     </div>
   </div>
@@ -227,9 +235,18 @@ export default {
           ? 'undefined'
           : this.categories.find((category) => category.id === categoryId).name;
         const arr = categoryClass[categoryName] || [];
+        const sortedGroupedBudgets = item[1].sort((a, b) => {
+          if (a.budgetDate < b.budgetDate) {
+            return -1;
+          }
+          if (a.budgetDate > b.budgetDate) {
+            return 1;
+          }
+          return 0;
+        });
         arr.push({
           name: item[0],
-          value: item[1],
+          value: sortedGroupedBudgets,
           amount: item[1].reduce((acc, subItem) => acc + subItem.amount, 0),
         });
         categoryClass[categoryName] = arr;
@@ -303,6 +320,10 @@ export default {
         className: '',
         trackColor: '',
       };
+    },
+
+    getShortDate(longDate) {
+      return moment(longDate).format('Do');
     },
 
     isActiveCategory(category) {

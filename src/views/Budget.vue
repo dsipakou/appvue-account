@@ -21,6 +21,7 @@
             :categoryItems="categoryList"
             :updateBudget="updateBudget"
             :deleteBudget="deleteBudget"
+            :transactions="budgetedTransactions"
             :updateStatusBudget="updateStatusBudget" />
         </div>
       </div>
@@ -59,6 +60,7 @@ export default {
     ...mapGetters([
       'budgetList',
       'budgetUsage',
+      'budgetedTransactions',
       'categoryList',
     ]),
 
@@ -86,6 +88,7 @@ export default {
   methods: {
     ...mapActions([
       'fetchBudgetUsage',
+      'fetchBudgetedTransactions',
       'createBudget',
       'updateBudget',
       'updateStatusBudget',
@@ -107,6 +110,10 @@ export default {
     const dateFrom = `${moment().format('YYYY-MM')}-01`;
     const dateTo = `${moment().add(1, 'month').format('YYYY-MM')}-01`;
     this.fetchBudgetUsage({ dateFrom, dateTo });
+    this.fetchBudgetedTransactions({
+      dateFrom: moment().add(-moment().day(), 'days').format('YYYY-MM-DD'),
+      dateTo: moment().add(6 - moment().day(), 'days').format('YYYY-MM-DD'),
+    });
   },
 };
 </script>

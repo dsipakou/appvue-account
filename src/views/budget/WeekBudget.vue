@@ -151,6 +151,11 @@ export default {
       required: true,
     },
 
+    transactions: {
+      type: Array,
+      required: true,
+    },
+
     updateBudget: {
       type: Function,
       required: true,
@@ -187,20 +192,14 @@ export default {
       ];
     },
 
-    transactionsCurrentWeek() {
-      return this.transactionList.filter((item) => (
-        moment(item.transactionDate).week() === moment().week()
-      ));
-    },
-
     plannedTransactions() {
-      return this.transactionsCurrentWeek.filter((item) => (
+      return this.transactions.filter((item) => (
         item.budgetId !== null
       ));
     },
 
     unplannedTransactions() {
-      return this.transactionsCurrentWeek.filter((item) => (
+      return this.transactions.filter((item) => (
         item.budgetId === null
       ));
     },
@@ -226,7 +225,7 @@ export default {
     },
 
     overallSum() {
-      return this.transactionsCurrentWeek.filter((item) => (
+      return this.transactions.filter((item) => (
         item.type === 'outcome'
       )).reduce((acc, item) => (
         acc + item.amount
@@ -244,7 +243,7 @@ export default {
 
   methods: {
     spentOnItem(budgetItem) {
-      return this.transactionsCurrentWeek.filter((item) => (
+      return this.transactions.filter((item) => (
         item.budgetId === budgetItem.id
       )).reduce((acc, item) => (
         acc + item.amount

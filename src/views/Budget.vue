@@ -9,19 +9,20 @@
           <MonthlyBudget
             :budgetItems="budgetList"
             :categoryItems="categoryList"
+            :budgetUsage="budgetUsage"
             :createBudget="createBudget"
             :updateBudget="updateBudget"
             :deleteBudget="deleteBudget"
-            :budgetUsage="budgetUsage"
             :updateStatusBudget="updateStatusBudget" />
         </div>
         <div class="col-4 q-px-md">
           <WeekBudget
             class="col-4 q-px-md"
+            :budgetItems="budgetList"
             :categoryItems="categoryList"
+            :transactionItems="budgetedTransactions"
             :updateBudget="updateBudget"
             :deleteBudget="deleteBudget"
-            :transactions="budgetedTransactions"
             :updateStatusBudget="updateStatusBudget" />
         </div>
       </div>

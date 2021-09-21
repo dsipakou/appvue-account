@@ -22,13 +22,9 @@
     </div>
   </div>
   <div>
-    <q-linear-progress
-      stripe
-      rounded
-      size="25px"
-      :value="progressBarValue"
-      color="primary"
-      class="q-mt-sm" >
+    <q-linear-progress stripe rounded size="25px" color="primary"
+      class="q-mt-sm"
+      :value="progressBarValue">
       <div class="absolute-center flex flex-center">
         <q-badge
           color="white"
@@ -39,49 +35,29 @@
   </div>
   <div class="row">
     <div class="col">
-      <q-card
-        flat
-        bordered
-        class="q-mt-lg">
+      <q-card flat bordered class="q-mt-lg">
         <q-card-section>
-          <q-card
+          <q-card flat bordered
             v-for="item in currentWeek"
             :key="item.id"
             class="q-my-md"
             :class="item.isCompleted ? 'completed' : ''"
             @mouseover="setItemOver(item.id, true)"
-            @mouseleave="setItemOver(item.id, false)"
-            flat
-            bordered>
+            @mouseleave="setItemOver(item.id, false)">
             <q-card-section horizontal class="justify-between">
               <div
                 class="absolute-left justify-between"
                 style="z-index: 1;"
                 v-if="itemsState[item.id]">
-                <q-btn
-                  flat
-                  outlined
-                  no-caps
-                  size="sm"
-                  @click="completeItem(item)"
+                <q-btn flat outlined no-caps size="sm" dense
                   :label="item.isCompleted ? 'Incomplete' : 'Complete'"
-                  dense />
-                <q-btn
-                  flat
-                  outlined
-                  no-caps
-                  size="sm"
-                  dense
+                  @click="completeItem(item)" />
+                <q-btn flat outlined no-caps size="sm" dense
                   label="Delete"
                   @click="deleteItem(item.id)" />
-                <q-btn
-                  flat
-                  outlined
-                  no-caps
-                  size="sm"
-                  dense
-                  @click="editItemClick(item)"
-                  label="Edit" />
+                <q-btn flat outlined no-caps size="sm" dense
+                  label="Edit"
+                  @click="editItemClick(item)" />
               </div>
               <q-card-section>
                 {{ item.title }}
@@ -97,9 +73,7 @@
               </q-card-section>
             </q-card-section>
             <div class="q-mb-xs q-px-xs">
-              <q-linear-progress
-                rounded
-                size="5px"
+              <q-linear-progress rounded size="5px"
                 :value="spentOnItem(item) / item.amount"
                 :color="spentOnItem(item) / item.amount > 1 ? 'red' : 'secondary'" />
             </div>
@@ -119,7 +93,6 @@
 
 <script>
 import { ref } from 'vue';
-import { mapGetters } from 'vuex';
 import moment from 'moment';
 import EditForm from './forms/EditForm.vue';
 
@@ -146,12 +119,17 @@ export default {
   },
 
   props: {
+    budgetItems: {
+      type: Array,
+      required: true,
+    },
+
     categoryItems: {
       type: Array,
       required: true,
     },
 
-    transactions: {
+    transactionItems: {
       type: Array,
       required: true,
     },
@@ -173,17 +151,12 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'budgetList',
-      'transactionList',
-    ]),
-
     categories() {
       return this.categoryItems.filter((item) => item.isParent);
     },
 
     currentWeek() {
-      const thisWeek = this.budgetList.filter((item) => (
+      const thisWeek = this.budgetItems.filter((item) => (
         moment(item.budgetDate).week() === moment().week()
       ));
       return [
@@ -193,13 +166,13 @@ export default {
     },
 
     plannedTransactions() {
-      return this.transactions.filter((item) => (
+      return this.transactionItems.filter((item) => (
         item.budgetId !== null
       ));
     },
 
     unplannedTransactions() {
-      return this.transactions.filter((item) => (
+      return this.transactionItems.filter((item) => (
         item.budgetId === null
       ));
     },
@@ -225,7 +198,7 @@ export default {
     },
 
     overallSum() {
-      return this.transactions.filter((item) => (
+      return this.transactionItems.filter((item) => (
         item.type === 'outcome'
       )).reduce((acc, item) => (
         acc + item.amount
@@ -243,7 +216,7 @@ export default {
 
   methods: {
     spentOnItem(budgetItem) {
-      return this.transactions.filter((item) => (
+      return this.transactionItems.filter((item) => (
         item.budgetId === budgetItem.id
       )).reduce((acc, item) => (
         acc + item.amount

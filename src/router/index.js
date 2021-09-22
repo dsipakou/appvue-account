@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
-import SignUp from '../views/SignUp.vue';
-import Accounts from '../views/Accounts.vue';
-import Transactions from '../views/Transactions.vue';
-import Categories from '../views/Categories.vue';
-import Currencies from '../views/Currencies.vue';
-import Reports from '../views/Reports.vue';
-import Budget from '../views/Budget.vue';
+import DailyTransactions from '@/views/transaction/DailyTransactions.vue';
+import Home from '@/views/Home.vue';
+import SignUp from '@/views/SignUp.vue';
+import Accounts from '@/views/Accounts.vue';
+import Transactions from '@/views/Transactions.vue';
+import Categories from '@/views/Categories.vue';
+import Currencies from '@/views/Currencies.vue';
+import Reports from '@/views/Reports.vue';
+import Budget from '@/views/Budget.vue';
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
     path: '/transactions',
     name: 'Transactions',
     component: Transactions,
+  },
+  {
+    path: '/transactions/daily',
+    name: 'DailyTransactions',
+    component: DailyTransactions,
   },
   {
     path: '/categories',

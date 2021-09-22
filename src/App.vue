@@ -13,41 +13,32 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer
+    <q-drawer overlay persistent bordered
       v-model="leftDrawerOpen"
-      side="left"
-      overlay
-      persistent
-      bordered>
+      side="left">
       <q-list class="q-pt-md">
-        <q-item
-          class="menu-item q-pl-xl"
+        <q-item exact clickable
+          class="menu-item q-pl-md"
           active-class="menu-item__active"
-          to="/"
-          exact
-          clickable>
+          to="/">
           <q-item-section>
             Home
           </q-item-section>
         </q-item>
-        <q-item
-          class="menu-item q-pl-xl"
+        <q-item exact clickable
+          class="menu-item q-pl-md"
           active-class="menu-item__active"
-          to="/signup"
-          exact
-          clickable>
+          to="/signup">
           <q-item-section>
             <q-item-label>
               SignUp
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          class="menu-item q-pl-xl"
+        <q-item exact clickable
+          class="menu-item q-pl-md"
           active-class="menu-item__active"
-          to="/accounts"
-          exact
-          clickable>
+          to="/accounts">
           <q-item-section avatar>
             <q-avatar>
               <img src="../dist/icons/accounts.png" />
@@ -59,12 +50,10 @@
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          class="menu-item q-pl-xl"
+        <q-item exact clickable
+          class="menu-item q-pl-md"
           active-class="menu-item__active"
-          to="/transactions"
-          exact
-          clickable>
+          to="/transactions">
           <q-item-section avatar>
             <q-avatar>
               <img src="../dist/icons/transactions.png" />
@@ -76,12 +65,10 @@
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          class="menu-item q-pl-xl"
+        <q-item exact clickable
+          class="menu-item q-pl-md"
           active-class="menu-item__active"
-          to="/budget"
-          exact
-          clickable>
+          to="/budget">
           <q-item-section avatar>
               <q-avatar>
                 <img src="../dist/icons/budget.png" />
@@ -93,12 +80,10 @@
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          class="menu-item q-pl-xl"
+        <q-item exact clickable
+          class="menu-item q-pl-md"
           active-class="menu-item__active"
-          to="/categories"
-          exact
-          clickable>
+          to="/categories">
           <q-item-section avatar>
               <q-avatar>
                 <img src="../dist/icons/categories.png" />
@@ -110,12 +95,10 @@
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          class="menu-item q-pl-xl"
+        <q-item exact clickable
+          class="menu-item q-pl-md"
           active-class="menu-item__active"
-          to="/currencies"
-          exact
-          clickable>
+          to="/currencies">
           <q-item-section avatar>
             <q-avatar>
               <img src="../dist/icons/currency.png" />
@@ -127,12 +110,10 @@
             </q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          class="menu-item q-pl-xl"
+        <q-item exact clickable
+          class="menu-item q-pl-md"
           active-class="menu-item__active"
-          to="/reports"
-          exact
-          clickable>
+          to="/reports">
           <q-item-section avatar>
               <q-avatar>
                 <img src="../dist/icons/reports.png" />

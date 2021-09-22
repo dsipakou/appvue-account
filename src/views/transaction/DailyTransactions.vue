@@ -19,25 +19,75 @@
         </q-pagination>
       </div>
     </div>
+    <div class="row">
+      <TransactionList
+        :transactions="transactionList.slice(0, 15)"
+        :accountList="accountList"
+        :categoryList="categoryList"
+        :currencyList="currencyList"
+        :currencyListLoaded="currencyListLoaded" />
+    </div>
   </div>
 </template>
 <script>
 import moment from 'moment';
 import { ref } from 'vue';
+import { mapGetters, mapActions } from 'vuex';
+import TransactionList from '@/views/transaction/components/TransactionList.vue';
 
 export default {
   name: 'DailyTransactions',
   inheritAttrs: false,
 
+  components: {
+    TransactionList,
+  },
+
   setup() {
     return {
-      activeDay: ref(2),
+      activeDay: ref(moment().date()),
+    };
+  },
+
+  data() {
+    return {
+      transactions: [],
     };
   },
 
   computed: {
+    ...mapGetters([
+      'accountList',
+      'categoryList',
+      'currencyList',
+      'currencyListLoaded',
+      'transactionList',
+    ]),
+
     days() {
       return Array.from({ length: moment().daysInMonth() }, (_, i) => i + 1);
+    },
+  },
+
+  watch: {
+    activeDay() {
+      this.filterTransactions();
+    },
+  },
+
+  methods: {
+    ...mapActions([
+      'fetchTransactions',
+    ]),
+
+    filterTransactions() {
+      const day = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
+      const selectedDate = `${moment().format('YYYY-MM')}-${day}`;
+      this.fetchTransactions({
+        sorting: 'added',
+        dateFrom: selectedDate,
+        dateTo: selectedDate,
+      });
     },
   },
 };

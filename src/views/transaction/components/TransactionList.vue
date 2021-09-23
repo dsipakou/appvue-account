@@ -34,10 +34,13 @@
           </template>
         </q-select>
       </div>
+      <div>
+        Day overall: {{ transactionsSum }}
+      </div>
     </div>
   </div>
   <div class="transaction-list">
-    <div v-for="transaction in transactions" :key="transaction.id">
+    <div v-for="transaction in sortedTransactions" :key="transaction.id">
       <q-card flat bordered class="q-mb-lg">
         <q-card-section horizontal class="justify-between">
           <div class="row q-pa-md">
@@ -154,6 +157,20 @@ export default {
   },
 
   computed: {
+    transactionsSum() {
+      return this.transactions.reduce((acc, item) => (
+        acc + item.amount
+      ), 0)?.toFixed(2);
+    },
+
+    sortedTransactions() {
+      const transactions = [...this.transactions];
+      return transactions.sort((a, b) => {
+        if (a.categoryId < b.categoryId) return -1;
+        if (a.categoryId > b.categoryId) return 1;
+        return 0;
+      });
+    },
   },
 
   methods: {
@@ -170,7 +187,6 @@ export default {
     },
 
     transactionCurrencyList(transaction) {
-      console.log(this.currencyList);
       const currencies = [];
       if (this.currencyListLoaded) {
         const defaultCurrency = this.currencyList.find((item) => item.isDefault);
@@ -198,12 +214,10 @@ export default {
     },
 
     initCurrencies() {
-      console.log(this.currencyList);
       this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
       this.currenciesListSelect = this.currencyList.filter((item) => (
         !item.isDefault
       ));
-      console.log(this.defaultCurrency);
     },
   },
 

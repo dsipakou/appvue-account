@@ -21,7 +21,7 @@
     </div>
     <div class="row">
       <TransactionList
-        :transactions="transactionList.slice(0, 15)"
+        :transactions="transactionList"
         :accountList="accountList"
         :categoryList="categoryList"
         :currencyList="currencyList"

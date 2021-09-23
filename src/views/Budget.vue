@@ -112,8 +112,8 @@ export default {
     const dateTo = `${moment().add(1, 'month').format('YYYY-MM')}-01`;
     this.fetchBudgetUsage({ dateFrom, dateTo });
     this.fetchBudgetedTransactions({
-      dateFrom: moment().add(-moment().day(), 'days').format('YYYY-MM-DD'),
-      dateTo: moment().add(6 - moment().day(), 'days').format('YYYY-MM-DD'),
+      dateFrom: moment().add(-moment().day() + 1, 'days').format('YYYY-MM-DD'),
+      dateTo: moment().add(7 - moment().day(), 'days').format('YYYY-MM-DD'),
     });
   },
 };

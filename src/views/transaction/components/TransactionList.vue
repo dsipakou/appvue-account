@@ -2,6 +2,9 @@
   <div class="row">
     <div class="header">
       <div>
+        <slot name="header"></slot>
+      </div>
+      <div>
         <q-select
           :options="currenciesListSelect"
           v-model="selectedCurrencies"

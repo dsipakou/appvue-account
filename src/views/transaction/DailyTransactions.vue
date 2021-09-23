@@ -25,7 +25,11 @@
         :accountList="accountList"
         :categoryList="categoryList"
         :currencyList="currencyList"
-        :currencyListLoaded="currencyListLoaded" />
+        :currencyListLoaded="currencyListLoaded">
+        <template v-slot:header>
+          <span class="header__title">Transactions on {{ activeDay }}</span>
+        </template>
+      </TransactionList>
     </div>
   </div>
 </template>
@@ -105,5 +109,12 @@ export default {
   justify-content: center;
   height: 100px;
   background: none;
+}
+
+.header__title {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 800;
 }
 </style>

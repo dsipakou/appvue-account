@@ -129,7 +129,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view class="main" />
+      <router-view class="main-container" />
     </q-page-container>
   </q-layout>
 </template>
@@ -195,7 +195,7 @@ export default {
   color: #42b983;
 }
 
-.main {
+.main-container {
   display: flex;
   max-width: 1200px;
   flex-direction: column;

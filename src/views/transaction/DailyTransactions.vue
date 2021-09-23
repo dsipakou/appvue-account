@@ -1,6 +1,10 @@
 <template>
   <div class="q-pa-md">
     <div class="row q-ma-sm justify-center">
+      <q-btn flat no-caps
+        class="text-primary text-weight-bold"
+        label="< Transactions"
+        to="/transactions"/>
       <span class="text-h4">Daily Transactions</span>
     </div>
     <div class="row q-ma-lg justify-center">
@@ -20,16 +24,18 @@
       </div>
     </div>
     <div class="row">
-      <TransactionList
-        :transactions="transactionList"
-        :accountList="accountList"
-        :categoryList="categoryList"
-        :currencyList="currencyList"
-        :currencyListLoaded="currencyListLoaded">
-        <template v-slot:header>
-          <span class="header__title">Transactions on {{ activeDay }}</span>
-        </template>
-      </TransactionList>
+      <div class="col-12">
+        <TransactionList
+          :transactions="transactionList"
+          :accountList="accountList"
+          :categoryList="categoryList"
+          :currencyList="currencyList"
+          :currencyListLoaded="currencyListLoaded">
+          <template v-slot:header>
+            <span class="header__title">Transactions on {{ activeDay }}</span>
+          </template>
+        </TransactionList>
+      </div>
     </div>
   </div>
 </template>

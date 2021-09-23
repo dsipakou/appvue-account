@@ -1,114 +1,115 @@
 <template>
-  <div class="row">
-    <div class="header">
-      <div>
-        <slot name="header"></slot>
-      </div>
-      <div>
-        <q-select
-          :options="currenciesListSelect"
-          v-model="selectedCurrencies"
-          map-options
-          multiple
-          stack-label
-          option-value="id"
-          option-label="verbalName"
-          style="width: 600px;">
-          <template v-slot:selected>
-            Currency:
-            <q-chip
-              v-for="currency in selectedCurrencies"
-              :key="currency.id"
-              dense
-              square
-              color="white"
-              text-color="primary"
-              style="max-width: 100px;"
-              class="q-ml-sm overflow-hidden align-center"
-              >
-              <q-avatar color="primary" text-color="white" class="vertical-middle">
-                <span class="text-weight-bold text-body1 align-center">
-                  {{ currency.sign }}
-                </span>
-              </q-avatar>
-              <span class="text-weight-light header__span q-ml-xs">
-                {{ currency.verbalName }}</span>
-            </q-chip>
-          </template>
-        </q-select>
-      </div>
-      <div>
-        Day overall: {{ transactionsSum }}
+  <div class="main-container q-pa-md">
+    <div class="row">
+      <div class="col-12 header">
+        <div>
+          <slot name="header"></slot>
+        </div>
+        <div>
+          <q-select
+            :options="currenciesListSelect"
+            v-model="selectedCurrencies"
+            map-options
+            multiple
+            stack-label
+            option-value="id"
+            option-label="verbalName"
+            style="width: 600px;">
+            <template v-slot:selected>
+              Currency:
+              <q-chip dense square color="white"
+                v-for="currency in selectedCurrencies"
+                :key="currency.id"
+                text-color="primary"
+                style="max-width: 100px;"
+                class="q-ml-sm overflow-hidden align-center"
+                >
+                <q-avatar color="primary" text-color="white" class="vertical-middle">
+                  <span class="text-weight-bold text-body1 align-center">
+                    {{ currency.sign }}
+                  </span>
+                </q-avatar>
+                <span class="text-weight-light header__span q-ml-xs">
+                  {{ currency.verbalName }}</span>
+              </q-chip>
+            </template>
+          </q-select>
+        </div>
+        <div>
+          Day overall: {{ transactionsSum }}
+        </div>
       </div>
     </div>
-  </div>
-  <div class="transaction-list">
-    <div v-for="transaction in sortedTransactions" :key="transaction.id">
-      <q-card flat bordered class="q-mb-lg">
-        <q-card-section horizontal class="justify-between">
-          <div class="row q-pa-md">
-            <div class="col-1 align-center">
-              <q-avatar
-                color="primary"
-                text-color="white">
-                {{ getCategory(transaction.categoryId).name[0] }}
-              </q-avatar>
-            </div>
-            <div class="col-7 align-center">
-              <div class="text-h6">{{
-                transaction.type === 'income' ?
-                getAccount(transaction.accountId).source :
-                getCategory(transaction.categoryId).name }}
-                <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
-                  {{ getCategory(transaction.categoryId).parentName }}
-                </q-chip>
+    <div class="row">
+      <div class="col transaction-list">
+        <div v-for="transaction in sortedTransactions" :key="transaction.id">
+          <q-card flat bordered class="q-mb-lg">
+            <q-card-section horizontal class="justify-between">
+              <div class="row q-pa-md">
+                <div class="col-1 align-center">
+                  <q-avatar
+                    color="primary"
+                    text-color="white">
+                    {{ getCategory(transaction.categoryId).name[0] }}
+                  </q-avatar>
+                </div>
+                <div class="col-7 align-center">
+                  <div class="text-h6">{{
+                    transaction.type === 'income' ?
+                    getAccount(transaction.accountId).source :
+                    getCategory(transaction.categoryId).name }}
+                    <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
+                      {{ getCategory(transaction.categoryId).parentName }}
+                    </q-chip>
+                  </div>
+                  <div class="text-subtitle2">
+                    {{ getFormattedDate(transaction.transactionDate) }}
+                  </div>
+                </div>
+                <div class="col self-center">
+                  <q-chip square outline color="primary"
+                    class="q-ml-sm overflow-hidden align-center">
+                    <q-avatar
+                      color="primary"
+                      text-color="white"
+                      class="vertical-middle"
+                      icon="credit_card"/>
+                      <span>
+                        {{ getAccount(transaction.accountId).source }}
+                      </span>
+                  </q-chip>
+                </div>
+                <div class="col self-center items-end">
+                  <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
+                    <span
+                      :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
+                      class="text-bold q-pl-lg">
+                      {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.amount }}
+                      {{ amount.sign }}
+                    </span>
+                  </div>
+                </div>
+                <div class="col-1 self-center items-end">
+                  <q-btn-dropdown flat dropdown-icon="more_horiz">
+                    <q-list>
+                      <q-item clickable v-close-popup @click="openEditForm(transaction)">
+                        <q-item-section>
+                          <q-item-label>Edit</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
+                        <q-item-section>
+                          <q-item-label>Delete</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-btn-dropdown>
+                </div>
               </div>
-              <div class="text-subtitle2">
-                {{ getFormattedDate(transaction.transactionDate) }}
-              </div>
-            </div>
-            <div class="col self-center">
-              <q-chip square outline color="primary"
-                class="q-ml-sm overflow-hidden align-center">
-                <q-avatar
-                  color="primary"
-                  text-color="white"
-                  class="vertical-middle"
-                  icon="credit_card"/>
-                  <span>
-                    {{ getAccount(transaction.accountId).source }}
-                  </span>
-              </q-chip>
-            </div>
-            <div class="col self-center items-end">
-              <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
-                <span
-                  :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
-                  class="text-bold q-pl-lg">
-                  {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.amount }}
-                  {{ amount.sign }}
-                </span>
-              </div>
-            </div>
-            <div class="col-1 self-center items-end">
-              <q-btn-dropdown flat dropdown-icon="more_horiz">
-                <q-list>
-                  <q-item clickable v-close-popup @click="openEditForm(transaction)">
-                    <q-item-section>
-                      <q-item-label>Edit</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
-                    <q-item-section>
-                      <q-item-label>Delete</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
+            </q-card-section>
+          </q-card>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -229,3 +230,24 @@ export default {
   },
 };
 </script>
+<style scoped>
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  align-items: center;
+  width: 100%;
+}
+
+.header__span {
+  align-self: flex-end;
+}
+
+.transaction-list {
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  margin-top: 20px;
+  padding: 20px;
+}
+</style>

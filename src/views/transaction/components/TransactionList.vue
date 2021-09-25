@@ -92,7 +92,7 @@
                 <div class="col-1 self-center items-end">
                   <q-btn-dropdown flat dropdown-icon="more_horiz">
                     <q-list>
-                      <q-item clickable v-close-popup @click="openEditForm(transaction)">
+                      <q-item clickable v-close-popup @click="clickEdit(transaction)">
                         <q-item-section>
                           <q-item-label>Edit</q-item-label>
                         </q-item-section>
@@ -112,16 +112,32 @@
       </div>
     </div>
   </div>
+  <q-dialog v-model="editForm">
+    <EditForm
+      :transaction="editedTransaction"
+      :accountList="accountList"
+      :budgetList="budgetList"
+      :categoryList="categoryList"
+      :currencyList="currencyList"
+      :userList="userList"
+    />
+  </q-dialog>
 </template>
 <script>
 import moment from 'moment';
+import EditForm from '@/views/transaction/forms/EditForm.vue';
 import { ref } from 'vue';
 
 export default {
   name: 'TransactionList',
 
+  components: {
+    EditForm,
+  },
+
   setup() {
     return {
+      editForm: ref(false),
       selectedCurrencies: ref([]),
     };
   },
@@ -137,12 +153,22 @@ export default {
       required: true,
     },
 
+    budgetList: {
+      type: Array,
+      required: true,
+    },
+
     categoryList: {
       type: Array,
       required: true,
     },
 
     currencyList: {
+      type: Array,
+      required: true,
+    },
+
+    userList: {
       type: Array,
       required: true,
     },
@@ -157,6 +183,7 @@ export default {
     return {
       defaultCurrency: '',
       currenciesListSelect: [],
+      editedTransaction: null,
     };
   },
 
@@ -165,6 +192,26 @@ export default {
       return this.transactions.reduce((acc, item) => (
         acc + item.amount
       ), 0)?.toFixed(2);
+    },
+
+    categories() {
+      const filteredCategoryList = this.categoryList.filter((item) => (
+        !item.isParent && !item.isSystem
+      ));
+      const modifiedCategoryList = filteredCategoryList.map((item) => (
+        {
+          id: item.id,
+          value: `${item.name} / ${item.parentName}`,
+        }
+      ));
+      return modifiedCategoryList;
+    },
+
+    systemCategories() {
+      const filteredCategoryList = this.categoryList.filter((item) => (
+        item.isSystem
+      ));
+      return filteredCategoryList;
     },
 
     sortedTransactions() {
@@ -183,7 +230,7 @@ export default {
     },
 
     getAccount(id) {
-      return this.accountList?.find((item) => item.id === id);
+      return this.accountList.find((item) => item.id === id);
     },
 
     getFormattedDate(date) {
@@ -222,6 +269,11 @@ export default {
       this.currenciesListSelect = this.currencyList.filter((item) => (
         !item.isDefault
       ));
+    },
+
+    clickEdit(transaction) {
+      this.editedTransaction = transaction;
+      this.editForm = true;
     },
   },
 

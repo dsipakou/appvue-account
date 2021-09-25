@@ -28,8 +28,10 @@
         <TransactionList
           :transactions="transactionList"
           :accountList="accountList"
+          :budgetList="budgetList"
           :categoryList="categoryList"
           :currencyList="currencyList"
+          :userList="userList"
           :currencyListLoaded="currencyListLoaded">
           <template v-slot:header>
             <span class="header__title">Transactions on {{ activeDay }}</span>
@@ -68,8 +70,10 @@ export default {
   computed: {
     ...mapGetters([
       'accountList',
+      'budgetList',
       'categoryList',
       'currencyList',
+      'userList',
       'currencyListLoaded',
       'transactionList',
     ]),
@@ -99,6 +103,10 @@ export default {
         dateTo: selectedDate,
       });
     },
+  },
+
+  mounted() {
+    this.filterTransactions();
   },
 };
 </script>

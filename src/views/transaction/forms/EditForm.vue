@@ -1,0 +1,210 @@
+<template>
+  <input type="hidden" v-model="input.type" />
+  <q-card style="width: 400px;">
+    <q-card-section>
+      <h4>Edit transaction</h4>
+    </q-card-section>
+
+    <q-separator />
+
+      <q-card-section>
+        <q-select outlined map-options
+          v-model="input.user"
+          :options="userList"
+          option-value="id"
+          option-label="name"
+          label="User" />
+      </q-card-section>
+      <q-card-section>
+        <q-select outlined map-options
+          v-model="input.account"
+          :options="accountList"
+          option-value="id"
+          option-label="source"
+          label="Account" />
+      </q-card-section>
+      <q-card-section>
+        <q-select outlined map-options
+          v-model="input.category"
+          :options="input.type === 'income' ? systemCategories : categories"
+          option-value="id"
+          option-label="value"
+          label="Category" />
+      </q-card-section>
+      <q-card-section>
+        <q-select
+          outlined
+          label="Budget items"
+          label-stacked
+          :options="currentWeekBudget"
+          option-value="id"
+          option-label="title"
+          v-model="input.budget" />
+      </q-card-section>
+      <q-card-section>
+        <q-input outlined stack-label label="Amount" v-model="input.amount" />
+      </q-card-section>
+      <q-card-section>
+        <q-select
+          outlined
+          label="Currency"
+          label-stacked
+          :options="availableCurrencies"
+          option-value="id"
+          option-label="verbalName"
+          v-model="input.currency" />
+      </q-card-section>
+      <q-card-section>
+        <q-input
+          outlined
+          type="date"
+          stack-label
+          label="Date"
+          v-model="input.transactionDate"
+          />
+      </q-card-section>
+      <q-card-section>
+        <q-input
+          outlined
+          type="textarea"
+          stack-label
+          label="Description"
+          v-model="input.description"
+          />
+      </q-card-section>
+      <q-card-actions align="center">
+        <q-btn
+          color="primary"
+          rounded
+          style="width: 100px;"
+          @click="update()">Save</q-btn>
+      </q-card-actions>
+  </q-card>
+</template>
+<script>
+import moment from 'moment';
+
+export default {
+  name: 'EditForm',
+
+  props: {
+    transaction: {
+      type: Object,
+      required: true,
+    },
+
+    accountList: {
+      type: Array,
+      required: true,
+    },
+
+    budgetList: {
+      type: Array,
+      required: true,
+    },
+
+    categoryList: {
+      type: Array,
+      required: true,
+    },
+
+    currencyList: {
+      type: Array,
+      required: true,
+    },
+
+    userList: {
+      type: Array,
+      required: true,
+    },
+  },
+
+  data() {
+    return {
+      input: {
+        accountId: 0,
+        amount: '',
+        budgetId: null,
+        categoryId: 0,
+        currency: '',
+        description: '',
+        transactionDate: '',
+        userId: 0,
+      },
+    };
+  },
+
+  methods: {
+    getAccount(id) {
+      return this.accountList.find((item) => item.id === id);
+    },
+
+    getBudget(id) {
+      return this.budgetList.find((item) => item.id === id);
+    },
+
+    getCategory(id) {
+      return this.categories.find((item) => item.id === id)
+        || this.systemCategories.find((item) => item.id === id);
+    },
+
+    getUser(id) {
+      return this.userList.find((item) => item.id === id);
+    },
+  },
+
+  computed: {
+    categories() {
+      const filteredCategoryList = this.categoryList.filter((item) => (
+        !item.isParent && !item.isSystem
+      ));
+      const modifiedCategoryList = filteredCategoryList.map((item) => (
+        {
+          id: item.id,
+          value: `${item.name} / ${item.parentName}`,
+        }
+      ));
+      const sortedCategoryList = modifiedCategoryList.sort((a, b) => {
+        if (a.value < b.value) return -1;
+        if (a.value > b.value) return 1;
+        return 0;
+      });
+
+      return sortedCategoryList;
+    },
+
+    systemCategories() {
+      const filteredCategoryList = this.categoryList.filter((item) => (
+        item.isSystem
+      ));
+      return filteredCategoryList;
+    },
+
+    currentWeekBudget() {
+      const items = this.budgetList.filter((item) => (
+        moment(item.budgetDate).week() === moment().week()
+        && !item.isCompleted
+      ));
+      items.unshift({ id: null, title: 'Default' });
+      return items;
+    },
+
+    defaultCurrency() {
+      return this.currencyList.find((item) => item.isDefault);
+    },
+  },
+
+  mounted() {
+    this.input.id = this.transaction.id;
+    this.input.user = this.getUser(this.transaction.userId);
+    this.input.budget = this.getBudget(this.transaction.budgetId);
+    this.input.category = this.getCategory(this.transaction.categoryId);
+    this.input.currency = this.defaultCurrency;
+    this.input.amount = this.transaction.amount;
+    this.input.account = this.getAccount(this.transaction.accountId);
+    this.input.transactionDate = this.transaction.transactionDate.substr(0, 10);
+    this.input.type = this.transaction.type;
+    this.input.description = this.transaction.description;
+  },
+};
+</script>

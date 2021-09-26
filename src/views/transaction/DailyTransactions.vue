@@ -31,7 +31,9 @@
           :budgetList="budgetList"
           :categoryList="categoryList"
           :currencyList="currencyList"
+          :ratesList="ratesList"
           :userList="userList"
+          :updateTransaction="updateTransaction"
           :currencyListLoaded="currencyListLoaded">
           <template v-slot:header>
             <span class="header__title">Transactions on {{ activeDay }}</span>
@@ -73,6 +75,7 @@ export default {
       'budgetList',
       'categoryList',
       'currencyList',
+      'ratesList',
       'userList',
       'currencyListLoaded',
       'transactionList',
@@ -92,6 +95,7 @@ export default {
   methods: {
     ...mapActions([
       'fetchTransactions',
+      'updateTransaction',
     ]),
 
     filterTransactions() {

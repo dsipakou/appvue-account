@@ -119,7 +119,9 @@
       :budgetList="budgetList"
       :categoryList="categoryList"
       :currencyList="currencyList"
+      :ratesList="ratesList"
       :userList="userList"
+      :updateTransaction="updateTransaction"
     />
   </q-dialog>
 </template>
@@ -168,8 +170,18 @@ export default {
       required: true,
     },
 
+    ratesList: {
+      type: Array,
+      required: true,
+    },
+
     userList: {
       type: Array,
+      required: true,
+    },
+
+    updateTransaction: {
+      type: Function,
       required: true,
     },
 

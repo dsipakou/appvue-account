@@ -9,6 +9,11 @@ import 'vuestic-ui/dist/vuestic-ui.css';
 import quasarUserOptions from './quasar-user-options';
 
 moment.locale('ru');
+moment.updateLocale('ru', {
+  week: {
+    dow: 1,
+  },
+});
 
 createApp(App).use(Quasar, quasarUserOptions)
   .use(store)

@@ -113,8 +113,18 @@ export default {
       required: true,
     },
 
+    ratesList: {
+      type: Array,
+      required: true,
+    },
+
     userList: {
       type: Array,
+      required: true,
+    },
+
+    updateTransaction: {
+      type: Function,
       required: true,
     },
   },
@@ -148,8 +158,38 @@ export default {
         || this.systemCategories.find((item) => item.id === id);
     },
 
+    getRate(id, date) {
+      return this.ratesList.find((item) => {
+        const transactionDate = moment(date).startOf('day');
+        const rateDate = moment(item.rateDate).startOf('day');
+        return transactionDate.isSame(rateDate) && item.currencyId === id;
+      });
+    },
+
     getUser(id) {
       return this.userList.find((item) => item.id === id);
+    },
+
+    update() {
+      const rate = this.getRate(
+        this.input.currency.id,
+        this.input.transactionDate,
+      );
+
+      const transaction = {
+        id: this.input.id,
+        userId: this.input.user.id,
+        categoryId: this.input.category.id,
+        budgetId: this.input.budget?.id,
+        amount: this.input.amount.toString(),
+        rate: rate?.rate || 1,
+        accountId: this.input.account.id,
+        transactionDate: this.input.transactionDate,
+        type: this.input.type,
+        description: this.input.description,
+      };
+      this.updateTransaction(transaction);
+      this.updateForm = false;
     },
   },
 

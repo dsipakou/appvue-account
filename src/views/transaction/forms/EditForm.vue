@@ -49,7 +49,8 @@
           :currencyList="currencyList"
           :ratesList="ratesList"
           :selectedDate="activeDate"
-          v-model="input.currency"/>
+          :currencyListLoaded="currencyListLoaded"
+          @selectCurrency="input.currency = $event" />
       </q-card-section>
       <q-card-section>
         <q-input outlined stack-label
@@ -85,45 +86,15 @@ export default {
   },
 
   props: {
-    transaction: {
-      type: Object,
-      required: true,
-    },
-
-    accountList: {
-      type: Array,
-      required: true,
-    },
-
-    budgetList: {
-      type: Array,
-      required: true,
-    },
-
-    categoryList: {
-      type: Array,
-      required: true,
-    },
-
-    currencyList: {
-      type: Array,
-      required: true,
-    },
-
-    ratesList: {
-      type: Array,
-      required: true,
-    },
-
-    userList: {
-      type: Array,
-      required: true,
-    },
-
-    updateTransaction: {
-      type: Function,
-      required: true,
-    },
+    transaction: Object,
+    accountList: Array,
+    budgetList: Array,
+    categoryList: Array,
+    currencyList: Array,
+    ratesList: Array,
+    userList: Array,
+    updateTransaction: Function,
+    currencyListLoaded: Boolean,
   },
 
   data() {
@@ -187,7 +158,7 @@ export default {
         description: this.input.description,
       };
       this.updateTransaction(transaction);
-      this.updateForm = false;
+      this.$emit('closeForm');
     },
   },
 
@@ -241,7 +212,6 @@ export default {
     this.input.user = this.getUser(this.transaction.userId);
     this.input.budget = this.getBudget(this.transaction.budgetId);
     this.input.category = this.getCategory(this.transaction.categoryId);
-    this.input.currency = this.defaultCurrency;
     this.input.amount = this.transaction.amount;
     this.input.account = this.getAccount(this.transaction.accountId);
     this.input.transactionDate = this.transaction.transactionDate.substr(0, 10);

@@ -34,6 +34,7 @@
           :ratesList="ratesList"
           :userList="userList"
           :updateTransaction="updateTransaction"
+          :deleteTransaction="deleteTransaction"
           :currencyListLoaded="currencyListLoaded">
           <template v-slot:header>
             <span class="header__title">Transactions on {{ activeDay }}</span>
@@ -96,6 +97,7 @@ export default {
     ...mapActions([
       'fetchTransactions',
       'updateTransaction',
+      'deleteTransaction',
     ]),
 
     filterTransactions() {

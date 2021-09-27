@@ -119,9 +119,11 @@
       :budgetList="budgetList"
       :categoryList="categoryList"
       :currencyList="currencyList"
+      :currencyListLoaded="currencyListLoaded"
       :ratesList="ratesList"
       :userList="userList"
       :updateTransaction="updateTransaction"
+      @closeForm="editForm = false"
     />
   </q-dialog>
 </template>
@@ -145,50 +147,16 @@ export default {
   },
 
   props: {
-    transactions: {
-      type: Array,
-      required: true,
-    },
-
-    accountList: {
-      type: Array,
-      required: true,
-    },
-
-    budgetList: {
-      type: Array,
-      required: true,
-    },
-
-    categoryList: {
-      type: Array,
-      required: true,
-    },
-
-    currencyList: {
-      type: Array,
-      required: true,
-    },
-
-    ratesList: {
-      type: Array,
-      required: true,
-    },
-
-    userList: {
-      type: Array,
-      required: true,
-    },
-
-    updateTransaction: {
-      type: Function,
-      required: true,
-    },
-
-    currencyListLoaded: {
-      type: Boolean,
-      required: true,
-    },
+    transactions: Array,
+    accountList: Array,
+    budgetList: Array,
+    categoryList: Array,
+    currencyList: Array,
+    ratesList: Array,
+    userList: Array,
+    updateTransaction: Function,
+    deleteTransaction: Function,
+    currencyListLoaded: Boolean,
   },
 
   data() {

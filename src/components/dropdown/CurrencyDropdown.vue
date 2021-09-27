@@ -15,25 +15,10 @@ export default {
   name: 'CurrencyDropdown',
 
   props: {
-    currencyList: {
-      type: Array,
-      required: true,
-    },
-
-    ratesList: {
-      type: Array,
-      required: true,
-    },
-
-    selectedDate: {
-      type: String,
-      required: true,
-    },
-
-    currencyListLoaded: {
-      type: Boolean,
-      required: true,
-    },
+    currencyList: Array,
+    ratesList: Array,
+    selectedDate: String,
+    currencyListLoaded: Boolean,
   },
 
   data() {
@@ -77,6 +62,11 @@ export default {
     selectedDate() {
       this.getAvailableCurrencies();
       this.currencyModel = this.defaultCurrency;
+    },
+
+    currencyModel() {
+      this.$emit('selectCurrency', this.currencyModel);
+      console.log(this.currencyModel);
     },
   },
 

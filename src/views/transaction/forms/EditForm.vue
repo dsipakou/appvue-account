@@ -45,29 +45,21 @@
         <q-input outlined stack-label label="Amount" v-model="input.amount" />
       </q-card-section>
       <q-card-section>
-        <q-select
-          outlined
-          label="Currency"
-          label-stacked
-          :options="availableCurrencies"
-          option-value="id"
-          option-label="verbalName"
-          v-model="input.currency" />
+        <CurrencyDropdown
+          :currencyList="currencyList"
+          :ratesList="ratesList"
+          :selectedDate="activeDate"
+          v-model="input.currency"/>
       </q-card-section>
       <q-card-section>
-        <q-input
-          outlined
+        <q-input outlined stack-label
           type="date"
-          stack-label
           label="Date"
-          v-model="input.transactionDate"
-          />
+          v-model="input.transactionDate" />
       </q-card-section>
       <q-card-section>
-        <q-input
-          outlined
+        <q-input outlineds stack-label
           type="textarea"
-          stack-label
           label="Description"
           v-model="input.description"
           />
@@ -83,9 +75,14 @@
 </template>
 <script>
 import moment from 'moment';
+import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 
 export default {
   name: 'EditForm',
+
+  components: {
+    CurrencyDropdown,
+  },
 
   props: {
     transaction: {
@@ -131,6 +128,7 @@ export default {
 
   data() {
     return {
+      activeDate: '',
       input: {
         accountId: 0,
         amount: '',
@@ -228,9 +226,13 @@ export default {
       items.unshift({ id: null, title: 'Default' });
       return items;
     },
+  },
 
-    defaultCurrency() {
-      return this.currencyList.find((item) => item.isDefault);
+  watch: {
+    'input.transactionDate': {
+      handler() {
+        this.activeDate = this.input.transactionDate;
+      },
     },
   },
 

@@ -308,6 +308,7 @@ export default {
       showModal: false,
       availableCurrencies: [],
       defaultCurrency: '',
+      activeDate: '',
       input: {
         user: '',
         source: '',

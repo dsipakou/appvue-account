@@ -6,34 +6,10 @@
           <slot name="header"></slot>
         </div>
         <div>
-          <q-select
-            :options="currenciesListSelect"
-            v-model="selectedCurrencies"
-            map-options
-            multiple
-            stack-label
-            option-value="id"
-            option-label="verbalName"
-            style="width: 600px;">
-            <template v-slot:selected>
-              Currency:
-              <q-chip dense square color="white"
-                v-for="currency in selectedCurrencies"
-                :key="currency.id"
-                text-color="primary"
-                style="max-width: 100px;"
-                class="q-ml-sm overflow-hidden align-center"
-                >
-                <q-avatar color="primary" text-color="white" class="vertical-middle">
-                  <span class="text-weight-bold text-body1 align-center">
-                    {{ currency.sign }}
-                  </span>
-                </q-avatar>
-                <span class="text-weight-light header__span q-ml-xs">
-                  {{ currency.verbalName }}</span>
-              </q-chip>
-            </template>
-          </q-select>
+          <CurrencyFilterDropdown
+            :currencyList="currencyList"
+            :currencyListLoaded="currencyListLoaded"
+            @selectCurrency="selectedCurrencies = $event"/>
         </div>
         <div>
           Day overall: {{ transactionsSum }}
@@ -130,6 +106,7 @@
 <script>
 import moment from 'moment';
 import EditForm from '@/views/transaction/forms/EditForm.vue';
+import CurrencyFilterDropdown from '@/components/dropdown/CurrencyFilterDropdown.vue';
 import { ref } from 'vue';
 
 export default {
@@ -137,12 +114,12 @@ export default {
 
   components: {
     EditForm,
+    CurrencyFilterDropdown,
   },
 
   setup() {
     return {
       editForm: ref(false),
-      selectedCurrencies: ref([]),
     };
   },
 
@@ -163,6 +140,7 @@ export default {
     return {
       defaultCurrency: '',
       currenciesListSelect: [],
+      selectedCurrencies: [],
       editedTransaction: null,
     };
   },
@@ -244,6 +222,14 @@ export default {
       return currencies;
     },
 
+    getRate(id, date) {
+      return this.ratesList.find((item) => {
+        const transactionDate = moment(date).startOf('day');
+        const rateDate = moment(item.rateDate).startOf('day');
+        return transactionDate.isSame(rateDate) && item.currencyId === id;
+      });
+    },
+
     initCurrencies() {
       this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
       this.currenciesListSelect = this.currencyList.filter((item) => (
@@ -257,8 +243,12 @@ export default {
     },
   },
 
-  mounted() {
-    this.initCurrencies();
+  watch: {
+    currencyListLoaded() {
+      if (this.currencyListLoaded) {
+        this.initCurrencies();
+      }
+    },
   },
 };
 </script>

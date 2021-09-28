@@ -66,7 +66,6 @@ export default {
 
     currencyModel() {
       this.$emit('selectCurrency', this.currencyModel);
-      console.log(this.currencyModel);
     },
   },
 

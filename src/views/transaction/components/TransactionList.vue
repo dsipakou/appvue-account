@@ -22,7 +22,8 @@
           <TransactionItem
             :account="getAccount(transaction.accountId)"
             :category="getCategory(transaction.categoryId)"
-            :currencyList="transactionCurrencyList(transaction)"
+            :currencyList="currencyList"
+            :selectedCurrencies="selectedCurrencies"
             :accountList="accountList"
             :budgetList="budgetList"
             :categoryList="categoryList"
@@ -142,41 +143,6 @@ export default {
 
     getFormattedDate(date) {
       return moment(date).calendar().split(' at')[0];
-    },
-
-    transactionCurrencyList(transaction) {
-      const currencies = [];
-      if (this.currencyListLoaded) {
-        const defaultCurrency = this.currencyList.find((item) => item.isDefault);
-        const objDefault = {
-          id: transaction.currencyId,
-          amount: transaction.amount.toFixed(2),
-          sign: defaultCurrency.sign,
-        };
-
-        currencies.push(objDefault);
-
-        Object.values(this.selectedCurrencies).forEach((currency) => {
-          const rate = this.getRate(currency.id, transaction.transactionDate);
-          const obj = {
-            id: currency.value,
-            amount: rate ? (transaction.amount / rate.rate).toFixed(2) : '-',
-            sign: currency.sign,
-          };
-
-          currencies.push(obj);
-        });
-      }
-
-      return currencies;
-    },
-
-    getRate(id, date) {
-      return this.ratesList.find((item) => {
-        const transactionDate = moment(date).startOf('day');
-        const rateDate = moment(item.rateDate).startOf('day');
-        return transactionDate.isSame(rateDate) && item.currencyId === id;
-      });
     },
 
     initCurrencies() {

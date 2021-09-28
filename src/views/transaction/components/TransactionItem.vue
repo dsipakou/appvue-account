@@ -36,7 +36,7 @@
           </q-chip>
         </div>
         <div class="col self-center items-end">
-          <div v-for="amount in currencyList" :key="amount.id">
+          <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
             <span
               :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
               class="text-bold q-pl-lg">
@@ -87,6 +87,8 @@ import EditForm from '@/views/transaction/forms/EditForm.vue';
 export default {
   name: 'TransactionItem',
 
+  inheritAttrs: false,
+
   components: {
     EditForm,
   },
@@ -106,6 +108,7 @@ export default {
     currencyList: { type: Array, required: true },
     currencyListLoaded: { type: Boolean, required: true },
     ratesList: { type: Array, required: true },
+    selectedCurrencies: { type: Array, required: true },
     userList: { type: Array, required: true },
     updateTransaction: { type: Function, required: true },
     transaction: { type: Object, required: true },
@@ -113,8 +116,8 @@ export default {
 
   data() {
     return {
-      transactionCurrencyList: [],
       editedTransaction: null,
+      defaultCurrency: '',
     };
   },
 
@@ -126,6 +129,60 @@ export default {
     clickEdit() {
       this.editedTransaction = this.transaction;
       this.editForm = true;
+    },
+
+    initCurrencies() {
+      this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
+      this.currenciesListSelect = this.currencyList.filter((item) => (
+        !item.isDefault
+      ));
+    },
+
+    transactionCurrencyList(transaction) {
+      const currencies = [];
+      if (this.currencyListLoaded) {
+        const defaultCurrency = this.currencyList.find((item) => item.isDefault);
+        const objDefault = {
+          id: transaction.currencyId,
+          amount: transaction.amount.toFixed(2),
+          sign: defaultCurrency.sign,
+        };
+
+        currencies.push(objDefault);
+
+        Object.values(this.selectedCurrencies).forEach((currency) => {
+          const rate = this.getRate(currency.id, transaction.transactionDate);
+          const obj = {
+            id: currency.value,
+            amount: rate ? (transaction.amount / rate.rate).toFixed(2) : '-',
+            sign: currency.sign,
+          };
+
+          currencies.push(obj);
+        });
+      }
+
+      return currencies;
+    },
+
+    getRate(id, date) {
+      return this.ratesList.find((item) => {
+        const transactionDate = moment(date).startOf('day');
+        const rateDate = moment(item.rateDate).startOf('day');
+        return transactionDate.isSame(rateDate) && item.currencyId === id;
+      });
+    },
+  },
+
+  mounted() {
+    this.initCurrencies();
+  },
+
+  watch: {
+    currencyListLoaded() {
+      if (this.currencyListLoaded) {
+        this.initCurrencies();
+      }
     },
   },
 };

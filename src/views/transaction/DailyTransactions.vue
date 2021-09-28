@@ -68,6 +68,8 @@ export default {
     return {
       transactions: [],
       selectedCurrencies: [],
+      selectedDay: '',
+      selectedDayRates: [],
     };
   },
 
@@ -90,6 +92,7 @@ export default {
 
   watch: {
     activeDay() {
+      this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
       this.filterTransactions();
     },
   },
@@ -97,13 +100,14 @@ export default {
   methods: {
     ...mapActions([
       'fetchTransactions',
+      'fetchCurrencies',
       'updateTransaction',
       'deleteTransaction',
+      'clearTransactions',
     ]),
 
     filterTransactions() {
-      const day = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
-      const selectedDate = `${moment().format('YYYY-MM')}-${day}`;
+      const selectedDate = `${moment().format('YYYY-MM')}-${this.selectedDay}`;
       this.fetchTransactions({
         sorting: 'added',
         dateFrom: selectedDate,
@@ -112,7 +116,13 @@ export default {
     },
   },
 
+  beforeMount() {
+    this.clearTransactions();
+    this.fetchCurrencies();
+  },
+
   mounted() {
+    this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
     this.filterTransactions();
   },
 };

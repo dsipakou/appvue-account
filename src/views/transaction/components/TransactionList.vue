@@ -19,71 +19,18 @@
     <div class="row">
       <div class="col transaction-list">
         <div v-for="transaction in sortedTransactions" :key="transaction.id">
-          <q-card flat bordered class="q-mb-lg">
-            <q-card-section horizontal class="justify-between">
-              <div class="row q-pa-md">
-                <div class="col-1 align-center">
-                  <q-avatar
-                    color="primary"
-                    text-color="white">
-                    {{ getCategory(transaction.categoryId).name[0] }}
-                  </q-avatar>
-                </div>
-                <div class="col-7 align-center">
-                  <div class="text-h6">{{
-                    transaction.type === 'income' ?
-                    getAccount(transaction.accountId).source :
-                    getCategory(transaction.categoryId).name }}
-                    <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
-                      {{ getCategory(transaction.categoryId).parentName }}
-                    </q-chip>
-                  </div>
-                  <div class="text-subtitle2">
-                    {{ getFormattedDate(transaction.transactionDate) }}
-                  </div>
-                </div>
-                <div class="col self-center">
-                  <q-chip square outline color="primary"
-                    class="q-ml-sm overflow-hidden align-center">
-                    <q-avatar
-                      color="primary"
-                      text-color="white"
-                      class="vertical-middle"
-                      icon="credit_card"/>
-                      <span>
-                        {{ getAccount(transaction.accountId).source }}
-                      </span>
-                  </q-chip>
-                </div>
-                <div class="col self-center items-end">
-                  <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
-                    <span
-                      :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
-                      class="text-bold q-pl-lg">
-                      {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.amount }}
-                      {{ amount.sign }}
-                    </span>
-                  </div>
-                </div>
-                <div class="col-1 self-center items-end">
-                  <q-btn-dropdown flat dropdown-icon="more_horiz">
-                    <q-list>
-                      <q-item clickable v-close-popup @click="clickEdit(transaction)">
-                        <q-item-section>
-                          <q-item-label>Edit</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                      <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
-                        <q-item-section>
-                          <q-item-label>Delete</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-btn-dropdown>
-                </div>
-              </div>
-            </q-card-section>
-          </q-card>
+          <TransactionItem
+            :account="getAccount(transaction.accountId)"
+            :category="getCategory(transaction.categoryId)"
+            :currencyList="transactionCurrencyList(transaction)"
+            :accountList="accountList"
+            :budgetList="budgetList"
+            :categoryList="categoryList"
+            :currencyListLoaded="currencyListLoaded"
+            :ratesList="ratesList"
+            :userList="userList"
+            :updateTransaction="updateTransaction"
+            :transaction="transaction" />
         </div>
       </div>
     </div>
@@ -107,6 +54,7 @@
 import moment from 'moment';
 import EditForm from '@/views/transaction/forms/EditForm.vue';
 import CurrencyFilterDropdown from '@/components/dropdown/CurrencyFilterDropdown.vue';
+import TransactionItem from '@/views/transaction/components/TransactionItem.vue';
 import { ref } from 'vue';
 
 export default {
@@ -115,6 +63,7 @@ export default {
   components: {
     EditForm,
     CurrencyFilterDropdown,
+    TransactionItem,
   },
 
   setup() {

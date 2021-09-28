@@ -1,6 +1,10 @@
 <template>
   <div class="q-pa-md">
     <div class="row justify-center">
+      <q-btn flat no-caps
+        class="text-primary text-weight-bold"
+        label="Daily Transactions >"
+        to="/transactions/daily"/>
       <div class="row justify-center">
         <div
           v-for="account in mainAccounts"

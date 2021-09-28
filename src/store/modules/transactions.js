@@ -70,6 +70,10 @@ const actions = {
       commit('updateTransaction', body);
     }
   },
+
+  async clearTransactions({ commit }) {
+    commit('clearTransactions');
+  },
 };
 
 const mutations = {
@@ -96,6 +100,10 @@ const mutations = {
       }
       return item;
     });
+  },
+
+  clearTransactions(state) {
+    state.transactions.items = [];
   },
 
   setTransactionsStatus(state, status) {

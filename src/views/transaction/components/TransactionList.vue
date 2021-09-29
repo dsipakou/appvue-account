@@ -31,46 +31,23 @@
             :ratesList="ratesList"
             :userList="userList"
             :updateTransaction="updateTransaction"
+            :deleteTransaction="deleteTransaction"
             :transaction="transaction" />
         </div>
       </div>
     </div>
   </div>
-  <q-dialog v-model="editForm">
-    <EditForm
-      :transaction="editedTransaction"
-      :accountList="accountList"
-      :budgetList="budgetList"
-      :categoryList="categoryList"
-      :currencyList="currencyList"
-      :currencyListLoaded="currencyListLoaded"
-      :ratesList="ratesList"
-      :userList="userList"
-      :updateTransaction="updateTransaction"
-      @closeForm="editForm = false"
-    />
-  </q-dialog>
 </template>
 <script>
-import moment from 'moment';
-import EditForm from '@/views/transaction/forms/EditForm.vue';
 import CurrencyFilterDropdown from '@/components/dropdown/CurrencyFilterDropdown.vue';
 import TransactionItem from '@/views/transaction/components/TransactionItem.vue';
-import { ref } from 'vue';
 
 export default {
   name: 'TransactionList',
 
   components: {
-    EditForm,
     CurrencyFilterDropdown,
     TransactionItem,
-  },
-
-  setup() {
-    return {
-      editForm: ref(false),
-    };
   },
 
   props: {
@@ -88,8 +65,6 @@ export default {
 
   data() {
     return {
-      defaultCurrency: '',
-      currenciesListSelect: [],
       selectedCurrencies: [],
       editedTransaction: null,
     };
@@ -139,30 +114,6 @@ export default {
 
     getAccount(id) {
       return this.accountList.find((item) => item.id === id);
-    },
-
-    getFormattedDate(date) {
-      return moment(date).calendar().split(' at')[0];
-    },
-
-    initCurrencies() {
-      this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
-      this.currenciesListSelect = this.currencyList.filter((item) => (
-        !item.isDefault
-      ));
-    },
-
-    clickEdit(transaction) {
-      this.editedTransaction = transaction;
-      this.editForm = true;
-    },
-  },
-
-  watch: {
-    currencyListLoaded() {
-      if (this.currencyListLoaded) {
-        this.initCurrencies();
-      }
     },
   },
 };

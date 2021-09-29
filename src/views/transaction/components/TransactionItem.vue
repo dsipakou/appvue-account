@@ -111,6 +111,7 @@ export default {
     selectedCurrencies: { type: Array, required: true },
     userList: { type: Array, required: true },
     updateTransaction: { type: Function, required: true },
+    deleteTransaction: { type: Function, required: true },
     transaction: { type: Object, required: true },
   },
 

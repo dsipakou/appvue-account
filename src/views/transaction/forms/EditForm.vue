@@ -94,8 +94,13 @@ export default {
     ratesList: Array,
     userList: Array,
     updateTransaction: Function,
+    deleteTransaction: Function,
     currencyListLoaded: Boolean,
   },
+
+  emits: [
+    'closeForm',
+  ],
 
   data() {
     return {

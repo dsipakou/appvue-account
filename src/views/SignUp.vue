@@ -24,6 +24,27 @@
       </div>
     </form>
   </div>
+  <div>
+    <q-card style="width: 400px;">
+      <q-form>
+        <q-card-section>
+          <q-input outlined stack-label
+            label="E-mail"
+            v-model="input.email"
+            />
+        </q-card-section>
+        <q-card-section>
+          <q-input outlined stack-label
+            label="Password"
+            v-model="input.password"
+            />
+        </q-card-section>
+        <q-card-section>
+          <q-btn color="primary" routeded @click="login()" label="Login" />
+        </q-card-section>
+      </q-form>
+    </q-card>
+  </div>
 </template>
 
 <script>

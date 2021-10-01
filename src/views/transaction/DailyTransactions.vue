@@ -72,7 +72,7 @@ export default {
   setup() {
     return {
       activeDay: ref(moment().date()),
-      activeMonth: ref(moment().months()),
+      activeMonth: ref(moment().month()),
     };
   },
 
@@ -95,6 +95,7 @@ export default {
       'userList',
       'currencyListLoaded',
       'transactionList',
+      'transactionArchiveMonth',
     ]),
 
     days() {
@@ -116,12 +117,17 @@ export default {
       this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
       this.filterTransactions();
     },
+
+    activeMonth() {
+      this.setTransactionArchiveMonth(this.activeMonth.id);
+    },
   },
 
   methods: {
     ...mapActions([
       'fetchTransactions',
       'fetchCurrencies',
+      'setTransactionArchiveMonth',
       'updateTransaction',
       'deleteTransaction',
       'clearTransactions',
@@ -145,6 +151,9 @@ export default {
   mounted() {
     this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
     this.filterTransactions();
+    if (this.transactionArchiveMonth) {
+      this.activeMonth = this.transactionArchiveMonth;
+    }
   },
 };
 </script>

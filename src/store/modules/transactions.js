@@ -19,12 +19,17 @@ const state = {
     items: [],
     status: itemStatus.INIT,
   },
+
+  archive: {
+    month: 0,
+  },
 };
 
 const getters = {
   transactionList: (state) => state.transactions.items,
   groupedTransactionList: (state) => state.groupedTransactions.items,
   transactionListLoaded: (state) => state.transactions.status === itemStatus.LOADED,
+  transactionArchiveMonth: (state) => state.archive.month,
 };
 
 const actions = {
@@ -71,6 +76,10 @@ const actions = {
     }
   },
 
+  async setTransactionArchiveMonth({ commit }, month) {
+    commit('setArchiveMonth', month);
+  },
+
   async clearTransactions({ commit }) {
     commit('clearTransactions');
   },
@@ -83,6 +92,10 @@ const mutations = {
 
   setGroupedTransactions(state, amounts) {
     state.groupedTransactions.items = amounts;
+  },
+
+  setArchiveMonth(state, month) {
+    state.archive.month = month;
   },
 
   createTransaction(state, transaction) {

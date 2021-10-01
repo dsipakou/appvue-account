@@ -40,6 +40,11 @@ const deleteRequest = (url, requestBody) => {
 
 /* Users section */
 
+export const userLogin = async ({ email, password }) => {
+  const response = await postRequest('http://localhost:9091/api/login', { email, password });
+  return response;
+};
+
 export const getUsers = async () => {
   const response = await getRequest('http://localhost:9091/api/users');
   return response;

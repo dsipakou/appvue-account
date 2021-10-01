@@ -7,6 +7,17 @@
         to="/transactions"/>
       <span class="text-h4">Daily Transactions</span>
     </div>
+    <div class="row justify-center">
+      <div class="col-4">
+        <q-select dense map-options
+          v-model="activeMonth"
+          option-value="id"
+          option-label="name"
+          :options="months"
+          label="Month"
+          />
+      </div>
+    </div>
     <div class="row q-ma-lg justify-center">
       <div class="col-6">
         <q-pagination outline
@@ -61,6 +72,7 @@ export default {
   setup() {
     return {
       activeDay: ref(moment().date()),
+      activeMonth: ref(moment().months()),
     };
   },
 
@@ -87,6 +99,15 @@ export default {
 
     days() {
       return Array.from({ length: moment().daysInMonth() }, (_, i) => i + 1);
+    },
+
+    months() {
+      return moment.months().map((item, index) => (
+        {
+          name: item.charAt(0).toUpperCase() + item.slice(1),
+          id: index,
+        }
+      ));
     },
   },
 

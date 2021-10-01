@@ -30,17 +30,17 @@
         <q-card-section>
           <q-input outlined stack-label
             label="E-mail"
-            v-model="input.email"
+            v-model="input.login.email"
             />
         </q-card-section>
         <q-card-section>
           <q-input outlined stack-label
             label="Password"
-            v-model="input.password"
+            v-model="input.login.password"
             />
         </q-card-section>
         <q-card-section>
-          <q-btn color="primary" routeded @click="login()" label="Login" />
+          <q-btn color="primary" rounded @click="login()" label="Login" />
         </q-card-section>
       </q-form>
     </q-card>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { createUser } from '../service';
+import { userLogin, createUser } from '../service';
 
 export default {
   name: 'SignUp',
@@ -59,12 +59,24 @@ export default {
         email: '',
         password: '',
         passwordAgain: '',
+        login: {
+          email: '',
+          password: '',
+        },
       },
     };
   },
   methods: {
     signup() {
       createUser(this.input.name, this.input.email, this.input.password);
+    },
+
+    login() {
+      const payload = {
+        email: this.input.login.email,
+        password: this.input.login.password,
+      };
+      userLogin(payload);
     },
   },
 };

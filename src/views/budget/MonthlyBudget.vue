@@ -130,7 +130,8 @@
     :categories="categories"
     :item="selectedBudget"
     :updateBudget="updateBudget"
-    :deleteBudget="deleteBudget" />
+    :deleteBudget="deleteBudget"
+    :duplicateBudget="duplicateBudget"/>
   </q-dialog>
 </template>
 <script>

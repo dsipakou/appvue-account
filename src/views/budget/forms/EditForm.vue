@@ -45,7 +45,8 @@
     </q-card-section>
     <q-card-actions align="center" class="action-buttons">
       <q-btn color="primary" rounded style="width: 100px;" @click="update()">Update</q-btn>
-      <q-btn color="primary" rounded style="width: 100px;" @click="remove()">Delete</q-btn>
+      <q-btn color="red" rounded style="width: 100px;" @click="remove()">Delete</q-btn>
+      <q-btn outlined rounded style="width: 100px;" @click="duplicate()">Duplicate</q-btn>
     </q-card-actions>
   </q-card>
 </template>
@@ -57,25 +58,11 @@ export default {
   inheritAttrs: false,
 
   props: {
-    updateBudget: {
-      type: Function,
-      required: true,
-    },
-
-    deleteBudget: {
-      type: Function,
-      required: true,
-    },
-
-    item: {
-      type: Object,
-      required: true,
-    },
-
-    categories: {
-      type: Array,
-      required: true,
-    },
+    updateBudget: { type: Function, required: true },
+    deleteBudget: { type: Function, required: true },
+    duplicateBudget: { type: Function, required: true },
+    item: { type: Object, required: true },
+    categories: { type: Array, required: true },
   },
 
   data() {

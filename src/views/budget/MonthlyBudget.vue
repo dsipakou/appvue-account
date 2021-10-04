@@ -2,7 +2,7 @@
   <div class="row justify-between">
     <h5>Monthly Budget</h5>
     <span class="text-subtitle2">Planned {{ monthSum }}</span>
-    <q-btn round color="primary" label="+" @click="createForm = true"></q-btn>
+    <q-btn round color="primary" label="+" @click="addBudgetClick()"></q-btn>
   </div>
   <div
     class="row"
@@ -136,6 +136,7 @@
       :updateBudget="updateBudget"
       :deleteBudget="deleteBudget"
       @duplicateClick="makeDuplicate($event)"
+      @closeForm="editForm = false"
     />
   </q-dialog>
 </template>
@@ -317,6 +318,11 @@ export default {
       return category.name === this.selectedCategoryName && this.selectedCategoryIndex >= 0;
     },
 
+    addBudgetClick() {
+      this.budgetCopy = {};
+      this.createForm = true;
+    },
+
     categoryClick(categoryName, column, row) {
       this.selectedCategoryName = categoryName;
       this.row = row;
@@ -374,7 +380,17 @@ export default {
     makeDuplicate(budget) {
       this.budgetCopy = budget;
       this.createForm = true;
-      console.log(budget);
+    },
+  },
+
+  watch: {
+    groupedByCategory() {
+      const selectedCategory = this.groupedByCategory.find((item) => (
+        item.name === this.selectedCategoryName
+      ));
+      this.selectedCategorySlideIndexes = selectedCategory?.value.map((item) => (
+        { ...item, model: item.value.length - 1 }
+      ));
     },
   },
 };

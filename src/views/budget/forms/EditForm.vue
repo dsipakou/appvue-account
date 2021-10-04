@@ -65,6 +65,7 @@ export default {
   },
 
   emits: [
+    'closeForm',
     'duplicateClick',
   ],
 
@@ -104,12 +105,12 @@ export default {
         isCompleted: this.input.isCompleted,
       };
       this.updateBudget(budget);
-      this.editForm = false;
+      this.$emit('closeForm');
     },
 
     remove() {
       this.deleteBudget(this.input.id);
-      this.editForm = false;
+      this.$emit('closeForm');
     },
 
     duplicate() {

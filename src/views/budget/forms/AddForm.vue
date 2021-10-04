@@ -11,26 +11,20 @@
         <q-input outlined stack-label label="Amount" v-model.number="input.amount" />
       </q-card-section>
       <q-card-section>
-        <q-input
-          outlined
+        <q-input outlined stack-label
           type="date"
-          stack-label
           label="Date"
           v-model="input.budgetDate"
           />
       </q-card-section>
       <q-card-section>
-        <q-select
-          outlined
+        <q-select outlined label-stacked map-options emit-value
           label="Category"
-          label-stacked
-          map-options
-          emit-value
           option-value="id"
           option-label="name"
           :options="categories"
           style="width: 200px;"
-          v-model="input.category" />
+          v-model="input.categoryId" />
       </q-card-section>
     </q-card-section>
     <q-card-section>
@@ -55,14 +49,18 @@ export default {
   inheritAttrs: false,
 
   props: {
-    categories: {
-      type: Array,
-      required: true,
-    },
-
-    createBudget: {
-      type: Function,
-      required: true,
+    categories: { type: Array, required: true },
+    createBudget: { type: Function, required: true },
+    budget: {
+      type: Object,
+      default() {
+        return {
+          amount: 0,
+          title: '',
+          description: '',
+          categoryId: 0,
+        };
+      },
     },
   },
 
@@ -85,13 +83,22 @@ export default {
         budgetDate: this.input.budgetDate,
         title: this.input.title,
         amount: this.input.amount,
-        categoryId: this.input.category,
+        categoryId: this.input.categoryId,
         description: this.input.description,
       };
 
       this.createBudget(budget);
       this.createForm = false;
     },
+  },
+
+  mounted() {
+    console.log(this.input);
+    this.input.amount = this.budget.amount;
+    this.input.title = this.budget.title;
+    this.input.description = this.budget.description;
+    this.input.categoryId = this.budget.categoryId;
+    console.log(this.input);
   },
 };
 </script>

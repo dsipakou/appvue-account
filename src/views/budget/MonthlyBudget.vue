@@ -123,15 +123,20 @@
     </div>
   </div>
   <q-dialog v-model="createForm">
-    <AddForm :categories="categories" :createBudget="createBudget" />
+    <AddForm
+      :categories="categories"
+      :createBudget="createBudget"
+      :budget="budgetCopy"
+      />
   </q-dialog>
   <q-dialog v-model="editForm">
     <EditForm
-    :categories="categories"
-    :item="selectedBudget"
-    :updateBudget="updateBudget"
-    :deleteBudget="deleteBudget"
-    :duplicateBudget="duplicateBudget"/>
+      :categories="categories"
+      :item="selectedBudget"
+      :updateBudget="updateBudget"
+      :deleteBudget="deleteBudget"
+      @duplicateClick="makeDuplicate($event)"
+    />
   </q-dialog>
 </template>
 <script>
@@ -158,40 +163,13 @@ export default {
   },
 
   props: {
-    budgetItems: {
-      type: Array,
-      required: true,
-    },
-
-    categoryItems: {
-      type: Array,
-      required: true,
-    },
-
-    createBudget: {
-      type: Function,
-      required: true,
-    },
-
-    updateBudget: {
-      type: Function,
-      required: true,
-    },
-
-    deleteBudget: {
-      type: Function,
-      required: true,
-    },
-
-    budgetUsage: {
-      type: Array,
-      required: true,
-    },
-
-    updateStatusBudget: {
-      type: Function,
-      required: true,
-    },
+    budgetItems: { type: Array, required: true },
+    categoryItems: { type: Array, required: true },
+    createBudget: { type: Function, required: true },
+    updateBudget: { type: Function, required: true },
+    deleteBudget: { type: Function, required: true },
+    budgetUsage: { type: Array, required: true },
+    updateStatusBudget: { type: Function, required: true },
   },
 
   data() {
@@ -204,6 +182,7 @@ export default {
       selectedBudget: {},
       selectedCategorySlideIndexes: [],
       selectedCategoryIndex: -1,
+      budgetCopy: {},
     };
   },
 
@@ -390,6 +369,12 @@ export default {
         };
         this.updateStatusBudget(completedItem);
       });
+    },
+
+    makeDuplicate(budget) {
+      this.budgetCopy = budget;
+      this.createForm = true;
+      console.log(budget);
     },
   },
 };

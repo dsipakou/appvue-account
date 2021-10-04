@@ -60,10 +60,13 @@ export default {
   props: {
     updateBudget: { type: Function, required: true },
     deleteBudget: { type: Function, required: true },
-    duplicateBudget: { type: Function, required: true },
     item: { type: Object, required: true },
     categories: { type: Array, required: true },
   },
+
+  emits: [
+    'duplicateClick',
+  ],
 
   data() {
     return {
@@ -107,6 +110,16 @@ export default {
     remove() {
       this.deleteBudget(this.input.id);
       this.editForm = false;
+    },
+
+    duplicate() {
+      const budget = {
+        title: this.input.title,
+        amount: this.input.amount,
+        categoryId: this.input.categoryId,
+        description: this.input.description,
+      };
+      this.$emit('duplicateClick', budget);
     },
   },
 };

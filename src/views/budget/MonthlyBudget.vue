@@ -21,44 +21,6 @@
         :groupedByCategory="groupedByCategory"
         @categoryClick="categoryClick($event)"
       />
-      <!-- <q-card
-        class="q-ma-sm monthly-card"
-        @mouseover="hover = colIndex + rowIndex * 3"
-        @mouseleave="hover = -1"
-        :style="selectedCategoryIndex >= 0 && !isActiveCategory(category)
-          ? 'filter: blur(3px);' : ''"
-        :class="isActiveCategory(category)
-          ? 'bg-blue-grey-4 text-white' : ''"
-        :flat="hover !== colIndex + rowIndex * 3"
-        @click="categoryClick(category.name, colIndex, rowIndex)">
-        <q-card-section>
-          <span class="text-h6 flex no-wrap overflow-hidden">
-            {{ category.name }}
-          </span>
-        </q-card-section>
-        <div>
-          <div class="flex flex-center">
-            <q-circular-progress
-              show-value
-              class="text-black q-pb-sm"
-              :value="getUsage(category).usagePercent"
-              size="140px"
-              :color="getUsage(category).mainColor"
-              :track-color="getUsage(category).trackColor"
-              :thickness="0.2">
-              <div class="circular-inner text-subtitle2 text-weight-bold">
-                {{ Math.floor(getUsage(category).usageAmount * 100 / category.amount) }}%
-              </div>
-              <div class="circular-inner text-subtitle1 text-blue-grey-8">
-                {{ getUsage(category).usageAmount }}
-              </div>
-              <div class="circular-inner text-h5 text-weight-bold">
-                {{ category.amount }}
-              </div>
-            </q-circular-progress>
-          </div>
-        </div>
-      </q-card>-->
       <div
         class="arrow text-blue-grey-4"
         v-show="category.name === selectedCategory.name && selectedCategory.index >= 0">
@@ -295,38 +257,6 @@ export default {
       }
 
       return chunks;
-    },
-
-    getUsage(category) {
-      if (this.budgetUsage.length > 0) {
-        const usageAmount = this.budgetUsage.find((item) => (
-          item.name === category.name
-        ))?.amount?.toFixed(2) || 0;
-        let usagePercent = Math.floor((usageAmount * 100) / category.amount);
-        let mainColor = '';
-        let trackColor = '';
-        if (usagePercent > 100) {
-          const grade = Math.floor((usagePercent % 100) / 10);
-          mainColor = `red-${grade + 5}`;
-          trackColor = `red-${Math.floor(usagePercent / 100) + 1}`;
-          usagePercent %= 100;
-        } else {
-          mainColor = `green-${Math.floor(usagePercent / 10) + 1}`;
-          trackColor = 'grey-2';
-        }
-        return {
-          usageAmount,
-          usagePercent,
-          mainColor,
-          trackColor,
-        };
-      }
-      return {
-        usageAmount: 0,
-        usagePercent: 0,
-        className: '',
-        trackColor: '',
-      };
     },
 
     getShortDate(longDate) {

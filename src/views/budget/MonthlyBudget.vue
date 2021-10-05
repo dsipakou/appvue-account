@@ -6,13 +6,22 @@
   </div>
   <div
     class="row"
-    v-for="(chunk, rowIndex) in chunked(groupedByCategory, 3)"
+    v-for="(chunk, rowIndex) in chunked(groupedByCategory)"
     :key="rowIndex">
     <div
       v-for="(category, colIndex) in chunk"
       class="col-4 align-center"
       :key="category.name">
-      <q-card
+      <MonthlyCard
+        :category="category"
+        :budgetUsage="budgetUsage"
+        :selectedCategoryName="selectedCategoryName"
+        :column="colIndex"
+        :row="rowIndex"
+        :groupedByCategory="groupedByCategory"
+        @categoryClick="categoryClick($event)"
+      />
+      <!-- <q-card
         class="q-ma-sm monthly-card"
         @mouseover="hover = colIndex + rowIndex * 3"
         @mouseleave="hover = -1"
@@ -49,14 +58,16 @@
             </q-circular-progress>
           </div>
         </div>
-      </q-card>
+      </q-card>-->
       <div
         class="arrow text-blue-grey-4"
         v-show="category.name === selectedCategoryName && selectedCategoryIndex >= 0">
       </div>
     </div>
     <div class="row justify-center" style="width: 100%;">
-      <div class="row bg-blue-grey-4 justify-center sub-categories" v-show="rowIndex === row">
+      <div
+        class="row bg-blue-grey-4 justify-center sub-categories"
+        v-show="rowIndex === coords.row">
         <div class="row justify-center text-h4 text-white q-pt-md">
           {{ selectedCategoryName }}
         </div>
@@ -145,6 +156,9 @@ import { ref } from 'vue';
 import moment from 'moment';
 import AddForm from './forms/AddForm.vue';
 import EditForm from './forms/EditForm.vue';
+import MonthlyCard from './components/MonthlyCard.vue';
+
+const CHUNK_SIZE = 3;
 
 export default {
   name: 'Monthly Budget',
@@ -154,6 +168,7 @@ export default {
   components: {
     AddForm,
     EditForm,
+    MonthlyCard,
   },
 
   setup() {
@@ -176,8 +191,10 @@ export default {
   data() {
     return {
       hover: -1,
-      row: -1,
-      column: -1,
+      coords: {
+        row: -1,
+        column: -1,
+      },
       clicked: -1,
       selectedCategoryName: '',
       selectedBudget: {},
@@ -266,13 +283,13 @@ export default {
   },
 
   methods: {
-    chunked(items, len) {
+    chunked(items) {
       const chunks = [];
       let i = 0;
       const n = items.length;
 
       while (i < n) {
-        chunks.push(items.slice(i, i += len));
+        chunks.push(items.slice(i, i += CHUNK_SIZE));
       }
 
       return chunks;
@@ -323,18 +340,23 @@ export default {
       this.createForm = true;
     },
 
-    categoryClick(categoryName, column, row) {
+    categoryClick(event) {
+      const {
+        categoryName,
+        column,
+        row,
+      } = event;
       this.selectedCategoryName = categoryName;
-      this.row = row;
-      this.column = column;
+      this.coords.row = row;
+      this.coords.column = column;
 
       const index = column + row * 3;
 
       if (this.selectedCategoryIndex === index) {
         this.selectedCategoryIndex = -1;
         this.selectedCategoryId = -1;
-        this.row = -1;
-        this.column = -1;
+        this.coords.row = -1;
+        this.coords.column = -1;
       } else {
         this.selectedCategoryIndex = index;
       }

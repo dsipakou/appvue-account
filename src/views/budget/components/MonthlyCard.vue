@@ -51,33 +51,18 @@ export default {
     row: { type: Number, required: true },
   },
 
+  data() {
+    return {
+      hover: -1,
+    };
+  },
+
   methods: {
     isActiveCategory() {
       return this.category.name === this.selectedCategoryName && this.selectedCategoryIndex >= 0;
     },
 
     categoryClick(categoryName, column, row) {
-      // this.selectedCategoryName = categoryName;
-      this.curRow = row;
-      this.curColumn = column;
-
-      const index = column + row * 3;
-
-      if (this.selectedCategoryIndex === index) {
-        this.selectedCategoryIndex = -1;
-        this.selectedCategoryId = -1;
-        this.curRow = -1;
-        this.curColumn = -1;
-      } else {
-        this.selectedCategoryIndex = index;
-      }
-
-      const selectedCategory = this.groupedByCategory.find((item) => (
-        item.name === this.selectedCategoryName
-      ));
-      this.selectedCategorySlideIndexes = selectedCategory?.value.map((item) => (
-        { ...item, model: item.value.length - 1 }
-      ));
       this.$emit('categoryClick', { categoryName, column, row });
     },
 
@@ -111,9 +96,6 @@ export default {
         className: '',
         trackColor: '',
       };
-    },
-
-    mounted() {
     },
   },
 };

@@ -15,7 +15,7 @@
       <MonthlyCard
         :category="category"
         :budgetUsage="budgetUsage"
-        :selectedCategoryName="selectedCategoryName"
+        :selectedCategory="selectedCategory"
         :column="colIndex"
         :row="rowIndex"
         :groupedByCategory="groupedByCategory"
@@ -61,7 +61,7 @@
       </q-card>-->
       <div
         class="arrow text-blue-grey-4"
-        v-show="category.name === selectedCategoryName && selectedCategoryIndex >= 0">
+        v-show="category.name === selectedCategory.name && selectedCategory.index >= 0">
       </div>
     </div>
     <div class="row justify-center" style="width: 100%;">
@@ -69,7 +69,7 @@
         class="row bg-blue-grey-4 justify-center sub-categories"
         v-show="rowIndex === coords.row">
         <div class="row justify-center text-h4 text-white q-pt-md">
-          {{ selectedCategoryName }}
+          {{ selectedCategory.name }}
         </div>
         <div class="row justify-center" style="width: 100%;">
         <q-card
@@ -195,11 +195,13 @@ export default {
         row: -1,
         column: -1,
       },
+      selectedCategory: {
+        name: '',
+        index: -1,
+      },
       clicked: -1,
-      selectedCategoryName: '',
       selectedBudget: {},
       selectedCategorySlideIndexes: [],
-      selectedCategoryIndex: -1,
       budgetCopy: {},
     };
   },
@@ -275,10 +277,10 @@ export default {
     },
 
     selectedCategoryItems() {
-      const selectedCategory = this.groupedByCategory.find((item) => (
-        item.name === this.selectedCategoryName
+      const category = this.groupedByCategory.find((item) => (
+        item.name === this.selectedCategory.name
       ));
-      return selectedCategory?.value;
+      return category?.value;
     },
   },
 
@@ -331,10 +333,6 @@ export default {
       return moment(longDate).format('Do');
     },
 
-    isActiveCategory(category) {
-      return category.name === this.selectedCategoryName && this.selectedCategoryIndex >= 0;
-    },
-
     addBudgetClick() {
       this.budgetCopy = {};
       this.createForm = true;
@@ -346,25 +344,24 @@ export default {
         column,
         row,
       } = event;
-      this.selectedCategoryName = categoryName;
+      this.selectedCategory.name = categoryName;
       this.coords.row = row;
       this.coords.column = column;
 
       const index = column + row * 3;
 
-      if (this.selectedCategoryIndex === index) {
-        this.selectedCategoryIndex = -1;
-        this.selectedCategoryId = -1;
+      if (this.selectedCategory.index === index) {
+        this.selectedCategory.index = -1;
         this.coords.row = -1;
         this.coords.column = -1;
       } else {
-        this.selectedCategoryIndex = index;
+        this.selectedCategory.index = index;
       }
 
-      const selectedCategory = this.groupedByCategory.find((item) => (
-        item.name === this.selectedCategoryName
+      const category = this.groupedByCategory.find((item) => (
+        item.name === this.selectedCategory.name
       ));
-      this.selectedCategorySlideIndexes = selectedCategory?.value.map((item) => (
+      this.selectedCategorySlideIndexes = category?.value.map((item) => (
         { ...item, model: item.value.length - 1 }
       ));
     },
@@ -418,16 +415,6 @@ export default {
 };
 </script>
 <style scoped>
-.monthly-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 200px;
-  height: 220px;
-  cursor: pointer;
-  -webkit-user-select: none;
-}
-
 .monthly-card--sub {
   display: flex;
   flex-direction: column;
@@ -446,11 +433,5 @@ export default {
 .sub-categories {
   width: 100%;
   border-radius: 10px;
-}
-
-.circular-inner {
-  width: 100%;
-  display: flex;
-  justify-content: center;
 }
 </style>

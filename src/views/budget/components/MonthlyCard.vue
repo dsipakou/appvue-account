@@ -3,7 +3,7 @@
     class="q-ma-sm monthly-card"
     @mouseover="hover = column + row * 3"
     @mouseleave="hover = -1"
-    :style="selectedCategoryIndex >= 0 && !isActiveCategory()
+    :style="selectedCategory.index >= 0 && !isActiveCategory()
             ? 'filter: blur(3px);' : ''"
     :class="isActiveCategory()
             ? 'bg-blue-grey-4 text-white' : ''"
@@ -46,7 +46,7 @@ export default {
     category: { type: Object, required: true },
     budgetUsage: { type: Array, required: true },
     groupedByCategory: { type: Array, required: true },
-    selectedCategoryName: { type: String, required: true },
+    selectedCategory: { type: Object, required: true },
     column: { type: Number, required: true },
     row: { type: Number, required: true },
   },
@@ -59,7 +59,7 @@ export default {
 
   methods: {
     isActiveCategory() {
-      return this.category.name === this.selectedCategoryName && this.selectedCategoryIndex >= 0;
+      return this.category.name === this.selectedCategory.name && this.selectedCategory.index >= 0;
     },
 
     categoryClick(categoryName, column, row) {
@@ -100,3 +100,20 @@ export default {
   },
 };
 </script>
+<style scoped>
+.monthly-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 200px;
+  height: 220px;
+  cursor: pointer;
+  -webkit-user-select: none;
+}
+
+.circular-inner {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+</style>

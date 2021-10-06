@@ -24,7 +24,7 @@
           :track-color="getUsage().trackColor"
           :thickness="0.2">
           <div class="circular-inner text-subtitle2 text-weight-bold">
-            {{ usagePercent }}
+            {{ verbalUsagePercent }}
           </div>
           <div class="circular-inner text-subtitle1 text-blue-grey-8">
             {{ getUsage().usageAmount }}
@@ -61,7 +61,7 @@ export default {
       return this.column + this.row * 3;
     },
 
-    usagePercent() {
+    verbalUsagePercent() {
       const percentage = this.getUsage().usagePercent;
       return Number.isNaN(percentage) ? 'Unplanned' : `${percentage} %`;
     },

@@ -27,72 +27,13 @@
       </div>
     </div>
     <div class="row justify-center" style="width: 100%;">
-      <div
-        class="row bg-blue-grey-4 justify-center sub-categories"
-        v-show="rowIndex === coords.row">
-        <div class="row justify-center text-h4 text-white q-pt-md">
-          {{ selectedCategory.name }}
-        </div>
-        <div class="row justify-center" style="width: 100%;">
-        <q-card
-          v-for="(budgetItem, budgetIndex) in selectedCategoryItems"
-          :key="budgetItem.name"
-          flat
-          bordered
-          class="q-ma-lg monthly-card--sub">
-          <q-carousel
-            v-model="selectedCategorySlideIndexes[budgetIndex].model"
-            transition-prev="slide-right"
-            transition-next="slide-left"
-            swipeable
-            animated
-            control-color="blue-grey-7"
-            navigation
-            :class="budgetItem.value.every((item) => item.isCompleted) ? 'bg-blue-grey-3': ''"
-            class="shadow-1 rounded-borders">
-            <q-carousel-slide
-              :name="index"
-              v-for="(item, index) in budgetItem.value"
-              class="q-pa-xs"
-              :class="budgetItem.value.every((item) => item.isCompleted) ? 'bg-blue-grey-4':
-                       item.isCompleted ? 'bg-blue-grey-2' : ''"
-              :key="item.id">
-              <q-card-section
-                @click="budgetItemClick(item)"
-                class="q-pa-xs cursor-pointer">
-                <div class="text-subtitle1 no-wrap text-weight-bold overflow-hidden">
-                  {{ item.title }}
-                </div>
-                <div class="text-h6">
-                  <span>{{ item.amount }}</span>
-                  <span class="q-ml-sm text-subtitle2">
-                    {{ getShortDate(item.budgetDate) }}
-                  </span>
-                </div>
-              </q-card-section>
-              <q-card-actions style="max-height: 40px;" align="around">
-                <q-btn
-                  :color="item.isCompleted ? 'negative': 'secondary'"
-                  rounded
-                  dense
-                  no-caps
-                  flat
-                  :label="item.isCompleted ? 'Incomplete' : 'Complete'"
-                  @click=completeItem(item) />
-                <div
-                  v-if="item.isCompleted"
-                  class="absolute-right q-pt-sm q-pr-sm">
-                  <q-icon
-                    name="fas fa-check"
-                    style="font-size: 4.4em;"
-                    color="green-9" />
-                </div>
-              </q-card-actions>
-            </q-carousel-slide>
-          </q-carousel>
-        </q-card>
-        </div>
-      </div>
+      <CategoryDetailsPanel
+        :row="rowIndex"
+        :coords="coords"
+        :category="selectedCategory"
+        :categoryItems="selectedCategoryItems"
+        :categoryGroup="groupedByCategory"
+        @editBudgetClick="editBudgetClick($event)" />
     </div>
   </div>
   <q-dialog v-model="createForm">
@@ -119,6 +60,7 @@ import moment from 'moment';
 import AddForm from './forms/AddForm.vue';
 import EditForm from './forms/EditForm.vue';
 import MonthlyCard from './components/MonthlyCard.vue';
+import CategoryDetailsPanel from './components/CategoryDetailsPanel.vue';
 
 const CHUNK_SIZE = 3;
 
@@ -131,6 +73,7 @@ export default {
     AddForm,
     EditForm,
     MonthlyCard,
+    CategoryDetailsPanel,
   },
 
   setup() {
@@ -152,7 +95,6 @@ export default {
 
   data() {
     return {
-      hover: -1,
       coords: {
         row: -1,
         column: -1,
@@ -161,9 +103,7 @@ export default {
         name: '',
         index: -1,
       },
-      clicked: -1,
       selectedBudget: {},
-      selectedCategorySlideIndexes: [],
       budgetCopy: {},
     };
   },
@@ -259,10 +199,6 @@ export default {
       return chunks;
     },
 
-    getShortDate(longDate) {
-      return moment(longDate).format('Do');
-    },
-
     addBudgetClick() {
       this.budgetCopy = {};
       this.createForm = true;
@@ -274,37 +210,27 @@ export default {
         column,
         row,
       } = event;
-      this.selectedCategory.name = categoryName;
-      this.coords.row = row;
-      this.coords.column = column;
 
+      const category = {};
+
+      category.name = categoryName;
+      this.coords = {
+        row,
+        column,
+      };
       const index = column + row * 3;
 
       if (this.selectedCategory.index === index) {
-        this.selectedCategory.index = -1;
-        this.coords.row = -1;
-        this.coords.column = -1;
+        category.index = -1;
+        this.coords = {
+          row: -1,
+          column: -1,
+        };
       } else {
-        this.selectedCategory.index = index;
+        category.index = index;
       }
 
-      const category = this.groupedByCategory.find((item) => (
-        item.name === this.selectedCategory.name
-      ));
-      this.selectedCategorySlideIndexes = category?.value.map((item) => (
-        { ...item, model: item.value.length - 1 }
-      ));
-    },
-
-    budgetItemClick(item) {
-      this.selectedBudget.id = item.id;
-      this.selectedBudget.budgetDate = item.budgetDate.substr(0, 10);
-      this.selectedBudget.title = item.title;
-      this.selectedBudget.amount = item.amount;
-      this.selectedBudget.categoryId = item.categoryId;
-      this.selectedBudget.description = item.description;
-      this.selectedBudget.isCompleted = item.isCompleted;
-      this.editForm = true;
+      this.selectedCategory = category;
     },
 
     completeItem(item) {
@@ -329,17 +255,6 @@ export default {
     makeDuplicate(budget) {
       this.budgetCopy = budget;
       this.createForm = true;
-    },
-  },
-
-  watch: {
-    groupedByCategory() {
-      const selectedCategory = this.groupedByCategory.find((item) => (
-        item.name === this.selectedCategoryName
-      ));
-      this.selectedCategorySlideIndexes = selectedCategory?.value.map((item) => (
-        { ...item, model: item.value.length - 1 }
-      ));
     },
   },
 };

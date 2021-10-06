@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="row bg-blue-grey-4 justify-center sub-categories"
-    v-show="row === coords.row">
+  <div class="row bg-blue-grey-4 justify-center sub-categories">
     <div class="row justify-center text-h4 text-white q-pt-md">
       {{ category.name }}
     </div>
@@ -13,7 +11,7 @@
         bordered
         class="q-ma-lg monthly-card--sub">
         <q-carousel
-          v-model="slideIndexes[budgetIndex].model"
+          v-model="slideIndexes[budgetIndex]"
           transition-prev="slide-right"
           transition-next="slide-left"
           swipeable
@@ -109,6 +107,7 @@ export default {
     },
 
     fillIndexes() {
+      console.log(`Fill indexes: ${this.category.name}`);
       const selectedCategory = this.categoryGroup.find((item) => (
         item.name === this.category.name
       ));

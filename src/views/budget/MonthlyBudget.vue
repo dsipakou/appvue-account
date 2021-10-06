@@ -27,13 +27,14 @@
       </div>
     </div>
     <div class="row justify-center" style="width: 100%;">
-      <CategoryDetailsPanel
-        :row="rowIndex"
-        :coords="coords"
-        :category="selectedCategory"
-        :categoryItems="selectedCategoryItems"
-        :categoryGroup="groupedByCategory"
-        @editBudgetClick="editBudgetClick($event)" />
+      <template
+        v-if="rowIndex === coords.row">
+        <CategoryDetailsPanel
+          :category="selectedCategory"
+          :categoryItems="selectedCategoryItems"
+          :categoryGroup="groupedByCategory"
+          @editBudgetClick="editBudgetClick($event)" />
+      </template>
     </div>
   </div>
   <q-dialog v-model="createForm">
@@ -211,9 +212,6 @@ export default {
         row,
       } = event;
 
-      const category = {};
-
-      category.name = categoryName;
       this.coords = {
         row,
         column,
@@ -221,16 +219,25 @@ export default {
       const index = column + row * 3;
 
       if (this.selectedCategory.index === index) {
-        category.index = -1;
+        this.selectedCategory = {
+          name: '',
+          index: -1,
+        };
         this.coords = {
           row: -1,
           column: -1,
         };
       } else {
-        category.index = index;
+        this.selectedCategory = {
+          name: categoryName,
+          index,
+        };
       }
+    },
 
-      this.selectedCategory = category;
+    editBudgetClick(budget) {
+      this.selectedBudget = budget;
+      this.editForm = true;
     },
 
     completeItem(item) {

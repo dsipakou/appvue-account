@@ -1,13 +1,13 @@
 <template>
   <q-card
     class="q-ma-sm monthly-card"
-    @mouseover="hover = column + row * 3"
-    @mouseleave="hover = -1"
+    @mouseover="hover = cardIndex"
+    @mouseleave="hover = null"
     :style="selectedCategory.index >= 0 && !isActiveCategory()
             ? 'filter: blur(3px);' : ''"
     :class="isActiveCategory()
             ? 'bg-blue-grey-4 text-white' : ''"
-    :flat="hover !== column + row * 3"
+    :flat="hover !== cardIndex"
     @click="categoryClick(category.name, column, row)">
     <q-card-section>
       <span class="text-h6 flex no-wrap overflow-hidden">
@@ -16,8 +16,7 @@
     </q-card-section>
     <div>
       <div class="flex flex-center">
-        <q-circular-progress
-          show-value
+        <q-circular-progress show-value
           class="text-black q-pb-sm"
           :value="getUsage().usagePercent"
           size="140px"
@@ -25,7 +24,7 @@
           :track-color="getUsage().trackColor"
           :thickness="0.2">
           <div class="circular-inner text-subtitle2 text-weight-bold">
-            {{ Math.floor(getUsage().usageAmount * 100 / category.amount) }}%
+            {{ usagePercent }}
           </div>
           <div class="circular-inner text-subtitle1 text-blue-grey-8">
             {{ getUsage().usageAmount }}
@@ -53,8 +52,19 @@ export default {
 
   data() {
     return {
-      hover: -1,
+      hover: null,
     };
+  },
+
+  computed: {
+    cardIndex() {
+      return this.column + this.row * 3;
+    },
+
+    usagePercent() {
+      const percentage = this.getUsage().usagePercent;
+      return Number.isNaN(percentage) ? 'Unplanned' : `${percentage} %`;
+    },
   },
 
   methods: {
@@ -67,35 +77,30 @@ export default {
     },
 
     getUsage() {
-      if (this.budgetUsage.length > 0) {
-        const usageAmount = this.budgetUsage.find((item) => (
-          item.name === this.category.name
-        ))?.amount?.toFixed(2) || 0;
-        let usagePercent = Math.floor((usageAmount * 100) / this.category.amount);
-        let mainColor = '';
-        let trackColor = '';
-        if (usagePercent > 100) {
-          const grade = Math.floor((usagePercent % 100) / 10);
-          mainColor = `red-${grade + 5}`;
-          trackColor = `red-${Math.floor(usagePercent / 100) + 1}`;
-          usagePercent %= 100;
-        } else {
-          mainColor = `green-${Math.floor(usagePercent / 10) + 1}`;
-          trackColor = 'grey-2';
-        }
-        return {
-          usageAmount,
-          usagePercent,
-          mainColor,
-          trackColor,
-        };
-      }
-      return {
+      const usage = {
         usageAmount: 0,
         usagePercent: 0,
-        className: '',
+        mainColor: '',
         trackColor: '',
       };
+
+      if (this.budgetUsage.length > 0) {
+        usage.usageAmount = this.budgetUsage.find((item) => (
+          item.name === this.category.name
+        ))?.amount?.toFixed(2) || 0;
+        usage.usagePercent = Math.floor((usage.usageAmount * 100) / this.category.amount);
+        if (usage.usagePercent > 100) {
+          const grade = Math.floor((usage.usagePercent % 100) / 10);
+          usage.mainColor = `red-${grade + 5}`;
+          usage.trackColor = `red-${Math.floor(usage.usagePercent / 100) + 1}`;
+          usage.usagePercent %= 100;
+        } else {
+          usage.mainColor = `green-${Math.floor(usage.usagePercent / 10) + 1}`;
+          usage.trackColor = 'grey-2';
+        }
+      }
+
+      return { ...usage };
     },
   },
 };

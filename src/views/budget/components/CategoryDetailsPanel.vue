@@ -4,20 +4,15 @@
       {{ category.name }}
     </div>
     <div class="row justify-center" style="width: 100%;">
-      <q-card
+      <q-card flat bordered
         v-for="(budgetItem, budgetIndex) in categoryItems"
         :key="budgetItem.name"
-        flat
-        bordered
         class="q-ma-lg monthly-card--sub">
-        <q-carousel
-          v-model="slideIndexes[budgetIndex]"
+        <q-carousel swipeable animated navigation
+          v-model="slideIndexes[budgetIndex].model"
           transition-prev="slide-right"
           transition-next="slide-left"
-          swipeable
-          animated
           control-color="blue-grey-7"
-          navigation
           :class="budgetItem.value.every((item) => item.isCompleted) ? 'bg-blue-grey-3': ''"
           class="shadow-1 rounded-borders">
           <q-carousel-slide
@@ -41,12 +36,8 @@
               </div>
             </q-card-section>
             <q-card-actions style="max-height: 40px;" align="around">
-              <q-btn
+              <q-btn rounded dense no-caps flat
                 :color="item.isCompleted ? 'negative': 'secondary'"
-                rounded
-                dense
-                no-caps
-                flat
                 :label="item.isCompleted ? 'Incomplete' : 'Complete'"
                 @click=completeItem(item) />
                 <div
@@ -71,11 +62,9 @@ export default {
   name: 'CategoryDetailsPanel',
 
   props: {
-    row: { type: Number, default: null },
-    coords: { type: Object, default: () => {} },
-    category: { type: Object, default: () => {} },
-    categoryItems: { type: Array, default: () => [] },
-    categoryGroup: { type: Array, default: () => [] },
+    category: { type: Object, required: true },
+    categoryItems: { type: Array, required: true },
+    categoryGroup: { type: Array, required: true },
   },
 
   emits: [
@@ -84,7 +73,7 @@ export default {
 
   data() {
     return {
-      slideIndexes: [],
+      slideIndexes: {},
     };
   },
 
@@ -106,13 +95,15 @@ export default {
       return moment(longDate).format('Do');
     },
 
+    getBudgetItem(name) {
+      return this.selectedItems.find((item) => item.name === name);
+    },
+
     fillIndexes() {
-      console.log(`Fill indexes: ${this.category.name}`);
-      const selectedCategory = this.categoryGroup.find((item) => (
-        item.name === this.category.name
-      ));
-      this.slideIndexes = selectedCategory?.value.map((item) => (
-        { ...item, model: item.value.length - 1 }
+      this.slideIndexes = this.categoryItems.map((item) => (
+        {
+          model: item.size,
+        }
       ));
     },
   },
@@ -121,6 +112,10 @@ export default {
     category() {
       this.fillIndexes();
     },
+  },
+
+  beforeMount() {
+    this.fillIndexes();
   },
 };
 </script>

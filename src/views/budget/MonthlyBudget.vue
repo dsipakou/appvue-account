@@ -4,8 +4,7 @@
     <span class="text-subtitle2">Planned {{ monthSum }}</span>
     <q-btn round color="primary" label="+" @click="addBudgetClick()"></q-btn>
   </div>
-  <div
-    class="row"
+  <div class="row"
     v-for="(chunk, rowIndex) in chunked(groupedByCategory)"
     :key="rowIndex">
     <div
@@ -21,14 +20,12 @@
         :groupedByCategory="groupedByCategory"
         @categoryClick="categoryClick($event)"
       />
-      <div
-        class="arrow text-blue-grey-4"
+      <div class="arrow text-blue-grey-4"
         v-show="category.name === selectedCategory.name && selectedCategory.index >= 0">
       </div>
     </div>
     <div class="row justify-center" style="width: 100%;">
-      <template
-        v-if="rowIndex === coords.row">
+      <template v-if="rowIndex === coords.row">
         <CategoryDetailsPanel
           :category="selectedCategory"
           :categoryItems="selectedCategoryItems"
@@ -183,7 +180,13 @@ export default {
       const category = this.groupedByCategory.find((item) => (
         item.name === this.selectedCategory.name
       ));
-      return category?.value;
+      const categoryWithModel = category.value.map((item) => (
+        {
+          ...item,
+          size: item.value.length - 1,
+        }
+      ));
+      return categoryWithModel;
     },
   },
 

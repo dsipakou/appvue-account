@@ -55,12 +55,6 @@ export default {
     updateStatus: { type: Function, required: true },
   },
 
-  data() {
-    return {
-      slideIndexes: {},
-    };
-  },
-
   setup(props) {
     return {
       slide: ref(props.budgetItem.size),

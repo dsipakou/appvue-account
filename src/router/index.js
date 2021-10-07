@@ -8,6 +8,7 @@ import Categories from '@/views/Categories.vue';
 import Currencies from '@/views/Currencies.vue';
 import Reports from '@/views/Reports.vue';
 import Budget from '@/views/Budget.vue';
+import MonthPlanner from '@/views/budget/MonthPlanner.vue';
 
 const routes = [
   {
@@ -54,6 +55,11 @@ const routes = [
     path: '/budget',
     name: 'Budget',
     component: Budget,
+  },
+  {
+    path: '/budget/planner',
+    name: 'MonthPlanner',
+    component: MonthPlanner,
   },
 ];
 

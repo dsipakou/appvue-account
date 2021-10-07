@@ -29,8 +29,8 @@
         <CategoryDetailsPanel
           :category="selectedCategory"
           :categoryItems="selectedCategoryItems"
-          :categoryGroup="groupedByCategory"
-          @editBudgetClick="editBudgetClick($event)" />
+          :updateStatus="updateStatusBudget"
+          @budgetItemClick="editBudgetClick($event)" />
       </template>
     </div>
   </div>
@@ -243,25 +243,6 @@ export default {
       this.editForm = true;
     },
 
-    completeItem(item) {
-      const completedItem = {
-        ...item,
-        isCompleted: !item.isCompleted,
-      };
-
-      this.updateStatusBudget(completedItem);
-    },
-
-    completeItems(items) {
-      items.forEach((item) => {
-        const completedItem = {
-          ...item,
-          isCompleted: !item.isCompleted,
-        };
-        this.updateStatusBudget(completedItem);
-      });
-    },
-
     makeDuplicate(budget) {
       this.budgetCopy = budget;
       this.createForm = true;
@@ -270,23 +251,11 @@ export default {
 };
 </script>
 <style scoped>
-.monthly-card--sub {
-  display: flex;
-  flex-direction: column;
-  width: 180px;
-  height: 160px;
-}
-
 .arrow {
   border-left: 25px solid transparent;
   border-right: 25px solid transparent;
   border-bottom: 15px solid;
   margin: 0 70px;
   width: 50px;
-}
-
-.sub-categories {
-  width: 100%;
-  border-radius: 10px;
 }
 </style>

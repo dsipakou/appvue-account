@@ -5,6 +5,9 @@
   <div>
     body
   </div>
+  <div>
+    Card
+  </div>
 </template>
 <script>
 export default {

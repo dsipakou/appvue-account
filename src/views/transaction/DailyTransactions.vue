@@ -48,7 +48,7 @@
           :deleteTransaction="deleteTransaction"
           :currencyListLoaded="currencyListLoaded">
           <template v-slot:header>
-            <span class="header__title">Transactions on {{ activeDay }}</span>
+            <span class="header__title">Transactions: {{ activeDay }}</span>
           </template>
         </TransactionList>
       </div>

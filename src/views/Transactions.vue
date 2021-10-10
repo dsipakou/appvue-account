@@ -231,6 +231,15 @@
               v-model="input.amount" />
           </q-card-section>
           <q-card-section>
+            <q-input
+              outlined
+              type="date"
+              stack-label
+              label="Date"
+              v-model="input.transactionDate"
+              />
+          </q-card-section>
+          <q-card-section>
             <q-select
               outlined
               label="Currency"
@@ -241,15 +250,6 @@
               option-value="id"
               option-label="verbalName"
               v-model="input.currency" />
-          </q-card-section>
-          <q-card-section>
-            <q-input
-              outlined
-              type="date"
-              stack-label
-              label="Date"
-              v-model="input.transactionDate"
-              />
           </q-card-section>
         </q-card-section>
         <q-card-section>
@@ -273,6 +273,11 @@
         </q-card-section>
         <q-card-actions align="center" class="action-buttons">
           <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
+          <q-btn rounded
+            color="positive"
+            style="width: 120px;"
+            @click="createAndClose()"
+            label="Save & Close" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -636,6 +641,11 @@ export default {
       this.createTransaction(transaction);
       this.$refs.price.focus();
       this.$refs.price.select();
+    },
+
+    createAndClose() {
+      this.create();
+      this.createForm = false;
     },
 
     update() {

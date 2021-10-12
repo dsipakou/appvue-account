@@ -5,14 +5,19 @@
         <span class="text-h4">Monthly Planner</span>
       </div>
       <div class="row q-ma-sm">
-        <PlannerCard
-          :items="budgetList.slice(0, 10)"
-        >
-        <template v-slot:title>
-          <span class="text-h5">
-            Week 1
-          </span>
-        </template>
+        <PlannerCard :items="budgetList.slice(0, 10)">
+          <template v-slot:title>
+            <span class="text-h5">
+              Week 1
+            </span>
+          </template>
+        </PlannerCard>
+        <PlannerCard :items="budgetList.slice(0, 10)">
+          <template v-slot:title>
+            <span class="text-h5">
+              Week 2
+            </span>
+          </template>
         </PlannerCard>
       </div>
     </div>

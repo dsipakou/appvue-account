@@ -5,17 +5,13 @@
         <span class="text-h4">Monthly Planner</span>
       </div>
       <div class="row q-ma-sm">
-        <PlannerCard :items="budgetList.slice(0, 10)">
+        <PlannerCard
+          v-for="week in Object.keys(groupByWeek)"
+          :key="week"
+          :items="groupByWeek[week]">
           <template v-slot:title>
             <span class="text-h5">
-              Week 1
-            </span>
-          </template>
-        </PlannerCard>
-        <PlannerCard :items="budgetList.slice(0, 10)">
-          <template v-slot:title>
-            <span class="text-h5">
-              Week 2
+              Week {{ week }}
             </span>
           </template>
         </PlannerCard>
@@ -24,7 +20,12 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import {
+  getWeekOfMonth,
+  startOfMonth,
+  endOfMonth,
+} from 'date-fns';
+import { mapActions, mapGetters } from 'vuex';
 import PlannerCard from './components/planner/PlannerCard.vue';
 
 export default {
@@ -34,10 +35,44 @@ export default {
     PlannerCard,
   },
 
+  data() {
+    return {
+      groupByWeek: {},
+    };
+  },
+
   computed: {
     ...mapGetters([
       'budgetList',
     ]),
+  },
+
+  methods: {
+    ...mapActions([
+      'fetchBudgetUsage',
+    ]),
+  },
+
+  watch: {
+    budgetList() {
+      const filteredBudget = this.budgetList.filter((item) => (
+        (new Date(item.budgetDate) >= startOfMonth(new Date()))
+          && (new Date(item.budgetDate) <= endOfMonth(new Date()))
+      ));
+      const grouped = {};
+      filteredBudget.forEach((item) => {
+        const weekNum = getWeekOfMonth(
+          new Date(item.budgetDate),
+          { weekStartsOn: 1 },
+        );
+        if (weekNum in grouped) {
+          grouped[weekNum].push(item);
+        } else {
+          grouped[weekNum] = new Array(item);
+        }
+      });
+      this.groupByWeek = grouped;
+    },
   },
 };
 </script>

@@ -7,7 +7,7 @@
           class="q-mx-sm item-block"
           v-for="item in items"
           :key="item.id"
-          @click="editForm = true"
+          @click="itemClick(item)"
           dragable="true"
           @dragstart="$event">
             <span>{{ item.title }}</span>
@@ -20,7 +20,12 @@
     </div>
   </div>
   <q-dialog v-model="editForm">
-    <EditForm />
+    <EditForm
+      :categories="categories"
+      :item="selectedBudget"
+      :updateBudget="updateBudget"
+      :deleteBudget="deleteBudget"
+    />
   </q-dialog>
 </template>
 <script>
@@ -34,6 +39,12 @@ export default {
     EditForm,
   },
 
+  data() {
+    return {
+      selectedBudget: {},
+    };
+  },
+
   setup() {
     return {
       editForm: ref(false),
@@ -42,11 +53,31 @@ export default {
 
   props: {
     items: { type: Array, required: true },
+    categoryItems: { type: Array, required: true },
+    updateBudget: { type: Function, required: true },
+    deleteBudget: { type: Function, required: true },
   },
 
   computed: {
+    categories() {
+      return this.categoryItems.filter((item) => item.isParent);
+    },
+
     overallSum() {
       return this.items.reduce((acc, item) => item.amount + acc, 0);
+    },
+  },
+
+  methods: {
+    itemClick(item) {
+      this.selectedBudget.id = item.id;
+      this.selectedBudget.budgetDate = item.budgetDate.substr(0, 10);
+      this.selectedBudget.title = item.title;
+      this.selectedBudget.amount = item.amount;
+      this.selectedBudget.categoryId = item.categoryId;
+      this.selectedBudget.description = item.description;
+      this.selectedBudget.isCompleted = item.isCompleted;
+      this.editForm = true;
     },
   },
 };
@@ -63,5 +94,6 @@ export default {
   border-bottom: 1px solid;
   min-height: 40px;
   justify-content: space-between;
+  cursor: pointer;
 }
 </style>

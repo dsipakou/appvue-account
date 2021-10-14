@@ -119,35 +119,12 @@ export default {
   },
 
   props: {
-    budgetItems: {
-      type: Array,
-      required: true,
-    },
-
-    categoryItems: {
-      type: Array,
-      required: true,
-    },
-
-    transactionItems: {
-      type: Array,
-      required: true,
-    },
-
-    updateBudget: {
-      type: Function,
-      required: true,
-    },
-
-    deleteBudget: {
-      type: Function,
-      required: true,
-    },
-
-    updateStatusBudget: {
-      type: Function,
-      required: true,
-    },
+    budgetItems: { type: Array, required: true },
+    categoryItems: { type: Array, required: true },
+    transactionItems: { type: Array, required: true },
+    updateBudget: { type: Function, required: true },
+    deleteBudget: { type: Function, required: true },
+    updateStatusBudget: { type: Function, required: true },
   },
 
   computed: {

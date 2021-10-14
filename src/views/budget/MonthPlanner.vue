@@ -8,7 +8,10 @@
         <PlannerCard
           v-for="week in Object.keys(groupByWeek)"
           :key="week"
-          :items="groupByWeek[week]">
+          :items="groupByWeek[week]"
+          :categoryItems="categoryList"
+          :updateBudget="updateBudget"
+          :deleteBudget="deleteBudget">
           <template v-slot:title>
             <span class="text-h5">
               Week {{ week }}
@@ -18,9 +21,6 @@
       </div>
     </div>
   </div>
-  <q-dialog v-model="editForm">
-    <EditForm />
-  </q-dialog>
 </template>
 <script>
 import {
@@ -28,23 +28,14 @@ import {
   startOfMonth,
   endOfMonth,
 } from 'date-fns';
-import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-import EditForm from '@/views/budget/forms/EditForm.vue';
 import PlannerCard from './components/planner/PlannerCard.vue';
 
 export default {
   name: 'MonthlyPlanner',
 
-  setup() {
-    return {
-      editForm: ref(false),
-    };
-  },
-
   components: {
     PlannerCard,
-    EditForm,
   },
 
   data() {
@@ -56,12 +47,15 @@ export default {
   computed: {
     ...mapGetters([
       'budgetList',
+      'categoryList',
     ]),
   },
 
   methods: {
     ...mapActions([
       'fetchBudgetUsage',
+      'updateBudget',
+      'deleteBudget',
     ]),
   },
 

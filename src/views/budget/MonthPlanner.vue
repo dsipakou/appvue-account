@@ -18,6 +18,9 @@
       </div>
     </div>
   </div>
+  <q-dialog v-model="editForm">
+    <EditForm />
+  </q-dialog>
 </template>
 <script>
 import {
@@ -25,14 +28,23 @@ import {
   startOfMonth,
   endOfMonth,
 } from 'date-fns';
+import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+import EditForm from '@/views/budget/forms/EditForm.vue';
 import PlannerCard from './components/planner/PlannerCard.vue';
 
 export default {
   name: 'MonthlyPlanner',
 
+  setup() {
+    return {
+      editForm: ref(false),
+    };
+  },
+
   components: {
     PlannerCard,
+    EditForm,
   },
 
   data() {

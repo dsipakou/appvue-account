@@ -4,14 +4,14 @@
       <slot name="title"></slot>
       <q-card class="q-pt-sm card">
         <div
+          class="q-mx-sm item-block"
           v-for="item in items"
-          :key="item.id">
-          <div class="q-mx-sm item-block"
-            dragable="true"
-            @dragstart="$event">
+          :key="item.id"
+          @click="editForm = true"
+          dragable="true"
+          @dragstart="$event">
             <span>{{ item.title }}</span>
             <span>{{ item.amount }}</span>
-          </div>
         </div>
         <q-card-section>
           Amount: {{ overallSum }}
@@ -19,10 +19,26 @@
       </q-card>
     </div>
   </div>
+  <q-dialog v-model="editForm">
+    <EditForm />
+  </q-dialog>
 </template>
 <script>
+import { ref } from 'vue';
+import EditForm from '@/views/budget/forms/EditForm.vue';
+
 export default {
   name: 'PlannerCard',
+
+  components: {
+    EditForm,
+  },
+
+  setup() {
+    return {
+      editForm: ref(false),
+    };
+  },
 
   props: {
     items: { type: Array, required: true },
@@ -44,7 +60,7 @@ export default {
 .item-block {
   display: flex;
   align-items: center;
-  border-top: 1px solid;
+  border-bottom: 1px solid;
   min-height: 40px;
   justify-content: space-between;
 }

@@ -2,19 +2,20 @@
   <div class="row">
     <div class="vertical-middle">
       <slot name="title"></slot>
-      <q-card class="card">
-        <q-card-section
+      <q-card class="q-pt-sm card">
+        <div
           v-for="item in items"
           :key="item.id">
-          <q-card flat bordered
+          <div class="q-mx-sm item-block"
             dragable="true"
             @dragstart="$event">
-            <q-card-section dense>
-              {{ item.title }}
-            </q-card-section>
-          </q-card>
+            <span>{{ item.title }}</span>
+            <span>{{ item.amount }}</span>
+          </div>
+        </div>
+        <q-card-section>
+          Amount: {{ overallSum }}
         </q-card-section>
-        <q-separator />
       </q-card>
     </div>
   </div>
@@ -26,11 +27,25 @@ export default {
   props: {
     items: { type: Array, required: true },
   },
+
+  computed: {
+    overallSum() {
+      return this.items.reduce((acc, item) => item.amount + acc, 0);
+    },
+  },
 };
 </script>
 <style scoped>
 .card {
   min-width: 200px;
   min-height: 400px;
+}
+
+.item-block {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid;
+  min-height: 40px;
+  justify-content: space-between;
 }
 </style>

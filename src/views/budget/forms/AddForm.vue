@@ -48,6 +48,10 @@ export default {
 
   inheritAttrs: false,
 
+  emits: [
+    'closeForm',
+  ],
+
   props: {
     categories: { type: Array, required: true },
     createBudget: { type: Function, required: true },
@@ -88,17 +92,15 @@ export default {
       };
 
       this.createBudget(budget);
-      this.createForm = false;
+      this.$emit('closeForm');
     },
   },
 
   mounted() {
-    console.log(this.input);
     this.input.amount = this.budget.amount;
     this.input.title = this.budget.title;
     this.input.description = this.budget.description;
     this.input.categoryId = this.budget.categoryId;
-    console.log(this.input);
   },
 };
 </script>

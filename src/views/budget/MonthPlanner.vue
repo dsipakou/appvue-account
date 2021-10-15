@@ -27,6 +27,7 @@
       :categories="categories"
       :createBudget="createBudget"
       :budget="budgetCopy"
+      @closeForm="createForm = false"
     />
   </q-dialog>
   <q-dialog v-model="editForm">
@@ -36,7 +37,7 @@
       :updateBudget="updateBudget"
       :deleteBudget="deleteBudget"
       @closeForm="editForm = false"
-      @duplicateClick="createForm = true"
+      @duplicateClick="duplicateBudgetClick($event)"
     />
   </q-dialog>
 </template>
@@ -48,6 +49,7 @@ import {
 } from 'date-fns';
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+import AddForm from '@/views/budget/forms/AddForm.vue';
 import EditForm from '@/views/budget/forms/EditForm.vue';
 import PlannerCard from './components/planner/PlannerCard.vue';
 
@@ -56,6 +58,7 @@ export default {
 
   components: {
     PlannerCard,
+    AddForm,
     EditForm,
   },
 
@@ -70,6 +73,7 @@ export default {
     return {
       groupByWeek: {},
       selectedBudget: {},
+      budgetCopy: {},
     };
   },
 
@@ -88,6 +92,7 @@ export default {
     ...mapActions([
       'fetchBudgetUsage',
       'fetchCategories',
+      'createBudget',
       'updateBudget',
       'deleteBudget',
     ]),
@@ -95,6 +100,11 @@ export default {
     editBudgetClick(item) {
       this.selectedBudget = item;
       this.editForm = true;
+    },
+
+    duplicateBudgetClick(item) {
+      this.budgetCopy = item;
+      this.createForm = true;
     },
   },
 

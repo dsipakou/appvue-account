@@ -19,25 +19,10 @@
       </q-card>
     </div>
   </div>
-  <q-dialog v-model="editForm">
-    <EditForm
-      :categories="categories"
-      :item="selectedBudget"
-      :updateBudget="updateBudget"
-      :deleteBudget="deleteBudget"
-    />
-  </q-dialog>
 </template>
 <script>
-import { ref } from 'vue';
-import EditForm from '@/views/budget/forms/EditForm.vue';
-
 export default {
   name: 'PlannerCard',
-
-  components: {
-    EditForm,
-  },
 
   data() {
     return {
@@ -45,11 +30,9 @@ export default {
     };
   },
 
-  setup() {
-    return {
-      editForm: ref(false),
-    };
-  },
+  emits: [
+    'editBudgetClick',
+  ],
 
   props: {
     items: { type: Array, required: true },
@@ -77,7 +60,7 @@ export default {
       this.selectedBudget.categoryId = item.categoryId;
       this.selectedBudget.description = item.description;
       this.selectedBudget.isCompleted = item.isCompleted;
-      this.editForm = true;
+      this.$emit('editBudgetClick', this.selectedBudget);
     },
   },
 };

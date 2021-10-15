@@ -11,7 +11,8 @@
           :items="groupByWeek[week]"
           :categoryItems="categoryList"
           :updateBudget="updateBudget"
-          :deleteBudget="deleteBudget">
+          :deleteBudget="deleteBudget"
+          @editBudgetClick="editBudgetClick($event)">
           <template v-slot:title>
             <span class="text-h5">
               Week {{ week }}
@@ -21,6 +22,23 @@
       </div>
     </div>
   </div>
+  <q-dialog v-model="createForm">
+    <AddForm
+      :categories="categories"
+      :createBudget="createBudget"
+      :budget="budgetCopy"
+    />
+  </q-dialog>
+  <q-dialog v-model="editForm">
+    <EditForm
+      :categories="categories"
+      :item="selectedBudget"
+      :updateBudget="updateBudget"
+      :deleteBudget="deleteBudget"
+      @closeForm="editForm = false"
+      @duplicateClick="createForm = true"
+    />
+  </q-dialog>
 </template>
 <script>
 import {
@@ -28,7 +46,9 @@ import {
   startOfMonth,
   endOfMonth,
 } from 'date-fns';
+import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+import EditForm from '@/views/budget/forms/EditForm.vue';
 import PlannerCard from './components/planner/PlannerCard.vue';
 
 export default {
@@ -36,11 +56,20 @@ export default {
 
   components: {
     PlannerCard,
+    EditForm,
+  },
+
+  setup() {
+    return {
+      createForm: ref(false),
+      editForm: ref(false),
+    };
   },
 
   data() {
     return {
       groupByWeek: {},
+      selectedBudget: {},
     };
   },
 
@@ -49,14 +78,24 @@ export default {
       'budgetList',
       'categoryList',
     ]),
+
+    categories() {
+      return this.categoryList.filter((item) => item.isParent);
+    },
   },
 
   methods: {
     ...mapActions([
       'fetchBudgetUsage',
+      'fetchCategories',
       'updateBudget',
       'deleteBudget',
     ]),
+
+    editBudgetClick(item) {
+      this.selectedBudget = item;
+      this.editForm = true;
+    },
   },
 
   watch: {

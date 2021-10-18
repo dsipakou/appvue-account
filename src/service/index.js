@@ -74,7 +74,7 @@ export const getGroupedTransactions = async ({ dateFrom, dateTo }) => {
 export const transferBetweenAccounts = async ({
   userId,
 }) => {
-  console.log(userId);
+  console.log(`Transfered from user ${userId}`);
 };
 
 export const createTransaction = async ({

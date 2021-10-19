@@ -4,6 +4,9 @@
       <div class="row q-ma-sm justify-between">
         <span class="text-h4">Monthly Planner</span>
       </div>
+      <div>
+        <q-btn label="< Budget" to="/budget" />
+      </div>
       <div class="row q-ma-sm">
         <PlannerCard
           v-for="week in Object.keys(groupByWeek)"
@@ -49,6 +52,7 @@ import {
 } from 'date-fns';
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+import moment from 'moment';
 import AddForm from '@/views/budget/forms/AddForm.vue';
 import EditForm from '@/views/budget/forms/EditForm.vue';
 import PlannerCard from './components/planner/PlannerCard.vue';
@@ -106,10 +110,8 @@ export default {
       this.budgetCopy = item;
       this.createForm = true;
     },
-  },
 
-  watch: {
-    budgetList() {
+    fillInBudgetList() {
       const filteredBudget = this.budgetList.filter((item) => (
         (new Date(item.budgetDate) >= startOfMonth(new Date()))
           && (new Date(item.budgetDate) <= endOfMonth(new Date()))
@@ -128,6 +130,23 @@ export default {
       });
       this.groupByWeek = grouped;
     },
+  },
+
+  watch: {
+    budgetList() {
+      this.fillInBudgetList();
+    },
+  },
+
+  beforeMount() {
+    const dateFrom = `${moment().format('YYYY-MM')}-01`;
+    const dateTo = `${moment().add(1, 'month').format('YYYY-MM')}-01`;
+    this.fetchBudgetUsage({ dateFrom, dateTo });
+    this.fetchCategories();
+  },
+
+  mounted() {
+    this.fillInBudgetList();
   },
 };
 </script>

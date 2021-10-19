@@ -4,6 +4,9 @@
       <div class="row q-ma-sm justify-between">
         <q-btn label="Archive" />
       </div>
+      <div>
+        <q-btn label="Planner" to='/budget/planner'/>
+      </div>
       <div class="row q-mt-lg justify-center">
         <div class="col-8 q-px-md">
           <MonthlyBudget

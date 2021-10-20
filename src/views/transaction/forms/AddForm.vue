@@ -51,6 +51,9 @@
       </q-card-section>
       <q-card-actions align="center" class="action-buttons">
         <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
+        <q-btn rounded color="secondary" style="width: 130px;" @click="createClose()">
+          Save and Close
+        </q-btn>
       </q-card-actions>
   </q-card>
 </template>
@@ -143,6 +146,12 @@ export default {
         description: this.input.description,
       };
       this.createTransaction(transaction);
+      this.$refs.price.focus();
+      this.$refs.price.select();
+    },
+
+    createClose() {
+      this.create();
       this.$emit('closeForm');
     },
   },

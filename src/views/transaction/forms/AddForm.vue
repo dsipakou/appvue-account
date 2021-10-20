@@ -87,6 +87,7 @@ export default {
     currencyListLoaded: { type: Boolean, required: true },
     createTransaction: { type: Function, required: true },
     setTransactionLastAdded: { type: Function, required: true },
+    updateBudget: { type: Function, required: true },
   },
 
   data() {
@@ -143,16 +144,26 @@ export default {
         amount: this.input.amount,
         rate: rate?.rate || 1,
         accountId: this.accountId,
-        budgetId: this.input.budget?.id,
+        budgetId: this.input.budget?.id || null,
         transactionDate: this.input.transactionDate,
         type: transactionTypes.OUTCOME,
         description: this.input.description,
       };
-      this.createTransaction(transaction);
+
+      if (this.input.budgetDone && this.input.budget) {
+        const modifiedBudget = {
+          ...this.input.budget,
+          isCompleted: true,
+        };
+        this.updateBudget(modifiedBudget);
+      }
       this.setTransactionLastAdded({
         date: this.input.transactionDate,
         budget: this.input.budget?.id,
       });
+
+      this.createTransaction(transaction);
+
       this.$refs.price.focus();
       this.$refs.price.select();
     },

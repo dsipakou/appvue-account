@@ -218,6 +218,7 @@
         :currencyListLoaded="currencyListLoaded"
         :createTransaction="createTransaction"
         :setTransactionLastAdded="setTransactionLastAdded"
+        :updateBudget="updateBudget"
         @closeForm="createForm = false"
       />
     </q-dialog>
@@ -484,6 +485,7 @@ export default {
       'deleteTransaction',
       'updateTransaction',
       'setTransactionLastAdded',
+      'updateBudget',
     ]),
 
     initCurrencies() {

@@ -109,7 +109,6 @@ const mutations = {
   },
 
   setLastAdded(state, payload) {
-    console.log(payload);
     state.lastAdded = {
       ...payload,
     };

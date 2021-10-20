@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="q-pa-md">
+      <div>
+        <q-btn outline label="< Budget" to="/budget" />
+      </div>
       <div class="row q-ma-sm justify-between">
         <span class="text-h4">Monthly Planner</span>
-      </div>
-      <div>
-        <q-btn label="< Budget" to="/budget" />
       </div>
       <div class="row q-ma-sm">
         <PlannerCard

@@ -12,9 +12,7 @@
           v-model="input.user"
           :options="userList"
           option-value="id"
-          option-label="name"
-          label="User" />
-      </q-card-section>
+          option-label="name" label="User" /> </q-card-section>
       <q-card-section>
         <q-select outlined map-options
           v-model="input.account"
@@ -207,6 +205,7 @@ export default {
   watch: {
     'input.transactionDate': {
       handler() {
+        console.log('date changed up');
         this.activeDate = this.input.transactionDate;
       },
     },

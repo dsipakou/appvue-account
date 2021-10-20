@@ -17,7 +17,7 @@ export default {
   props: {
     currencyList: Array,
     ratesList: Array,
-    selectedDate: String,
+    selectedDate: { type: String, default: new Date().toISOString().substr(0, 10) },
     currencyListLoaded: Boolean,
   },
 

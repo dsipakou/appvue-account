@@ -206,80 +206,19 @@
       </div>
     </div>
     <q-dialog v-model="createForm">
-      <input type="hidden" v-model="input.category" />
-      <input type="hidden" v-model="input.account" />
-      <q-card style="width: 400px;">
-        <q-card-section>
-          <span class="text-h5">
-            {{ getCategory(input.category).name }}
-          </span>
-          <q-chip dense class="q-ml-sm">
-            {{ getCategory(input.category).parentName }}
-          </q-chip>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section horizontal class="justify-between">
-          <q-card-section>
-            <q-input
-              outlined
-              stack-label
-              autofocus
-              ref="price"
-              label="Amount"
-              v-model="input.amount" />
-          </q-card-section>
-          <q-card-section>
-            <q-input
-              outlined
-              type="date"
-              stack-label
-              label="Date"
-              v-model="input.transactionDate"
-              />
-          </q-card-section>
-          <q-card-section>
-            <q-select
-              outlined
-              label="Currency"
-              label-stacked
-              :loading="!currencyListLoaded"
-              :readonly="!currencyListLoaded"
-              :options="availableCurrencies"
-              option-value="id"
-              option-label="verbalName"
-              v-model="input.currency" />
-          </q-card-section>
-        </q-card-section>
-        <q-card-section>
-          <q-select
-            outlined
-            label="Budget items"
-            label-stacked
-            :options="currentWeekBudget"
-            option-value="id"
-            option-label="title"
-            v-model="input.budget" />
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            outlined
-            type="textarea"
-            stack-label
-            label="Description"
-            v-model="input.description"
-            />
-        </q-card-section>
-        <q-card-actions align="center" class="action-buttons">
-          <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
-          <q-btn rounded
-            color="positive"
-            style="width: 120px;"
-            @click="createAndClose()"
-            label="Save & Close" />
-        </q-card-actions>
-      </q-card>
+      <AddForm
+        :accountId="selectedAccountId"
+        :category="selectedCategory"
+        :userId="selectedUserId"
+        :transactionDate="selectedDate"
+        :budgetList="budgetList"
+        :categoryList="categoryList"
+        :currencyList="currencyList"
+        :ratesList="ratesList"
+        :currencyListLoaded="currencyListLoaded"
+        :createTransaction="createTransaction"
+        @closeForm="createForm = false"
+      />
     </q-dialog>
     <q-dialog v-model="updateForm">
       <input type="hidden" v-model="input.type" />
@@ -374,11 +313,16 @@
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import moment from 'moment';
+import AddForm from '@/views/transaction/forms/AddForm.vue';
 import { makeSelectList } from '../utils';
 import { transactionTypes } from '../utils/constants';
 
 export default {
   name: 'TransactionList',
+
+  components: {
+    AddForm,
+  },
 
   setup() {
     return {
@@ -408,6 +352,9 @@ export default {
       currenciesListSelect: [],
       availableCurrencies: [],
       defaultCurrency: '',
+      selectedCategory: null,
+      selectedAccountId: 0,
+      selectedUserId: 0,
       input: {
         user: 0,
         category: 0,
@@ -501,6 +448,7 @@ export default {
     this.fetchTransactions({
       sorting: this.transactionsSorting,
     });
+    this.fetchRates();
   },
 
   watch: {
@@ -529,6 +477,7 @@ export default {
   methods: {
     ...mapActions([
       'fetchTransactions',
+      'fetchRates',
       'createTransaction',
       'deleteTransaction',
       'updateTransaction',
@@ -714,13 +663,16 @@ export default {
     },
 
     onDrop(evt, category) {
+      this.selectedCategory = category;
+      this.selectedUserId = Number(evt.dataTransfer.getData('userID'));
+      this.selectedAccountId = Number(evt.dataTransfer.getData('accountID'));
       this.input.category = category.id;
       this.input.currency = this.defaultCurrency;
       this.input.transactionDate ||= new Date().toISOString().substr(0, 10);
       this.input.amount = '';
       this.input.description = '';
-      this.input.account = Number(evt.dataTransfer.getData('accountID'));
-      this.input.user = Number(evt.dataTransfer.getData('userID'));
+      this.input.account = this.selectedAccountId;
+      this.input.user = this.selectedUserId;
       this.createForm = true;
     },
 

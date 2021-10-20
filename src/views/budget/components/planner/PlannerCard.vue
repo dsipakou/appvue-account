@@ -2,7 +2,7 @@
   <div class="row">
     <div class="vertical-middle">
       <slot name="title"></slot>
-      <q-card class="q-pt-sm card">
+      <q-card flat class="q-pt-sm card">
         <div
           class="q-mx-sm item-block"
           v-for="item in items"
@@ -42,10 +42,6 @@ export default {
   },
 
   computed: {
-    categories() {
-      return this.categoryItems.filter((item) => item.isParent);
-    },
-
     overallSum() {
       return this.items.reduce((acc, item) => item.amount + acc, 0);
     },

@@ -1,13 +1,11 @@
 <template>
-  <input type="hidden" v-model="input.categoryId" />
-  <input type="hidden" v-model="input.accountId" />
   <q-card style="width: 400px;">
     <q-card-section>
       <span class="text-h5">
-        {{ getCategory(input.categoryId).name }}
+        {{ getCategory(category.id).name }}
       </span>
       <q-chip dense class="q-ml-sm">
-        {{ getCategory(input.categoryId).parentName }}
+        {{ getCategory(category.id).parentName }}
       </q-chip>
     </q-card-section>
 
@@ -15,51 +13,38 @@
 
       <q-card-section horizontal class="justify-between">
         <q-card-section>
-          <q-input
-            outlined
-            stack-label
-            autofocus
+          <q-input outlined stack-label autofocus
             ref="price"
             label="Amount"
             v-model="input.amount" />
         </q-card-section>
         <q-card-section>
-          <q-select
-            outlined
-            label="Currency"
-            label-stacked
-            :loading="!currencyListLoaded"
-            :readonly="!currencyListLoaded"
-            :options="availableCurrencies"
-            option-value="id"
-            option-label="verbalName"
-            v-model="input.currency" />
+          <q-input outlined stack-label
+            type="date"
+            label="Date"
+            v-model="input.transactionDate" />
         </q-card-section>
         <q-card-section>
-          <q-input
-            outlined
-            type="date"
-            stack-label
-            label="Date"
-            v-model="input.transactionDate"
-            />
+          <CurrencyDropdown
+            :currencyList="currencyList"
+            :ratesList="ratesList"
+            :selectedDate="activeDate"
+            :currencyListLoaded="currencyListLoaded"
+            @selectCurrency="input.currency = $event" />
         </q-card-section>
       </q-card-section>
       <q-card-section>
-        <q-select
-          outlined
+        <q-select outlined label-stacked
           label="Budget items"
-          label-stacked
           :options="currentWeekBudget"
           option-value="id"
           option-label="title"
           v-model="input.budget" />
+        <q-checkbox v-model="input.budgetDone" label="Complete budget" />
       </q-card-section>
       <q-card-section>
-        <q-input
-          outlined
+        <q-input outlined stack-label
           type="textarea"
-          stack-label
           label="Description"
           v-model="input.description"
           />
@@ -71,52 +56,43 @@
 </template>
 <script>
 import moment from 'moment';
+import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
+import { transactionTypes } from '@/utils/constants';
 
 export default {
   name: 'AddForm',
 
   inheritAttrs: false,
 
+  components: {
+    CurrencyDropdown,
+  },
+
   props: {
-    budgetList: {
-      type: Array,
-      required: true,
-    },
-
-    categoryList: {
-      type: Array,
-      requierd: true,
-    },
-
-    currencyList: {
-      type: Array,
-      required: true,
-    },
-
-    rateslist: {
-      type: Array,
-      required: true,
-    },
-
-    currencyListLoaded: {
-      type: Boolean,
-      required: true,
-    },
+    accountId: { type: String, required: true },
+    category: { type: Object, required: true },
+    userId: { type: String, required: true },
+    transactionDate: { type: String, default: null },
+    budgetList: { type: Array, required: true },
+    categoryList: { type: Array, requierd: true },
+    currencyList: { type: Array, required: true },
+    ratesList: { type: Array, required: true },
+    currencyListLoaded: { type: Boolean, required: true },
+    createTransaction: { type: Function, required: true },
   },
 
   data() {
     return {
       availableCurrencies: [],
       defaultCurrency: '',
+      activeDate: '',
       input: {
-        accountId: 0,
         amount: '',
         budget: null,
-        categoryId: 0,
+        budgetDone: false,
         currency: '',
         description: '',
         transactionDate: '',
-        userId: 0,
       },
     };
   },
@@ -130,7 +106,6 @@ export default {
       items.unshift({ id: null, title: 'Default' });
       return items;
     },
-
   },
 
   methods: {
@@ -142,36 +117,48 @@ export default {
       this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
     },
 
-    getAvailableCurrencies() {
-      const isRateExist = (id) => this.ratesList.some((item) => {
-        const inputDate = moment(this.input.transactionDate).startOf('day');
+    getRate(id, date) {
+      return this.ratesList.find((item) => {
+        const transactionDate = moment(date).startOf('day');
         const rateDate = moment(item.rateDate).startOf('day');
-        return rateDate.isSame(inputDate) && item.currencyId === id;
+        return transactionDate.isSame(rateDate) && item.currencyId === id;
       });
-      const newList = this.currencyList.map((item) => {
-        if (item === this.defaultCurrency) {
-          return item;
-        }
-        if (!isRateExist(item.id)) {
-          return {
-            ...item,
-            verbalName: `${item.verbalName} (no exchange rate)`,
-            disable: true,
-          };
-        }
-        return item;
-      });
-      this.availableCurrencies = newList;
+    },
+
+    create() {
+      const rate = this.getRate(
+        this.input.currency.id,
+        this.input.transactionDate,
+      );
+
+      const transaction = {
+        userId: this.userId,
+        categoryId: this.category.id,
+        amount: this.input.amount,
+        rate: rate?.rate || 1,
+        accountId: this.accountId,
+        budgetId: this.input.budget?.id,
+        transactionDate: this.input.transactionDate,
+        type: transactionTypes.OUTCOME,
+        description: this.input.description,
+      };
+      this.createTransaction(transaction);
+      this.$emit('closeForm');
     },
   },
 
   watch: {
     'input.transactionDate': {
-      handlers() {
-        this.getAvailableCurencies();
-        this.input.currency = this.defalutCurrency;
+      handler() {
+        this.activeDate = this.input.transactionDate;
       },
     },
+  },
+
+  mounted() {
+    this.input.transactionDate = this.transactionDate
+      ? this.transactionDate : new Date().toISOString().substr(0, 10);
+    this.activeDate = this.input.transactionDate;
   },
 };
 </script>

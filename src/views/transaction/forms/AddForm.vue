@@ -11,55 +11,58 @@
 
     <q-separator />
 
-      <q-card-section horizontal class="justify-between">
-        <q-card-section>
-          <q-input outlined stack-label autofocus
-            ref="price"
-            label="Amount"
-            v-model="input.amount" />
-        </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label
-            type="date"
-            label="Date"
-            v-model="input.transactionDate" />
-        </q-card-section>
-        <q-card-section>
-          <CurrencyDropdown
-            :currencyList="currencyList"
-            :ratesList="ratesList"
-            :selectedDate="activeDate"
-            :currencyListLoaded="currencyListLoaded"
-            @selectCurrency="input.currency = $event" />
-        </q-card-section>
+    <q-card-section horizontal class="justify-between">
+      <q-card-section>
+        <q-input outlined stack-label autofocus
+          ref="price"
+          label="Amount"
+          v-model="input.amount" />
       </q-card-section>
       <q-card-section>
-        <q-select outlined label-stacked
+        <q-input outlined stack-label
+          type="date"
+          label="Date"
+          v-model="input.transactionDate" />
+      </q-card-section>
+      <q-card-section>
+        <CurrencyDropdown
+          :currencyList="currencyList"
+          :ratesList="ratesList"
+          :selectedDate="activeDate"
+          :currencyListLoaded="currencyListLoaded"
+          @selectCurrency="input.currency = $event" />
+      </q-card-section>
+    </q-card-section>
+    <q-card-section horizontal class="space-between">
+      <q-card-section>
+        <q-select outlined clearable label-stacked
           label="Budget items"
           :options="currentWeekBudget"
           option-value="id"
           option-label="title"
+          style="width: 300px;"
           v-model="input.budget" />
-        <q-checkbox v-model="input.budgetDone" label="Complete budget" />
       </q-card-section>
       <q-card-section>
-        <q-input outlined stack-label
-          type="textarea"
-          label="Description"
-          v-model="input.description"
-          />
+        <q-checkbox v-model="input.budgetDone" label="Complete budget" />
       </q-card-section>
-      <q-card-actions align="center" class="action-buttons">
-        <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
-        <q-btn rounded color="secondary" style="width: 130px;" @click="createClose()">
-          Save and Close
-        </q-btn>
-      </q-card-actions>
+    </q-card-section>
+    <q-card-section>
+      <q-input outlined stack-label
+        type="textarea"
+        label="Description"
+        v-model="input.description" />
+    </q-card-section>
+    <q-card-actions align="center" class="action-buttons">
+      <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
+      <q-btn rounded color="secondary" style="width: 130px;" @click="createClose()">
+        Save and Close
+      </q-btn>
+    </q-card-actions>
   </q-card>
 </template>
 <script>
 import moment from 'moment';
-import { mapActions, mapGetters } from 'vuex';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 import { transactionTypes } from '@/utils/constants';
 
@@ -73,16 +76,17 @@ export default {
   },
 
   props: {
-    accountId: { type: String, required: true },
+    accountId: { type: Number, required: true },
+    userId: { type: Number, required: true },
     category: { type: Object, required: true },
-    userId: { type: String, required: true },
-    transactionDate: { type: String, default: null },
+    transactionLastAdded: { type: Object, default: () => ({}) },
     budgetList: { type: Array, required: true },
     categoryList: { type: Array, requierd: true },
     currencyList: { type: Array, required: true },
     ratesList: { type: Array, required: true },
     currencyListLoaded: { type: Boolean, required: true },
     createTransaction: { type: Function, required: true },
+    setTransactionLastAdded: { type: Function, required: true },
   },
 
   data() {
@@ -100,10 +104,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
-      'transactionLastAddedDate',
-    ]),
-
     currentWeekBudget() {
       const items = this.budgetList.filter((item) => (
         moment(item.budgetDate).week() === moment().week()
@@ -115,9 +115,10 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      'setTransactionLastAddedDate',
-    ]),
+    getBudget(id) {
+      return this.budgetList.find((item) => item.id === id);
+    },
+
     getCategory(id) {
       return this.categoryList.find((item) => item.id === id);
     },
@@ -148,7 +149,10 @@ export default {
         description: this.input.description,
       };
       this.createTransaction(transaction);
-      this.setTransactionLastAddedDate(this.input.transactionDate);
+      this.setTransactionLastAdded({
+        date: this.input.transactionDate,
+        budget: this.input.budget?.id,
+      });
       this.$refs.price.focus();
       this.$refs.price.select();
     },
@@ -168,9 +172,14 @@ export default {
   },
 
   mounted() {
-    this.input.transactionDate = this.transactionLastAddedDate
-      ? this.transactionLastAddedDate : new Date().toISOString().substr(0, 10);
     this.activeDate = this.input.transactionDate;
+    this.input.transactionDate = this.transactionLastAdded?.date
+      ? this.transactionLastAdded?.date
+      : new Date().toISOString().substr(0, 10);
+
+    if (this.transactionLastAdded?.budget) {
+      this.input.budget = this.getBudget(this.transactionLastAdded.budget);
+    }
   },
 };
 </script>

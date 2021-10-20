@@ -214,8 +214,10 @@
         :categoryList="categoryList"
         :currencyList="currencyList"
         :ratesList="ratesList"
+        :transactionLastAdded="transactionLastAdded"
         :currencyListLoaded="currencyListLoaded"
         :createTransaction="createTransaction"
+        :setTransactionLastAdded="setTransactionLastAdded"
         @closeForm="createForm = false"
       />
     </q-dialog>
@@ -376,6 +378,7 @@ export default {
       'currencyList',
       'ratesList',
       'budgetList',
+      'transactionLastAdded',
       'currencyListLoaded',
       'transactionListLoaded',
       'isAccountListLoading',
@@ -480,6 +483,7 @@ export default {
       'createTransaction',
       'deleteTransaction',
       'updateTransaction',
+      'setTransactionLastAdded',
     ]),
 
     initCurrencies() {

@@ -26,6 +26,7 @@ const state = {
 
   lastAdded: {
     date: null,
+    budget: null,
   },
 };
 
@@ -34,7 +35,7 @@ const getters = {
   groupedTransactionList: (state) => state.groupedTransactions.items,
   transactionListLoaded: (state) => state.transactions.status === itemStatus.LOADED,
   transactionArchiveMonth: (state) => state.archive.month,
-  transactionLastAddedDate: (state) => state.lastAdded.date,
+  transactionLastAdded: (state) => state.lastAdded,
 };
 
 const actions = {
@@ -85,8 +86,8 @@ const actions = {
     commit('setArchiveMonth', month);
   },
 
-  async setTransactionLastAddedDate({ commit }, date) {
-    commit('setLastAddedDate', date);
+  async setTransactionLastAdded({ commit }, payload) {
+    commit('setLastAdded', payload);
   },
 
   async clearTransactions({ commit }) {
@@ -107,8 +108,11 @@ const mutations = {
     state.archive.month = month;
   },
 
-  setLastAddedDate(state, date) {
-    state.lastAdded.date = date;
+  setLastAdded(state, payload) {
+    console.log(payload);
+    state.lastAdded = {
+      ...payload,
+    };
   },
 
   createTransaction(state, transaction) {

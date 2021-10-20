@@ -210,7 +210,6 @@
         :accountId="selectedAccountId"
         :category="selectedCategory"
         :userId="selectedUserId"
-        :transactionDate="selectedDate"
         :budgetList="budgetList"
         :categoryList="categoryList"
         :currencyList="currencyList"

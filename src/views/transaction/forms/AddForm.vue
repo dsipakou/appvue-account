@@ -59,6 +59,7 @@
 </template>
 <script>
 import moment from 'moment';
+import { mapActions, mapGetters } from 'vuex';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 import { transactionTypes } from '@/utils/constants';
 
@@ -86,8 +87,6 @@ export default {
 
   data() {
     return {
-      availableCurrencies: [],
-      defaultCurrency: '',
       activeDate: '',
       input: {
         amount: '',
@@ -101,6 +100,10 @@ export default {
   },
 
   computed: {
+    ...mapGetters([
+      'transactionLastAddedDate',
+    ]),
+
     currentWeekBudget() {
       const items = this.budgetList.filter((item) => (
         moment(item.budgetDate).week() === moment().week()
@@ -112,12 +115,11 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'setTransactionLastAddedDate',
+    ]),
     getCategory(id) {
       return this.categoryList.find((item) => item.id === id);
-    },
-
-    initCurrencies() {
-      this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
     },
 
     getRate(id, date) {
@@ -146,6 +148,7 @@ export default {
         description: this.input.description,
       };
       this.createTransaction(transaction);
+      this.setTransactionLastAddedDate(this.input.transactionDate);
       this.$refs.price.focus();
       this.$refs.price.select();
     },
@@ -165,8 +168,8 @@ export default {
   },
 
   mounted() {
-    this.input.transactionDate = this.transactionDate
-      ? this.transactionDate : new Date().toISOString().substr(0, 10);
+    this.input.transactionDate = this.transactionLastAddedDate
+      ? this.transactionLastAddedDate : new Date().toISOString().substr(0, 10);
     this.activeDate = this.input.transactionDate;
   },
 };

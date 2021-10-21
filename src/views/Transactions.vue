@@ -84,125 +84,22 @@
       </div>
     </div>
     <div class="row">
-      <div class="header">
-        <div>
-          <span class="header__title">Latest transactions</span>
-        </div>
-        <div>
-          <q-select
-            :options="sortingOptions"
-            v-model="transactionsSorting"
-            map-options
-            emit-value
-            style="width: 249px;">
-          </q-select>
-        </div>
-        <div>
-          <q-select
-            :options="currenciesListSelect"
-            v-model="selectedCurrencies"
-            map-options
-            multiple
-            stack-label
-            option-value="id"
-            option-label="verbalName"
-            style="width: 600px;">
-            <template v-slot:selected>
-              Currency:
-              <q-chip
-                v-for="currency in selectedCurrencies"
-                :key="currency.id"
-                dense
-                square
-                color="white"
-                text-color="primary"
-                style="max-width: 100px;"
-                class="q-ml-sm overflow-hidden align-center"
-                >
-                <q-avatar color="primary" text-color="white" class="vertical-middle">
-                  <span class="text-weight-bold text-body1 align-center">
-                    {{ currency.sign }}
-                  </span>
-                </q-avatar>
-                <span class="text-weight-light header__span q-ml-xs">
-                  {{ currency.verbalName }}</span>
-              </q-chip>
-            </template>
-          </q-select>
-        </div>
-      </div>
-    </div>
-    <div class="transaction-list">
-      <div v-for="transaction in transactionList.slice(0, 15)" :key="transaction.id">
-        <q-card flat bordered class="q-mb-lg">
-          <q-card-section horizontal class="justify-between">
-            <div class="row q-pa-md">
-              <div class="col-1 align-center">
-                <q-avatar
-                  color="primary"
-                  text-color="white">
-                  {{ getCategory(transaction.categoryId).name[0] }}
-                </q-avatar>
-              </div>
-              <div class="col-7 align-center">
-                <div class="text-h6">{{
-                  transaction.type === 'income' ?
-                  getAccount(transaction.accountId).source :
-                  getCategory(transaction.categoryId).name }}
-                  <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
-                    {{ getCategory(transaction.categoryId).parentName }}
-                  </q-chip>
-                </div>
-                <div class="text-subtitle2">
-                  {{ getFormattedDate(transaction.transactionDate) }}
-                </div>
-              </div>
-              <div class="col self-center">
-                <q-chip
-                  square
-                  outline
-                  color="primary"
-                  class="q-ml-sm overflow-hidden align-center"
-                  >
-                  <q-avatar
-                    color="primary"
-                    text-color="white"
-                    class="vertical-middle"
-                    icon="credit_card"/>
-                  <span>
-                    {{ getAccount(transaction.accountId).source }}
-                  </span>
-                </q-chip>
-              </div>
-              <div class="col self-center items-end">
-                <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
-                  <span
-                    :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
-                    class="text-bold q-pl-lg">
-                    {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.amount }}
-                    {{ amount.sign }}
-                  </span>
-                </div>
-              </div>
-              <div class="col-1 self-center items-end">
-                <q-btn-dropdown flat dropdown-icon="more_horiz">
-                  <q-list>
-                    <q-item clickable v-close-popup @click="openEditForm(transaction)">
-                      <q-item-section>
-                        <q-item-label>Edit</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
-                      <q-item-section>
-                        <q-item-label>Delete</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-btn-dropdown>
-              </div>
-            </div>
-          </q-card-section>
-        </q-card>
+      <div class="col-12">
+        <TransactionList
+          :transactions="transactionList.slice(0, 15)"
+          :accountList="accountList"
+          :budgetList="budgetList"
+          :categoryList="categoryList"
+          :currencyList="currencyList"
+          :ratesList="ratesList"
+          :userList="userList"
+          :updateTransaction="updateTransaction"
+          :deleteTransaction="deleteTransaction"
+          :currencyListLoaded="currencyListLoaded">
+          <template v-slot:header>
+            <span class="header__title">Latest Transactions</span>
+          </template>
+        </TransactionList>
       </div>
     </div>
     <q-dialog v-model="createForm">
@@ -242,18 +139,17 @@
 <script>
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
-import moment from 'moment';
 import AddForm from '@/views/transaction/forms/AddForm.vue';
 import EditForm from '@/views/transaction/forms/EditForm.vue';
-import { makeSelectList } from '../utils';
-import { transactionTypes } from '../utils/constants';
+import TransactionList from '@/views/transaction/components/TransactionList.vue';
 
 export default {
-  name: 'TransactionList',
+  name: 'Transaction',
 
   components: {
     AddForm,
     EditForm,
+    TransactionList,
   },
 
   setup() {
@@ -263,41 +159,16 @@ export default {
       categoryTabs: ref(''),
       selectedCurrencies: ref([]),
       transactionsSorting: ref('added'),
-      sortingOptions: [
-        {
-          label: 'Last Added',
-          value: 'added',
-        },
-        {
-          label: 'By Date',
-          value: 'date',
-        },
-      ],
     };
   },
 
   data() {
     return {
       editedTransaction: null,
-      id: -1,
       subCategories: [],
-      activeCategory: -1,
-      currenciesListSelect: [],
-      availableCurrencies: [],
-      defaultCurrency: '',
       selectedCategory: null,
       selectedAccountId: 0,
       selectedUserId: 0,
-      input: {
-        user: 0,
-        category: 0,
-        amount: '',
-        account: 0,
-        budget: null,
-        transactionDate: '',
-        currency: '',
-        description: '',
-      },
     };
   },
 
@@ -335,11 +206,6 @@ export default {
       return categories;
     },
 
-    accounts() {
-      const accounts = makeSelectList(this.accountList, 'source');
-      return accounts;
-    },
-
     mainAccounts() {
       return this.accountList.filter((item) => item.isMain);
     },
@@ -347,38 +213,9 @@ export default {
     secondaryAccounts() {
       return this.accountList.filter((item) => !item.isMain);
     },
-
-    categories() {
-      const categories = makeSelectList(this.categoryList.filter((item) => (
-        !item.isParent && !item.isSystem
-      )), 'name', 'parentName');
-      return categories;
-    },
-
-    currentWeekBudget() {
-      const items = this.budgetList.filter((item) => (
-        moment(item.budgetDate).week() === moment().week()
-        && !item.isCompleted
-      ));
-      items.unshift({ id: null, title: 'Default' });
-      return items;
-    },
-
-    systemCategories() {
-      const categories = makeSelectList(this.categoryList.filter((item) => (
-        item.isSystem
-      )), 'name', 'parentName');
-      return categories;
-    },
-
-    users() {
-      const users = makeSelectList(this.userList, 'name');
-      return users;
-    },
   },
 
   mounted() {
-    this.initCurrencies();
     this.fetchTransactions({
       sorting: this.transactionsSorting,
     });
@@ -386,25 +223,10 @@ export default {
   },
 
   watch: {
-    currencyList() {
-      this.initCurrencies();
-    },
-
-    ratesList() {
-      this.initCurrencies();
-    },
-
     transactionsSorting() {
       this.fetchTransactions({
         sorting: this.transactionsSorting,
       });
-    },
-
-    'input.transactionDate': {
-      handler() {
-        this.getAvailableCurrencies();
-        this.input.currency = this.defaultCurrency;
-      },
     },
   },
 
@@ -419,13 +241,6 @@ export default {
       'updateBudget',
     ]),
 
-    initCurrencies() {
-      this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
-      this.currenciesListSelect = this.currencyList.filter((item) => (
-        !item.isDefault
-      ));
-    },
-
     getAccount(id) {
       return this.accountList?.find((item) => item.id === id);
     },
@@ -434,163 +249,8 @@ export default {
       return this.categoryList?.find((item) => item.id === id);
     },
 
-    getFullCategoryName(categoryId) {
-      const category = this.categoryList.find((item) => (
-        item.id === categoryId
-      ));
-
-      return `${category.parentName} / ${category.name}`;
-    },
-
-    getCurrency(id) {
-      return this.currencyList?.find((item) => item.id === id);
-    },
-
-    getRate(id, date) {
-      return this.ratesList.find((item) => {
-        const transactionDate = moment(date).startOf('day');
-        const rateDate = moment(item.rateDate).startOf('day');
-        return transactionDate.isSame(rateDate) && item.currencyId === id;
-      });
-    },
-
-    getFormattedDate(date) {
-      return moment(date).calendar().split(' at')[0];
-    },
-
-    getAvailableCurrencies() {
-      const isRateExist = (id) => this.ratesList.some((item) => {
-        const inputDate = moment(this.input.transactionDate).startOf('day');
-        const rateDate = moment(item.rateDate).startOf('day');
-        return rateDate.isSame(inputDate) && item.currencyId === id;
-      });
-      const newList = this.currencyList.map((item) => {
-        if (item === this.defaultCurrency) {
-          return item;
-        }
-        if (!isRateExist(item.id)) {
-          return {
-            ...item,
-            verbalName: `${item.verbalName} (no exchange rate)`,
-            disable: true,
-          };
-        }
-        return item;
-      });
-      this.availableCurrencies = newList;
-    },
-
-    transactionCurrencyList(transaction) {
-      const currencies = [];
-      if (this.currencyListLoaded) {
-        const defaultCurrency = this.currencyList.find((item) => item.isDefault);
-        const objDefault = {
-          id: transaction.currencyId,
-          amount: transaction.amount.toFixed(2),
-          sign: defaultCurrency.sign,
-        };
-
-        currencies.push(objDefault);
-
-        Object.values(this.selectedCurrencies).forEach((currency) => {
-          const rate = this.getRate(currency.id, transaction.transactionDate);
-          const obj = {
-            id: currency.value,
-            amount: rate ? (transaction.amount / rate.rate).toFixed(2) : '-',
-            sign: currency.sign,
-          };
-
-          currencies.push(obj);
-        });
-      }
-      return currencies;
-    },
-
-    create() {
-      const rate = this.getRate(
-        this.input.currency.id,
-        this.input.transactionDate,
-      );
-
-      const transaction = {
-        userId: this.input.user,
-        categoryId: this.input.category,
-        amount: this.input.amount,
-        rate: rate?.rate || 1,
-        accountId: this.input.account,
-        budgetId: this.input.budget?.id,
-        transactionDate: this.input.transactionDate,
-        type: transactionTypes.OUTCOME,
-        description: this.input.description,
-      };
-      this.createTransaction(transaction);
-      this.$refs.price.focus();
-      this.$refs.price.select();
-    },
-
-    createAndClose() {
-      this.create();
-      this.createForm = false;
-    },
-
-    update() {
-      const rate = this.getRate(
-        this.input.currency.id,
-        this.input.transactionDate,
-      );
-
-      const transaction = {
-        id: this.input.id,
-        userId: this.input.user.value,
-        categoryId: this.input.category.value,
-        budgetId: this.input.budget?.id,
-        amount: this.input.amount.toString(),
-        rate: rate?.rate || 1,
-        accountId: this.input.account.value,
-        transactionDate: this.input.transactionDate,
-        type: this.input.type,
-        description: this.input.description,
-      };
-      this.updateTransaction(transaction);
-      this.updateForm = false;
-    },
-
     openEditForm(transaction) {
       this.editedTransaction = transaction;
-      const {
-        id,
-        userId,
-        categoryId,
-        amount,
-        accountId,
-        transactionDate,
-        type,
-        description,
-      } = transaction;
-
-      const account = this.accounts.find((item) => (
-        item.value === accountId
-      ));
-
-      const category = this.categories.find((item) => (
-        item.value === categoryId
-      )) || this.systemCategories.find((item) => (
-        item.value === categoryId
-      ));
-
-      const user = this.users.find((item) => (
-        item.value === userId
-      ));
-
-      this.input.id = id;
-      this.input.user = user;
-      this.input.category = category;
-      this.input.currency = this.defaultCurrency;
-      this.input.amount = amount;
-      this.input.account = account;
-      this.input.transactionDate = transactionDate.substr(0, 10);
-      this.input.type = type;
-      this.input.description = description;
       this.editForm = true;
     },
 
@@ -603,19 +263,11 @@ export default {
       this.selectedCategory = category;
       this.selectedUserId = Number(evt.dataTransfer.getData('userID'));
       this.selectedAccountId = Number(evt.dataTransfer.getData('accountID'));
-      this.input.category = category.id;
-      this.input.currency = this.defaultCurrency;
-      this.input.transactionDate ||= new Date().toISOString().substr(0, 10);
-      this.input.amount = '';
-      this.input.description = '';
-      this.input.account = this.selectedAccountId;
-      this.input.user = this.selectedUserId;
       this.createForm = true;
     },
 
     chooseCategory(category) {
       this.subCategories = this.categoryList.filter((item) => item.parentName === category.name);
-      this.activeCategory = category.id;
     },
   },
 };

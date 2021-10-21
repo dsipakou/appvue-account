@@ -222,91 +222,19 @@
         @closeForm="createForm = false"
       />
     </q-dialog>
-    <q-dialog v-model="updateForm">
-      <input type="hidden" v-model="input.type" />
-      <q-card style="width: 400px;">
-        <q-card-section>
-          <h4>Edit transaction</h4>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section>
-          <q-select
-            clearable
-            outlined
-            map-options
-            v-model="input.user"
-            :options="users"
-            label="User" />
-        </q-card-section>
-        <q-card-section>
-          <q-select
-            clearable
-            outlined
-            map-options
-            v-model="input.account"
-            :options="accounts"
-            label="Account" />
-        </q-card-section>
-        <q-card-section>
-          <q-select
-            clearable
-            outlined
-            map-options
-            v-model="input.category"
-            :options="input.type === 'income' ? systemCategories : categories"
-            label="Category" />
-        </q-card-section>
-        <q-card-section>
-          <q-select
-            outlined
-            label="Budget items"
-            label-stacked
-            :options="currentWeekBudget"
-            option-value="id"
-            option-label="title"
-            v-model="input.budget" />
-        </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label label="Amount" v-model="input.amount" />
-        </q-card-section>
-        <q-card-section>
-          <q-select
-            outlined
-            label="Currency"
-            label-stacked
-            :options="availableCurrencies"
-            option-value="id"
-            option-label="verbalName"
-            v-model="input.currency" />
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            outlined
-            type="date"
-            stack-label
-            label="Date"
-            v-model="input.transactionDate"
-            />
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            outlined
-            type="textarea"
-            stack-label
-            label="Description"
-            v-model="input.description"
-            />
-        </q-card-section>
-        <q-card-actions align="center">
-          <q-btn
-            color="primary"
-            rounded
-            style="width: 100px;"
-            @click="update()">Save</q-btn>
-        </q-card-actions>
-      </q-card>
+    <q-dialog v-model="editForm">
+      <EditForm
+        :transaction="editedTransaction"
+        :accountList="accountList"
+        :budgetList="budgetList"
+        :categoryList="categoryList"
+        :currencyList="currencyList"
+        :currencyListLoaded="currencyListLoaded"
+        :ratesList="ratesList"
+        :userList="userList"
+        :updateTransaction="updateTransaction"
+        @closeForm="editForm = false"
+      />
     </q-dialog>
   </div>
 </template>
@@ -316,6 +244,7 @@ import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import moment from 'moment';
 import AddForm from '@/views/transaction/forms/AddForm.vue';
+import EditForm from '@/views/transaction/forms/EditForm.vue';
 import { makeSelectList } from '../utils';
 import { transactionTypes } from '../utils/constants';
 
@@ -324,12 +253,13 @@ export default {
 
   components: {
     AddForm,
+    EditForm,
   },
 
   setup() {
     return {
       createForm: ref(false),
-      updateForm: ref(false),
+      editForm: ref(false),
       categoryTabs: ref(''),
       selectedCurrencies: ref([]),
       transactionsSorting: ref('added'),
@@ -348,6 +278,7 @@ export default {
 
   data() {
     return {
+      editedTransaction: null,
       id: -1,
       subCategories: [],
       activeCategory: -1,
@@ -625,6 +556,7 @@ export default {
     },
 
     openEditForm(transaction) {
+      this.editedTransaction = transaction;
       const {
         id,
         userId,
@@ -659,7 +591,7 @@ export default {
       this.input.transactionDate = transactionDate.substr(0, 10);
       this.input.type = type;
       this.input.description = description;
-      this.updateForm = true;
+      this.editForm = true;
     },
 
     startDrag(evt, account) {

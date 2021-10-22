@@ -44,45 +44,11 @@
         </div>
       </q-expansion-item>
     </div>
-    <div class="row justify-center">
-      <div class="col-10 items-center sub-categories">
-        <div class="row justify-center">
-          <q-card
-            v-for="category in subCategories"
-            :key="category.id"
-            flat
-            bordered
-            @drop="onDrop($event, category)"
-            @dragover.prevent
-            @dragenter.prevent
-            class="column bg-secondary q-pb-sm q-ma-sm avatar-container align-center">
-            <div class="row text-center text-white text-weight-bolder">
-              <span>{{ category.name }}</span>
-            </div>
-          </q-card>
-        </div>
-      </div>
-      <div class="col-2 main-categories-list self-end">
-        <q-tabs
-          v-model="categoryTabs"
-          vertical
-          indicator-color="white"
-          active-bg-color="white"
-          active-color="primary"
-          switch-indicator
-          no-caps
-          dense
-          class="text-dark">
-          <q-tab
-            v-for="category in mainCategories"
-            :name="category.id"
-            :label="category.name"
-            :key="category.id"
-            class="main-category-tab"
-            @click="chooseCategory(category)"/>
-        </q-tabs>
-      </div>
-    </div>
+    <CategoryList
+      :categoryList="categoryList"
+      :isCategoryListLoading="isCategoryListLoading"
+      @onDrop="onDrop($event)"
+    />
     <div class="row">
       <div class="col-12">
         <TransactionList
@@ -142,6 +108,7 @@ import { mapActions, mapGetters } from 'vuex';
 import AddForm from '@/views/transaction/forms/AddForm.vue';
 import EditForm from '@/views/transaction/forms/EditForm.vue';
 import TransactionList from '@/views/transaction/components/TransactionList.vue';
+import CategoryList from '@/views/transaction/components/CategoryList.vue';
 
 export default {
   name: 'Transaction',
@@ -150,6 +117,7 @@ export default {
     AddForm,
     EditForm,
     TransactionList,
+    CategoryList,
   },
 
   setup() {
@@ -189,23 +157,6 @@ export default {
       'isCategoryListLoading',
     ]),
 
-    mainCategories() {
-      const categories = this.categoryList.filter((item) => (
-        item.parentName === '' && !item.isSystem
-      )).sort((a, b) => {
-        const left = a.name;
-        const right = b.name;
-        if (left > right) {
-          return 1;
-        }
-        if (left < right) {
-          return -1;
-        }
-        return 0;
-      });
-      return categories;
-    },
-
     mainAccounts() {
       return this.accountList.filter((item) => item.isMain);
     },
@@ -241,61 +192,26 @@ export default {
       'updateBudget',
     ]),
 
-    getAccount(id) {
-      return this.accountList?.find((item) => item.id === id);
-    },
-
-    getCategory(id) {
-      return this.categoryList?.find((item) => item.id === id);
-    },
-
-    openEditForm(transaction) {
-      this.editedTransaction = transaction;
-      this.editForm = true;
-    },
-
     startDrag(evt, account) {
       evt.dataTransfer.setData('accountID', account.id);
       evt.dataTransfer.setData('userID', account.userId);
     },
 
-    onDrop(evt, category) {
-      this.selectedCategory = category;
-      this.selectedUserId = Number(evt.dataTransfer.getData('userID'));
-      this.selectedAccountId = Number(evt.dataTransfer.getData('accountID'));
+    onDrop(payload) {
+      this.selectedCategory = payload.category;
+      this.selectedUserId = payload.userId;
+      this.selectedAccountId = payload.accountId;
       this.createForm = true;
-    },
-
-    chooseCategory(category) {
-      this.subCategories = this.categoryList.filter((item) => item.parentName === category.name);
     },
   },
 };
 </script>
 <style scoped>
-.main-categories-list {
-  display: flex;
-  flex-direction: column;
-  margin-top: 30px;
-}
-
 .header__title {
   display: flex;
   align-items: center;
   font-size: 18px;
   font-weight: 800;
-}
-
-.sub-categories {
-  margin-top: 30px;
-  border-radius: 10px 0 0 10px;
-  background-color: white;
-  padding: 20px 0;
-  justify-content: center;
-}
-
-.main-category-tab {
-  border-radius: 0 10px 10px 0;
 }
 
 .avatar-container {

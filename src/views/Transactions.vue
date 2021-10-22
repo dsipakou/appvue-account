@@ -273,66 +273,10 @@ export default {
 };
 </script>
 <style scoped>
-#transactionCreate {
-  margin: auto;
-}
-
-.transaction-list {
-  background-color: #FFFFFF;
-  border-radius: 10px;
-  margin-top: 20px;
-  padding: 20px;
-}
-
-.drag-el {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 100px;
-  background-color: #eee;
-  margin-bottom: 10px;
-  padding: 5px;
-  border-radius: 50%;
-  text-align: center;
-  margin: 10px;
-  line-height: auto;
-}
-
-.categories-list {
-  display: flex;
-  margin-top: 100px;
-  justify-content: center;
-  color: white;
-  line-height: 1.1em;
-}
-
 .main-categories-list {
   display: flex;
   flex-direction: column;
   margin-top: 30px;
-}
-
-.item-title {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding-left: 50px;
-}
-
-.item-header {
-  display: flex;
-  justify-content: left;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-  align-items: center;
-  width: 100%;
 }
 
 .header__title {
@@ -340,14 +284,6 @@ export default {
   align-items: center;
   font-size: 18px;
   font-weight: 800;
-}
-
-.header__span {
-  align-self: flex-end;
-}
-
-.action-buttons {
-  margin-bottom: 10px;
 }
 
 .sub-categories {
@@ -374,9 +310,4 @@ export default {
 .avatar-container span {
   font-size: 1.1em;
 }
-
-.over {
-  background-color: black;
-}
-
 </style>

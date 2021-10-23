@@ -7,69 +7,69 @@
 
     <q-separator />
 
-      <q-card-section>
-        <q-select outlined map-options
-          v-model="input.user"
-          :options="userList"
-          option-value="id"
-          option-label="name" label="User" /> </q-card-section>
-      <q-card-section>
-        <q-select outlined map-options
-          v-model="input.account"
-          :options="accountList"
-          option-value="id"
-          option-label="source"
-          label="Account" />
-      </q-card-section>
-      <q-card-section>
-        <q-select outlined map-options
-          v-model="input.category"
-          :options="input.type === 'income' ? systemCategories : categories"
-          option-value="id"
-          option-label="value"
-          label="Category" />
-      </q-card-section>
-      <q-card-section>
-        <q-select
-          outlined
-          label="Budget items"
-          label-stacked
-          :options="currentWeekBudget"
-          option-value="id"
-          option-label="title"
-          v-model="input.budget" />
-      </q-card-section>
-      <q-card-section>
-        <q-input outlined stack-label label="Amount" v-model="input.amount" />
-      </q-card-section>
-      <q-card-section>
-        <CurrencyDropdown
-          :currencyList="currencyList"
-          :ratesList="ratesList"
-          :selectedDate="activeDate"
-          :currencyListLoaded="currencyListLoaded"
-          @selectCurrency="input.currency = $event" />
-      </q-card-section>
-      <q-card-section>
-        <q-input outlined stack-label
-          type="date"
-          label="Date"
-          v-model="input.transactionDate" />
-      </q-card-section>
-      <q-card-section>
-        <q-input outlineds stack-label
-          type="textarea"
-          label="Description"
-          v-model="input.description"
-          />
-      </q-card-section>
-      <q-card-actions align="center">
-        <q-btn
-          color="primary"
-          rounded
-          style="width: 100px;"
-          @click="update()">Save</q-btn>
-      </q-card-actions>
+    <q-card-section>
+      <q-select outlined map-options
+        v-model="input.user"
+        :options="userList"
+        option-value="id"
+        option-label="name" label="User" /> </q-card-section>
+    <q-card-section>
+      <q-select outlined map-options
+        v-model="input.account"
+        :options="accountList"
+        option-value="id"
+        option-label="source"
+        label="Account" />
+    </q-card-section>
+    <q-card-section>
+      <q-select outlined map-options
+        v-model="input.category"
+        :options="input.type === 'income' ? systemCategories : categories"
+        option-value="id"
+        option-label="value"
+        label="Category" />
+    </q-card-section>
+    <q-card-section>
+      <q-select
+        outlined
+        label="Budget items"
+        label-stacked
+        :options="currentWeekBudget"
+        option-value="id"
+        option-label="title"
+        v-model="input.budget" />
+    </q-card-section>
+    <q-card-section>
+      <q-input outlined stack-label label="Amount" v-model="input.amount" />
+    </q-card-section>
+    <q-card-section>
+      <CurrencyDropdown
+        :currencyList="currencyList"
+        :ratesList="ratesList"
+        :selectedDate="activeDate"
+        :currencyListLoaded="currencyListLoaded"
+        @selectCurrency="input.currency = $event" />
+    </q-card-section>
+    <q-card-section>
+      <q-input outlined stack-label
+        type="date"
+        label="Date"
+        v-model="input.transactionDate" />
+    </q-card-section>
+    <q-card-section>
+      <q-input outlineds stack-label
+        type="textarea"
+        label="Description"
+        v-model="input.description"
+        />
+    </q-card-section>
+    <q-card-actions align="center">
+      <q-btn
+        color="primary"
+        rounded
+        style="width: 100px;"
+        @click="update()">Save</q-btn>
+    </q-card-actions>
   </q-card>
 </template>
 <script>

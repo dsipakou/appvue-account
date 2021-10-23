@@ -171,6 +171,7 @@ export default {
       sorting: this.transactionsSorting,
     });
     this.fetchRates();
+    console.log(this.transactionList.slice(0, 15));
   },
 
   watch: {

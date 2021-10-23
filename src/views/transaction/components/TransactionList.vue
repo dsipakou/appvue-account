@@ -12,13 +12,13 @@
             @selectCurrency="selectedCurrencies = $event"/>
         </div>
         <div>
-          Day overall: {{ transactionsSum }}
+          Overall: {{ transactionsSum }}
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col transaction-list">
-        <div v-for="transaction in sortedTransactions" :key="transaction.id">
+        <div v-for="transaction in transactions" :key="transaction.id">
           <TransactionItem
             :account="getAccount(transaction.accountId)"
             :category="getCategory(transaction.categoryId)"

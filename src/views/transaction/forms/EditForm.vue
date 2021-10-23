@@ -205,7 +205,6 @@ export default {
   watch: {
     'input.transactionDate': {
       handler() {
-        console.log('date changed up');
         this.activeDate = this.input.transactionDate;
       },
     },

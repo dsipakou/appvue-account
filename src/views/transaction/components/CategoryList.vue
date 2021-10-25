@@ -6,9 +6,7 @@
           <q-card flat bordered
             v-for="category in subCategories"
             :key="category.id"
-            @drop="onDrop($event, category)"
-            @dragover.prevent
-            @dragenter.prevent
+            @click="selectCategory(category)"
             class="column bg-secondary q-pb-sm q-ma-sm avatar-container align-center">
             <div class="row text-center text-white text-weight-bolder">
               <span>{{ category.name }}</span>
@@ -46,7 +44,7 @@ export default {
   name: 'CategoryList',
 
   emits: [
-    'onDrop',
+    'selectCategory',
   ],
 
   setup() {
@@ -90,16 +88,12 @@ export default {
       this.subCategories = this.categoryList.filter((item) => item.parentName === category.name);
     },
 
-    onDrop(evt, category) {
+    selectCategory(category) {
       this.selectedCategory = category;
-      this.selectedUserId = Number(evt.dataTransfer.getData('userID'));
-      this.selectedAccountId = Number(evt.dataTransfer.getData('accountID'));
       const payload = {
         category,
-        userId: Number(evt.dataTransfer.getData('userID')),
-        accountId: Number(evt.dataTransfer.getData('accountID')),
       };
-      this.$emit('onDrop', payload);
+      this.$emit('selectCategory', payload);
     },
   },
 };

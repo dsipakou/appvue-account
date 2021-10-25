@@ -12,11 +12,12 @@
           class="avatar-container">
           <span>{{ account.source }}</span>
           <q-avatar
-            color="red"
+            :color="selectedAccountId === account.id ? 'red': 'red-3'"
             size="80px"
-            font-size="20px"
-            draggable="true"
-            @dragstart="startDrag($event, account)">
+            text-color="white"
+            font-size="40px"
+            :icon="selectedAccountId === account.id ? 'check' : ''"
+            @click="selectAccount(account)">
           </q-avatar>
         </div>
       </div>
@@ -34,11 +35,12 @@
             class="avatar-container col justify-center">
             <span>{{ account.source }}</span>
             <q-avatar
-              color="red"
+              :color="selectedAccountId === account.id ? 'red' : 'red-3'"
               size="60px"
-              font-size="20px"
-              draggable="true"
-              @dragstart="startDrag($event, account)">
+              font-size="30px"
+              text-color="white"
+              :icon="selectedAccountId === account.id ? 'check' : ''"
+              @click="selectAccount(account)">
             </q-avatar>
           </div>
         </div>
@@ -47,7 +49,7 @@
     <CategoryList
       :categoryList="categoryList"
       :isCategoryListLoading="isCategoryListLoading"
-      @onDrop="onDrop($event)"
+      @selectCategory="selectCategory($event)"
     />
     <div class="row">
       <div class="col-12">
@@ -171,7 +173,6 @@ export default {
       sorting: this.transactionsSorting,
     });
     this.fetchRates();
-    console.log(this.transactionList.slice(0, 15));
   },
 
   watch: {
@@ -193,16 +194,14 @@ export default {
       'updateBudget',
     ]),
 
-    startDrag(evt, account) {
-      evt.dataTransfer.setData('accountID', account.id);
-      evt.dataTransfer.setData('userID', account.userId);
+    selectCategory(payload) {
+      this.selectedCategory = payload.category;
+      this.createForm = true;
     },
 
-    onDrop(payload) {
-      this.selectedCategory = payload.category;
-      this.selectedUserId = payload.userId;
-      this.selectedAccountId = payload.accountId;
-      this.createForm = true;
+    selectAccount(account) {
+      this.selectedAccountId = this.selectedAccountId === account.id ? 0 : account.id;
+      this.selectedUserId = account.userId;
     },
   },
 };

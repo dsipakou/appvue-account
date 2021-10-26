@@ -2,7 +2,7 @@
   <div v-if="!isCategoryListLoading">
     <div class="row justify-center">
       <div class="col-10 items-center sub-categories">
-        <div class="row justify-center">
+        <div v-if="isAvailable" class="row justify-center">
           <q-card flat bordered
             v-for="category in subCategories"
             :key="category.id"
@@ -13,17 +13,16 @@
             </div>
           </q-card>
         </div>
+        <div v-else class="column text-center text-h3 text-wight-bold">
+          Choose an account
+        </div>
       </div>
       <div class="col-2 main-categories-list self-end">
-        <q-tabs
+        <q-tabs vertical switch-indicator no-caps dense
           v-model="categoryTabs"
-          vertical
           indicator-color="white"
           active-bg-color="white"
           active-color="primary"
-          switch-indicator
-          no-caps
-          dense
           class="text-dark">
           <q-tab
             v-for="category in mainCategories"
@@ -62,6 +61,7 @@ export default {
   props: {
     categoryList: { type: Array, default: () => [] },
     isCategoryListLoading: { type: Boolean, required: true },
+    isAvailable: { type: Boolean, default: false },
   },
 
   computed: {

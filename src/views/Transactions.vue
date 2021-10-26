@@ -49,6 +49,7 @@
     <CategoryList
       :categoryList="categoryList"
       :isCategoryListLoading="isCategoryListLoading"
+      :isAvailable="selectedAccountId > 0"
       @selectCategory="selectCategory($event)"
     />
     <div class="row">

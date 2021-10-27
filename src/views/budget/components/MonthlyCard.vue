@@ -18,7 +18,7 @@
       <div class="flex flex-center">
         <q-circular-progress show-value
           class="text-black q-pb-sm"
-          :value="getUsage().usagePercent"
+          :value="getUsage().shortUsagePercent"
           size="140px"
           :color="getUsage().mainColor"
           :track-color="getUsage().trackColor"
@@ -79,6 +79,7 @@ export default {
     getUsage() {
       const usage = {
         usageAmount: 0,
+        shortUsagePercent: 0,
         usagePercent: 0,
         mainColor: '',
         trackColor: '',
@@ -93,10 +94,11 @@ export default {
           const grade = Math.floor((usage.usagePercent % 100) / 10);
           usage.mainColor = `red-${grade + 5}`;
           usage.trackColor = `red-${Math.floor(usage.usagePercent / 100) + 1}`;
-          usage.usagePercent %= 100;
+          usage.shortUsagePercent = usage.usagePercent % 100;
         } else {
           usage.mainColor = `green-${Math.floor(usage.usagePercent / 10) + 1}`;
           usage.trackColor = 'grey-2';
+          usage.shortUsagePercent = usage.usagePercent;
         }
       }
 

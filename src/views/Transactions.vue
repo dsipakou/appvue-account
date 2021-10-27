@@ -6,20 +6,10 @@
         label="Daily Transactions >"
         to="/transactions/daily"/>
       <div class="row justify-center">
-        <div
-          v-for="account in mainAccounts"
-          :key="account.id"
-          class="avatar-container">
-          <span>{{ account.source }}</span>
-          <q-avatar
-            :color="selectedAccountId === account.id ? 'red': 'red-3'"
-            size="80px"
-            text-color="white"
-            font-size="40px"
-            :icon="selectedAccountId === account.id ? 'check' : ''"
-            @click="selectAccount(account)">
-          </q-avatar>
-        </div>
+        <MainAccounts
+          :accountList="accountList"
+          :selectedAccountId="selectedAccountId"
+          @selectAccount="selectAccount($event)" />
       </div>
     </div>
     <div class="row justify-center">
@@ -92,6 +82,7 @@ import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import AddForm from '@/views/transaction/forms/AddForm.vue';
 import EditForm from '@/views/transaction/forms/EditForm.vue';
+import MainAccounts from '@/views/transaction/components/MainAccounts.vue';
 import AdditionalAccounts from '@/views/transaction/components/AdditionalAccounts.vue';
 import CategoryList from '@/views/transaction/components/CategoryList.vue';
 import TransactionList from '@/views/transaction/components/TransactionList.vue';
@@ -102,6 +93,7 @@ export default {
   components: {
     AddForm,
     EditForm,
+    MainAccounts,
     AdditionalAccounts,
     TransactionList,
     CategoryList,
@@ -143,10 +135,6 @@ export default {
       'isUserListLoading',
       'isCategoryListLoading',
     ]),
-
-    mainAccounts() {
-      return this.accountList.filter((item) => item.isMain);
-    },
   },
 
   mounted() {

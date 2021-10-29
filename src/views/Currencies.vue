@@ -68,16 +68,24 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <CurrencyChart
+      :ratesList="ratesList"
+      :currencyList="currencyList" />
   </div>
 </template>
 <script>
 import { ref } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
+import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
 import { getRate } from '../service';
 
 export default {
   name: 'Currencies',
+
+  components: {
+    CurrencyChart,
+  },
 
   data() {
     return {
@@ -116,6 +124,8 @@ export default {
     ...mapActions([
       'createRate',
       'createCurrency',
+      'fetchCurrencies',
+      'fetchRates',
     ]),
 
     async getCurrentRate() {
@@ -155,6 +165,11 @@ export default {
       this.createCurrency(currency);
       this.createForm = false;
     },
+  },
+
+  beforeMount() {
+    this.fetchCurrencies();
+    this.fetchRates();
   },
 };
 </script>

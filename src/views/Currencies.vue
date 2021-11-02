@@ -103,8 +103,6 @@ export default {
   setup() {
     const store = useStore();
 
-    console.log(store.getters.selectedCurrencies);
-
     const selectedCurrenciesModel = computed({
       get: () => store.getters.selectedCurrencies,
       set: (val) => store.commit('selectCurrency', val),
@@ -180,12 +178,6 @@ export default {
   beforeMount() {
     this.fetchCurrencies();
     this.fetchRates();
-  },
-
-  watch: {
-    selectedCurrenciesModel() {
-      console.log(this.selectedCurrenciesModel);
-    },
   },
 };
 </script>

@@ -26,10 +26,9 @@ export default {
 
   methods: {
     updateChart() {
-      const currencies = this.selectedCurrencies.map((item) => item.code);
       const datasetsToShow = [];
       let labelsToShow = null;
-      Object.values(currencies).forEach((currency) => {
+      Object.values(this.selectedCurrencies).forEach((currency) => {
         const currencyId = this.currencyList.find((item) => item.code === currency)?.id;
         const currList = this.ratesList.filter((item) => item.currencyId === currencyId);
         const labels = currList?.map((item) => {

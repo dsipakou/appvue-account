@@ -31,7 +31,7 @@
           :key="currency.id"
           v-model="selectedCurrenciesModel"
           :label="currency.verbalName"
-          :val="currency" />
+          :val="currency.code" />
       </div>
     </div>
     <q-dialog v-model="createForm">
@@ -103,12 +103,16 @@ export default {
   setup() {
     const store = useStore();
 
+    console.log(store.getters.selectedCurrencies);
+
+    const selectedCurrenciesModel = computed({
+      get: () => store.getters.selectedCurrencies,
+      set: (val) => store.commit('selectCurrency', val),
+    });
+
     return {
       days: ref([]),
-      selectedCurrenciesModel: computed({
-        get: () => store.getters.selectedCurrencies,
-        set: (val) => store.commit('selectCurrency', val),
-      }),
+      selectedCurrenciesModel,
       createForm: ref(false),
     };
   },
@@ -116,8 +120,8 @@ export default {
   computed: {
     ...mapGetters([
       'currencyList',
-      'ratesList',
       'selectedCurrencies',
+      'ratesList',
       'isCurrencyListLoading',
       'isRatesListLoading',
     ]),
@@ -131,7 +135,6 @@ export default {
     ...mapActions([
       'createRate',
       'createCurrency',
-      'selectCurrency',
       'fetchCurrencies',
       'fetchRates',
     ]),
@@ -153,7 +156,6 @@ export default {
               rate,
               description: '',
             };
-
             this.createRate(payload);
           }
         }));
@@ -178,6 +180,12 @@ export default {
   beforeMount() {
     this.fetchCurrencies();
     this.fetchRates();
+  },
+
+  watch: {
+    selectedCurrenciesModel() {
+      console.log(this.selectedCurrenciesModel);
+    },
   },
 };
 </script>

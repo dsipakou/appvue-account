@@ -9,6 +9,7 @@ import { itemStatus } from '../constants';
 const state = {
   currencies: {
     items: [],
+    selectedItems: [],
     status: itemStatus.INIT,
   },
 };
@@ -16,6 +17,7 @@ const state = {
 const getters = {
   currencyList: (state) => state.currencies.items,
   currencyListLoaded: (state) => state.currencies.status === itemStatus.LOADED,
+  selectedCurrencies: (state) => state.currencies.selectedItems,
 };
 
 const actions = {
@@ -36,6 +38,10 @@ const actions = {
       commit('createCurrency', body);
     }
   },
+
+  async selectCurrency({ commit }, payload) {
+    commit('selectCurrency', payload);
+  },
 };
 
 const mutations = {
@@ -45,6 +51,10 @@ const mutations = {
 
   createCurrency(state, currency) {
     state.currencies.items.unshift({ ...currency });
+  },
+
+  selectCurrency(state, currencies) {
+    state.currencies.selectedItems = currencies;
   },
 
   setCurrenciesStatus(state, status) {

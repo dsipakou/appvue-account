@@ -10,6 +10,7 @@ export default {
   props: {
     ratesList: { type: Array, required: true },
     currencyList: { type: Array, required: true },
+    selectedCurrencies: { type: Array, required: true },
   },
 
   data: () => ({
@@ -25,30 +26,34 @@ export default {
 
   methods: {
     updateChart() {
-      const currencyId = this.currencyList.find((item) => item.code === 'USD')?.id;
-      const eurId = this.currencyList.find((item) => item.code === 'EUR')?.id;
-      const currList = this.ratesList.filter((item) => item.currencyId === currencyId);
-      const eurList = this.ratesList.filter((item) => item.currencyId === eurId);
-      const labels = currList?.map((item) => {
-        const parsed = parse(item.rateDate, 'yyyy-MM-dd\'T\'HH:mm:ssX', new Date());
-        const formatted = format(parsed, 'MMM-dd');
-        return formatted;
-      })?.slice(0, 30).reverse();
-      const dataList = currList.map((item) => item.rate)?.slice(0, 30).reverse();
-      const eurDataList = eurList.map((item) => item.rate)?.slice(0, 30).reverse();
-      const dataSetData = {
-        label: 'USD',
-        backgroundColor: '#f87979',
-        borderColor: '#153645',
-        data: dataList,
-      };
-      const eurSetData = {
-        label: 'EUR',
-        data: eurDataList,
-      };
+      const currencies = this.selectedCurrencies.map((item) => item.code);
+      const datasetsToShow = [];
+      let labelsToShow = null;
+      Object.values(currencies).forEach((currency) => {
+        const currencyId = this.currencyList.find((item) => item.code === currency)?.id;
+        const currList = this.ratesList.filter((item) => item.currencyId === currencyId);
+        const labels = currList?.map((item) => {
+          const parsed = parse(item.rateDate, 'yyyy-MM-dd\'T\'HH:mm:ssX', new Date());
+          const formatted = format(parsed, 'MMM-dd');
+          return formatted;
+        })?.slice(0, 30).reverse();
+        labelsToShow = labels;
+        const dataList = currList.map((item) => item.rate)?.slice(0, 30).reverse();
+        const dataSetData = {
+          label: currency,
+          backgroundColor: '#f87979',
+          borderColor: '#153645',
+          data: dataList,
+        };
+        datasetsToShow.push(dataSetData);
+        this.chartdata = {
+          labels,
+          datasets: [dataSetData],
+        };
+      });
       this.chartdata = {
-        labels,
-        datasets: [dataSetData, eurSetData],
+        labels: labelsToShow,
+        datasets: datasetsToShow,
       };
     },
   },
@@ -63,6 +68,11 @@ export default {
         this.updateChart();
         this.renderChart(this.chartdata, this.options);
       }
+    },
+
+    selectedCurrencies() {
+      this.updateChart();
+      this.renderChart(this.chartdata, this.options);
     },
   },
 };

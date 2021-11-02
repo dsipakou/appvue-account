@@ -29,9 +29,9 @@
         <q-toggle
           v-for="currency in notDefaultCurrencies"
           :key="currency.id"
-          v-model="selectedCurrencies"
+          v-model="selectedCurrenciesModel"
           :label="currency.verbalName"
-          :val="currency"/>
+          :val="currency" />
       </div>
     </div>
     <q-dialog v-model="createForm">
@@ -70,12 +70,13 @@
     </q-dialog>
     <CurrencyChart
       :ratesList="ratesList"
-      :currencyList="currencyList" />
+      :currencyList="currencyList"
+      :selectedCurrencies="selectedCurrencies" />
   </div>
 </template>
 <script>
-import { ref } from 'vue';
-import { mapGetters, mapActions } from 'vuex';
+import { computed, ref } from 'vue';
+import { mapGetters, mapActions, useStore } from 'vuex';
 import moment from 'moment';
 import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
 import { getRate } from '../service';
@@ -100,9 +101,14 @@ export default {
   },
 
   setup() {
+    const store = useStore();
+
     return {
       days: ref([]),
-      selectedCurrencies: ref([]),
+      selectedCurrenciesModel: computed({
+        get: () => store.getters.selectedCurrencies,
+        set: (val) => store.commit('selectCurrency', val),
+      }),
       createForm: ref(false),
     };
   },
@@ -111,6 +117,7 @@ export default {
     ...mapGetters([
       'currencyList',
       'ratesList',
+      'selectedCurrencies',
       'isCurrencyListLoading',
       'isRatesListLoading',
     ]),
@@ -124,6 +131,7 @@ export default {
     ...mapActions([
       'createRate',
       'createCurrency',
+      'selectCurrency',
       'fetchCurrencies',
       'fetchRates',
     ]),
@@ -131,7 +139,7 @@ export default {
     async getCurrentRate() {
       this.ratesInProgress = true;
       await Promise.all(this.days.map(async (day) => {
-        await Promise.all(this.selectedCurrencies.map(async (currency) => {
+        await Promise.all(this.selectedCurrenciesModel.map(async (currency) => {
           const existingRate = this.ratesList.find((item) => {
             const itemDate = moment(day).startOf('day');
             const rateDate = moment(item.rateDate).startOf('day');

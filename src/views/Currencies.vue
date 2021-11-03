@@ -141,15 +141,16 @@ export default {
       this.ratesInProgress = true;
       await Promise.all(this.days.map(async (day) => {
         await Promise.all(this.selectedCurrenciesModel.map(async (currency) => {
+          const fullCurrency = this.currencyList.find((item) => item.code === currency);
           const existingRate = this.ratesList.find((item) => {
             const itemDate = moment(day).startOf('day');
             const rateDate = moment(item.rateDate).startOf('day');
-            return itemDate.isSame(rateDate) && currency.id === item.currencyId;
+            return itemDate.isSame(rateDate) && fullCurrency.id === item.currencyId;
           });
           if (!existingRate) {
-            const rate = await getRate(currency.code, day);
+            const rate = await getRate(currency, day);
             const payload = {
-              currencyId: currency.id,
+              currencyId: fullCurrency.id,
               rateDate: day,
               rate,
               description: '',

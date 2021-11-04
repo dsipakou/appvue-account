@@ -22,7 +22,7 @@
       </q-btn>
     </div>
     <div class="row justify-center q-mt-lg">
-      <q-date v-model="days" multiple mask="YYYY-MM-DD"></q-date>
+      <q-date v-model="selectedDays" multiple mask="YYYY-MM-DD"></q-date>
     </div>
     <div class="row justify-center q-mt-lg">
       <div class="column">
@@ -109,7 +109,7 @@ export default {
     });
 
     return {
-      days: ref([]),
+      selectedDays: ref([]),
       selectedCurrenciesModel,
       createForm: ref(false),
     };
@@ -137,16 +137,20 @@ export default {
       'fetchRates',
     ]),
 
+    async isRateExist(selectedDay, currencyId) {
+      return this.ratesList.find((rate) => {
+        const selectedDate = moment(selectedDay).startOf('day');
+        const existingDate = moment(rate.rateDate).startOf('day');
+        return selectedDate.isSame(existingDate) && currencyId === rate.currencyId;
+      });
+    },
+
     async getCurrentRate() {
       this.ratesInProgress = true;
-      await Promise.all(this.days.map(async (day) => {
+      await Promise.all(this.selectedDays.map(async (day) => {
         await Promise.all(this.selectedCurrenciesModel.map(async (currency) => {
           const fullCurrency = this.currencyList.find((item) => item.code === currency);
-          const existingRate = this.ratesList.find((item) => {
-            const itemDate = moment(day).startOf('day');
-            const rateDate = moment(item.rateDate).startOf('day');
-            return itemDate.isSame(rateDate) && fullCurrency.id === item.currencyId;
-          });
+          const existingRate = await this.isRateExist(day, fullCurrency.id);
           if (!existingRate) {
             const rate = await getRate(currency, day);
             const payload = {

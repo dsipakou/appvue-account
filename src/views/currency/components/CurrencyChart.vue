@@ -26,7 +26,6 @@ export default {
 
   methods: {
     updateChart() {
-      console.log('Update chart');
       const datasetsToShow = [];
       let labelsToShow = null;
       Object.values(this.selectedCurrencies).forEach((currency) => {

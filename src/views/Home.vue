@@ -1,29 +1,18 @@
 <template>
-  <div>
-    <h1>Home page here</h1>
-    <div v-for="user in users" :key="user.email">
-      {{ user.id }}. {{user.name}} ({{ user.email }})
-    </div>
+  <div class="home">
+    <img alt="Vue logo" src="../assets/logo.png">
+    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
   </div>
 </template>
 
-<script>
-import { getUsers } from '@/service';
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 
-export default {
-  name: 'Home',
-  data() {
-    return {
-      users: [],
-    };
+@Options({
+  components: {
+    HelloWorld,
   },
-  methods: {
-    async loadUsers() {
-      this.users = await getUsers();
-    },
-  },
-  beforeMount() {
-    this.loadUsers();
-  },
-};
+})
+export default class Home extends Vue {}
 </script>

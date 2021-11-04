@@ -8,4 +8,4 @@ interface Transaction {
   transactionDate: string,
   type: string,
   description: string,
-};
+}

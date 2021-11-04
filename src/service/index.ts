@@ -1,6 +1,6 @@
 /* General requests */
 
-const getRequest = (url) => {
+const getRequest = (url: string) => {
   const options = {
     method: 'GET',
   };
@@ -8,30 +8,30 @@ const getRequest = (url) => {
   return fetch(url, options);
 };
 
-const postRequest = (url, requestBody) => {
+const postRequest = (url: string, requestBody: object) => {
   const options = {
     method: 'POST',
-    mode: 'cors',
+    mode: 'cors' as RequestMode,
     body: JSON.stringify(requestBody),
   };
 
   return fetch(url, options);
 };
 
-const patchRequest = (url, requestBody) => {
+const patchRequest = (url: string, requestBody: object) => {
   const options = {
     method: 'PATCH',
-    mode: 'cors',
+    mode: 'cors' as RequestMode,
     body: JSON.stringify(requestBody),
   };
 
   return fetch(url, options);
 };
 
-const deleteRequest = (url, requestBody) => {
+const deleteRequest = (url: string, requestBody: object) => {
   const options = {
     method: 'DELETE',
-    mode: 'cors',
+    mode: 'cors' as RequestMode,
     body: JSON.stringify(requestBody),
   };
 
@@ -40,7 +40,12 @@ const deleteRequest = (url, requestBody) => {
 
 /* Users section */
 
-export const userLogin = async ({ email, password }) => {
+interface UserRequest {
+  email: string,
+  password: string,
+}
+
+export const userLogin = async ({ email, password }: UserRequest) => {
   const response = await postRequest('http://localhost:9091/api/login', { email, password });
   return response;
 };
@@ -50,14 +55,20 @@ export const getUsers = async () => {
   return response;
 };
 
-export const createUser = async (name, email, password) => {
+export const createUser = async (name: string, email: string, password: string) => {
   const response = await postRequest('http://localhost:9091/api/users', { name, email, password });
   return response.json();
 };
 
 /* Transactions section */
 
-export const getTransactions = async ({ sorting, dateFrom = '', dateTo = '' }) => {
+interface TransactionRequest {
+  sorting: string,
+  dateFrom: string,
+  dateTo: string,
+}
+
+export const getTransactions = async ({ sorting, dateFrom = '', dateTo = '' }: TransactionRequest) => {
   let queryString = `sorting=${sorting}`;
   if (dateFrom !== '' && dateTo !== '') {
     queryString += `&dateFrom=${dateFrom}&dateTo=${dateTo}`;
@@ -66,17 +77,37 @@ export const getTransactions = async ({ sorting, dateFrom = '', dateTo = '' }) =
   return response;
 };
 
-export const getGroupedTransactions = async ({ dateFrom, dateTo }) => {
+interface GroupedTransactionRequest {
+  dateFrom: string,
+  dateTo: String,
+}
+
+export const getGroupedTransactions = async ({ dateFrom, dateTo }: GroupedTransactionRequest) => {
   const response = await getRequest(`http://localhost:9091/api/transactions/month/${dateFrom}/${dateTo}`);
   return response;
 };
 
+interface TransferRequest {
+  userId: number,
+}
+
 export const transferBetweenAccounts = async ({
   userId,
-}) => {
+}: TransferRequest) => {
   console.log(`Transfered from user ${userId}`);
 };
 
+interface CreateTransactionRequest {
+  userId: number,
+  categoryId: number,
+  amount: number,
+  rate: number,
+  accountId: number,
+  budgetId: number,
+  transactionDate: number,
+  type: string,
+  description: string,
+}
 export const createTransaction = async ({
   userId,
   categoryId,
@@ -87,7 +118,7 @@ export const createTransaction = async ({
   transactionDate,
   type,
   description,
-}) => {
+}: CreateTransactionRequest) => {
   const response = await postRequest('http://localhost:9091/api/transactions',
     {
       userId,
@@ -104,6 +135,10 @@ export const createTransaction = async ({
   return response;
 };
 
+interface UpdateTransactionRequest extends CreateTransactionRequest {
+  id: number,
+}
+
 export const updateTransaction = async ({
   id,
   userId,
@@ -115,7 +150,7 @@ export const updateTransaction = async ({
   transactionDate,
   type,
   description,
-}) => {
+}: UpdateTransactionRequest) => {
   const response = await patchRequest('http://localhost:9091/api/transactions',
     {
       id,
@@ -132,7 +167,7 @@ export const updateTransaction = async ({
   return response;
 };
 
-export const deleteTransaction = async (id) => {
+export const deleteTransaction = async (id: number) => {
   const response = await deleteRequest('http://localhost:9091/api/transactions', { id });
   return response;
 };
@@ -144,7 +179,13 @@ export const getCategories = async () => {
   return response;
 };
 
-export const createCategory = async ({ name, parentName, isParent }) => {
+interface CreateCategoryRequest {
+  name: string,
+  parentName: string,
+  isParent: boolean,
+}
+
+export const createCategory = async ({ name, parentName, isParent }: CreateCategoryRequest) => {
   const response = await postRequest('http://localhost:9091/api/categories',
     {
       name,
@@ -154,13 +195,18 @@ export const createCategory = async ({ name, parentName, isParent }) => {
   return response;
 };
 
+interface UpdateCategoryRequest extends CreateCategoryRequest {
+  id: number,
+  isSystem: boolean,
+}
+
 export const updateCategory = async ({
   id,
   name,
   parentName,
   isParent,
   isSystem,
-}) => {
+}: UpdateCategoryRequest) => {
   const response = await patchRequest('http://localhost:9091/api/categories',
     {
       id,
@@ -172,7 +218,7 @@ export const updateCategory = async ({
   return response;
 };
 
-export const deleteCategory = async (id) => {
+export const deleteCategory = async (id: number) => {
   const response = await deleteRequest('http://localhost:9091/api/categories', { id });
   return response;
 };
@@ -184,13 +230,21 @@ export const getAccounts = async () => {
   return response;
 };
 
+export interface CreateAccountRequest {
+  userId: number,
+  source: string,
+  amount: number,
+  description: string,
+  isMain: boolean
+}
+
 export const createAccount = async ({
   userId,
   source,
   amount,
   description,
   isMain,
-}) => {
+}: CreateAccountRequest) => {
   const response = await postRequest('http://localhost:9091/api/accounts',
     {
       userId,
@@ -202,10 +256,14 @@ export const createAccount = async ({
   return response;
 };
 
-export const deleteAccount = async (id) => {
+export const deleteAccount = async (id: number) => {
   const response = await deleteRequest('http://localhost:9091/api/accounts', { id });
   return response;
 };
+
+interface UpdateAccountRequest extends CreateAccountRequest {
+  id: number
+}
 
 export const updateAccount = async ({
   id,
@@ -214,7 +272,7 @@ export const updateAccount = async ({
   amount,
   description,
   isMain,
-}) => {
+}: UpdateAccountRequest) => {
   const response = await patchRequest('http://localhost:9091/api/accounts',
     {
       id,
@@ -234,13 +292,21 @@ export const getCurrencies = async () => {
   return response;
 };
 
+interface CreateCurrencyRequest {
+  code: string,
+  sign: string,
+  verbalName: string,
+  isDefault: boolean,
+  comments: string,
+}
+
 export const createCurrency = async ({
   code,
   sign,
   verbalName,
   isDefault,
   comments,
-}) => {
+}: CreateCurrencyRequest) => {
   const response = await postRequest('http://localhost:9091/api/currencies',
     {
       code,
@@ -259,12 +325,19 @@ export const getRates = async () => {
   return response;
 };
 
+interface CreateRateRequest {
+  currencyId: number,
+  rateDate: string,
+  rate: number,
+  description: string,
+}
+
 export const createRate = async ({
   currencyId,
   rateDate,
   rate,
   description,
-}) => {
+}: CreateRateRequest) => {
   const response = await postRequest('http://localhost:9091/api/rates',
     {
       currencyId,
@@ -282,13 +355,21 @@ export const getBudget = async () => {
   return response;
 };
 
+interface CreateBudgetRequest {
+  budgetDate: string,
+  title: string,
+  amount: number,
+  categoryId: number,
+  description: string,
+}
+
 export const createBudget = async ({
   budgetDate,
   title,
   amount,
   categoryId,
   description,
-}) => {
+}: CreateBudgetRequest) => {
   const response = await postRequest('http://localhost:9091/api/budget',
     {
       budgetDate,
@@ -300,13 +381,23 @@ export const createBudget = async ({
   return response;
 };
 
+interface GetBudgetRequest {
+  dateFrom: string,
+  dateTo: string,
+}
+
 export const getBudgetUsage = async ({
   dateFrom,
   dateTo,
-}) => {
+}: GetBudgetRequest) => {
   const response = await getRequest(`http://localhost:9091/api/budget/period?dateFrom=${dateFrom}&dateTo=${dateTo}`);
   return response;
 };
+
+interface UpdateBudgetRequest extends CreateBudgetRequest {
+  id: number,
+  isCompleted: boolean,
+}
 
 export const updateBudget = async ({
   id,
@@ -316,7 +407,7 @@ export const updateBudget = async ({
   categoryId,
   description,
   isCompleted,
-}) => {
+}: UpdateBudgetRequest) => {
   const response = await patchRequest('http://localhost:9091/api/budget',
     {
       id,
@@ -330,13 +421,13 @@ export const updateBudget = async ({
   return response;
 };
 
-export const deleteBudget = async (id) => {
+export const deleteBudget = async (id: number) => {
   const response = await deleteRequest('http://localhost:9091/api/budget', { id });
   return response;
 };
 
 /* nbrb.by section */
-export const getRate = async (code, date) => {
+export const getRate = async (code: string, date: string) => {
   console.log(code, date);
   const response = await getRequest(`https://www.nbrb.by/api/exrates/rates/${code.toLowerCase()}?paramMode=2&onDate=${date}`);
   const body = await response.json();

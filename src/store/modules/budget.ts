@@ -19,14 +19,14 @@ const state = {
 };
 
 const getters = {
-  budgetList: (state) => state.budget.items,
-  budgetUsage: (state) => state.budget.usage,
-  budgetedTransactions: (state) => state.budget.transactions,
-  isBudgetListLoading: (state) => state.budget.isLoading,
+  budgetList: (state: any) => state.budget.items,
+  budgetUsage: (state: any) => state.budget.usage,
+  budgetedTransactions: (state: any) => state.budget.transactions,
+  isBudgetListLoading: (state: any) => state.budget.isLoading,
 };
 
 const actions = {
-  async fetchBudget({ commit }) {
+  async fetchBudget({ commit }: any) {
     commit('setBudgetLoading', true);
     const response = await getBudget();
     if (response.status === 200) {
@@ -36,7 +36,7 @@ const actions = {
     }
   },
 
-  async fetchBudgetUsage({ commit }, payload) {
+  async fetchBudgetUsage({ commit }: any, payload: any) {
     commit('setBudgetLoading', true);
     const response = await getBudgetUsage(payload);
     if (response.status === 200) {
@@ -46,7 +46,7 @@ const actions = {
     commit('setBudgetLoading', false);
   },
 
-  async fetchBudgetedTransactions({ commit }, payload) {
+  async fetchBudgetedTransactions({ commit }: any, payload: any) {
     commit('setBudgetLoading', true);
     const response = await getTransactions(payload);
     if (response.status === 200) {
@@ -56,7 +56,7 @@ const actions = {
     commit('setBudgetLoading', false);
   },
 
-  async createBudget({ commit }, payload) {
+  async createBudget({ commit }: any, payload: any) {
     const response = await createBudget(payload);
     if (response.status === 201) {
       const body = await response.json();
@@ -64,7 +64,7 @@ const actions = {
     }
   },
 
-  async updateStatusBudget({ commit }, payload) {
+  async updateStatusBudget({ commit }: any, payload: any) {
     const response = await updateBudget(payload);
     if (response.status === 200) {
       const body = await response.json();
@@ -72,7 +72,7 @@ const actions = {
     }
   },
 
-  async updateBudget({ commit }, payload) {
+  async updateBudget({ commit }: any, payload: any) {
     const response = await updateBudget(payload);
     if (response.status === 200) {
       const body = await response.json();
@@ -80,7 +80,7 @@ const actions = {
     }
   },
 
-  async deleteBudget({ commit }, id) {
+  async deleteBudget({ commit }: any, id: number) {
     const response = await deleteBudget(id);
     if (response.status === 204) {
       commit('deleteBudget', id);
@@ -89,24 +89,24 @@ const actions = {
 };
 
 const mutations = {
-  setBudget(state, budget) {
+  setBudget(state: any, budget: any) {
     state.budget.items = budget;
   },
 
-  setBudgetUsage(state, budget) {
+  setBudgetUsage(state: any, budget: any) {
     state.budget.usage = budget;
   },
 
-  setBudgetedTransactions(state, budget) {
+  setBudgetedTransactions(state: any, budget: any) {
     state.budget.transactions = budget;
   },
 
-  createBudget(state, budget) {
+  createBudget(state: any, budget: any) {
     state.budget.items.push({ ...budget });
   },
 
-  updateBudget(state, budget) {
-    state.budget.items = state.budget.items.map((item) => {
+  updateBudget(state: any, budget: any) {
+    state.budget.items = state.budget.items.map((item: any) => {
       if (item.id === budget.id) {
         return budget;
       }
@@ -114,11 +114,11 @@ const mutations = {
     });
   },
 
-  deleteBudget(state, id) {
-    state.budget.items = state.budget.items.filter((budget) => budget.id !== id);
+  deleteBudget(state: any, id: number) {
+    state.budget.items = state.budget.items.filter((budget: any) => budget.id !== id);
   },
 
-  setBudgetLoading(state, isLoading) {
+  setBudgetLoading(state: any, isLoading: boolean) {
     state.budget.isLoading = isLoading;
   },
 };

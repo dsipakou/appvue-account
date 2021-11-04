@@ -31,15 +31,15 @@ const state = {
 };
 
 const getters = {
-  transactionList: (state) => state.transactions.items,
-  groupedTransactionList: (state) => state.groupedTransactions.items,
-  transactionListLoaded: (state) => state.transactions.status === itemStatus.LOADED,
-  transactionArchiveMonth: (state) => state.archive.month,
-  transactionLastAdded: (state) => state.lastAdded,
+  transactionList: (state: any) => state.transactions.items,
+  groupedTransactionList: (state: any) => state.groupedTransactions.items,
+  transactionListLoaded: (state: any) => state.transactions.status === itemStatus.LOADED,
+  transactionArchiveMonth: (state: any) => state.archive.month,
+  transactionLastAdded: (state: any) => state.lastAdded,
 };
 
 const actions = {
-  async fetchTransactions({ commit }, payload) {
+  async fetchTransactions({ commit }: any, payload: any) {
     commit('setTransactionsStatus', itemStatus.LOADING);
     const response = await getTransactions(payload);
     if (response.status === 200) {
@@ -49,7 +49,7 @@ const actions = {
     }
   },
 
-  async fetchGroupedTransaction({ commit }, payload) {
+  async fetchGroupedTransaction({ commit }: any, payload: any) {
     commit('setGroupedTransactionsStatus', itemStatus.LOADING);
     const response = await getGroupedTransactions(payload);
     if (response.status === 200) {
@@ -59,7 +59,7 @@ const actions = {
     }
   },
 
-  async createTransaction({ commit }, payload) {
+  async createTransaction({ commit }: any, payload: any) {
     const response = await createTransaction(payload);
     if (response.status === 201) {
       const body = await response.json();
@@ -67,14 +67,14 @@ const actions = {
     }
   },
 
-  async deleteTransaction({ commit }, id) {
+  async deleteTransaction({ commit }: any, id: number) {
     const response = await deleteTransaction(id);
     if (response.status === 204) {
       commit('deleteTransaction', id);
     }
   },
 
-  async updateTransaction({ commit }, payload) {
+  async updateTransaction({ commit }: any, payload: any) {
     const response = await updateTransaction(payload);
     if (response.status === 200) {
       const body = await response.json();
@@ -82,48 +82,48 @@ const actions = {
     }
   },
 
-  async setTransactionArchiveMonth({ commit }, month) {
+  async setTransactionArchiveMonth({ commit }: any, month: any) {
     commit('setArchiveMonth', month);
   },
 
-  async setTransactionLastAdded({ commit }, payload) {
+  async setTransactionLastAdded({ commit }: any, payload: any) {
     commit('setLastAdded', payload);
   },
 
-  async clearTransactions({ commit }) {
+  async clearTransactions({ commit }: any) {
     commit('clearTransactions');
   },
 };
 
 const mutations = {
-  setTransactions(state, transactions) {
+  setTransactions(state: any, transactions: any) {
     state.transactions.items = transactions;
   },
 
-  setGroupedTransactions(state, amounts) {
+  setGroupedTransactions(state: any, amounts: any) {
     state.groupedTransactions.items = amounts;
   },
 
-  setArchiveMonth(state, month) {
+  setArchiveMonth(state: any, month: any) {
     state.archive.month = month;
   },
 
-  setLastAdded(state, payload) {
+  setLastAdded(state: any, payload: any) {
     state.lastAdded = {
       ...payload,
     };
   },
 
-  createTransaction(state, transaction) {
+  createTransaction(state: any, transaction: any) {
     state.transactions.items.unshift({ ...transaction });
   },
 
-  deleteTransaction(state, id) {
-    state.transactions.items = state.transactions.items.filter((user) => user.id !== id);
+  deleteTransaction(state: any, id: number) {
+    state.transactions.items = state.transactions.items.filter((user: any) => user.id !== id);
   },
 
-  updateTransaction(state, newItem) {
-    state.transactions.items = state.transactions.items.map((item) => {
+  updateTransaction(state: any, newItem: any) {
+    state.transactions.items = state.transactions.items.map((item: any) => {
       if (item.id === newItem.id) {
         return newItem;
       }
@@ -131,15 +131,15 @@ const mutations = {
     });
   },
 
-  clearTransactions(state) {
+  clearTransactions(state: any) {
     state.transactions.items = [];
   },
 
-  setTransactionsStatus(state, status) {
+  setTransactionsStatus(state: any, status: any) {
     state.transactions.status = status;
   },
 
-  setGroupedTransactionsStatus(state, status) {
+  setGroupedTransactionsStatus(state: any, status: any) {
     state.groupedTransactions.status = status;
   },
 };

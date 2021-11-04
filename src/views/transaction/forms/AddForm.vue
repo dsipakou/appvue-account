@@ -61,7 +61,7 @@
     </q-card-actions>
   </q-card>
 </template>
-<script lang="ts">
+<script>
 import moment from 'moment';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 import { transactionTypes } from '@/utils/constants';

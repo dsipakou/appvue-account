@@ -12,12 +12,12 @@ const state = {
 };
 
 const getters = {
-  userList: (state) => state.users.items,
-  isUserListLoading: (state) => state.users.isLoading,
+  userList: (state: any) => state.users.items,
+  isUserListLoading: (state: any) => state.users.isLoading,
 };
 
 const actions = {
-  async fetchUsers({ commit }) {
+  async fetchUsers({ commit }: any) {
     commit('setUsersLoading', true);
     const response = await getUsers();
     if (response.status === 200) {
@@ -29,11 +29,11 @@ const actions = {
 };
 
 const mutations = {
-  setUsers(state, users) {
+  setUsers(state: any, users: any) {
     state.users.items = users;
   },
 
-  setUsersLoading(state, isLoading) {
+  setUsersLoading(state: any, isLoading: boolean) {
     state.users.isLoading = isLoading;
   },
 };

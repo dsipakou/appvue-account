@@ -15,13 +15,13 @@ const state = {
 };
 
 const getters = {
-  currencyList: (state) => state.currencies.items,
-  currencyListLoaded: (state) => state.currencies.status === itemStatus.LOADED,
-  selectedCurrencies: (state) => state.currencies.selectedItems,
+  currencyList: (state: any) => state.currencies.items,
+  currencyListLoaded: (state: any) => state.currencies.status === itemStatus.LOADED,
+  selectedCurrencies: (state: any) => state.currencies.selectedItems,
 };
 
 const actions = {
-  async fetchCurrencies({ commit }) {
+  async fetchCurrencies({ commit }: any) {
     commit('setCurrenciesStatus', itemStatus.LOADING);
     const response = await getCurrencies();
     if (response.status === 200) {
@@ -31,7 +31,7 @@ const actions = {
     }
   },
 
-  async createCurrency({ commit }, payload) {
+  async createCurrency({ commit }: any, payload: any) {
     const response = await createCurrency(payload);
     if (response.status === 201) {
       const body = await response.json();
@@ -39,25 +39,25 @@ const actions = {
     }
   },
 
-  async selectCurrency({ commit }, payload) {
+  async selectCurrency({ commit }: any, payload: any) {
     commit('selectCurrency', payload);
   },
 };
 
 const mutations = {
-  setCurrencies(state, currencies) {
+  setCurrencies(state: any, currencies: any) {
     state.currencies.items = currencies;
   },
 
-  createCurrency(state, currency) {
+  createCurrency(state: any, currency: any) {
     state.currencies.items.unshift({ ...currency });
   },
 
-  selectCurrency(state, currencies) {
+  selectCurrency(state: any, currencies: any) {
     state.currencies.selectedItems = currencies;
   },
 
-  setCurrenciesStatus(state, status) {
+  setCurrenciesStatus(state: any, status: any) {
     state.currencies.status = status;
   },
 };

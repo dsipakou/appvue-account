@@ -15,12 +15,12 @@ const state = {
 };
 
 const getters = {
-  categoryList: (state) => state.categories.items,
-  isCategoryListLoading: (state) => state.categories.isLoading,
+  categoryList: (state: any) => state.categories.items,
+  isCategoryListLoading: (state: any) => state.categories.isLoading,
 };
 
 const actions = {
-  async fetchCategories({ commit }) {
+  async fetchCategories({ commit }: any) {
     commit('setCategoriesLoading', true);
     const response = await getCategories();
     if (response.status === 200) {
@@ -30,7 +30,7 @@ const actions = {
     }
   },
 
-  async createCategory({ commit }, payload) {
+  async createCategory({ commit }: any, payload: any) {
     const response = await createCategory(payload);
     if (response.status === 201) {
       const body = await response.json();
@@ -38,14 +38,14 @@ const actions = {
     }
   },
 
-  async deleteCategory({ commit }, id) {
+  async deleteCategory({ commit }: any, id: number) {
     const response = await deleteCategory(id);
     if (response.status === 204) {
       commit('deleteCategory', id);
     }
   },
 
-  async updateCategory({ commit }, payload) {
+  async updateCategory({ commit }: any, payload: any) {
     const response = await updateCategory(payload);
     if (response.status === 200) {
       const body = await response.json();
@@ -55,20 +55,20 @@ const actions = {
 };
 
 const mutations = {
-  setCategories(state, categories) {
+  setCategories(state: any, categories: any) {
     state.categories.items = categories;
   },
 
-  createCategory(state, category) {
+  createCategory(state: any, category: any) {
     state.categories.items.unshift({ ...category });
   },
 
-  deleteCategory(state, id) {
-    state.categories.items = state.categories.items.filter((category) => category.id !== id);
+  deleteCategory(state: any, id: number) {
+    state.categories.items = state.categories.items.filter((category: any) => category.id !== id);
   },
 
-  updateCategory(state, category) {
-    state.categories.items = state.categories.items.map((item) => {
+  updateCategory(state: any, category: any) {
+    state.categories.items = state.categories.items.map((item: any) => {
       if (item.id === category.id) {
         return category;
       }
@@ -76,7 +76,7 @@ const mutations = {
     });
   },
 
-  setCategoriesLoading(state, isLoading) {
+  setCategoriesLoading(state: any, isLoading: boolean) {
     state.categories.isLoading = isLoading;
   },
 };

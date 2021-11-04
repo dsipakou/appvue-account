@@ -15,12 +15,12 @@ const state = {
 };
 
 const getters = {
-  accountList: (state) => state.accounts.items,
-  isAccountListLoading: (state) => state.accounts.isLoading,
+  accountList: (state: any) => state.accounts.items,
+  isAccountListLoading: (state: any) => state.accounts.isLoading,
 };
 
 const actions = {
-  async fetchAccounts({ commit }) {
+  async fetchAccounts({ commit }: any) {
     commit('setAccountsLoading', true);
     const response = await getAccounts();
     if (response.status === 200) {
@@ -30,7 +30,7 @@ const actions = {
     }
   },
 
-  async createAccount({ commit }, payload) {
+  async createAccount({ commit }: any, payload: any) {
     const response = await createAccount(payload);
     if (response.status === 201) {
       const body = await response.json();
@@ -38,14 +38,14 @@ const actions = {
     }
   },
 
-  async deleteAccount({ commit }, id) {
+  async deleteAccount({ commit }: any, id: number) {
     const response = await deleteAccount(id);
     if (response.status === 204) {
       commit('deleteAccount', id);
     }
   },
 
-  async updateAccount({ commit }, payload) {
+  async updateAccount({ commit }: any, payload: any) {
     const response = await updateAccount(payload);
     if (response.status === 200) {
       const body = await response.json();
@@ -55,20 +55,20 @@ const actions = {
 };
 
 const mutations = {
-  setAccounts(state, accounts) {
+  setAccounts(state: any, accounts: any) {
     state.accounts.items = accounts;
   },
 
-  createAccount(state, account) {
+  createAccount(state: any, account: any) {
     state.accounts.items.unshift({ ...account });
   },
 
-  deleteAccount(state, id) {
-    state.accounts.items = state.accounts.items.filter((account) => account.id !== id);
+  deleteAccount(state: any, id: any) {
+    state.accounts.items = state.accounts.items.filter((account: any) => account.id !== id);
   },
 
-  updateAccount(state, account) {
-    state.accounts.items = state.accounts.items.map((item) => {
+  updateAccount(state: any, account: any) {
+    state.accounts.items = state.accounts.items.map((item: any) => {
       if (item.id === account.id) {
         return account;
       }
@@ -76,7 +76,7 @@ const mutations = {
     });
   },
 
-  setAccountsLoading(state, isLoading) {
+  setAccountsLoading(state: any, isLoading: any) {
     state.accounts.isLoading = isLoading;
   },
 };

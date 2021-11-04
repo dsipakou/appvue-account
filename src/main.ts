@@ -8,13 +8,13 @@ import App from './App.vue';
 import 'vuestic-ui/dist/vuestic-ui.css';
 import quasarUserOptions from './quasar-user-options';
 
-moment.updateLocale('ru', {
+/* moment.updateLocale('ru', {
   calendar: {
     sameDay: '[Сегодня]',
     lastDay: '[Вчера]',
     sameElse: 'LL',
     lastWeek(now) {
-      if (now.week() !== this.week()) {
+      if (now?.week() !== this.week()) {
         switch (this.day()) {
           case 0:
             return '[В прошлое] dddd';
@@ -41,7 +41,7 @@ moment.updateLocale('ru', {
   week: {
     dow: 1,
   },
-});
+}); */
 
 createApp(App).use(Quasar, quasarUserOptions)
   .use(store)

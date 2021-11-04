@@ -13,12 +13,12 @@ const state = {
 };
 
 const getters = {
-  ratesList: (state) => state.rates.items,
-  isRatesListLoading: (state) => state.rates.isLoading,
+  ratesList: (state: any) => state.rates.items,
+  isRatesListLoading: (state: any) => state.rates.isLoading,
 };
 
 const actions = {
-  async fetchRates({ commit }) {
+  async fetchRates({ commit }: any) {
     commit('setRatesLoading', true);
     const response = await getRates();
     if (response.status === 200) {
@@ -28,7 +28,7 @@ const actions = {
     }
   },
 
-  async createRate({ commit }, payload) {
+  async createRate({ commit }: any, payload: any) {
     const response = await createRate(payload);
     if (response.status === 201) {
       const body = await response.json();
@@ -38,15 +38,15 @@ const actions = {
 };
 
 const mutations = {
-  setRates(state, rates) {
+  setRates(state: any, rates: any) {
     state.rates.items = rates;
   },
 
-  createRate(state, rate) {
+  createRate(state: any, rate: any) {
     state.rates.items.unshift({ ...rate });
   },
 
-  setRatesLoading(state, isLoading) {
+  setRatesLoading(state: any, isLoading: boolean) {
     state.rates.isLoading = isLoading;
   },
 };

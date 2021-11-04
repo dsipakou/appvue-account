@@ -61,12 +61,23 @@
     </q-card-actions>
   </q-card>
 </template>
-<script>
+<script lang="ts">
 import moment from 'moment';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
+import { defineComponent } from 'vue';
 import { transactionTypes } from '@/utils/constants';
+import { Currency } from '@/types/Currency';
 
-export default {
+interface Input {
+  amount: string,
+  budget: any,
+  budgetDone: boolean,
+  currency: Currency,
+  description: string,
+  transactionDate: string,
+}
+
+export default defineComponent({
   name: 'AddForm',
 
   inheritAttrs: false,
@@ -97,16 +108,16 @@ export default {
         amount: '',
         budget: null,
         budgetDone: false,
-        currency: '',
+        currency: { id: 0 },
         description: '',
         transactionDate: '',
-      },
+      } as Input,
     };
   },
 
   computed: {
-    currentWeekBudget() {
-      const items = this.budgetList.filter((item) => (
+    currentWeekBudget(): any {
+      const items = this.budgetList.filter((item: any) => (
         moment(item.budgetDate).week() === moment().week()
         && !item.isCompleted
       ));
@@ -116,16 +127,16 @@ export default {
   },
 
   methods: {
-    getBudget(id) {
-      return this.budgetList.find((item) => item.id === id);
+    getBudget(id: number) {
+      return this.budgetList.find((item: any) => item.id === id);
     },
 
-    getCategory(id) {
-      return this.categoryList.find((item) => item.id === id);
+    getCategory(id: number) {
+      return this.categoryList!.find((item: any) => item.id === id);
     },
 
-    getRate(id, date) {
-      return this.ratesList.find((item) => {
+    getRate(id: number, date: string) {
+      return this.ratesList.find((item: any) => {
         const transactionDate = moment(date).startOf('day');
         const rateDate = moment(item.rateDate).startOf('day');
         return transactionDate.isSame(rateDate) && item.currencyId === id;
@@ -133,7 +144,7 @@ export default {
     },
 
     create() {
-      const rate = this.getRate(
+      const rate: any = this.getRate(
         this.input.currency.id,
         this.input.transactionDate,
       );
@@ -164,8 +175,10 @@ export default {
 
       this.createTransaction(transaction);
 
-      this.$refs.price.focus();
-      this.$refs.price.select();
+      const priceInput = this.$refs.price as any;
+
+      priceInput.focus();
+      priceInput.select();
     },
 
     createClose() {
@@ -192,5 +205,5 @@ export default {
       this.input.budget = this.getBudget(this.transactionLastAdded.budget);
     }
   },
-};
+});
 </script>

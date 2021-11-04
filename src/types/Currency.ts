@@ -1,4 +1,4 @@
-interface Currency {
+export interface Currency {
   id: nubmer,
   code: string,
   sign: string,

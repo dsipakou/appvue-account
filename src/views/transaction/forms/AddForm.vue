@@ -66,9 +66,9 @@ import moment from 'moment';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 import { defineComponent } from 'vue';
 import { transactionTypes } from '@/utils/constants';
-import { Currency } from '@/types/Currency';
+import { Budget, Currency } from '@/types';
 
-interface Input {
+interface Fields {
   amount: string,
   budget: any,
   budgetDone: boolean,
@@ -111,17 +111,17 @@ export default defineComponent({
         currency: { id: 0 },
         description: '',
         transactionDate: '',
-      } as Input,
+      } as Fields,
     };
   },
 
   computed: {
-    currentWeekBudget(): any {
-      const items = this.budgetList.filter((item: any) => (
-        moment(item.budgetDate).week() === moment().week()
-        && !item.isCompleted
+    currentWeekBudget(): Array<Budget> {
+      const items = this.budgetList.filter((budget: unknown): budget is Budget => (
+        moment((budget as Budget).budgetDate).week()
+          === moment().week()
+          && !(budget as Budget).isCompleted
       ));
-      items.unshift({ id: null, title: 'Default' });
       return items;
     },
   },
@@ -141,6 +141,10 @@ export default defineComponent({
         const rateDate = moment(item.rateDate).startOf('day');
         return transactionDate.isSame(rateDate) && item.currencyId === id;
       });
+    },
+
+    setActiveDate() {
+      this.activeDate = this.input.transactionDate;
     },
 
     create() {
@@ -188,11 +192,7 @@ export default defineComponent({
   },
 
   watch: {
-    'input.transactionDate': {
-      handler() {
-        this.activeDate = this.input.transactionDate;
-      },
-    },
+    'input.transactionDate': 'setActiveDate',
   },
 
   mounted() {

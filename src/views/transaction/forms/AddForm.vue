@@ -70,7 +70,7 @@ import { Budget, Currency } from '@/types';
 
 interface Fields {
   amount: string,
-  budget: any,
+  budget: Budget,
   budgetDone: boolean,
   currency: Currency,
   description: string,
@@ -106,9 +106,9 @@ export default defineComponent({
       activeDate: '',
       input: {
         amount: '',
-        budget: null,
+        budget: {} as Budget,
         budgetDone: false,
-        currency: { id: 0 },
+        currency: {} as Currency,
         description: '',
         transactionDate: '',
       } as Fields,
@@ -127,8 +127,8 @@ export default defineComponent({
   },
 
   methods: {
-    getBudget(id: number) {
-      return this.budgetList.find((item: any) => item.id === id);
+    getBudget(id: number): Budget {
+      return this.budgetList.find((item: any) => item.id === id) as Budget;
     },
 
     getCategory(id: number) {

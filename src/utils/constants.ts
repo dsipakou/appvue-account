@@ -4,3 +4,5 @@ export const transactionTypes = {
   INCOME: 'income',
   OUTCOME: 'outcome',
 };
+
+export const dropdownSeparator = '--------------';

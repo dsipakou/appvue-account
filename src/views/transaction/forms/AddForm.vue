@@ -63,9 +63,10 @@
 </template>
 <script lang="ts">
 import moment from 'moment';
-import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 import { defineComponent } from 'vue';
-import { transactionTypes } from '@/utils/constants';
+import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
+import * as constants from '@/utils/constants';
+// import { getFirstDayOfWeek } from '@/utils/dateTimeUtils';
 import { Budget, Currency } from '@/types';
 
 interface InputFields {
@@ -75,6 +76,12 @@ interface InputFields {
   currency: Currency,
   description: string,
   transactionDate: string,
+}
+
+interface BudgetItem {
+  id: number,
+  title: string,
+  disable?: boolean,
 }
 
 export default defineComponent({
@@ -116,12 +123,27 @@ export default defineComponent({
   },
 
   computed: {
-    currentWeekBudget(): Array<Budget> {
-      const items = this.budgetList.filter((budget: unknown): budget is Budget => (
-        moment((budget as Budget).budgetDate).week()
-          === moment().week()
-          && !(budget as Budget).isCompleted
+    currentWeekBudget(): Array<BudgetItem> {
+      const weekBudget = this.budgetList.filter((budget: unknown): budget is Budget => (
+        moment((budget as Budget).budgetDate).week() === moment().week()
       ));
+
+      const incompletedItems = weekBudget.filter((budget) => (
+        !(budget as Budget).isCompleted
+      )) as Array<BudgetItem>;
+
+      const completedItems = weekBudget.filter((budget) => (
+        (budget as Budget).isCompleted
+      )) as Array<BudgetItem>;
+
+      const items: Array<BudgetItem> = incompletedItems;
+      items.push({
+        id: 0,
+        title: constants.dropdownSeparator,
+        disable: true,
+      } as BudgetItem);
+
+      items.push(...completedItems);
       return items;
     },
   },
@@ -161,7 +183,7 @@ export default defineComponent({
         accountId: this.accountId,
         budgetId: this.input.budget?.id || null,
         transactionDate: this.input.transactionDate,
-        type: transactionTypes.OUTCOME,
+        type: constants.transactionTypes.OUTCOME,
         description: this.input.description,
       };
 

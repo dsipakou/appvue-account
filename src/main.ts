@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { VuesticPlugin } from 'vuestic-ui';
 import { Quasar } from 'quasar';
 import moment from 'moment';
+import { ru } from 'date-fns/locale';
 import router from './router';
 import store from './store';
 import App from './App.vue';

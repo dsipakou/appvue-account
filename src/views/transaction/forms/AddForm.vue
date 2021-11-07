@@ -68,7 +68,7 @@ import { defineComponent } from 'vue';
 import { transactionTypes } from '@/utils/constants';
 import { Budget, Currency } from '@/types';
 
-interface Fields {
+interface InputFields {
   amount: string,
   budget: Budget,
   budgetDone: boolean,
@@ -106,12 +106,12 @@ export default defineComponent({
       activeDate: '',
       input: {
         amount: '',
-        budget: {} as Budget,
+        budget: null as unknown,
         budgetDone: false,
         currency: {} as Currency,
         description: '',
         transactionDate: '',
-      } as Fields,
+      } as InputFields,
     };
   },
 
@@ -174,7 +174,7 @@ export default defineComponent({
       }
       this.setTransactionLastAdded({
         date: this.input.transactionDate,
-        budget: this.input.budget?.id,
+        budget: this.input.budgetDone ? null : this.input.budget?.id,
       });
 
       this.createTransaction(transaction);

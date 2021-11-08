@@ -1,7 +1,10 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
+import { IGetBudgetForPeriod } from '@/types/Budget';
+
 import {
   getBudget,
+  getBudgetForPeriod,
   getTransactions,
   getBudgetUsage,
   createBudget,
@@ -31,9 +34,19 @@ const actions = {
     const response = await getBudget();
     if (response.status === 200) {
       const body = await response.json();
-      commit('setBudgetLoading', false);
       commit('setBudget', body);
     }
+    commit('setBudgetLoading', false);
+  },
+
+  async fetchBudgetForPeriod({ commit }: any, payload: IGetBudgetForPeriod) {
+    commit('setBudgetLoading', true);
+    const response = await getBudgetForPeriod(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setBudget', body);
+    }
+    commit('setBudgetLoading', false);
   },
 
   async fetchBudgetUsage({ commit }: any, payload: any) {

@@ -1,5 +1,7 @@
 /* General requests */
 
+import { IGetBudgetForPeriod } from '@/types/Budget';
+
 const getRequest = (url: string) => {
   const options = {
     method: 'GET',
@@ -352,6 +354,12 @@ export const createRate = async ({
 
 export const getBudget = async () => {
   const response = await getRequest('http://localhost:9091/api/budget');
+  return response;
+};
+
+export const getBudgetForPeriod = async (payload: IGetBudgetForPeriod) => {
+  const url = `http://localhost:9091/api/budget/date?dateFrom=${payload.dateFrom}&dateTo=${payload.dateTo}`;
+  const response = await getRequest(url);
   return response;
 };
 

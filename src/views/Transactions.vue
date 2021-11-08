@@ -56,6 +56,7 @@
         :currencyListLoaded="currencyListLoaded"
         :createTransaction="createTransaction"
         :setTransactionLastAdded="setTransactionLastAdded"
+        :fetchBudgetForPeriod="fetchBudgetForPeriod"
         :updateBudget="updateBudget"
         @closeForm="createForm = false"
       />
@@ -160,6 +161,7 @@ export default {
       'deleteTransaction',
       'updateTransaction',
       'setTransactionLastAdded',
+      'fetchBudgetForPeriod',
       'updateBudget',
     ]),
 

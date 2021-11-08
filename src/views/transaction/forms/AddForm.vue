@@ -37,7 +37,7 @@
       <q-card-section>
         <q-select outlined clearable label-stacked
           label="Budget items"
-          :options="currentWeekBudget"
+          :options="selectedWeekBudget"
           option-value="id"
           option-label="title"
           style="width: 300px;"
@@ -66,7 +66,7 @@ import moment from 'moment';
 import { defineComponent } from 'vue';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 import * as constants from '@/utils/constants';
-// import { getFirstDayOfWeek } from '@/utils/dateTimeUtils';
+import { getFirstDayOfWeek, getLastDayOfWeek } from '@/utils/dateTimeUtils';
 import { Budget, Currency } from '@/types';
 
 interface InputFields {
@@ -105,6 +105,7 @@ export default defineComponent({
     currencyListLoaded: { type: Boolean, required: true },
     createTransaction: { type: Function, required: true },
     setTransactionLastAdded: { type: Function, required: true },
+    fetchBudgetForPeriod: { type: Function, required: true },
     updateBudget: { type: Function, required: true },
   },
 
@@ -123,26 +124,20 @@ export default defineComponent({
   },
 
   computed: {
-    currentWeekBudget(): Array<BudgetItem> {
-      const weekBudget = this.budgetList.filter((budget: unknown): budget is Budget => (
-        moment((budget as Budget).budgetDate).week() === moment().week()
-      ));
-
-      const incompletedItems = weekBudget.filter((budget) => (
+    selectedWeekBudget(): Array<BudgetItem> {
+      const incompletedItems = this.budgetList.filter((budget) => (
         !(budget as Budget).isCompleted
       )) as Array<BudgetItem>;
 
-      const completedItems = weekBudget.filter((budget) => (
+      const completedItems = this.budgetList.filter((budget) => (
         (budget as Budget).isCompleted
       )) as Array<BudgetItem>;
 
-      const items: Array<BudgetItem> = incompletedItems;
-      items.push({
-        id: 0,
-        title: constants.dropdownSeparator,
-        disable: true,
-      } as BudgetItem);
+      const separator = { id: 0, title: constants.dropdownSeparator, disable: true };
 
+      const items: Array<BudgetItem> = [];
+      items.push(...incompletedItems);
+      items.push(separator as BudgetItem);
       items.push(...completedItems);
       return items;
     },
@@ -167,6 +162,13 @@ export default defineComponent({
 
     setActiveDate() {
       this.activeDate = this.input.transactionDate;
+    },
+
+    setBudgetList() {
+      this.fetchBudgetForPeriod({
+        dateFrom: getFirstDayOfWeek(this.input.transactionDate),
+        dateTo: getLastDayOfWeek(this.input.transactionDate),
+      });
     },
 
     create() {
@@ -214,7 +216,12 @@ export default defineComponent({
   },
 
   watch: {
-    'input.transactionDate': 'setActiveDate',
+    'input.transactionDate': {
+      handler() {
+        this.setActiveDate();
+        this.setBudgetList();
+      },
+    },
   },
 
   mounted() {

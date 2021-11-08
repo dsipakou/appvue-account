@@ -9,3 +9,8 @@ export interface Budget {
   createdAt: string,
   updatedAt: string,
 }
+
+export interface IGetBudgetForPeriod {
+  dateFrom: string,
+  dateTo: string,
+}

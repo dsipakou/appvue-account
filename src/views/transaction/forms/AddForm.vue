@@ -136,9 +136,11 @@ export default defineComponent({
       const separator = { id: 0, title: constants.dropdownSeparator, disable: true };
 
       const items: Array<BudgetItem> = [];
+
       items.push(...incompletedItems);
       items.push(separator as BudgetItem);
       items.push(...completedItems);
+
       return items;
     },
   },

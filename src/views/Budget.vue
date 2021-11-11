@@ -41,6 +41,8 @@
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import moment from 'moment';
+import { format } from 'date-fns';
+import { getFirstDayOfMonth, getLastDayOfMonth, DATE_FORMAT } from '@/utils/dateTimeUtils';
 import WeekBudget from './budget/WeekBudget.vue';
 import MonthlyBudget from './budget/MonthlyBudget.vue';
 
@@ -91,6 +93,7 @@ export default {
     ...mapActions([
       'fetchBudgetUsage',
       'fetchBudgetedTransactions',
+      'fetchBudgetForPeriod',
       'createBudget',
       'updateBudget',
       'updateStatusBudget',
@@ -112,6 +115,10 @@ export default {
     const dateFrom = `${moment().format('YYYY-MM')}-01`;
     const dateTo = `${moment().add(1, 'month').format('YYYY-MM')}-01`;
     this.fetchBudgetUsage({ dateFrom, dateTo });
+    this.fetchBudgetForPeriod({
+      dateFrom: getFirstDayOfMonth(format(new Date(), DATE_FORMAT)),
+      dateTo: getLastDayOfMonth(format(new Date(), DATE_FORMAT)),
+    });
     this.fetchBudgetedTransactions({
       sorting: 'added',
       dateFrom: moment().add(-moment().weekday(), 'days').format('YYYY-MM-DD'),

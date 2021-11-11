@@ -1,8 +1,8 @@
 <template>
   <q-expansion-item expand-separator dense
     label="Additional accounts"
-    class="q-mt-sm row justify-center">
-    <div class="row justify-center q-mt-sm">
+    class="q-mt-sm justify-center dropdown">
+    <div class="q-mt-sm row" style="width: 250px;">
       <div
         v-for="account in secondaryAccounts"
         :key="account.id"
@@ -46,3 +46,15 @@ export default {
   },
 };
 </script>
+<style scoped>
+.avatar-container {
+  width: 200px;
+}
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+</style>

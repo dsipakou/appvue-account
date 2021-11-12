@@ -9,8 +9,8 @@
             {{ category.name[0] }}
           </q-avatar>
         </div>
-        <div class="col-7 align-center">
-          <div class="text-h6">{{
+        <div class="col-7 align-center" v-if="!editMode">
+          <div class="text-h6" @click="clickItem">{{
             transaction.type === 'income' ?
             account.source :
             category.name }}
@@ -22,6 +22,9 @@
             {{ getFormattedDate(transaction.transactionDate) }}
           </div>
         </div>
+        <div class="col-7 align-center" v-else>
+          Hello
+        </div>
         <div class="col self-center">
           <q-chip square outline color="primary"
                                  class="q-ml-sm overflow-hidden align-center">
@@ -29,7 +32,7 @@
               color="primary"
               text-color="white"
               class="vertical-middle"
-              icon="credit_card"/>
+              icon="credit_card" />
               <span>
                 {{ account.source }}
               </span>
@@ -96,6 +99,7 @@ export default {
   setup() {
     return {
       editForm: ref(false),
+      editMode: ref(false),
     };
   },
 
@@ -172,6 +176,10 @@ export default {
         const rateDate = moment(item.rateDate).startOf('day');
         return transactionDate.isSame(rateDate) && item.currencyId === id;
       });
+    },
+
+    clickItem() {
+      this.editMode = true;
     },
   },
 

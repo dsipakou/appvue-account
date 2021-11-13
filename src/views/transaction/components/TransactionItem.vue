@@ -9,26 +9,30 @@
             {{ category.name[0] }}
           </q-avatar>
         </div>
-        <div class="col-7 align-center">
-          <div class="text-h6" @click="clickItem" v-if="!editMode">{{
-            transaction.type === 'income' ?
-            account.source :
-            category.name }}
+        <div class="col-7 align-center" v-if="!editMode">
+          <div class="text-h6" @click="clickItem">
+            {{ transaction.type === 'income' ? account.source : category.name }}
             <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
               {{ category.parentName }}
             </q-chip>
           </div>
-          <div class="col-7 align-center" v-else>
-            <q-select outlined map-options dense
-              v-model="selectedCategory"
-              :options="[]"
-              option-value="id"
-              option-label="value"
-              label="Category" />
-          </div>
           <div class="text-subtitle2">
             {{ getFormattedDate(transaction.transactionDate) }}
           </div>
+        </div>
+        <div class="col-7 align-center row" v-else>
+          <q-select outlined map-options dense
+            class="q-mx-lg"
+            style="max-width: 400px;"
+            v-model="selectedCategory"
+            :options="[]"
+            option-value="id"
+            option-label="value"
+            label="Category" />
+          <q-input outlined stack-label dense
+            style="max-width: 150px;"
+            type="date"
+            label="Date" />
         </div>
         <div class="col self-center">
           <q-chip square outline color="primary"

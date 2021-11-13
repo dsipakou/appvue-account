@@ -9,8 +9,8 @@
             {{ category.name[0] }}
           </q-avatar>
         </div>
-        <div class="col-7 align-center" v-if="!editMode">
-          <div class="text-h6" @click="clickItem">{{
+        <div class="col-7 align-center">
+          <div class="text-h6" @click="clickItem" v-if="!editMode">{{
             transaction.type === 'income' ?
             account.source :
             category.name }}
@@ -18,12 +18,17 @@
               {{ category.parentName }}
             </q-chip>
           </div>
+          <div class="col-7 align-center" v-else>
+            <q-select outlined map-options dense
+              v-model="selectedCategory"
+              :options="[]"
+              option-value="id"
+              option-label="value"
+              label="Category" />
+          </div>
           <div class="text-subtitle2">
             {{ getFormattedDate(transaction.transactionDate) }}
           </div>
-        </div>
-        <div class="col-7 align-center" v-else>
-          Hello
         </div>
         <div class="col self-center">
           <q-chip square outline color="primary"
@@ -100,6 +105,7 @@ export default {
     return {
       editForm: ref(false),
       editMode: ref(false),
+      selectedCategory: ref(null),
     };
   },
 

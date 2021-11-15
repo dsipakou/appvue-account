@@ -9,69 +9,69 @@
             {{ category.name[0] }}
           </q-avatar>
         </div>
-        <div class="col-7 align-center" v-if="!editMode">
-          <div class="text-h6" @click="clickItem">
-            {{ transaction.type === 'income' ? account.source : category.name }}
-            <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
-              {{ category.parentName }}
+        <div class="row items-center" v-if="!editMode">
+          <div class="col-7 align-center">
+            <div class="text-h6" @click="clickItem">
+              {{ transaction.type === 'income' ? account.source : category.name }}
+              <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
+                {{ category.parentName }}
+              </q-chip>
+            </div>
+            <div class="text-subtitle2">
+              {{ getFormattedDate(transaction.transactionDate) }}
+            </div>
+          </div>
+          <div class="col self-center">
+            <q-chip square outline color="primary"
+               class="q-ml-sm overflow-hidden align-center">
+              <q-avatar
+                color="primary"
+                text-color="white"
+                class="vertical-middle"
+                icon="credit_card" />
+                <span>
+                  {{ account.source }}
+                </span>
             </q-chip>
           </div>
-          <div class="text-subtitle2">
-            {{ getFormattedDate(transaction.transactionDate) }}
-          </div>
-        </div>
-        <div class="col-7 align-center row" v-else>
-          <q-select outlined map-options dense
-            class="q-mx-lg"
-            style="max-width: 400px;"
-            v-model="selectedCategory"
-            :options="[]"
-            option-value="id"
-            option-label="value"
-            label="Category" />
-          <q-input outlined stack-label dense
-            style="max-width: 150px;"
-            type="date"
-            label="Date" />
-        </div>
-        <div class="col self-center">
-          <q-chip square outline color="primary"
-                                 class="q-ml-sm overflow-hidden align-center">
-            <q-avatar
-              color="primary"
-              text-color="white"
-              class="vertical-middle"
-              icon="credit_card" />
-              <span>
-                {{ account.source }}
+          <div class="col self-center items-end">
+            <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
+              <span
+                :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
+                class="text-bold q-pl-lg">
+                {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.amount }}
+                {{ amount.sign }}
               </span>
-          </q-chip>
-        </div>
-        <div class="col self-center items-end">
-          <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
-            <span
-              :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
-              class="text-bold q-pl-lg">
-              {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.amount }}
-              {{ amount.sign }}
-            </span>
+            </div>
+          </div>
+          <div class="col-1 self-center items-end">
+            <q-btn-dropdown flat dropdown-icon="more_horiz">
+              <q-list>
+                <q-item clickable v-close-popup @click="clickEdit(transaction)">
+                  <q-item-section>
+                    <q-item-label>Edit</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
+                  <q-item-section>
+                    <q-item-label>Delete</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
           </div>
         </div>
-        <div class="col-1 self-center items-end">
-          <q-btn-dropdown flat dropdown-icon="more_horiz">
-            <q-list>
-              <q-item clickable v-close-popup @click="clickEdit(transaction)">
-                <q-item-section>
-                  <q-item-label>Edit</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
-                <q-item-section>
-                  <q-item-label>Delete</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
+        <div class="row items-center justify-start" v-else>
+          <EditInlineForm
+            :transaction="editedTransaction"
+            :accountList="accountList"
+            :budgetList="budgetList"
+            :categoryList="categoryList"
+            :currencyList="currencyList"
+            :currencyListLoaded="currencyListLoaded"
+            :ratesList="ratesList"
+            :userList="userList"
+            :updateTransaction="updateTransaction" />
         </div>
       </div>
     </q-card-section>
@@ -95,6 +95,7 @@
 import moment from 'moment';
 import { ref } from 'vue';
 import EditForm from '@/views/transaction/forms/EditForm.vue';
+import EditInlineForm from '@/views/transaction/forms/EditInlineForm.vue';
 
 export default {
   name: 'TransactionItem',
@@ -103,6 +104,7 @@ export default {
 
   components: {
     EditForm,
+    EditInlineForm,
   },
 
   setup() {
@@ -189,6 +191,7 @@ export default {
     },
 
     clickItem() {
+      this.editedTransaction = this.transaction;
       this.editMode = true;
     },
   },

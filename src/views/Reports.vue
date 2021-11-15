@@ -41,6 +41,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
+import { addMonths, format } from 'date-fns';
 
 export default {
   name: 'Reports',
@@ -93,8 +94,7 @@ export default {
 
   mounted() {
     const dateFrom = this.monthSequence[0];
-    const rawDateTo = moment(dateFrom).add(12, 'month');
-    const dateTo = `${rawDateTo.year()}-${rawDateTo.month()}`;
+    const dateTo = format(addMonths(new Date(dateFrom), 12), 'yyyy-MM');
     this.fetchGroupedTransaction({ dateFrom, dateTo });
   },
 };

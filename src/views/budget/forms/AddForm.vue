@@ -4,7 +4,7 @@
       <h4>Make your plans</h4>
     </q-card-section>
     <q-card-section>
-      <q-input outlined stack-label label="Name" v-model="input.title" />
+      <q-input outlined stack-label label="Name" autofocus v-model="input.title" />
     </q-card-section>
     <q-card-section horizontal class="justify-between">
       <q-card-section>

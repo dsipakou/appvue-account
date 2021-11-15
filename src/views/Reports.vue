@@ -93,7 +93,7 @@ export default {
 
   mounted() {
     const dateFrom = this.monthSequence[0];
-    const rawDateTo = moment(dateFrom).add(13, 'month');
+    const rawDateTo = moment(dateFrom).add(12, 'month');
     const dateTo = `${rawDateTo.year()}-${rawDateTo.month()}`;
     this.fetchGroupedTransaction({ dateFrom, dateTo });
   },

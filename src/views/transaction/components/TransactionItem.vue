@@ -71,7 +71,8 @@
             :currencyListLoaded="currencyListLoaded"
             :ratesList="ratesList"
             :userList="userList"
-            :updateTransaction="updateTransaction" />
+            :updateTransaction="updateTransaction"
+            @cancel="editMode = false"/>
         </div>
       </div>
     </q-card-section>

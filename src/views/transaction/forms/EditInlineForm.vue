@@ -1,7 +1,7 @@
 <template>
   <input type="hidden" v-model="input.type" />
   <div class="col-4">
-    <q-select outlined map-options dense
+    <q-select outlined map-options use-input fill-input hide-selected dense
       class="q-mx-lg"
       style="max-width: 400px;"
       v-model="input.category"
@@ -28,8 +28,9 @@
   <div class="col-1 q-ml-sm">
     <q-input outlined stack-label dense label="Amount" v-model="input.amount" />
   </div>
-  <div class="col">
-    save
+  <div class="col q-ml-lg">
+    <q-btn flat round color="green" icon="done" />
+    <q-btn flat round color="red" icon="close" @click="cancel" />
   </div>
 </template>
 <script lang="ts">
@@ -48,6 +49,10 @@ export default {
     deleteTransaction: Function,
     currencyListLoaded: Boolean,
   },
+
+  emits: [
+    'cancel',
+  ],
 
   data() {
     return {
@@ -108,6 +113,10 @@ export default {
 
     getUser(id) {
       return this.userList.find((item) => item.id === id);
+    },
+
+    cancel() {
+      this.$emit('cancel');
     },
   },
 

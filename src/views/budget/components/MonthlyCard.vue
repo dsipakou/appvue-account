@@ -63,7 +63,7 @@ export default {
 
     verbalUsagePercent() {
       const percentage = this.getUsage().usagePercent;
-      return Number.isNaN(percentage) ? 'Unplanned' : `${percentage} %`;
+      return percentage === Infinity ? 'Unplanned' : `${percentage} %`;
     },
   },
 

@@ -1,5 +1,4 @@
 <template>
-  <input type="hidden" v-model="input.type" />
   <div class="col-4">
     <q-select outlined map-options use-input fill-input hide-selected dense
       class="q-mx-lg"
@@ -29,7 +28,7 @@
     <q-input outlined stack-label dense label="Amount" v-model="input.amount" />
   </div>
   <div class="col q-ml-lg">
-    <q-btn flat round color="green" icon="done" />
+    <q-btn flat round color="green" icon="done" @click="save" />
     <q-btn flat round color="red" icon="close" @click="cancel" />
   </div>
 </template>
@@ -51,7 +50,7 @@ export default {
   },
 
   emits: [
-    'cancel',
+    'close',
   ],
 
   data() {
@@ -59,12 +58,8 @@ export default {
       input: {
         accountId: 0,
         amount: '',
-        budgetId: null,
         categoryId: 0,
-        currency: '',
-        description: '',
         transactionDate: '',
-        userId: 0,
       },
     };
   },
@@ -116,20 +111,33 @@ export default {
     },
 
     cancel() {
-      this.$emit('cancel');
+      this.$emit('close');
+    },
+
+    save() {
+      const transaction = {
+        id: this.transaction.id,
+        userId: this.transaction.userId,
+        categoryId: this.input.category.id,
+        budgetId: this.transaction.budgetId,
+        amount: this.input.amount.toString(),
+        rate: 1,
+        accountId: this.input.account.id,
+        transactionDate: this.input.transactionDate,
+        type: this.transaction.type,
+        description: this.transaction.description,
+      };
+
+      this.updateTransaction(transaction);
+      this.$emit('close');
     },
   },
 
   mounted() {
-    this.input.id = this.transaction.id;
-    this.input.user = this.getUser(this.transaction.userId);
-    this.input.budget = this.getBudget(this.transaction.budgetId);
     this.input.category = this.getCategory(this.transaction.categoryId);
     this.input.amount = this.transaction.amount;
     this.input.account = this.getAccount(this.transaction.accountId);
     this.input.transactionDate = this.transaction.transactionDate.substr(0, 10);
-    this.input.type = this.transaction.type;
-    this.input.description = this.transaction.description;
   },
 };
 </script>

@@ -72,7 +72,7 @@
             :ratesList="ratesList"
             :userList="userList"
             :updateTransaction="updateTransaction"
-            @cancel="editMode = false"/>
+            @close="editMode = false"/>
         </div>
       </div>
     </q-card-section>

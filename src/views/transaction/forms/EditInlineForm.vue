@@ -32,7 +32,7 @@
     <q-btn flat round color="red" icon="close" @click="cancel" />
   </div>
 </template>
-<script lang="ts">
+<script>
 export default {
   name: 'EditInlineForm',
 
@@ -45,7 +45,6 @@ export default {
     ratesList: Array,
     userList: Array,
     updateTransaction: Function,
-    deleteTransaction: Function,
     currencyListLoaded: Boolean,
   },
 

@@ -6,3 +6,8 @@ export const itemStatus = {
   ERROR: 2,
   LOADED: 3,
 };
+
+export enum Range {
+  Month = 'MONTH',
+  Quater = 'QUATER',
+}

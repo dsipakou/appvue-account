@@ -69,7 +69,12 @@
       </q-card>
     </q-dialog>
     <div class="row">
-      <q-select v-model="range" label="Period" :options="rangeOptions" class="col-2" />
+      <q-select
+        v-model="rangeSelect"
+        label="Period"
+        :options="rangeOptions"
+        map-options
+        class="col-2" />
     </div>
     <CurrencyChart
       style="height: 300px;"
@@ -83,6 +88,7 @@ import { computed, ref } from 'vue';
 import { mapGetters, mapActions, useStore } from 'vuex';
 import moment from 'moment';
 import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
+import { Range } from '@/store/constants';
 import { getRate } from '../service';
 
 export default {
@@ -116,8 +122,17 @@ export default {
       selectedDays: ref([]),
       selectedCurrenciesModel,
       createForm: ref(false),
-      range: ref(null),
-      rangeOptions: ['Month', '3 months'],
+      rangeSelect: ref(null),
+      rangeOptions: [
+        {
+          value: Range.Month,
+          label: 'Month',
+        },
+        {
+          value: Range.Quater,
+          label: '3 months',
+        },
+      ],
     };
   },
 
@@ -125,6 +140,7 @@ export default {
     ...mapGetters([
       'currencyList',
       'selectedCurrencies',
+      'currencyRange',
       'ratesList',
       'isCurrencyListLoading',
       'isRatesListLoading',
@@ -141,6 +157,7 @@ export default {
       'createCurrency',
       'fetchCurrencies',
       'fetchRates',
+      'selectCurrencyRange',
     ]),
 
     async isRateExist(selectedDay, currencyId) {
@@ -186,9 +203,21 @@ export default {
     },
   },
 
+  watch: {
+    rangeSelect(data) {
+      if (data) {
+        this.selectCurrencyRange(data.value);
+      }
+    },
+  },
+
   beforeMount() {
     this.fetchCurrencies();
     this.fetchRates();
+  },
+
+  mounted() {
+    this.rangeSelect = this.currencyRange;
   },
 };
 </script>

@@ -4,29 +4,31 @@ import {
   getCurrencies,
   createCurrency,
 } from '../../service';
-import { itemStatus } from '../constants';
+import * as constants from '../constants';
 
 const state = {
   currencies: {
     items: [],
     selectedItems: [],
-    status: itemStatus.INIT,
+    status: constants.itemStatus.INIT,
+    range: constants.Range.Month,
   },
 };
 
 const getters = {
   currencyList: (state: any) => state.currencies.items,
-  currencyListLoaded: (state: any) => state.currencies.status === itemStatus.LOADED,
+  currencyListLoaded: (state: any) => state.currencies.status === constants.itemStatus.LOADED,
   selectedCurrencies: (state: any) => state.currencies.selectedItems,
+  currencyRange: (state: any) => state.currencies.range,
 };
 
 const actions = {
   async fetchCurrencies({ commit }: any) {
-    commit('setCurrenciesStatus', itemStatus.LOADING);
+    commit('setCurrenciesStatus', constants.itemStatus.LOADING);
     const response = await getCurrencies();
     if (response.status === 200) {
       const body = await response.json();
-      commit('setCurrenciesStatus', itemStatus.LOADED);
+      commit('setCurrenciesStatus', constants.itemStatus.LOADED);
       commit('setCurrencies', body);
     }
   },
@@ -41,6 +43,11 @@ const actions = {
 
   async selectCurrency({ commit }: any, payload: any) {
     commit('selectCurrency', payload);
+  },
+
+  async selectCurrencyRange({ commit }: any, payload: Range) {
+    console.log(payload);
+    commit('setRange', payload);
   },
 };
 
@@ -59,6 +66,10 @@ const mutations = {
 
   setCurrenciesStatus(state: any, status: any) {
     state.currencies.status = status;
+  },
+
+  setRange(state: any, range: Range) {
+    state.currencies.range = range;
   },
 };
 

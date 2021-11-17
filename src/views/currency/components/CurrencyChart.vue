@@ -16,7 +16,7 @@ export default {
   data: () => ({
     chartdata: {
       labels: [],
-      datasets: [{ label: 'hello', data: [1, 2, 3] }],
+      datasets: [],
     },
     options: {
       responsive: true,

@@ -68,7 +68,11 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <div class="row">
+      <q-select v-model="range" label="Period" :options="rangeOptions" class="col-2" />
+    </div>
     <CurrencyChart
+      style="height: 300px;"
       :ratesList="ratesList"
       :currencyList="currencyList"
       :selectedCurrencies="selectedCurrencies" />
@@ -112,6 +116,8 @@ export default {
       selectedDays: ref([]),
       selectedCurrenciesModel,
       createForm: ref(false),
+      range: ref(null),
+      rangeOptions: ['Month', '3 months'],
     };
   },
 

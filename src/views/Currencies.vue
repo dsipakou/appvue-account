@@ -69,18 +69,18 @@
       </q-card>
     </q-dialog>
     <div class="row">
-      <q-select
+      <q-select map-options
         v-model="rangeSelect"
         label="Period"
         :options="rangeOptions"
-        map-options
         class="col-2" />
     </div>
     <CurrencyChart
       style="height: 300px;"
       :ratesList="ratesList"
       :currencyList="currencyList"
-      :selectedCurrencies="selectedCurrencies" />
+      :selectedCurrencies="selectedCurrencies"
+      :range="selectedRange" />
   </div>
 </template>
 <script>
@@ -121,16 +121,17 @@ export default {
     return {
       selectedDays: ref([]),
       selectedCurrenciesModel,
+      selectedRange: ref(Range.Month),
       createForm: ref(false),
       rangeSelect: ref(null),
       rangeOptions: [
         {
           value: Range.Month,
-          label: 'Month',
+          label: '30 days',
         },
         {
           value: Range.Quater,
-          label: '3 months',
+          label: '90 days',
         },
       ],
     };
@@ -207,6 +208,7 @@ export default {
     rangeSelect(data) {
       if (data) {
         this.selectCurrencyRange(data.value);
+        this.selectedRange = data.value;
       }
     },
   },
@@ -217,6 +219,7 @@ export default {
   },
 
   mounted() {
+    console.log(this.currencyRange);
     this.rangeSelect = this.currencyRange;
   },
 };

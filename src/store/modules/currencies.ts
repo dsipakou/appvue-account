@@ -46,7 +46,6 @@ const actions = {
   },
 
   async selectCurrencyRange({ commit }: any, payload: Range) {
-    console.log(payload);
     commit('setRange', payload);
   },
 };

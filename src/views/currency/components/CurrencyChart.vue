@@ -8,6 +8,13 @@ const RangeMapping = {
   [Range.Quater]: 90,
 };
 
+const ColorMapping = {
+  USD: 'rgba(54, 162, 235, 0.2)',
+  EUR: 'rgba(153, 102, 255, 0.2)',
+  RUB: 'brown',
+  PLN: 'burlywood',
+};
+
 export default {
   name: 'CurrencyChart',
 
@@ -48,8 +55,8 @@ export default {
         const dataList = rateMap?.slice(0, RangeMapping[this.range]).reverse();
         const dataSetData = {
           label: currency,
-          backgroundColor: '#f87979',
-          borderColor: '#153645',
+          backgroundColor: ColorMapping[currency],
+          borderColor: 'black',
           data: dataList,
         };
         datasetsToShow.push(dataSetData);
@@ -62,13 +69,13 @@ export default {
         labels: labelsToShow,
         datasets: datasetsToShow,
       };
+      console.log(this.chartdata);
     },
   },
 
   watch: {
     ratesList() {
       if (this.currencyList.length > 0 && this.ratesList.length > 0) {
-        console.log(this.range);
         this.updateChart();
         this.renderChart(this.chartdata, this.options);
       }

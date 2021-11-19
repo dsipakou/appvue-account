@@ -36,7 +36,7 @@
     </div>
     <div class="row">
       <div class="col-12">
-        <TransactionList
+        <TransactionGroupedList
           :transactions="transactionList"
           :accountList="accountList"
           :budgetList="budgetList"
@@ -50,7 +50,7 @@
           <template v-slot:header>
             <span class="header__title">Transactions: {{ activeDay }}</span>
           </template>
-        </TransactionList>
+        </TransactionGroupedList>
       </div>
     </div>
   </div>
@@ -59,14 +59,14 @@
 import moment from 'moment';
 import { ref } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
-import TransactionList from '@/views/transaction/components/TransactionList.vue';
+import TransactionGroupedList from '@/views/transaction/components/TransactionGroupedList.vue';
 
 export default {
   name: 'DailyTransactions',
   inheritAttrs: false,
 
   components: {
-    TransactionList,
+    TransactionGroupedList,
   },
 
   setup() {

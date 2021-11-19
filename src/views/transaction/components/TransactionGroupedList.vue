@@ -18,32 +18,40 @@
     </div>
     <div class="row">
       <div class="col transaction-list">
-        <div v-for="transaction in transactions" :key="transaction.id">
-          <TransactionItem
-            :account="getAccount(transaction.accountId)"
-            :category="getCategory(transaction.categoryId)"
-            :currencyList="currencyList"
-            :selectedCurrencies="selectedCurrencies"
-            :accountList="accountList"
-            :budgetList="budgetList"
-            :categoryList="categoryList"
-            :currencyListLoaded="currencyListLoaded"
-            :ratesList="ratesList"
-            :userList="userList"
-            :updateTransaction="updateTransaction"
-            :deleteTransaction="deleteTransaction"
-            :transaction="transaction" />
+        <div class="row justify-between" v-for="parent in groupedTransactions" :key="parent">
+          <div class="col justify-between">
+            <span class="text-h4">{{ parent.name }}</span>
+          </div>
+          <div class="col">
+            <span>{{ parent.sum.toFixed(2) }}</span>
+          </div>
+          <div v-for="transaction in parent.items" :key="transaction.id">
+            <TransactionItem
+              :account="getAccount(transaction.accountId)"
+              :category="getCategory(transaction.categoryId)"
+              :currencyList="currencyList"
+              :selectedCurrencies="selectedCurrencies"
+              :accountList="accountList"
+              :budgetList="budgetList"
+              :categoryList="categoryList"
+              :currencyListLoaded="currencyListLoaded"
+              :ratesList="ratesList"
+              :userList="userList"
+              :updateTransaction="updateTransaction"
+              :deleteTransaction="deleteTransaction"
+              :transaction="transaction" />
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import CurrencyFilterDropdown from '@/components/dropdown/CurrencyFilterDropdown.vue';
 import TransactionItem from '@/views/transaction/components/TransactionItem.vue';
 
 export default {
-  name: 'TransactionList',
+  name: 'TransactionGroupedList',
 
   components: {
     CurrencyFilterDropdown,
@@ -95,6 +103,22 @@ export default {
         item.isSystem
       ));
       return filteredCategoryList;
+    },
+
+    groupedTransactions() {
+      const transactionList = [...this.transactions];
+      const result = transactionList.reduce((acc, item) => {
+        const parentCategory = this.getCategory(item.categoryId).parentName;
+        console.log(parentCategory);
+        acc[parentCategory] = acc[parentCategory] || { items: [], sum: 0 };
+        acc[parentCategory].items.push(item);
+        acc[parentCategory].sum += item.amount;
+        acc[parentCategory].name = parentCategory;
+        console.log(acc[parentCategory].sum);
+        return acc;
+      }, {});
+      console.log(result);
+      return result;
     },
   },
 

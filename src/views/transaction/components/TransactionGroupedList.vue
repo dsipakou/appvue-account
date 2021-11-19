@@ -16,30 +16,36 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col transaction-list">
-        <div class="row justify-between" v-for="parent in groupedTransactions" :key="parent">
-          <div class="col justify-between">
-            <span class="text-h4">{{ parent.name }}</span>
-          </div>
-          <div class="col">
-            <span>{{ parent.sum.toFixed(2) }}</span>
-          </div>
-          <div v-for="transaction in parent.items" :key="transaction.id">
-            <TransactionItem
-              :account="getAccount(transaction.accountId)"
-              :category="getCategory(transaction.categoryId)"
-              :currencyList="currencyList"
-              :selectedCurrencies="selectedCurrencies"
-              :accountList="accountList"
-              :budgetList="budgetList"
-              :categoryList="categoryList"
-              :currencyListLoaded="currencyListLoaded"
-              :ratesList="ratesList"
-              :userList="userList"
-              :updateTransaction="updateTransaction"
-              :deleteTransaction="deleteTransaction"
-              :transaction="transaction" />
+    <div class="row transaction-list">
+      <div class="col">
+        <div class="row" v-for="parent in groupedTransactions" :key="parent">
+          <div class="col-12">
+            <div class="row justify-start">
+              <div class="col-6">
+                <span class="text-h4">{{ parent.name }}</span>
+              </div>
+              <div class="col">
+                <span class="text-h3">{{ parent.sum.toFixed(2) }}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12" v-for="transaction in parent.items" :key="transaction.id">
+                <TransactionItem
+                  :account="getAccount(transaction.accountId)"
+                  :category="getCategory(transaction.categoryId)"
+                  :currencyList="currencyList"
+                  :selectedCurrencies="selectedCurrencies"
+                  :accountList="accountList"
+                  :budgetList="budgetList"
+                  :categoryList="categoryList"
+                  :currencyListLoaded="currencyListLoaded"
+                  :ratesList="ratesList"
+                  :userList="userList"
+                  :updateTransaction="updateTransaction"
+                  :deleteTransaction="deleteTransaction"
+                  :transaction="transaction" />
+              </div>
+            </div>
           </div>
         </div>
       </div>

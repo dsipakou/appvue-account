@@ -63,6 +63,7 @@
 </template>
 <script lang="ts">
 import moment from 'moment';
+import { evaluate } from 'mathjs';
 import { defineComponent } from 'vue';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 import * as constants from '@/utils/constants';
@@ -182,7 +183,7 @@ export default defineComponent({
       const transaction = {
         userId: this.userId,
         categoryId: this.category.id,
-        amount: this.input.amount,
+        amount: String(evaluate(this.input.amount)),
         rate: rate?.rate || 1,
         accountId: this.accountId,
         budgetId: this.input.budget?.id || null,

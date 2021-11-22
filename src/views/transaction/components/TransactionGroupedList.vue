@@ -19,7 +19,7 @@
     <div class="row transaction-list">
       <div class="col">
         <div class="row" v-for="parent in groupedTransactions" :key="parent">
-          <div class="col-12">
+          <div class="col-12 q-mb-sm">
             <div class="row justify-start">
               <div class="col-6">
                 <span class="text-h4">{{ parent.name }}</span>

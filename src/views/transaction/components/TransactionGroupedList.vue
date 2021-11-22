@@ -18,7 +18,7 @@
     </div>
     <div class="row transaction-list">
       <div class="col">
-        <div class="row" v-for="parent in groupedTransactions" :key="parent">
+        <div class="row" v-for="parent in groupedTransactions" :key="parent.name">
           <div class="col-12 q-mb-sm">
             <div class="row justify-start">
               <div class="col-6">
@@ -28,8 +28,11 @@
                 <span class="text-h3">{{ parent.sum.toFixed(2) }}</span>
               </div>
             </div>
-            <div class="row">
-              <div class="col-12" v-for="transaction in parent.items" :key="transaction.id">
+            <div class="row" v-for="child in parent.items" :key="child.name">
+              <div class="row">
+                <span class="text-h5">{{ child.name }}</span>
+              </div>
+              <div class="col-12" v-for="transaction in child.items" :key="transaction.id">
                 <TransactionItem
                   :account="getAccount(transaction.accountId)"
                   :category="getCategory(transaction.categoryId)"
@@ -115,14 +118,17 @@ export default {
       const transactionList = [...this.transactions];
       const result = transactionList.reduce((acc, item) => {
         const parentCategory = this.getCategory(item.categoryId).parentName;
-        console.log(parentCategory);
-        acc[parentCategory] = acc[parentCategory] || { items: [], sum: 0 };
-        acc[parentCategory].items.push(item);
+
+        acc[parentCategory] = acc[parentCategory] || { items: {}, sum: 0 };
+        acc[parentCategory].items[item.categoryId] = acc[parentCategory].items[item.categoryId]
+          || { items: [], name: this.getCategory(item.categoryId).name };
+        acc[parentCategory].items[item.categoryId].items.push(item);
         acc[parentCategory].sum += item.amount;
         acc[parentCategory].name = parentCategory;
-        console.log(acc[parentCategory].sum);
+
         return acc;
       }, {});
+
       console.log(result);
       return result;
     },

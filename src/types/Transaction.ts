@@ -1,4 +1,4 @@
-interface Transaction {
+export interface Transaction {
   accountId: number,
   budgetId: number,
   categoryId: number,

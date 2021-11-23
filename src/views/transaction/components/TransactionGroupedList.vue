@@ -55,11 +55,34 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import CurrencyFilterDropdown from '@/components/dropdown/CurrencyFilterDropdown.vue';
 import TransactionItem from '@/views/transaction/components/TransactionItem.vue';
+import { Account, Category, Transaction } from '@/types';
 
-export default {
+interface ModifiedCategory {
+  id: number,
+  value: string,
+}
+
+interface SubCategory {
+  items: Transaction[],
+  name: string,
+  sum: number,
+}
+
+interface MainCategory {
+  items: SubCategory[],
+  name: string,
+  sum: number,
+}
+
+interface GroupedTransaction {
+  [index: string]: MainCategory,
+}
+
+export default defineComponent({
   name: 'TransactionGroupedList',
 
   components: {
@@ -68,10 +91,19 @@ export default {
   },
 
   props: {
-    transactions: Array,
-    accountList: Array,
+    transactions: {
+      type: Array as PropType<Transaction[]>,
+      default: () => [],
+    },
+    accountList: {
+      type: Array as PropType<Account[]>,
+      default: () => [],
+    },
     budgetList: Array,
-    categoryList: Array,
+    categoryList: {
+      type: Array as PropType<Category[]>,
+      default: () => [],
+    },
     currencyList: Array,
     ratesList: Array,
     userList: Array,
@@ -88,13 +120,13 @@ export default {
   },
 
   computed: {
-    transactionsSum() {
+    transactionsSum(): string {
       return this.transactions.reduce((acc, item) => (
         acc + item.amount
       ), 0)?.toFixed(2);
     },
 
-    categories() {
+    categories(): ModifiedCategory[] {
       const filteredCategoryList = this.categoryList.filter((item) => (
         !item.isParent && !item.isSystem
       ));
@@ -103,28 +135,28 @@ export default {
           id: item.id,
           value: `${item.name} / ${item.parentName}`,
         }
-      ));
+      )) as ModifiedCategory[];
       return modifiedCategoryList;
     },
 
-    systemCategories() {
+    systemCategories(): Category[] {
       const filteredCategoryList = this.categoryList.filter((item) => (
         item.isSystem
       ));
       return filteredCategoryList;
     },
 
-    groupedTransactions() {
+    groupedTransactions(): any {
       const transactionList = [...this.transactions];
-      const result = transactionList.reduce((acc, item) => {
-        const parentCategory = this.getCategory(item.categoryId).parentName;
+      const result = transactionList.reduce((acc: GroupedTransaction, item: Transaction) => {
+        const parentCategory = this.getCategory(item.categoryId)?.parentName || 'unknown';
 
-        acc[parentCategory] = acc[parentCategory] || { items: {}, sum: 0 };
+        acc[parentCategory] = acc[parentCategory]
+          || { items: {}, name: parentCategory, sum: 0 } as MainCategory;
         acc[parentCategory].items[item.categoryId] = acc[parentCategory].items[item.categoryId]
-          || { items: [], name: this.getCategory(item.categoryId).name };
+          || { items: [], name: this.getCategory(item.categoryId)?.name || 'unknown' };
         acc[parentCategory].items[item.categoryId].items.push(item);
         acc[parentCategory].sum += item.amount;
-        acc[parentCategory].name = parentCategory;
 
         return acc;
       }, {});
@@ -134,15 +166,15 @@ export default {
   },
 
   methods: {
-    getCategory(id) {
-      return this.categoryList.find((item) => item.id === id);
+    getCategory(id: number): Category | undefined {
+      return this.categoryList.find((item: Category) => item.id === id);
     },
 
-    getAccount(id) {
-      return this.accountList.find((item) => item.id === id);
+    getAccount(id: number): Account | undefined {
+      return this.accountList.find((item: Account) => item.id === id);
     },
   },
-};
+});
 </script>
 <style scoped>
 

@@ -55,7 +55,7 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script>
 import CurrencyFilterDropdown from '@/components/dropdown/CurrencyFilterDropdown.vue';
 import TransactionItem from '@/views/transaction/components/TransactionItem.vue';
 
@@ -129,7 +129,6 @@ export default {
         return acc;
       }, {});
 
-      console.log(result);
       return result;
     },
   },

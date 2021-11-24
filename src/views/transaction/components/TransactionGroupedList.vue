@@ -23,7 +23,7 @@
             class="col-12"
             :caption="parent.sum.toFixed(2)">
             <template v-slot:header>
-              <div class="row col-12 align-center">
+              <div class="row col-12">
                 <span class="col-6 text-h5">{{ parent.name }}</span>
                 <span class="col text-h5 self-center">{{ parent.sum.toFixed(2) }}</span>
               </div>
@@ -31,8 +31,16 @@
           <div class="col-12 q-mb-sm">
             <div class="row" v-for="child in parent.items" :key="child.name">
               <q-expansion-item switch-toggle-side
-                class="col-11 text-h6 q-ml-lg"
-                :label="child.name">
+                class="col-11 text-h6 q-ml-lg">
+                <template v-slot:header>
+                  <div class="row col-12">
+                    <span class="col-7 text-h6">{{ child.name }}</span>
+                    <span class="col text-h6">{{ child.sum.toFixed(2) }}</span>
+                    <span class="col text-subtitle2 self-center">
+                      ({{ child.items.length }} transactions)
+                    </span>
+                  </div>
+                </template>
                 <div class="col-12" v-for="transaction in child.items" :key="transaction.id">
                   <TransactionItem
                     :account="getAccount(transaction.accountId)"
@@ -153,13 +161,15 @@ export default defineComponent({
       const transactionList = [...this.transactions];
       const result = transactionList.reduce((acc: GroupedTransaction, item: Transaction) => {
         const parentCategory = this.getCategory(item.categoryId)?.parentName || 'unknown';
+        const subCategory = this.getCategory(item.categoryId)?.name || 'unknown';
 
         acc[parentCategory] = acc[parentCategory]
           || { items: {}, name: parentCategory, sum: 0 } as MainCategory;
         acc[parentCategory].items[item.categoryId] = acc[parentCategory].items[item.categoryId]
-          || { items: [], name: this.getCategory(item.categoryId)?.name || 'unknown' };
+          || { items: [], name: subCategory, sum: 0 } as SubCategory;
         acc[parentCategory].items[item.categoryId].items.push(item);
         acc[parentCategory].sum += item.amount;
+        acc[parentCategory].items[item.categoryId].sum += item.amount;
 
         return acc;
       }, {});

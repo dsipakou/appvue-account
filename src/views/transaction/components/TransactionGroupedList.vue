@@ -19,37 +19,40 @@
     <div class="row transaction-list">
       <div class="col">
         <div class="row" v-for="parent in groupedTransactions" :key="parent.name">
+          <q-expansion-item switch-toggle-side
+            class="col-12"
+            :caption="parent.sum.toFixed(2)">
+            <template v-slot:header>
+              <div class="row col-12 align-center">
+                <span class="col-6 text-h5">{{ parent.name }}</span>
+                <span class="col text-h5 self-center">{{ parent.sum.toFixed(2) }}</span>
+              </div>
+            </template>
           <div class="col-12 q-mb-sm">
-            <div class="row justify-start">
-              <div class="col-6">
-                <span class="text-h4">{{ parent.name }}</span>
-              </div>
-              <div class="col">
-                <span class="text-h3">{{ parent.sum.toFixed(2) }}</span>
-              </div>
-            </div>
             <div class="row" v-for="child in parent.items" :key="child.name">
-              <div class="row">
-                <span class="text-h5">{{ child.name }}</span>
-              </div>
-              <div class="col-12" v-for="transaction in child.items" :key="transaction.id">
-                <TransactionItem
-                  :account="getAccount(transaction.accountId)"
-                  :category="getCategory(transaction.categoryId)"
-                  :currencyList="currencyList"
-                  :selectedCurrencies="selectedCurrencies"
-                  :accountList="accountList"
-                  :budgetList="budgetList"
-                  :categoryList="categoryList"
-                  :currencyListLoaded="currencyListLoaded"
-                  :ratesList="ratesList"
-                  :userList="userList"
-                  :updateTransaction="updateTransaction"
-                  :deleteTransaction="deleteTransaction"
-                  :transaction="transaction" />
-              </div>
+              <q-expansion-item switch-toggle-side
+                class="col-11 text-h6 q-ml-lg"
+                :label="child.name">
+                <div class="col-12" v-for="transaction in child.items" :key="transaction.id">
+                  <TransactionItem
+                    :account="getAccount(transaction.accountId)"
+                    :category="getCategory(transaction.categoryId)"
+                    :currencyList="currencyList"
+                    :selectedCurrencies="selectedCurrencies"
+                    :accountList="accountList"
+                    :budgetList="budgetList"
+                    :categoryList="categoryList"
+                    :currencyListLoaded="currencyListLoaded"
+                    :ratesList="ratesList"
+                    :userList="userList"
+                    :updateTransaction="updateTransaction"
+                    :deleteTransaction="deleteTransaction"
+                    :transaction="transaction" />
+                </div>
+              </q-expansion-item>
             </div>
           </div>
+          </q-expansion-item>
         </div>
       </div>
     </div>

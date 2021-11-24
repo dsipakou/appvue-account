@@ -18,20 +18,13 @@
           />
       </div>
     </div>
-    <div class="row q-ma-lg justify-center">
-      <div class="col-6">
-        <q-pagination outline
-          padding="sm md"
-          class="days-pagination"
-          color="grey"
-          text-color="black"
-          :max="30"
-          :max-pages="9"
-          :boundary-numbers="false"
-          :ellipses="false"
-          direction-links
-          v-model="activeDay">
-        </q-pagination>
+    <div class="row q-ma-lg justify-right">
+      <div class="self-center">
+        <q-btn-toggle dense
+          v-model="activeDay"
+          padding="5px 10px"
+          :options="days">
+        </q-btn-toggle>
       </div>
     </div>
     <div class="row">
@@ -60,6 +53,7 @@ import moment from 'moment';
 import { ref } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import TransactionGroupedList from '@/views/transaction/components/TransactionGroupedList.vue';
+import { getDaysInMonth } from 'date-fns';
 
 export default {
   name: 'DailyTransactions',
@@ -99,7 +93,11 @@ export default {
     ]),
 
     days() {
-      return Array.from({ length: moment().daysInMonth() }, (_, i) => i + 1);
+      const days = [];
+      for (let i = 0; i < getDaysInMonth(new Date()); i += 1) {
+        days.push({ label: i + 1, value: i + 1 });
+      }
+      return days;
     },
 
     months() {

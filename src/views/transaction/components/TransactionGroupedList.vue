@@ -5,14 +5,14 @@
         <div>
           <slot name="header"></slot>
         </div>
+        <div class="text-h4">
+          Overall: {{ transactionsSum }}
+        </div>
         <div>
           <CurrencyFilterDropdown
             :currencyList="currencyList"
             :currencyListLoaded="currencyListLoaded"
             @selectCurrency="selectedCurrencies = $event"/>
-        </div>
-        <div>
-          Overall: {{ transactionsSum }}
         </div>
       </div>
     </div>

@@ -22,7 +22,7 @@
       <div class="self-center">
         <q-btn-toggle dense
           v-model="activeDay"
-          padding="5px 10px"
+          padding="sm 12px"
           :options="days">
         </q-btn-toggle>
       </div>
@@ -89,7 +89,7 @@ export default {
       'userList',
       'currencyListLoaded',
       'transactionList',
-      'transactionArchiveMonth',
+      'transactionArchive',
     ]),
 
     days() {
@@ -113,6 +113,7 @@ export default {
   watch: {
     activeDay() {
       this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
+      this.setTransactionArchiveDay(this.activeDay);
       this.filterTransactions();
     },
 
@@ -125,6 +126,7 @@ export default {
     ...mapActions([
       'fetchTransactions',
       'fetchCurrencies',
+      'setTransactionArchiveDay',
       'setTransactionArchiveMonth',
       'updateTransaction',
       'deleteTransaction',
@@ -149,8 +151,9 @@ export default {
   mounted() {
     this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
     this.filterTransactions();
-    if (this.transactionArchiveMonth) {
-      this.activeMonth = this.transactionArchiveMonth;
+    console.log(this.transactionArchive);
+    if (this.transactionArchive.month) {
+      this.activeMonth = this.transactionArchive.month;
     }
   },
 };

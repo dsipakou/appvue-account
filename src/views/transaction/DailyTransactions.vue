@@ -62,7 +62,12 @@ import moment from 'moment';
 import { ref } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import TransactionGroupedList from '@/views/transaction/components/TransactionGroupedList.vue';
-import { getDaysInMonth, getYear } from 'date-fns';
+import {
+  getDaysInMonth,
+  getDay,
+  getMonth,
+  getYear,
+} from 'date-fns';
 
 export default {
   name: 'DailyTransactions',
@@ -74,8 +79,8 @@ export default {
 
   setup() {
     return {
-      activeDay: ref(moment().date()),
-      activeMonth: ref(moment().month()),
+      activeDay: ref(getDay(new Date())),
+      activeMonth: ref(getMonth(new Date())),
       activeYear: ref(getYear(new Date())),
     };
   },
@@ -86,6 +91,9 @@ export default {
       selectedCurrencies: [],
       selectedDay: '',
       selectedDayRates: [],
+      days: [],
+      months: [],
+      years: [],
     };
   },
 
@@ -101,35 +109,6 @@ export default {
       'transactionList',
       'transactionArchive',
     ]),
-
-    days() {
-      const days = [];
-      for (let i = 0; i < getDaysInMonth(new Date()); i += 1) {
-        days.push({ label: i + 1, value: i + 1 });
-      }
-      return days;
-    },
-
-    months() {
-      return moment.months().map((item, index) => (
-        {
-          name: item.charAt(0).toUpperCase() + item.slice(1),
-          id: index,
-        }
-      ));
-    },
-
-    years() {
-      const lastYears = [];
-      const currentYear = getYear(new Date());
-      for (let i = 0; i < 5; i += 1) {
-        lastYears.push({
-          name: String(currentYear - i),
-          id: i,
-        });
-      }
-      return lastYears;
-    },
   },
 
   watch: {
@@ -137,14 +116,17 @@ export default {
       this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
       this.setTransactionArchiveDay(this.activeDay);
       this.filterTransactions();
+      this.update();
     },
 
     activeMonth() {
       this.setTransactionArchiveMonth(this.activeMonth.id);
+      this.update();
     },
 
     activeYear() {
       this.setTransactionArchiveYear(this.activeYear.id);
+      this.update();
     },
   },
 
@@ -168,6 +150,44 @@ export default {
         dateTo: selectedDate,
       });
     },
+
+    getDays() {
+      this.days = [];
+      const selectedYear = this.transactionArchive.year;
+      const selectedMonth = this.transactionArchive.month;
+
+      console.log(selectedYear, selectedMonth);
+
+      for (let i = 0; i < getDaysInMonth(new Date(selectedYear, selectedMonth)); i += 1) {
+        this.days.push({ label: i + 1, value: i + 1 });
+      }
+    },
+
+    getMonths() {
+      this.months = moment.months().map((item, index) => (
+        {
+          name: item.charAt(0).toUpperCase() + item.slice(1),
+          id: index,
+        }
+      ));
+    },
+
+    getYears() {
+      this.years = [];
+      const currentYear = getYear(new Date());
+      for (let i = 0; i < 5; i += 1) {
+        this.years.push({
+          name: String(currentYear - i),
+          id: i,
+        });
+      }
+    },
+
+    update() {
+      this.getDays();
+      this.getMonths();
+      this.getYears();
+    },
   },
 
   beforeMount() {
@@ -176,6 +196,7 @@ export default {
   },
 
   mounted() {
+    this.update();
     if (this.transactionArchive.month) {
       this.activeMonth = this.transactionArchive.month;
     }

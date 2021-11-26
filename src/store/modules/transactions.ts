@@ -1,5 +1,6 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
+import { getDay, getMonth, getYear } from 'date-fns';
 import {
   getTransactions,
   getGroupedTransactions,
@@ -21,9 +22,9 @@ const state = {
   },
 
   archive: {
-    month: 0,
-    day: 0,
-    year: 0,
+    month: getMonth(new Date()),
+    day: getDay(new Date()),
+    year: getYear(new Date()),
   },
 
   lastAdded: {

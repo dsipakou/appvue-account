@@ -89,7 +89,6 @@ export default {
     return {
       transactions: [],
       selectedCurrencies: [],
-      selectedDay: '',
       selectedDayRates: [],
       days: [],
       months: [],
@@ -113,7 +112,6 @@ export default {
 
   watch: {
     activeDay() {
-      this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
       this.setTransactionArchiveDay(this.activeDay);
       this.filterTransactions();
       this.update();
@@ -121,11 +119,13 @@ export default {
 
     activeMonth() {
       this.setTransactionArchiveMonth(this.activeMonth.id);
+      this.filterTransactions();
       this.update();
     },
 
     activeYear() {
       this.setTransactionArchiveYear(this.activeYear.id);
+      this.filterTransactions();
       this.update();
     },
   },
@@ -143,7 +143,9 @@ export default {
     ]),
 
     filterTransactions() {
-      const selectedDate = `${moment().format('YYYY-MM')}-${this.selectedDay}`;
+      const formattedMonth = String(this.transactionArchive.month).padStart(2, '0');
+      const formattedDay = String(this.transactionArchive.day).padStart(2, '0');
+      const selectedDate = `${this.transactionArchive.year}-${formattedMonth}-${formattedDay}`;
       this.fetchTransactions({
         sorting: 'added',
         dateFrom: selectedDate,
@@ -155,8 +157,6 @@ export default {
       this.days = [];
       const selectedYear = this.transactionArchive.year;
       const selectedMonth = this.transactionArchive.month;
-
-      console.log(selectedYear, selectedMonth);
 
       for (let i = 0; i < getDaysInMonth(new Date(selectedYear, selectedMonth)); i += 1) {
         this.days.push({ label: i + 1, value: i + 1 });
@@ -178,7 +178,7 @@ export default {
       for (let i = 0; i < 5; i += 1) {
         this.years.push({
           name: String(currentYear - i),
-          id: i,
+          id: currentYear - i,
         });
       }
     },
@@ -197,19 +197,9 @@ export default {
 
   mounted() {
     this.update();
-    if (this.transactionArchive.month) {
-      this.activeMonth = this.transactionArchive.month;
-    }
-
-    if (this.transactionArchive.day) {
-      this.activeDay = this.transactionArchive.day;
-    }
-
-    if (this.transactionArchive.year) {
-      this.activeYear = this.transactionArchive.year;
-    }
-
-    this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
+    this.activeMonth = this.transactionArchive.month;
+    this.activeDay = this.transactionArchive.day;
+    this.activeYear = this.transactionArchive.year;
     this.filterTransactions();
   },
 };

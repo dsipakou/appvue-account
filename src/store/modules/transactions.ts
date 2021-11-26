@@ -23,6 +23,7 @@ const state = {
   archive: {
     month: 0,
     day: 0,
+    year: 0,
   },
 
   lastAdded: {
@@ -91,6 +92,10 @@ const actions = {
     commit('setArchiveMonth', month);
   },
 
+  async setTransactionArchiveYear({ commit }: any, year: any) {
+    commit('setArchiveYear', year);
+  },
+
   async setTransactionLastAdded({ commit }: any, payload: any) {
     commit('setLastAdded', payload);
   },
@@ -115,6 +120,10 @@ const mutations = {
 
   setArchiveMonth(state: any, month: any) {
     state.archive.month = month;
+  },
+
+  setArchiveYear(state: any, year: any) {
+    state.archive.year = year;
   },
 
   setLastAdded(state: any, payload: any) {

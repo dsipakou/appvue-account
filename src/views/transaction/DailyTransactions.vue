@@ -8,6 +8,15 @@
       <span class="text-h4">Daily Transactions</span>
     </div>
     <div class="row justify-center">
+      <div class="col-2 q-mr-lg">
+        <q-select dense map-options
+          v-model="activeYear"
+          option-value="id"
+          option-label="name"
+          :options="years"
+          label="Year"
+          />
+      </div>
       <div class="col-4">
         <q-select dense map-options
           v-model="activeMonth"
@@ -53,7 +62,7 @@ import moment from 'moment';
 import { ref } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import TransactionGroupedList from '@/views/transaction/components/TransactionGroupedList.vue';
-import { getDaysInMonth } from 'date-fns';
+import { getDaysInMonth, getYear } from 'date-fns';
 
 export default {
   name: 'DailyTransactions',
@@ -67,6 +76,7 @@ export default {
     return {
       activeDay: ref(moment().date()),
       activeMonth: ref(moment().month()),
+      activeYear: ref(getYear(new Date())),
     };
   },
 
@@ -108,6 +118,18 @@ export default {
         }
       ));
     },
+
+    years() {
+      const lastYears = [];
+      const currentYear = getYear(new Date());
+      for (let i = 0; i < 5; i += 1) {
+        lastYears.push({
+          name: String(currentYear - i),
+          id: i,
+        });
+      }
+      return lastYears;
+    },
   },
 
   watch: {
@@ -120,6 +142,10 @@ export default {
     activeMonth() {
       this.setTransactionArchiveMonth(this.activeMonth.id);
     },
+
+    activeYear() {
+      this.setTransactionArchiveYear(this.activeYear.id);
+    },
   },
 
   methods: {
@@ -128,6 +154,7 @@ export default {
       'fetchCurrencies',
       'setTransactionArchiveDay',
       'setTransactionArchiveMonth',
+      'setTransactionArchiveYear',
       'updateTransaction',
       'deleteTransaction',
       'clearTransactions',
@@ -149,12 +176,20 @@ export default {
   },
 
   mounted() {
-    this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
-    this.filterTransactions();
-    console.log(this.transactionArchive);
     if (this.transactionArchive.month) {
       this.activeMonth = this.transactionArchive.month;
     }
+
+    if (this.transactionArchive.day) {
+      this.activeDay = this.transactionArchive.day;
+    }
+
+    if (this.transactionArchive.year) {
+      this.activeYear = this.transactionArchive.year;
+    }
+
+    this.selectedDay = this.activeDay < 10 ? `0${this.activeDay}` : this.activeDay;
+    this.filterTransactions();
   },
 };
 </script>

@@ -39,9 +39,7 @@
         <q-card-section>
           <h4>Add currency</h4>
         </q-card-section>
-
         <q-separator />
-
         <q-card-section>
           <q-input outlined stack-label label="Code" v-model="input.code" />
         </q-card-section>

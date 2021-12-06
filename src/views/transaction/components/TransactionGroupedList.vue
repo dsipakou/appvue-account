@@ -138,10 +138,10 @@ export default defineComponent({
     },
 
     categories(): ModifiedCategory[] {
-      const filteredCategoryList = this.categoryList.filter((item) => (
+      const filteredCategoryList = this.categoryList.filter((item: Category) => (
         !item.isParent && !item.isSystem
       ));
-      const modifiedCategoryList = filteredCategoryList.map((item) => (
+      const modifiedCategoryList = filteredCategoryList.map((item: Category) => (
         {
           id: item.id,
           value: `${item.name} / ${item.parentName}`,
@@ -151,7 +151,7 @@ export default defineComponent({
     },
 
     systemCategories(): Category[] {
-      const filteredCategoryList = this.categoryList.filter((item) => (
+      const filteredCategoryList = this.categoryList.filter((item: Category) => (
         item.isSystem
       ));
       return filteredCategoryList;

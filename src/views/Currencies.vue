@@ -168,7 +168,6 @@ export default {
     },
 
     async getCurrentRate() {
-      this.currencyList.map((item) => console.log(item));
       this.ratesInProgress = true;
       await Promise.all(this.selectedDays.map(async (day) => {
         await Promise.all(this.currencyList.map(async (currency) => {
@@ -218,7 +217,6 @@ export default {
   },
 
   mounted() {
-    console.log(this.currencyRange);
     this.rangeSelect = this.currencyRange;
   },
 };

@@ -4,6 +4,7 @@ export interface Currency {
   sign: string,
   verbalName: string,
   isDefault: boolean,
+  isBase: boolean,
   comments: string,
   createdAt: string,
   updatedAt: string,

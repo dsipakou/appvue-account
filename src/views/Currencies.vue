@@ -35,7 +35,9 @@
       </div>
     </div>
     <q-dialog v-model="createForm">
-      <AddForm />
+      <AddForm
+        :createCurrency="createCurrency"
+        @closeForm="createForm = false" />
     </q-dialog>
     <div class="row">
       <q-select map-options
@@ -161,18 +163,6 @@ export default {
       this.ratesInProgress = false;
     },
 
-    create() {
-      const currency = {
-        code: this.input.code,
-        sign: this.input.sign,
-        verbalName: this.input.verbalName,
-        isDefault: this.input.isDefault,
-        comments: this.input.comments,
-      };
-
-      this.createCurrency(currency);
-      this.createForm = false;
-    },
   },
 
   watch: {

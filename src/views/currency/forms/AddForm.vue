@@ -33,12 +33,24 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+interface InputFields {
+  code: string,
+  sign: string,
+  verbalName: string,
+  isDefault: boolean,
+  comments: string,
+}
+
 export default defineComponent({
   name: 'AddForm',
 
   emits: [
     'closeForm',
   ],
+
+  props: {
+    createCurrency: { type: Function, required: true },
+  },
 
   data() {
     return {
@@ -47,8 +59,24 @@ export default defineComponent({
         sign: '',
         verbalName: '',
         isDefault: false,
-      },
+        comments: '',
+      } as InputFields,
     };
+  },
+
+  methods: {
+    create() {
+      const currency = {
+        code: this.input.code,
+        sign: this.input.sign,
+        verbalName: this.input.verbalName,
+        isDefault: this.input.isDefault,
+        comments: this.input.comments,
+      };
+
+      this.createCurrency(currency);
+      this.$emit('closeForm');
+    },
   },
 });
 </script>

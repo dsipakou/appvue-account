@@ -35,36 +35,7 @@
       </div>
     </div>
     <q-dialog v-model="createForm">
-      <q-card class="shadow-24" style="width: 400px;">
-        <q-card-section>
-          <h4>Add currency</h4>
-        </q-card-section>
-        <q-separator />
-        <q-card-section>
-          <q-input outlined stack-label label="Code" v-model="input.code" />
-        </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label label="Sign" v-model="input.sign" />
-        </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label label="Verbal Name" v-model="input.verbalName" />
-        </q-card-section>
-        <q-card-section>
-          <q-checkbox v-model="input.isDefault" label="Default currency"></q-checkbox>
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            outlined
-            stack-label
-            type="textarea"
-            label="Comments"
-            v-model="input.comments" />
-        </q-card-section>
-
-        <q-card-actions align="center" class="action-buttons">
-          <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
-        </q-card-actions>
-      </q-card>
+      <AddForm />
     </q-dialog>
     <div class="row">
       <q-select map-options
@@ -87,6 +58,7 @@ import { mapGetters, mapActions, useStore } from 'vuex';
 import moment from 'moment';
 import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
 import { Range } from '@/store/constants';
+import AddForm from '@/views/currency/forms/AddForm.vue';
 import { getRate } from '../service';
 
 export default {
@@ -94,6 +66,7 @@ export default {
 
   components: {
     CurrencyChart,
+    AddForm,
   },
 
   data() {

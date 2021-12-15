@@ -4,14 +4,16 @@
       <h4>Add currency</h4>
     </q-card-section>
     <q-separator />
-    <q-card-section>
-      <q-input outlined stack-label label="Code" v-model="input.code" />
-    </q-card-section>
-    <q-card-section>
-      <q-input outlined stack-label label="Sign" v-model="input.sign" />
-    </q-card-section>
-    <q-card-section>
-      <q-input outlined stack-label label="Verbal Name" v-model="input.verbalName" />
+    <q-card-section horizontal class="justify-between">
+      <q-card-section>
+        <q-input outlined stack-label label="Code" v-model="input.code" />
+      </q-card-section>
+      <q-card-section>
+        <q-input outlined stack-label label="Sign" v-model="input.sign" />
+      </q-card-section>
+      <q-card-section>
+        <q-input outlined stack-label label="Verbal Name" v-model="input.verbalName" />
+      </q-card-section>
     </q-card-section>
     <q-card-section>
       <q-checkbox v-model="input.isDefault" label="Default currency"></q-checkbox>

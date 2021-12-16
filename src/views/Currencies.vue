@@ -22,16 +22,18 @@
       </q-btn>
     </div>
     <div class="row justify-center q-mt-lg">
-      <q-date v-model="selectedDays" multiple mask="YYYY-MM-DD"></q-date>
-    </div>
-    <div class="row justify-center q-mt-lg">
-      <div class="column">
-        <q-toggle
-          v-for="currency in notDefaultCurrencies"
-          :key="currency.id"
-          v-model="selectedCurrenciesModel"
-          :label="currency.verbalName"
-          :val="currency.code" />
+      <div class="col-4">
+        <q-date v-model="selectedDays" multiple mask="YYYY-MM-DD"></q-date>
+      </div>
+      <div class="col-4">
+        <div class="column">
+          <q-toggle
+            v-for="currency in notDefaultCurrencies"
+            :key="currency.id"
+            v-model="selectedCurrenciesModel"
+            :label="currency.verbalName"
+            :val="currency.code" />
+        </div>
       </div>
     </div>
     <q-dialog v-model="createForm">

@@ -183,7 +183,7 @@ export default defineComponent({
       const transaction = {
         userId: this.userId,
         categoryId: this.category.id,
-        amount: String(evaluate(this.input.amount)),
+        amount: String(evaluate(this.input.amount.replace(',', '.'))),
         rate: rate?.rate || 1,
         accountId: this.accountId,
         budgetId: this.input.budget?.id || null,

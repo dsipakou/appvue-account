@@ -1,5 +1,5 @@
 export interface Currency {
-  id: nubmer,
+  id: number,
   code: string,
   sign: string,
   verbalName: string,

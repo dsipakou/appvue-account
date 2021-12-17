@@ -27,8 +27,10 @@
       </div>
       <div class="col-4">
         <div class="column">
+          Base currency: {{ baseCurrency.verbalName }}
+          <q-btn no-caps dense rounded style="width: 40px;" label="Edit"></q-btn>
           <q-toggle
-            v-for="currency in notDefaultCurrencies"
+            v-for="currency in notBaseCurrencies"
             :key="currency.id"
             v-model="selectedCurrenciesModel"
             :label="currency.verbalName"
@@ -122,8 +124,12 @@ export default {
       'isRatesListLoading',
     ]),
 
-    notDefaultCurrencies() {
-      return this.currencyList.filter((item) => !item.isDefault);
+    notBaseCurrencies() {
+      return this.currencyList.filter((item) => !item.isBase);
+    },
+
+    baseCurrency() {
+      return this.currencyList.find((item) => item.isBase);
     },
   },
 

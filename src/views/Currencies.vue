@@ -29,12 +29,16 @@
         <div class="column">
           Base currency: {{ baseCurrency.verbalName }}
           <q-btn no-caps dense rounded style="width: 40px;" label="Edit"></q-btn>
-          <q-toggle
-            v-for="currency in notBaseCurrencies"
-            :key="currency.id"
-            v-model="selectedCurrenciesModel"
-            :label="currency.verbalName"
-            :val="currency.code" />
+          <div v-for="currency in notBaseCurrencies" :key="currency.id">
+            <q-toggle
+              v-model="selectedCurrenciesModel"
+              :label="currency.verbalName"
+              :val="currency.code"
+              :icon="currency.isDefault ? 'check': ''"
+              />
+            <q-btn dense no-caps flat label="Edit" @click="edit(currency)"/>
+            <span v-if="currency.isDefault">(default currency)</span>
+          </div>
         </div>
       </div>
     </div>
@@ -42,6 +46,11 @@
       <AddForm
         :createCurrency="createCurrency"
         @closeForm="createForm = false" />
+    </q-dialog>
+    <q-dialog v-model="editForm">
+      <EditForm
+        :currency="selectedCurrency"
+        @closeForm="editForm = false" />
     </q-dialog>
     <div class="row">
       <q-select map-options
@@ -65,6 +74,7 @@ import moment from 'moment';
 import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
 import { Range } from '@/store/constants';
 import AddForm from '@/views/currency/forms/AddForm.vue';
+import EditForm from '@/views/currency/forms/EditForm.vue';
 import { getRate } from '../service';
 
 export default {
@@ -73,11 +83,13 @@ export default {
   components: {
     CurrencyChart,
     AddForm,
+    EditForm,
   },
 
   data() {
     return {
       ratesInProgress: false,
+      selectedCurrency: null,
       input: {
         code: '',
         sign: '',
@@ -100,6 +112,7 @@ export default {
       selectedCurrenciesModel,
       selectedRange: ref(Range.Month),
       createForm: ref(false),
+      editForm: ref(false),
       rangeSelect: ref(null),
       rangeOptions: [
         {
@@ -171,6 +184,10 @@ export default {
       this.ratesInProgress = false;
     },
 
+    edit(currency) {
+      this.selectedCurrency = currency;
+      this.editForm = true;
+    },
   },
 
   watch: {

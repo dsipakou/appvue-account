@@ -67,6 +67,8 @@ export default defineComponent({
   mounted() {
     console.log(this.currency);
     this.input.verbalName = this.currency!.verbalName;
+    this.input.sign = this.currency!.sign;
+    this.input.code = this.currency!.code;
   },
 });
 </script>

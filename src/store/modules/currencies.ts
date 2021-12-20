@@ -69,6 +69,15 @@ const mutations = {
     state.currencies.items.unshift({ ...currency });
   },
 
+  updateCurrency(state: any, newItem: any) {
+    state.currencies.items = state.currencies.items.map((item: any) => {
+      if (item.id === newItem.id) {
+        return newItem;
+      }
+      return item;
+    });
+  },
+
   selectCurrency(state: any, currencies: any) {
     state.currencies.selectedItems = currencies;
   },

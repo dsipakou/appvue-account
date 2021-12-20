@@ -1,4 +1,5 @@
 <template>
+  <input type="hidden" v-model="input.id" />
   <q-card class="shadow-24" style="width: 400px;">
     <q-card-section>
       <h4>Update currency</h4>
@@ -41,6 +42,7 @@ export default defineComponent({
 
   props: {
     currency: Object,
+    updateCurrency: Function,
   },
 
   emits: [
@@ -50,6 +52,7 @@ export default defineComponent({
   data() {
     return {
       input: {
+        id: -1,
         code: '',
         sign: '',
         verbalName: '',
@@ -60,15 +63,24 @@ export default defineComponent({
 
   methods: {
     update() {
+      const currency = {
+        id: this.input.id,
+        sign: this.input.sign,
+        code: this.input.code,
+        verbalName: this.input.verbalName,
+        comments: this.input.comments,
+      };
+      this.updateCurrency(currency);
       this.$emit('closeForm');
     },
   },
 
   mounted() {
-    console.log(this.currency);
+    this.input.id = this.currency!.id;
     this.input.verbalName = this.currency!.verbalName;
     this.input.sign = this.currency!.sign;
     this.input.code = this.currency!.code;
+    this.input.isDefault = this.currency!.isDefault;
   },
 });
 </script>

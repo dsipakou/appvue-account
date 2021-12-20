@@ -50,6 +50,7 @@
     <q-dialog v-model="editForm">
       <EditForm
         :currency="selectedCurrency"
+        :updateCurrency="updateCurrency"
         @closeForm="editForm = false" />
     </q-dialog>
     <div class="row">
@@ -150,6 +151,7 @@ export default {
     ...mapActions([
       'createRate',
       'createCurrency',
+      'updateCurrency',
       'fetchCurrencies',
       'fetchRates',
       'selectCurrencyRange',

@@ -308,6 +308,7 @@ interface UpdateCurrencyRequest {
   verbalName: string,
   isDefault: boolean,
   comments: string,
+  id: number,
 }
 
 export const createCurrency = async ({
@@ -334,6 +335,7 @@ export const updateCurrency = async ({
   verbalName,
   isDefault,
   comments,
+  id,
 }: UpdateCurrencyRequest) => {
   const response = await patchRequest('http://localhost:9091/api/currency',
     {
@@ -342,6 +344,7 @@ export const updateCurrency = async ({
       verbalName,
       isDefault,
       comments,
+      id,
     });
   return response;
 };

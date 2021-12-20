@@ -302,6 +302,14 @@ interface CreateCurrencyRequest {
   comments: string,
 }
 
+interface UpdateCurrencyRequest {
+  code: string,
+  sign: string,
+  verbalName: string,
+  isDefault: boolean,
+  comments: string,
+}
+
 export const createCurrency = async ({
   code,
   sign,
@@ -310,6 +318,24 @@ export const createCurrency = async ({
   comments,
 }: CreateCurrencyRequest) => {
   const response = await postRequest('http://localhost:9091/api/currencies',
+    {
+      code,
+      sign,
+      verbalName,
+      isDefault,
+      comments,
+    });
+  return response;
+};
+
+export const updateCurrency = async ({
+  code,
+  sign,
+  verbalName,
+  isDefault,
+  comments,
+}: UpdateCurrencyRequest) => {
+  const response = await patchRequest('http://localhost:9091/api/currency',
     {
       code,
       sign,

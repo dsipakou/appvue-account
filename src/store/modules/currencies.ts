@@ -3,6 +3,7 @@
 import {
   getCurrencies,
   createCurrency,
+  updateCurrency,
 } from '../../service';
 import * as constants from '../constants';
 
@@ -38,6 +39,15 @@ const actions = {
     if (response.status === 201) {
       const body = await response.json();
       commit('createCurrency', body);
+    }
+  },
+
+  async updateCurrency({ commit }: any, payload: any) {
+    const response = await updateCurrency(payload);
+
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('updateCurrency', body);
     }
   },
 

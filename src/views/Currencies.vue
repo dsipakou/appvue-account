@@ -143,6 +143,7 @@ export default {
     },
 
     baseCurrency() {
+      console.log("Base currency");
       return this.currencyList.find((item) => item.isBase);
     },
   },

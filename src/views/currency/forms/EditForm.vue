@@ -80,6 +80,7 @@ export default defineComponent({
     this.input.verbalName = this.currency!.verbalName;
     this.input.sign = this.currency!.sign;
     this.input.code = this.currency!.code;
+    this.input.comments = this.currency!.comments;
     this.input.isDefault = this.currency!.isDefault;
   },
 });

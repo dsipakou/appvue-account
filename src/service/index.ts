@@ -337,7 +337,7 @@ export const updateCurrency = async ({
   comments,
   id,
 }: UpdateCurrencyRequest) => {
-  const response = await patchRequest('http://localhost:9091/api/currency',
+  const response = await patchRequest('http://localhost:9091/api/currencies',
     {
       code,
       sign,

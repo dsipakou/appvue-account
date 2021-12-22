@@ -55,7 +55,10 @@
         @closeForm="editForm = false" />
     </q-dialog>
     <q-dialog v-model="confirmForm">
-      <ConfirmForm />
+      <ConfirmForm
+        :currency="selectedCurrency"
+        :deleteCurrency="deleteCurrency"
+        @closeForm="confirmForm = false" />
     </q-dialog>
     <div class="row">
       <q-select map-options
@@ -159,6 +162,7 @@ export default {
       'createRate',
       'createCurrency',
       'updateCurrency',
+      'deleteCurrency',
       'fetchCurrencies',
       'fetchRates',
       'selectCurrencyRange',
@@ -199,7 +203,7 @@ export default {
     },
 
     remove(currency) {
-      console.log(currency);
+      this.selectedCurrency = currency;
       this.confirmForm = true;
     },
   },

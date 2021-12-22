@@ -349,6 +349,11 @@ export const updateCurrency = async ({
   return response;
 };
 
+export const deleteCurrency = async (id: number) => {
+  const response = await deleteRequest('http://localhost:9091/api/currencies', { id });
+  return response;
+};
+
 /* Rates section */
 
 export const getRates = async () => {

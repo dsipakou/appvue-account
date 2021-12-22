@@ -4,6 +4,7 @@ import {
   getCurrencies,
   createCurrency,
   updateCurrency,
+  deleteCurrency,
 } from '../../service';
 import * as constants from '../constants';
 
@@ -51,6 +52,13 @@ const actions = {
     }
   },
 
+  async deleteCurrency({ commit }: any, id: number) {
+    const response = await deleteCurrency(id);
+    if (response.status === 204) {
+      commit('deleteCurrency', id);
+    }
+  },
+
   async selectCurrency({ commit }: any, payload: any) {
     commit('selectCurrency', payload);
   },
@@ -76,6 +84,10 @@ const mutations = {
       }
       return item;
     });
+  },
+
+  deleteCurrency(state: any, id: number) {
+    state.currencies.items = state.currencies.items.filter((currency: any) => currency.id !== id);
   },
 
   selectCurrency(state: any, currencies: any) {

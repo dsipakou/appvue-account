@@ -54,7 +54,7 @@ export default {
   methods: {
     initCurrencies() {
       this.selectList = this.currencyList.filter((item) => (
-        !item.isDefault
+        !item.isBase
       ));
     },
   },

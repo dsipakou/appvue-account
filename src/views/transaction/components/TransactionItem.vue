@@ -150,7 +150,7 @@ export default {
     },
 
     initCurrencies() {
-      this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
+      this.defaultCurrency = this.currencyList.find((item) => item.isBase);
       this.currenciesListSelect = this.currencyList.filter((item) => (
         !item.isDefault
       ));
@@ -159,7 +159,7 @@ export default {
     transactionCurrencyList(transaction) {
       const currencies = [];
       if (this.currencyListLoaded) {
-        const defaultCurrency = this.currencyList.find((item) => item.isDefault);
+        const defaultCurrency = this.currencyList.find((item) => item.isBase);
         const objDefault = {
           id: transaction.currencyId,
           amount: transaction.amount.toFixed(2),

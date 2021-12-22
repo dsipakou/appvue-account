@@ -68,6 +68,7 @@ export default defineComponent({
         sign: this.input.sign,
         code: this.input.code,
         verbalName: this.input.verbalName,
+        isDefault: this.input.isDefault,
         comments: this.input.comments,
       };
       this.updateCurrency(currency);

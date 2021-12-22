@@ -37,6 +37,7 @@
               :icon="currency.isDefault ? 'check': ''"
               />
             <q-btn dense no-caps flat label="Edit" @click="edit(currency)"/>
+            <q-btn dense no-caps flat label="Delete" @click="remove(currency)"/>
             <span v-if="currency.isDefault">(default currency)</span>
           </div>
         </div>
@@ -47,11 +48,14 @@
         :createCurrency="createCurrency"
         @closeForm="createForm = false" />
     </q-dialog>
-    <q-dialog v-model="editForm">
+    <q-dialog v-model="editForm" persistent>
       <EditForm
         :currency="selectedCurrency"
         :updateCurrency="updateCurrency"
         @closeForm="editForm = false" />
+    </q-dialog>
+    <q-dialog v-model="confirmForm">
+      <ConfirmForm />
     </q-dialog>
     <div class="row">
       <q-select map-options
@@ -76,6 +80,7 @@ import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
 import { Range } from '@/store/constants';
 import AddForm from '@/views/currency/forms/AddForm.vue';
 import EditForm from '@/views/currency/forms/EditForm.vue';
+import ConfirmForm from '@/views/currency/forms/ConfirmForm.vue';
 import { getRate } from '../service';
 
 export default {
@@ -85,6 +90,7 @@ export default {
     CurrencyChart,
     AddForm,
     EditForm,
+    ConfirmForm,
   },
 
   data() {
@@ -114,6 +120,7 @@ export default {
       selectedRange: ref(Range.Month),
       createForm: ref(false),
       editForm: ref(false),
+      confirmForm: ref(false),
       rangeSelect: ref(null),
       rangeOptions: [
         {
@@ -143,7 +150,6 @@ export default {
     },
 
     baseCurrency() {
-      console.log("Base currency");
       return this.currencyList.find((item) => item.isBase);
     },
   },
@@ -190,6 +196,11 @@ export default {
     edit(currency) {
       this.selectedCurrency = currency;
       this.editForm = true;
+    },
+
+    remove(currency) {
+      console.log(currency);
+      this.confirmForm = true;
     },
   },
 

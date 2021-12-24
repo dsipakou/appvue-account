@@ -182,7 +182,7 @@ export default {
         await Promise.all(this.currencyList.map(async (currency) => {
           const fullCurrency = this.currencyList.find((item) => item.code === currency.code);
           const existingRate = await this.isRateExist(day, fullCurrency.id);
-          if (!existingRate && !currency.isDefault) {
+          if (!existingRate && !currency.isBase) {
             const rate = await getRate(currency.code, day);
             const payload = {
               currencyId: fullCurrency.id,

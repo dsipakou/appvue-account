@@ -42,7 +42,7 @@ export default {
       });
 
       const newList = this.currencyList.map((item) => {
-        if (item === this.defaultCurrency) {
+        if (item.isBase) {
           return item;
         }
         if (!isRateExist(item.id)) {

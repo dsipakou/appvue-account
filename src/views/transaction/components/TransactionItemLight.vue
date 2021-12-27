@@ -80,6 +80,8 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import moment from 'moment';
+
 export default defineComponent({
   name: 'TransactionItemLight',
 
@@ -97,6 +99,12 @@ export default defineComponent({
     updateTransaction: { type: Function, required: true },
     deleteTransaction: { type: Function, required: true },
     transaction: { type: Object, required: true },
-  }
+  },
+
+  methods: {
+    getFormattedDate(date: string) {
+      return moment(date).calendar().split(' at')[0];
+    },
+  },
 });
 </script>

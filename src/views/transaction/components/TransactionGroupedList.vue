@@ -42,7 +42,7 @@
                   </div>
                 </template>
                 <div class="col-12" v-for="transaction in child.items" :key="transaction.id">
-                  <TransactionItem
+                  <TransactionItemLight
                     :account="getAccount(transaction.accountId)"
                     :category="getCategory(transaction.categoryId)"
                     :currencyList="currencyList"
@@ -69,7 +69,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import CurrencyFilterDropdown from '@/components/dropdown/CurrencyFilterDropdown.vue';
-import TransactionItem from '@/views/transaction/components/TransactionItem.vue';
+import TransactionItemLight from '@/views/transaction/components/TransactionItemLight.vue';
 import { Account, Category, Transaction } from '@/types';
 
 interface ModifiedCategory {
@@ -98,7 +98,7 @@ export default defineComponent({
 
   components: {
     CurrencyFilterDropdown,
-    TransactionItem,
+    TransactionItemLight,
   },
 
   props: {

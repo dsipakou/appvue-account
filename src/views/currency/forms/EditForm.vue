@@ -41,8 +41,8 @@ export default defineComponent({
   name: 'EditForm',
 
   props: {
-    currency: Object,
-    updateCurrency: Function,
+    currency: { type: Object, required: true },
+    updateCurrency: { type: Function, required: true },
   },
 
   emits: [
@@ -57,6 +57,7 @@ export default defineComponent({
         sign: '',
         verbalName: '',
         isDefault: false,
+        comments: '',
       },
     };
   },

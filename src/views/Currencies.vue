@@ -27,7 +27,7 @@
       </div>
       <div class="col-4">
         <div class="column">
-          Base currency: {{ baseCurrency.verbalName }}
+          Base currency: {{ baseCurrency?.verbalName }}
           <q-btn no-caps dense rounded style="width: 40px;" label="Edit"></q-btn>
           <div v-for="currency in notBaseCurrencies" :key="currency.id">
             <q-toggle

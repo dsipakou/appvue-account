@@ -69,7 +69,6 @@ export default {
         labels: labelsToShow,
         datasets: datasetsToShow,
       };
-      console.log(this.chartdata);
     },
   },
 

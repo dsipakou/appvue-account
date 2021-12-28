@@ -29,6 +29,7 @@
     </q-card-section>
 
     <q-card-actions align="center" class="action-buttons">
+      <q-btn color="gray" rounded style="width: 100px;" @click="close()">Cancel</q-btn>
       <q-btn color="primary" rounded style="width: 100px;" @click="update()">Update</q-btn>
     </q-card-actions>
   </q-card>
@@ -73,6 +74,10 @@ export default defineComponent({
         comments: this.input.comments,
       };
       this.updateCurrency(currency);
+      this.close();
+    },
+
+    close() {
       this.$emit('closeForm');
     },
   },

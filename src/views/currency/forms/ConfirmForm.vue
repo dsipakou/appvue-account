@@ -5,7 +5,9 @@
       <q-btn flat dense icon="close" v-close-popup />
     </q-card-section>
     <q-card-section class="row items-left">
-      <span class="q-ml-sm text-subtitle1">This action also deletes all rates for the currency.</span>
+      <span class="q-ml-sm text-subtitle1">
+        This action also deletes all rates for the currency.
+      </span>
     </q-card-section>
 
     <q-card-actions class="q-mx-sm justify-between">

@@ -48,7 +48,7 @@
         :createCurrency="createCurrency"
         @closeForm="createForm = false" />
     </q-dialog>
-    <q-dialog v-model="editForm" persistent>
+    <q-dialog v-model="editForm">
       <EditForm
         :currency="selectedCurrency"
         :updateCurrency="updateCurrency"

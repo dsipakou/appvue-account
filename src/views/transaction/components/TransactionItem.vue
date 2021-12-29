@@ -92,13 +92,32 @@
     />
   </q-dialog>
 </template>
-<script>
+<script lang="ts">
+import { defineComponent, PropType, ref } from 'vue';
 import moment from 'moment';
-import { ref } from 'vue';
 import EditForm from '@/views/transaction/forms/EditForm.vue';
 import EditInlineForm from '@/views/transaction/forms/EditInlineForm.vue';
+import {
+  Account,
+  Category,
+  Currency,
+  Rate,
+  Transaction,
+} from '@/types';
 
-export default {
+interface InputData {
+  editedTransaction: Transaction | undefined,
+  defaultCurrency: Currency | undefined,
+  currenciesListSelect: Array<Currency>,
+}
+
+interface ShortTransaction {
+  id: number,
+  amount: string,
+  sign: string,
+}
+
+export default defineComponent({
   name: 'TransactionItem',
 
   inheritAttrs: false,
@@ -117,15 +136,15 @@ export default {
   },
 
   props: {
-    account: { type: Object, required: true },
-    accountList: { type: Array, required: true },
+    account: { type: Object as PropType<Account>, required: true },
+    accountList: { type: Array as PropType<Array<Account>>, required: true },
     budgetList: { type: Array, required: true },
-    category: { type: Object, required: true },
-    categoryList: { type: Array, required: true },
-    currencyList: { type: Array, required: true },
+    category: { type: Object as PropType<Category>, required: true },
+    categoryList: { type: Array as PropType<Array<Category>>, required: true },
+    currencyList: { type: Array as PropType<Array<Currency>>, required: true },
     currencyListLoaded: { type: Boolean, required: true },
-    ratesList: { type: Array, required: true },
-    selectedCurrencies: { type: Array, required: true },
+    ratesList: { type: Array as PropType<Array<Rate>>, required: true },
+    selectedCurrencies: { type: Array as PropType<Array<any>>, required: true },
     userList: { type: Array, required: true },
     updateTransaction: { type: Function, required: true },
     deleteTransaction: { type: Function, required: true },
@@ -136,11 +155,12 @@ export default {
     return {
       editedTransaction: null,
       defaultCurrency: '',
-    };
+      currenciesListSelect: [],
+    } as InputData;
   },
 
   methods: {
-    getFormattedDate(date) {
+    getFormattedDate(date: string): string {
       return moment(date).calendar().split(' at')[0];
     },
 
@@ -183,7 +203,7 @@ export default {
       return currencies;
     },
 
-    getRate(id, date) {
+    getRate(id: number, date: string): Rate | undefined {
       return this.ratesList.find((item) => {
         const transactionDate = moment(date).startOf('day');
         const rateDate = moment(item.rateDate).startOf('day');
@@ -208,5 +228,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

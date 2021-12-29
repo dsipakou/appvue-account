@@ -79,31 +79,110 @@
   </q-card>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import moment from 'moment';
+import {
+  Account,
+  Category,
+  Currency,
+  Rate,
+  Transaction,
+} from '@/types';
+
+interface InputData {
+  editedTransaction: Transaction | undefined,
+  defaultCurrency: Currency | undefined,
+  currenciesListSelect: Array<Currency>,
+}
+
+interface ShortTransaction {
+  id: number,
+  amount: string,
+  sign: string,
+}
 
 export default defineComponent({
   name: 'TransactionItemLight',
 
   props: {
-    account: { type: Object, required: true },
-    accountList: { type: Array, required: true },
+    account: { type: Object as PropType<Account>, required: true },
+    accountList: { type: Array as PropType<Array<Account>>, required: true },
     budgetList: { type: Array, required: true },
-    category: { type: Object, required: true },
-    categoryList: { type: Array, required: true },
-    currencyList: { type: Array, required: true },
+    category: { type: Object as PropType<Category>, required: true },
+    categoryList: { type: Array as PropType<Array<Category>>, required: true },
+    currencyList: { type: Array as PropType<Array<Currency>>, required: true },
     currencyListLoaded: { type: Boolean, required: true },
-    ratesList: { type: Array, required: true },
-    selectedCurrencies: { type: Array, required: true },
+    ratesList: { type: Array as PropType<Array<Rate>>, required: true },
+    selectedCurrencies: { type: Array as PropType<Array<any>>, required: true },
     userList: { type: Array, required: true },
     updateTransaction: { type: Function, required: true },
     deleteTransaction: { type: Function, required: true },
     transaction: { type: Object, required: true },
   },
 
+  data() {
+    return {
+      editedTransaction: undefined,
+      defaultCurrency: undefined,
+      currenciesListSelect: [],
+    } as InputData;
+  },
+
   methods: {
-    getFormattedDate(date: string) {
+    getFormattedDate(date: string): string {
       return moment(date).calendar().split(' at')[0];
+    },
+
+    clickEdit() {
+      // this.editedTransaction = this.transaction;
+      // this.editForm = true;
+    },
+
+    initCurrencies() {
+      this.defaultCurrency = this.currencyList.find((item) => item.isBase);
+      this.currenciesListSelect = this.currencyList.filter((item) => (
+        !item.isDefault
+      ));
+    },
+
+    transactionCurrencyList(transaction: Transaction): Array<ShortTransaction> {
+      const currencies = [];
+      if (this.currencyListLoaded) {
+        const defaultCurrency = this.currencyList.find((item) => item.isBase);
+        const objDefault: ShortTransaction = {
+          id: transaction.currencyId,
+          amount: transaction.amount.toFixed(2),
+          sign: defaultCurrency!.sign,
+        } as ShortTransaction;
+
+        currencies.push(objDefault);
+
+        Object.values(this.selectedCurrencies).forEach((currency) => {
+          const rate = this.getRate(currency.id, transaction.transactionDate);
+          const obj = {
+            id: currency!.value,
+            amount: rate ? (transaction.amount / rate.rate).toFixed(2) : '-',
+            sign: currency!.sign,
+          } as ShortTransaction;
+
+          currencies.push(obj);
+        });
+      }
+
+      return currencies;
+    },
+
+    getRate(id: number, date: string): Rate | undefined {
+      return this.ratesList.find((item) => {
+        const transactionDate = moment(date).startOf('day');
+        const rateDate = moment(item.rateDate).startOf('day');
+        return transactionDate.isSame(rateDate) && item.currencyId === id;
+      });
+    },
+
+    clickItem() {
+      // this.editedTransaction = this.transaction;
+      // this.editMode = true;
     },
   },
 });

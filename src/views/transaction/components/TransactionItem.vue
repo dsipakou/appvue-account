@@ -148,13 +148,13 @@ export default defineComponent({
     userList: { type: Array, required: true },
     updateTransaction: { type: Function, required: true },
     deleteTransaction: { type: Function, required: true },
-    transaction: { type: Object, required: true },
+    transaction: { type: Object as PropType<Transaction>, required: true },
   },
 
   data() {
     return {
-      editedTransaction: null,
-      defaultCurrency: '',
+      editedTransaction: undefined,
+      defaultCurrency: undefined,
       currenciesListSelect: [],
     } as InputData;
   },
@@ -176,15 +176,15 @@ export default defineComponent({
       ));
     },
 
-    transactionCurrencyList(transaction) {
+    transactionCurrencyList(transaction: Transaction): Array<ShortTransaction> {
       const currencies = [];
       if (this.currencyListLoaded) {
         const defaultCurrency = this.currencyList.find((item) => item.isBase);
-        const objDefault = {
+        const objDefault: ShortTransaction = {
           id: transaction.currencyId,
           amount: transaction.amount.toFixed(2),
-          sign: defaultCurrency.sign,
-        };
+          sign: defaultCurrency!.sign,
+        } as ShortTransaction;
 
         currencies.push(objDefault);
 
@@ -194,7 +194,7 @@ export default defineComponent({
             id: currency.value,
             amount: rate ? (transaction.amount / rate.rate).toFixed(2) : '-',
             sign: currency.sign,
-          };
+          } as ShortTransaction;
 
           currencies.push(obj);
         });

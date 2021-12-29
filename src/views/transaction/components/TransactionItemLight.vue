@@ -1,26 +1,8 @@
 <template>
-  <q-card flat bordered>
+  <q-card flat class="card bg-grey-2">
     <q-card-section horizontal class="justify-between">
-      <div class="row q-pa-md">
-        <div class="col-1 align-center">
-          <q-avatar
-            color="primary"
-            text-color="white">
-            {{ category.name[0] }}
-          </q-avatar>
-        </div>
-        <div class="row items-center" v-if="!editMode">
-          <div class="col-7 align-center">
-            <div class="text-h6" @click="clickItem">
-              {{ transaction.type === 'income' ? account.source : category.name }}
-              <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
-                {{ category.parentName }}
-              </q-chip>
-            </div>
-            <div class="text-subtitle2">
-              {{ getFormattedDate(transaction.transactionDate) }}
-            </div>
-          </div>
+      <div class="row q-px-md">
+        <div class="row items-center">
           <div class="col self-center">
             <q-chip square outline color="primary"
                class="q-ml-sm overflow-hidden align-center">
@@ -33,6 +15,9 @@
                   {{ account.source }}
                 </span>
             </q-chip>
+          </div>
+          <div class="col">
+            {{ getBudgetName(transaction.budgetId) }}
           </div>
           <div class="col self-center items-end">
             <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
@@ -61,28 +46,31 @@
             </q-btn-dropdown>
           </div>
         </div>
-        <div class="row items-center justify-start" v-else>
-          <EditInlineForm
-            :transaction="editedTransaction"
-            :accountList="accountList"
-            :budgetList="budgetList"
-            :categoryList="categoryList"
-            :currencyList="currencyList"
-            :currencyListLoaded="currencyListLoaded"
-            :ratesList="ratesList"
-            :userList="userList"
-            :updateTransaction="updateTransaction"
-            @close="editMode = false"/>
-        </div>
       </div>
     </q-card-section>
   </q-card>
+  <q-dialog v-model="editForm">
+    <EditForm
+      :transaction="editedTransaction"
+      :accountList="accountList"
+      :budgetList="budgetList"
+      :categoryList="categoryList"
+      :currencyList="currencyList"
+      :currencyListLoaded="currencyListLoaded"
+      :ratesList="ratesList"
+      :userList="userList"
+      :updateTransaction="updateTransaction"
+      @closeForm="editForm = false"
+    />
+  </q-dialog>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 import moment from 'moment';
+import EditForm from '@/views/transaction/forms/EditForm.vue';
 import {
   Account,
+  Budget,
   Category,
   Currency,
   Rate,
@@ -104,10 +92,14 @@ interface ShortTransaction {
 export default defineComponent({
   name: 'TransactionItemLight',
 
+  components: {
+    EditForm,
+  },
+
   props: {
     account: { type: Object as PropType<Account>, required: true },
     accountList: { type: Array as PropType<Array<Account>>, required: true },
-    budgetList: { type: Array, required: true },
+    budgetList: { type: Array as PropType<Array<Budget>>, required: true },
     category: { type: Object as PropType<Category>, required: true },
     categoryList: { type: Array as PropType<Array<Category>>, required: true },
     currencyList: { type: Array as PropType<Array<Currency>>, required: true },
@@ -117,7 +109,13 @@ export default defineComponent({
     userList: { type: Array, required: true },
     updateTransaction: { type: Function, required: true },
     deleteTransaction: { type: Function, required: true },
-    transaction: { type: Object, required: true },
+    transaction: { type: Object as PropType<Transaction>, required: true },
+  },
+
+  setup() {
+    return {
+      editForm: ref(false),
+    };
   },
 
   data() {
@@ -134,8 +132,8 @@ export default defineComponent({
     },
 
     clickEdit() {
-      // this.editedTransaction = this.transaction;
-      // this.editForm = true;
+      this.editedTransaction = this.transaction;
+      this.editForm = true;
     },
 
     initCurrencies() {
@@ -180,10 +178,21 @@ export default defineComponent({
       });
     },
 
-    clickItem() {
-      // this.editedTransaction = this.transaction;
-      // this.editMode = true;
+    getBudgetName(budgetId: number | undefined): string {
+      if (budgetId) {
+        const budget: Budget | undefined = this.budgetList.find((item) => item.id === budgetId);
+        if (budget) {
+          return budget.title;
+        }
+      }
+      return '(not planned)';
     },
   },
 });
 </script>
+<style scoped>
+.card {
+  max-height: 60px;
+  margin: 5px 0;
+}
+</style>

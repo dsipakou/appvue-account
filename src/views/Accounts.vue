@@ -1,5 +1,6 @@
 <template>
   <div>
+    <CreditCard />
     <div class="row">
       <div class="header">
         <span>Your accounts</span>
@@ -289,10 +290,15 @@ import {
 } from 'vuex';
 import moment from 'moment';
 import { ref } from 'vue';
+import CreditCard from '@/views/accounts/components/CreditCard.vue';
 import { transactionTypes } from '../utils/constants';
 
 export default {
   name: 'AccountList',
+
+  components: {
+    CreditCard,
+  },
 
   setup() {
     return {

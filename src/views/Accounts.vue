@@ -1,6 +1,5 @@
 <template>
   <div>
-    <CreditCard />
     <div class="row">
       <div class="header">
         <span>Your accounts</span>
@@ -37,6 +36,11 @@
       </div>
       <div id="account-list" class="row">
         <div v-for="account in accountList" class="col-3 q-ml-sm" :key="account.id">
+          <CreditCard>
+            <template v-slot:title>
+              {{ account.source }}
+            </template>
+          </CreditCard>
           <q-card
             flat
             class="item"

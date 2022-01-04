@@ -2,7 +2,8 @@
   <div class="card card--front">
     <div class="card__number">4111 1111 1111 1111</div>
     <div class="card__expiry-date">10/17</div>
-    <div class="card__owner">Default card</div>
+    <div class="card__owner">
+      <slot name="title">Default card</slot></div>
   </div>
 </template>
 <script lang="ts">

@@ -1,9 +1,14 @@
 <template>
   <div class="card card--front">
-    <div class="card__number">4111 1111 1111 1111</div>
-    <div class="card__expiry-date">10/17</div>
+    <div class="card__number">
+      **** **** **** {{ number }}
+    </div>
+    <div class="card__expiry-date">
+      {{ date }}
+    </div>
     <div class="card__owner">
-      <slot name="title">Default card</slot></div>
+      {{ title }}
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -11,6 +16,12 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'CreditCard',
+
+  props: {
+    number: { type: String, default: '****' },
+    date: { type: String, default: 'Unknown expiration date' },
+    title: { type: String, requried: true },
+  },
 });
 </script>
 <style scoped>
@@ -19,8 +30,8 @@ export default defineComponent({
   position: relative;
   display: inline-block;
   vertical-align: middle;
-  width: 335px;
-  height: 200px;
+  width: 315px;
+  height: 180px;
   text-align: left;
   padding: 30px;
   margin-bottom: 50px;
@@ -31,8 +42,8 @@ export default defineComponent({
 }
 
 .card__number {
-  font-size: 24px;
-  padding: 40px 0 15px;
+  font-size: 20px;
+  padding: 25px 0 15px;
   text-align: center;
 }
 

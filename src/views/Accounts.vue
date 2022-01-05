@@ -1,6 +1,5 @@
 <template>
   <div>
-    <CreditCard />
     <div class="row">
       <div class="header">
         <span>Your accounts</span>
@@ -37,24 +36,16 @@
       </div>
       <div id="account-list" class="row">
         <div v-for="account in accountList" class="col-3 q-ml-sm" :key="account.id">
-          <q-card
-            flat
-            class="item"
+          <CreditCard
+            :title=account.source
             @click="edit(account)"
             draggable="true"
             @dragstart="startDrag($event, account)"
             @dragend="endDrag($event)"
             @drop="onDrop($event, account)"
             @dragover.prevent
-            @dragenter.prevent
-            >
-            <q-card-section horizontal class="item-content">
-              <q-card-section class="item-title row">
-                <span>{{ account.source }}</span>
-                <span>{{ account.amount }}</span>
-              </q-card-section>
-            </q-card-section>
-          </q-card>
+            @dragenter.prevent>
+          </CreditCard>
         </div>
       </div>
     </div>

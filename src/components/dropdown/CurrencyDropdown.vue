@@ -23,29 +23,37 @@ export default {
 
   data() {
     return {
-      defaultCurrency: '',
+      preSelectedCurrency: '',
       availableCurrencies: [],
       currencyModel: '',
     };
   },
 
-  methods: {
-    initCurrencies() {
-      this.defaultCurrency = this.currencyList.find((item) => item.isDefault);
+  computed: {
+    defaultCurrency() {
+      return this.currencyList.find((item) => item.isDefault);
     },
 
-    getAvailableCurrencies() {
-      const isRateExist = (id) => this.ratesList.some((item) => {
+    baseCurrency() {
+      return this.currencyList.find((item) => item.isBase);
+    },
+  },
+
+  methods: {
+    isRateExist(id) {
+      return this.ratesList.some((item) => {
         const inputDate = moment(this.selectedDate).startOf('day');
         const rateDate = moment(item.rateDate).startOf('day');
         return rateDate.isSame(inputDate) && item.currencyId === id;
       });
+    },
 
-      const newList = this.currencyList.map((item) => {
+    getAvailableCurrencies() {
+      const extendedCurrencyList = this.currencyList.map((item) => {
         if (item.isBase) {
           return item;
         }
-        if (!isRateExist(item.id)) {
+        if (!this.isRateExist(item.id)) {
           return {
             ...item,
             verbalName: `${item.verbalName} (no exchange rate)`,
@@ -54,23 +62,25 @@ export default {
         }
         return item;
       });
-      this.availableCurrencies = newList;
+
+      this.availableCurrencies = extendedCurrencyList;
+
+      this.preSelectedCurrency = this.defaultCurrency;
+      if (extendedCurrencyList.find((item) => item.id === this.defaultCurrency.id).disable) {
+        this.preSelectedCurrency = this.baseCurrency;
+      }
     },
   },
 
   watch: {
     selectedDate() {
       this.getAvailableCurrencies();
-      this.currencyModel = this.defaultCurrency;
+      this.currencyModel = this.preSelectedCurrency;
     },
 
     currencyModel() {
       this.$emit('selectCurrency', this.currencyModel);
     },
-  },
-
-  mounted() {
-    this.initCurrencies();
   },
 };
 </script>

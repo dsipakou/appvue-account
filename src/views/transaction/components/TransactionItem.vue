@@ -179,11 +179,11 @@ export default defineComponent({
     transactionCurrencyList(transaction: Transaction): Array<ShortTransaction> {
       const currencies = [];
       if (this.currencyListLoaded) {
-        const defaultCurrency = this.currencyList.find((item) => item.isBase);
+        const baseCurrency = this.currencyList.find((item) => item.isBase);
         const objDefault: ShortTransaction = {
           id: transaction.currencyId,
-          amount: transaction.amount.toFixed(2),
-          sign: defaultCurrency!.sign,
+          amount: transaction.baseAmount.toFixed(2),
+          sign: baseCurrency!.sign,
         } as ShortTransaction;
 
         currencies.push(objDefault);
@@ -192,7 +192,7 @@ export default defineComponent({
           const rate = this.getRate(currency.id, transaction.transactionDate);
           const obj = {
             id: currency.value,
-            amount: rate ? (transaction.amount / rate.rate).toFixed(2) : '-',
+            amount: rate ? (transaction.baseAmount / rate.rate).toFixed(2) : '-',
             sign: currency.sign,
           } as ShortTransaction;
 

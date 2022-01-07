@@ -5,6 +5,7 @@ export interface Transaction {
   currencyId: number,
   userId: number,
   amount: number,
+  baseAmount: number,
   rate: number,
   transactionDate: string,
   type: string,

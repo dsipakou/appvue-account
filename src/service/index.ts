@@ -66,12 +66,18 @@ export const createUser = async (name: string, email: string, password: string) 
 
 interface TransactionRequest {
   sorting: string,
+  limit: string,
   dateFrom: string,
   dateTo: string,
 }
 
-export const getTransactions = async ({ sorting, dateFrom = '', dateTo = '' }: TransactionRequest) => {
-  let queryString = `sorting=${sorting}`;
+export const getTransactions = async ({
+  sorting,
+  limit = '15',
+  dateFrom = '',
+  dateTo = '',
+}: TransactionRequest) => {
+  let queryString = `sorting=${sorting}&limit=${limit}`;
   if (dateFrom !== '' && dateTo !== '') {
     queryString += `&dateFrom=${dateFrom}&dateTo=${dateTo}`;
   }

@@ -34,15 +34,6 @@
                 </span>
             </q-chip>
           </div>
-          <div class="q-ml-md">
-            <q-chip
-              dense
-              color="info"
-              text-color="white"
-              class="text-caption text-weight-bold">
-              {{ transaction.amount }} {{ getCurrency(transaction.currencyId)?.sign }}
-            </q-chip>
-          </div>
           <div class="col self-center items-end">
             <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
               <span
@@ -51,6 +42,7 @@
                 {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.baseAmount }}
                 {{ amount.sign }}
               </span>
+              <q-chip>{{ amount.amount }} </q-chip>
             </div>
           </div>
           <div class="col-1 self-center items-end">
@@ -122,8 +114,7 @@ interface InputData {
 
 interface ShortTransaction {
   id: number,
-  amount?: string,
-  baseAmount: string,
+  amount: string,
   sign: string,
 }
 
@@ -220,10 +211,6 @@ export default defineComponent({
         const rateDate = moment(item.rateDate).startOf('day');
         return transactionDate.isSame(rateDate) && item.currencyId === id;
       });
-    },
-
-    getCurrency(id: number): Currency | undefined {
-      return this.currencyList.find((item) => item.id === id);
     },
 
     clickItem() {

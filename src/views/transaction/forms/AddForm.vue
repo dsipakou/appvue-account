@@ -175,16 +175,10 @@ export default defineComponent({
     },
 
     create() {
-      const rate: any = this.getRate(
-        this.input.currency.id,
-        this.input.transactionDate,
-      );
-
       const transaction = {
         userId: this.userId,
         categoryId: this.category.id,
         amount: String(evaluate(this.input.amount.replace(',', '.'))),
-        rate: rate?.rate || 1,
         accountId: this.accountId,
         currencyId: this.input.currency.id,
         budgetId: this.input.budget?.id || null,

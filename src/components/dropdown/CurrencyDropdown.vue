@@ -16,6 +16,7 @@ export default {
 
   props: {
     currencyList: Array,
+    selectedCurrencyId: { type: Number, default: -1 },
     ratesList: Array,
     selectedDate: { type: String, default: new Date().toISOString().substr(0, 10) },
     currencyListLoaded: Boolean,
@@ -36,6 +37,10 @@ export default {
 
     baseCurrency() {
       return this.currencyList.find((item) => item.isBase);
+    },
+
+    selectedCurrency() {
+      return this.currencyList.find((item) => item.id === this.selectedCurrencyId);
     },
   },
 
@@ -64,6 +69,11 @@ export default {
       });
 
       this.availableCurrencies = extendedCurrencyList;
+
+      if (this.selectedCurrency) {
+        this.preSelectedCurrency = this.selectedCurrency;
+        return;
+      }
 
       this.preSelectedCurrency = this.defaultCurrency;
       if (extendedCurrencyList.find((item) => item.id === this.defaultCurrency.id).disable) {

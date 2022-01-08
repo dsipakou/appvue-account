@@ -24,7 +24,7 @@
               <span
                 :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
                 class="text-bold q-pl-lg">
-                {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.amount }}
+                {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.baseAmount }}
                 {{ amount.sign }}
               </span>
             </div>
@@ -85,7 +85,7 @@ interface InputData {
 
 interface ShortTransaction {
   id: number,
-  amount: string,
+  baseAmount: string,
   sign: string,
 }
 
@@ -149,7 +149,7 @@ export default defineComponent({
         const defaultCurrency = this.currencyList.find((item) => item.isBase);
         const objDefault: ShortTransaction = {
           id: transaction.currencyId,
-          amount: transaction.amount.toFixed(2),
+          baseAmount: transaction.baseAmount.toFixed(2),
           sign: defaultCurrency!.sign,
         } as ShortTransaction;
 
@@ -159,7 +159,7 @@ export default defineComponent({
           const rate = this.getRate(currency.id, transaction.transactionDate);
           const obj = {
             id: currency!.value,
-            amount: rate ? (transaction.amount / rate.rate).toFixed(2) : '-',
+            baseAmount: rate ? (transaction.baseAmount / rate.rate).toFixed(2) : '-',
             sign: currency!.sign,
           } as ShortTransaction;
 

@@ -24,7 +24,7 @@
           label="Date"
           v-model="input.transactionDate" />
       </q-card-section>
-      <q-card-section>
+      <q-card-section style="min-width: 200px;">
         <CurrencyDropdown
           :currencyList="currencyList"
           :ratesList="ratesList"
@@ -175,17 +175,12 @@ export default defineComponent({
     },
 
     create() {
-      const rate: any = this.getRate(
-        this.input.currency.id,
-        this.input.transactionDate,
-      );
-
       const transaction = {
         userId: this.userId,
         categoryId: this.category.id,
         amount: String(evaluate(this.input.amount.replace(',', '.'))),
-        rate: rate?.rate || 1,
         accountId: this.accountId,
+        currencyId: this.input.currency.id,
         budgetId: this.input.budget?.id || null,
         transactionDate: this.input.transactionDate,
         type: constants.transactionTypes.OUTCOME,

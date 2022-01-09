@@ -47,9 +47,9 @@ const actions = {
     const response = await getTransactions(payload);
     if (response.status === 200) {
       const body = await response.json();
-      commit('setTransactionsStatus', itemStatus.LOADED);
       commit('setTransactions', body);
     }
+    commit('setTransactionsStatus', itemStatus.LOADED);
   },
 
   async fetchGroupedTransaction({ commit }: any, payload: any) {
@@ -57,9 +57,9 @@ const actions = {
     const response = await getGroupedTransactions(payload);
     if (response.status === 200) {
       const body = await response.json();
-      commit('setGroupedTransactionsStatus', itemStatus.LOADING);
       commit('setGroupedTransactions', body);
     }
+    commit('setGroupedTransactionsStatus', itemStatus.LOADED);
   },
 
   async createTransaction({ commit }: any, payload: any) {

@@ -23,7 +23,7 @@
           </div>
           <div class="col self-center">
             <q-chip square outline color="primary"
-               class="q-ml-sm overflow-hidden align-center">
+               class="q-ml-sm overflow-hidden align-center text-caption">
               <q-avatar
                 color="primary"
                 text-color="white"
@@ -34,12 +34,21 @@
                 </span>
             </q-chip>
           </div>
+          <div class="q-ml-md">
+            <q-chip
+              dense
+              color="info"
+              text-color="white"
+              class="text-caption text-weight-bold">
+              {{ transaction.amount }} {{ getCurrency(transaction.currencyId)?.sign }}
+            </q-chip>
+          </div>
           <div class="col self-center items-end">
             <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
               <span
                 :class="transaction.type === 'income' ? 'text-positive': 'text-negative'"
                 class="text-bold q-pl-lg">
-                {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.amount }}
+                {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.baseAmount }}
                 {{ amount.sign }}
               </span>
             </div>
@@ -113,7 +122,8 @@ interface InputData {
 
 interface ShortTransaction {
   id: number,
-  amount: string,
+  amount?: string,
+  baseAmount: string,
   sign: string,
 }
 
@@ -179,11 +189,12 @@ export default defineComponent({
     transactionCurrencyList(transaction: Transaction): Array<ShortTransaction> {
       const currencies = [];
       if (this.currencyListLoaded) {
-        const defaultCurrency = this.currencyList.find((item) => item.isBase);
+        const baseCurrency = this.currencyList.find((item) => item.isBase);
         const objDefault: ShortTransaction = {
           id: transaction.currencyId,
           amount: transaction.amount.toFixed(2),
-          sign: defaultCurrency!.sign,
+          baseAmount: transaction.baseAmount.toFixed(2),
+          sign: baseCurrency!.sign,
         } as ShortTransaction;
 
         currencies.push(objDefault);
@@ -192,7 +203,7 @@ export default defineComponent({
           const rate = this.getRate(currency.id, transaction.transactionDate);
           const obj = {
             id: currency.value,
-            amount: rate ? (transaction.amount / rate.rate).toFixed(2) : '-',
+            baseAmount: rate ? (transaction.baseAmount / rate.rate).toFixed(2) : '-',
             sign: currency.sign,
           } as ShortTransaction;
 
@@ -209,6 +220,10 @@ export default defineComponent({
         const rateDate = moment(item.rateDate).startOf('day');
         return transactionDate.isSame(rateDate) && item.currencyId === id;
       });
+    },
+
+    getCurrency(id: number): Currency | undefined {
+      return this.currencyList.find((item) => item.id === id);
     },
 
     clickItem() {

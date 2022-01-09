@@ -1,8 +1,26 @@
 <template>
-  <q-card flat class="card bg-grey-2">
+  <q-card flat bordered>
     <q-card-section horizontal class="justify-between">
-      <div class="row q-px-md">
-        <div class="row items-center">
+      <div class="row q-pa-md">
+        <div class="col-1 align-center">
+          <q-avatar
+            color="primary"
+            text-color="white">
+            {{ category.name[0] }}
+          </q-avatar>
+        </div>
+        <div class="row items-center" v-if="!editMode">
+          <div class="col-7 align-center">
+            <div class="text-h6" @click="clickItem">
+              {{ transaction.type === 'income' ? account.source : category.name }}
+              <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
+                {{ category.parentName }}
+              </q-chip>
+            </div>
+            <div class="text-subtitle2">
+              {{ getFormattedDate(transaction.transactionDate) }}
+            </div>
+          </div>
           <div class="col self-center">
             <q-chip square outline color="primary"
                class="q-ml-sm overflow-hidden align-center">
@@ -16,9 +34,6 @@
                 </span>
             </q-chip>
           </div>
-          <div class="col">
-            {{ getBudgetName(transaction.budgetId) }}
-          </div>
           <div class="col self-center items-end">
             <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
               <span
@@ -27,6 +42,7 @@
                 {{ transaction.type === 'income' ? '+' : '-' }}{{ amount.baseAmount }}
                 {{ amount.sign }}
               </span>
+              <q-chip>{{ amount.amount }} </q-chip>
             </div>
           </div>
           <div class="col-1 self-center items-end">
@@ -45,6 +61,19 @@
               </q-list>
             </q-btn-dropdown>
           </div>
+        </div>
+        <div class="row items-center justify-start" v-else>
+          <EditInlineForm
+            :transaction="editedTransaction"
+            :accountList="accountList"
+            :budgetList="budgetList"
+            :categoryList="categoryList"
+            :currencyList="currencyList"
+            :currencyListLoaded="currencyListLoaded"
+            :ratesList="ratesList"
+            :userList="userList"
+            :updateTransaction="updateTransaction"
+            @close="editMode = false"/>
         </div>
       </div>
     </q-card-section>
@@ -68,9 +97,9 @@
 import { defineComponent, PropType, ref } from 'vue';
 import moment from 'moment';
 import EditForm from '@/views/transaction/forms/EditForm.vue';
+import EditInlineForm from '@/views/transaction/forms/EditInlineForm.vue';
 import {
   Account,
-  Budget,
   Category,
   Currency,
   Rate,
@@ -85,21 +114,32 @@ interface InputData {
 
 interface ShortTransaction {
   id: number,
-  baseAmount: string,
+  amount: string,
   sign: string,
 }
 
 export default defineComponent({
-  name: 'TransactionItemLight',
+  name: 'TransactionItem',
+
+  inheritAttrs: false,
 
   components: {
     EditForm,
+    EditInlineForm,
+  },
+
+  setup() {
+    return {
+      editForm: ref(false),
+      editMode: ref(false),
+      selectedCategory: ref(null),
+    };
   },
 
   props: {
     account: { type: Object as PropType<Account>, required: true },
     accountList: { type: Array as PropType<Array<Account>>, required: true },
-    budgetList: { type: Array as PropType<Array<Budget>>, required: true },
+    budgetList: { type: Array, required: true },
     category: { type: Object as PropType<Category>, required: true },
     categoryList: { type: Array as PropType<Array<Category>>, required: true },
     currencyList: { type: Array as PropType<Array<Currency>>, required: true },
@@ -110,12 +150,6 @@ export default defineComponent({
     updateTransaction: { type: Function, required: true },
     deleteTransaction: { type: Function, required: true },
     transaction: { type: Object as PropType<Transaction>, required: true },
-  },
-
-  setup() {
-    return {
-      editForm: ref(false),
-    };
   },
 
   data() {
@@ -146,11 +180,12 @@ export default defineComponent({
     transactionCurrencyList(transaction: Transaction): Array<ShortTransaction> {
       const currencies = [];
       if (this.currencyListLoaded) {
-        const defaultCurrency = this.currencyList.find((item) => item.isBase);
+        const baseCurrency = this.currencyList.find((item) => item.isBase);
         const objDefault: ShortTransaction = {
           id: transaction.currencyId,
+          amount: transaction.amount.toFixed(2),
           baseAmount: transaction.baseAmount.toFixed(2),
-          sign: defaultCurrency!.sign,
+          sign: baseCurrency!.sign,
         } as ShortTransaction;
 
         currencies.push(objDefault);
@@ -158,9 +193,9 @@ export default defineComponent({
         Object.values(this.selectedCurrencies).forEach((currency) => {
           const rate = this.getRate(currency.id, transaction.transactionDate);
           const obj = {
-            id: currency!.value,
+            id: currency.value,
             baseAmount: rate ? (transaction.baseAmount / rate.rate).toFixed(2) : '-',
-            sign: currency!.sign,
+            sign: currency.sign,
           } as ShortTransaction;
 
           currencies.push(obj);
@@ -178,21 +213,22 @@ export default defineComponent({
       });
     },
 
-    getBudgetName(budgetId: number | undefined): string {
-      if (budgetId) {
-        const budget: Budget | undefined = this.budgetList.find((item) => item.id === budgetId);
-        if (budget) {
-          return budget.title;
-        }
+    clickItem() {
+      this.editedTransaction = this.transaction;
+      this.editMode = true;
+    },
+  },
+
+  mounted() {
+    this.initCurrencies();
+  },
+
+  watch: {
+    currencyListLoaded() {
+      if (this.currencyListLoaded) {
+        this.initCurrencies();
       }
-      return '(not planned)';
     },
   },
 });
 </script>
-<style scoped>
-.card {
-  max-height: 60px;
-  margin: 5px 0;
-}
-</style>

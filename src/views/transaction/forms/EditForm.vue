@@ -46,6 +46,7 @@
     <q-card-section>
       <CurrencyDropdown
         :currencyList="currencyList"
+        :selectedCurrencyId="transaction.currencyId"
         :ratesList="ratesList"
         :selectedDate="activeDate"
         :currencyListLoaded="currencyListLoaded"
@@ -144,18 +145,13 @@ export default {
     },
 
     update() {
-      const rate = this.getRate(
-        this.input.currency.id,
-        this.input.transactionDate,
-      );
-
       const transaction = {
         id: this.input.id,
         userId: this.input.user.id,
         categoryId: this.input.category.id,
         budgetId: this.input.budget?.id,
         amount: this.input.amount.toString(),
-        rate: rate?.rate || 1,
+        currencyId: this.input.currency.id,
         accountId: this.input.account.id,
         transactionDate: this.input.transactionDate,
         type: this.input.type,

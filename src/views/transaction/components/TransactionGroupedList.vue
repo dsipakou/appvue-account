@@ -133,7 +133,7 @@ export default defineComponent({
   computed: {
     transactionsSum(): string {
       return this.transactions.reduce((acc, item) => (
-        acc + item.amount
+        acc + item.baseAmount
       ), 0)?.toFixed(2);
     },
 
@@ -168,11 +168,13 @@ export default defineComponent({
         acc[parentCategory].items[item.categoryId] = acc[parentCategory].items[item.categoryId]
           || { items: [], name: subCategory, sum: 0 } as SubCategory;
         acc[parentCategory].items[item.categoryId].items.push(item);
-        acc[parentCategory].sum += item.amount;
-        acc[parentCategory].items[item.categoryId].sum += item.amount;
+        acc[parentCategory].sum += item.baseAmount;
+        acc[parentCategory].items[item.categoryId].sum += item.baseAmount;
 
         return acc;
       }, {});
+
+      console.log(result);
 
       return result;
     },

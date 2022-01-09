@@ -23,7 +23,7 @@
           </div>
           <div class="col self-center">
             <q-chip square outline color="primary"
-               class="q-ml-sm overflow-hidden align-center">
+               class="q-ml-sm overflow-hidden align-center text-caption">
               <q-avatar
                 color="primary"
                 text-color="white"

@@ -4,6 +4,17 @@
       <div class="header">
         Reports
       </div>
+      <q-select outlined dense map-options
+        class="q-ml-lg q-pb-md"
+        style="max-width: 300px;"
+        v-model="selectedCurrency"
+        :options="currencyList"
+        option-value="id"
+        option-label="verbalName">
+        <template v-slot:prepend>
+          <q-icon name="toll" />
+        </template>
+      </q-select>
     </div>
     <q-markup-table
       :separator="separator"
@@ -29,6 +40,7 @@
           <td>{{ dayNumber }}</td>
           <td
             v-for="month in monthSequence"
+            :class="isToday(month, dayNumber) ? 'current-day' : ''"
             :key="month">
             {{ currentDayAmount(month, dayNumber) }}
           </td>
@@ -41,16 +53,33 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
-import { addMonths, format } from 'date-fns';
+import {
+  addMonths,
+  format,
+  isSameDay,
+  parse,
+} from 'date-fns';
 
 export default {
   name: 'Reports',
 
+  data() {
+    return {
+      selectedCurrency: {},
+    };
+  },
+
   computed: {
     ...mapGetters([
       'categoryList',
+      'currencyList',
+      'currencyListLoaded',
       'groupedTransactionList',
     ]),
+
+    baseCurrency() {
+      return this.currencyList.find((item) => item.isBase);
+    },
 
     mainCategories() {
       const categories = this.categoryList.filter((item) => (
@@ -78,6 +107,7 @@ export default {
 
   methods: {
     ...mapActions([
+      'fetchCurrencies',
       'fetchGroupedTransaction',
     ]),
 
@@ -90,17 +120,45 @@ export default {
       ), 0);
       return overall.toFixed(2);
     },
+
+    isToday(month, day) {
+      const parsedDate = parse(`${month}-${day}`, 'yyyy-M-dd', new Date());
+      return isSameDay(parsedDate, new Date());
+    },
+  },
+
+  watch: {
+    selectedCurrency() {
+      if (this.currencyListLoaded) {
+        const dateFrom = this.monthSequence[0];
+        const dateTo = format(addMonths(new Date(dateFrom), 12), 'yyyy-MM');
+        const { code } = this.selectedCurrency;
+        this.fetchGroupedTransaction({ dateFrom, dateTo, currency: code });
+      }
+    },
+    currencyListLoaded() {
+      if (this.currencyListLoaded) {
+        this.selectedCurrency = this.baseCurrency;
+      }
+    },
   },
 
   mounted() {
     const dateFrom = this.monthSequence[0];
     const dateTo = format(addMonths(new Date(dateFrom), 12), 'yyyy-MM');
-    this.fetchGroupedTransaction({ dateFrom, dateTo });
+    this.fetchCurrencies();
+    this.selectedCurrency = this.baseCurrency;
+    this.fetchGroupedTransaction({ dateFrom, dateTo, currency: 'USD' });
   },
 };
 </script>
 <style scoped>
 .header {
   font-size: 24px;
+}
+
+.current-day {
+  font-weight: 900;
+  background-color: cadetblue;
 }
 </style>

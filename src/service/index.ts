@@ -87,11 +87,16 @@ export const getTransactions = async ({
 
 interface GroupedTransactionRequest {
   dateFrom: string,
-  dateTo: String,
+  dateTo: string,
+  currency: string,
 }
 
-export const getGroupedTransactions = async ({ dateFrom, dateTo }: GroupedTransactionRequest) => {
-  const response = await getRequest(`http://localhost:9091/api/transactions/month/${dateFrom}/${dateTo}`);
+export const getGroupedTransactions = async ({
+  dateFrom,
+  dateTo,
+  currency,
+}: GroupedTransactionRequest) => {
+  const response = await getRequest(`http://localhost:9091/api/transactions/month?dateFrom=${dateFrom}&dateTo=${dateTo}&currency=${currency}`);
   return response;
 };
 

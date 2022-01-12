@@ -8,8 +8,15 @@
           <q-avatar>
             <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
           </q-avatar>
-          Title
+          Flying Budget
         </q-toolbar-title>
+
+        <q-space />
+
+        <q-btn no-caps stretch flat
+          label="Login"
+          to="/login" />
+        <q-btn label="Sign Up" no-caps stretch flat class="q-mr-xl" />
       </q-toolbar>
     </q-header>
 
@@ -200,7 +207,7 @@ export default {
   max-width: 1200px;
   flex-direction: column;
   justify-content: center;
-  margin: auto;
+  margin: auto !important;
 }
 
 .menu-item {

@@ -120,7 +120,7 @@ export default {
         categoryId: this.input.category.id,
         budgetId: this.transaction.budgetId,
         amount: this.input.amount.toString(),
-        rate: 1,
+        currencyId: this.transaction.currencyId,
         accountId: this.input.account.id,
         transactionDate: this.input.transactionDate,
         type: this.transaction.type,

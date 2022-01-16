@@ -19,7 +19,13 @@
             <q-btn unelevated no-caps color="primary" size="lg" class="full-width" label="Login" />
           </q-card-actions>
           <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Not reigistered? Created an Account</p>
+            <p class="text-grey-6">Not reigistered?
+              <q-btn no-caps dense flat push
+                label="Create an account"
+                style="text-decoration: underline;"
+                color="primary"
+                to="/signup" />
+            </p>
           </q-card-section>
         </q-card>
       </div>

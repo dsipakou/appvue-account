@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import DailyTransactions from '@/views/transaction/DailyTransactions.vue';
 import Home from '@/views/Home.vue';
-import SignUp from '@/views/SignUp.vue';
+import Login from '@/views/user/Login.vue';
+import Signup from '@/views/user/Signup.vue';
 import Accounts from '@/views/Accounts.vue';
 import Transactions from '@/views/Transactions.vue';
 import Categories from '@/views/Categories.vue';
@@ -18,8 +19,13 @@ const routes = [
   },
   {
     path: '/signup',
-    name: 'SignUp',
-    component: SignUp,
+    name: 'Signup',
+    component: Signup,
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
   },
   {
     path: '/accounts',

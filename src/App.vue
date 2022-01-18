@@ -16,7 +16,6 @@
         <q-btn no-caps stretch flat
           label="Login"
           to="/login" />
-        <q-btn label="Sign Up" no-caps stretch flat class="q-mr-xl" />
       </q-toolbar>
     </q-header>
 
@@ -30,16 +29,6 @@
           to="/">
           <q-item-section>
             Home
-          </q-item-section>
-        </q-item>
-        <q-item exact clickable
-          class="menu-item q-pl-md"
-          active-class="menu-item__active"
-          to="/signup">
-          <q-item-section>
-            <q-item-label>
-              SignUp
-            </q-item-label>
           </q-item-section>
         </q-item>
         <q-item exact clickable

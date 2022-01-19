@@ -16,7 +16,12 @@
             </q-form>
           </q-card-section>
           <q-card-actions class="q-px-md">
-            <q-btn unelevated no-caps color="primary" size="lg" class="full-width" label="Login" />
+            <q-btn unelevated no-caps
+              color="primary"
+              size="lg"
+              class="full-width"
+              label="Login"
+              @click="login()"/>
           </q-card-actions>
           <q-card-section class="text-center q-pa-none">
             <p class="text-grey-6">Not reigistered?
@@ -34,6 +39,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { userLogin } from '@/service';
 
 export default defineComponent({
   name: 'Login',
@@ -43,6 +49,16 @@ export default defineComponent({
       email: '',
       password: '',
     };
+  },
+
+  methods: {
+    login() {
+      const payload = {
+        email: this.email,
+        password: this.password,
+      };
+      userLogin(payload);
+    },
   },
 });
 </script>

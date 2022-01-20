@@ -2,7 +2,9 @@
 
 import {
   getUsers,
-} from '../../service';
+  userLogin,
+  LoginPayload,
+} from '@/service';
 
 const state = {
   users: {
@@ -17,6 +19,13 @@ const getters = {
 };
 
 const actions = {
+  async login({ commit }: any, payload: LoginPayload) {
+    const response = await userLogin(payload);
+    if (response.status === 200) {
+      console.log('User logged in');
+    }
+  },
+
   async fetchUsers({ commit }: any) {
     commit('setUsersLoading', true);
     const response = await getUsers();

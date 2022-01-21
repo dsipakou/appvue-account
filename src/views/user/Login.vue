@@ -8,9 +8,9 @@
         <q-card bordered class="q-pa-lg shadow-1">
           <q-card-section>
             <q-form class="q-gutter-md">
-              <q-input square filled v-model="email" type="email" label="Email" />
+              <q-input square filled v-model="input.email" type="email" label="Email" />
               <q-input square filled
-                v-model="password"
+                v-model="input.password"
                 type="password"
                 label="Password" />
             </q-form>
@@ -39,25 +39,30 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { userLogin } from '@/service';
+import { mapActions } from 'vuex';
 
 export default defineComponent({
   name: 'Login',
 
   data() {
     return {
-      email: '',
-      password: '',
+      input: {
+        email: '',
+        password: '',
+      },
     };
   },
 
   methods: {
+    ...mapActions([
+      'loginUser',
+    ]),
+
     login() {
-      const payload = {
-        email: this.email,
-        password: this.password,
-      };
-      userLogin(payload);
+      this.loginUser({
+        email: this.input.email,
+        password: this.input.password,
+      });
     },
   },
 });

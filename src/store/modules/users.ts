@@ -3,7 +3,9 @@
 import {
   getUsers,
   userLogin,
+  createUser,
   LoginPayload,
+  SignupPayload,
 } from '@/service';
 
 const state = {
@@ -19,10 +21,17 @@ const getters = {
 };
 
 const actions = {
-  async login({ commit }: any, payload: LoginPayload) {
+  async loginUser({ commit }: any, payload: LoginPayload) {
     const response = await userLogin(payload);
     if (response.status === 200) {
       console.log('User logged in');
+    }
+  },
+
+  async createUser({ commit }: any, payload: SignupPayload) {
+    const response = await createUser(payload);
+    if (response.status === 200) {
+      console.log('User created');
     }
   },
 

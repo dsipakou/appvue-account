@@ -47,6 +47,12 @@ export interface LoginPayload {
   password: string,
 }
 
+export interface SignupPayload {
+  name: string,
+  email: string,
+  password: string,
+}
+
 export const userLogin = async ({ email, password }: LoginPayload) => {
   const response = await postRequest('http://localhost:9091/api/login', { email, password });
   return response;
@@ -57,7 +63,7 @@ export const getUsers = async () => {
   return response;
 };
 
-export const createUser = async (name: string, email: string, password: string) => {
+export const createUser = async ({ name, email, password }: SignupPayload) => {
   const response = await postRequest('http://localhost:9091/api/users', { name, email, password });
   return response.json();
 };

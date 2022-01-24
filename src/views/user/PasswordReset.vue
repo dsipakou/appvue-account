@@ -28,13 +28,11 @@
               @click="reset()"/>
           </q-card-actions>
           <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Not reigistered?
-              <q-btn no-caps dense flat push
-                label="Create an account"
-                style="text-decoration: underline;"
-                color="primary"
-                to="/signup" />
-            </p>
+            <q-btn no-caps dense flat push
+              label="Back to login"
+              style="text-decoration: underline;"
+              color="primary"
+              to="/login" />
           </q-card-section>
         </q-card>
       </div>

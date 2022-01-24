@@ -19,7 +19,12 @@
             </q-form>
           </q-card-section>
           <q-card-actions class="q-px-md">
-            <q-btn unelevated no-caps color="primary" size="lg" class="full-width" label="Signup" />
+            <q-btn unelevated no-caps
+              color="primary"
+              size="lg"
+              class="full-width"
+              label="Signup"
+              @click="signup()"/>
           </q-card-actions>
           <q-card-section class="text-center q-pa-none">
             <p class="text-grey-6">Have account?
@@ -57,6 +62,14 @@ export default defineComponent({
     ...mapActions([
       'createUser',
     ]),
+
+    signup() {
+      this.createUser({
+        name: this.input.name,
+        email: this.input.email,
+        password: this.input.password,
+      });
+    },
   },
 });
 </script>

@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import DailyTransactions from '@/views/transaction/DailyTransactions.vue';
 import Home from '@/views/Home.vue';
-import Login from '@/views/user/Login.vue';
-import Signup from '@/views/user/Signup.vue';
+import { Login, PasswordReset, Signup } from '@/views/user';
 import Accounts from '@/views/Accounts.vue';
 import Transactions from '@/views/Transactions.vue';
 import Categories from '@/views/Categories.vue';
@@ -26,6 +25,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/reset',
+    name: 'PasswordReset',
+    component: PasswordReset,
   },
   {
     path: '/accounts',

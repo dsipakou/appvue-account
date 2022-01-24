@@ -2,7 +2,7 @@
   <q-page class="bg-white window-height row justify-center items-center">
     <div class="column">
       <div class="row">
-        <h5 class="text-h5 text-black q-my-md">Login to Flying Budget</h5>
+        <h5 class="text-h5 text-black q-my-md">Change your password</h5>
       </div>
       <div class="row">
         <q-card bordered class="q-pa-lg shadow-1">
@@ -13,6 +13,10 @@
                 v-model="input.password"
                 type="password"
                 label="Password" />
+              <q-input square filled
+                v-model="input.repeatPassword"
+                type="password"
+                label="Repeat Password" />
             </q-form>
           </q-card-section>
           <q-card-actions class="q-px-md">
@@ -20,8 +24,8 @@
               color="primary"
               size="lg"
               class="full-width"
-              label="Login"
-              @click="login()"/>
+              label="Reset"
+              @click="reset()"/>
           </q-card-actions>
           <q-card-section class="text-center q-pa-none">
             <p class="text-grey-6">Not reigistered?
@@ -32,15 +36,6 @@
                 to="/signup" />
             </p>
           </q-card-section>
-          <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Forgot your password?
-              <q-btn no-caps dense flat push
-                label="Reset password"
-                style="text-decoration: underline;"
-                color="primary"
-                to="/reset" />
-            </p>
-          </q-card-section>
         </q-card>
       </div>
     </div>
@@ -48,30 +43,23 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapActions } from 'vuex';
 
 export default defineComponent({
-  name: 'Login',
+  name: 'PasswordReset',
 
   data() {
     return {
       input: {
         email: '',
         password: '',
+        repeatPassword: '',
       },
     };
   },
 
   methods: {
-    ...mapActions([
-      'loginUser',
-    ]),
-
-    login() {
-      this.loginUser({
-        email: this.input.email,
-        password: this.input.password,
-      });
+    reset() {
+      console.log('Requested password reset');
     },
   },
 });

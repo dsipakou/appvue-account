@@ -18,18 +18,17 @@
         </div>
       </div>
       <div class="col-2 main-categories-list self-end">
-        <q-tabs vertical switch-indicator no-caps dense
+        <q-tabs vertical switch-indicator no-caps dense inline-label
           v-model="categoryTabs"
           indicator-color="white"
           active-bg-color="white"
           active-color="primary"
           class="text-dark">
-          <q-tab
+          <q-tab :ripple="false"
             v-for="category in mainCategories"
             :name="category.id"
             :label="category.name"
             :key="category.id"
-            class="main-category-tab"
             @click="chooseCategory(category)"/>
         </q-tabs>
       </div>
@@ -99,6 +98,10 @@ export default {
 };
 </script>
 <style>
+.main-category-tab {
+  max-height: 124px;
+}
+
 .main-categories-list {
   display: flex;
   flex-direction: column;

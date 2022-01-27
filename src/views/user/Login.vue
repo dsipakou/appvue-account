@@ -24,21 +24,21 @@
               @click="login()"/>
           </q-card-actions>
           <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Not reigistered?
+            <p class="text-grey-6">
+              <q-btn no-caps dense flat push
+                label="Forgotten password?"
+                style="text-decoration: underline;"
+                color="primary"
+                to="/reset" />
+            </p>
+          </q-card-section>
+          <q-card-section class="text-center q-pa-none">
+            <p class="text-grey-6">Not registered?
               <q-btn no-caps dense flat push
                 label="Create an account"
                 style="text-decoration: underline;"
                 color="primary"
                 to="/signup" />
-            </p>
-          </q-card-section>
-          <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Forgot your password?
-              <q-btn no-caps dense flat push
-                label="Reset password"
-                style="text-decoration: underline;"
-                color="primary"
-                to="/reset" />
             </p>
           </q-card-section>
         </q-card>

@@ -4,8 +4,10 @@ import {
   getUsers,
   userLogin,
   createUser,
+  resetUser,
   LoginPayload,
   SignupPayload,
+  ResetUserPayload,
 } from '@/service';
 
 const state = {
@@ -32,6 +34,13 @@ const actions = {
     const response = await createUser(payload);
     if (response.status === 200) {
       console.log('User created');
+    }
+  },
+
+  async resetUser({ commit }: any, payload: ResetUserPayload) {
+    const response = await resetUser(payload);
+    if (response.status === 200) {
+      console.log('Reset success');
     }
   },
 

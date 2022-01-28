@@ -41,6 +41,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mapActions } from 'vuex';
 
 export default defineComponent({
   name: 'PasswordReset',
@@ -56,7 +57,12 @@ export default defineComponent({
   },
 
   methods: {
+    ...mapActions([
+      'resetUser',
+    ]),
+
     reset() {
+      this.resetUser({ email: this.input.email, password: this.input.password });
       console.log('Requested password reset');
     },
   },

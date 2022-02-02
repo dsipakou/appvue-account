@@ -1,6 +1,9 @@
 <template>
   <div class="row justify-between">
     <h5>Monthly Budget</h5>
+    <q-select stack-label dense
+      label="Month"
+      class="month-dropdown" />
     <span class="text-subtitle2">Planned {{ monthSum }}</span>
     <q-btn round color="primary" label="+" @click="addBudgetClick()"></q-btn>
   </div>
@@ -257,5 +260,9 @@ export default {
   border-bottom: 15px solid;
   margin: 0 70px;
   width: 50px;
+}
+
+.month-dropdown {
+  max-width: 150px;
 }
 </style>

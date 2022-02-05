@@ -8,7 +8,10 @@
         <q-card bordered class="q-pa-lg shadow-1">
           <q-card-section>
             <q-form class="q-gutter-md">
-              <q-input square filled v-model="input.email" type="email" label="Email" />
+              <q-input square filled
+                v-model="input.email"
+                type="email"
+                label="Email" />
               <q-input square filled
                 v-model="input.password"
                 type="password"

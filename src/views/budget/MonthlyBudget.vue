@@ -1,9 +1,7 @@
 <template>
   <div class="row justify-between">
     <h5>Monthly Budget</h5>
-    <q-select stack-label dense
-      label="Month"
-      class="month-dropdown" />
+    <MonthDropdown />
     <span class="text-subtitle2">Planned {{ monthSum }}</span>
     <q-btn round color="primary" label="+" @click="addBudgetClick()"></q-btn>
   </div>
@@ -58,6 +56,7 @@
 <script>
 import { ref } from 'vue';
 import moment from 'moment';
+import MonthDropdown from '@/components/dropdown/MonthDropdown.vue';
 import AddForm from './forms/AddForm.vue';
 import EditForm from './forms/EditForm.vue';
 import MonthlyCard from './components/MonthlyCard.vue';
@@ -75,6 +74,7 @@ export default {
     EditForm,
     MonthlyCard,
     CategoryDetailsPanel,
+    MonthDropdown,
   },
 
   setup() {

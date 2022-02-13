@@ -2,6 +2,11 @@ const DB_NAME: string = 'indexDB';
 const DB_VERSION: number = 1;
 let DB: any | null;
 
+export interface User {
+  username: string,
+  token: string,
+}
+
 export default {
   async getDb(): Promise<any> {
     return new Promise((res, rej) => {
@@ -13,40 +18,45 @@ export default {
 
       request.onerror = (e) => {
         console.log('Error opening db', e);
-        rej('Error');
+        rej(new Error('Error'));
       };
 
       request.onsuccess = (e) => {
-        DB = e.target.result;
+        const target = e.target as IDBOpenDBRequest;
+        DB = target.result;
         res(DB);
       };
 
       request.onupgradeneeded = (e) => {
         console.log('onupgradeneeded');
-        let db = e.target.result;
-        let objectStore = db.createObjectStore('userAuth', {
+        const target = e.target as IDBOpenDBRequest;
+        const db = target.result;
+        const objectStore = db.createObjectStore('userAuth', {
           autoIncrement: true,
           keyPath: 'username',
         });
       };
+
+      return null;
     });
   },
 
-  async addUser(user) {
-    let db = await this.getDb();
+  async addUser(user: User): Promise<any> {
+    const db = await this.getDb();
 
     return new Promise((res) => {
-      let trans = db.transaction(['userAuth'], 'readwrite');
+      const trans = db.transaction(['userAuth'], 'readwrite');
       trans.oncomplete = () => {
-        res();
+        res(null);
       };
 
-      let store = trans.objectStore("userAuth");
+      const store = trans.objectStore('userAuth');
 
-      store.openCursor().onsuccess = (e) => {
-        let cursor = e.target.result;
+      store.openCursor().onsuccess = (e: any) => {
+        const target = e.target as IDBRequest;
+        const cursor = target.result;
         if (cursor) {
-          if (cursor.value.username != user.username) {
+          if (cursor.value.username !== user.username) {
             store.delete(cursor.value.username);
           }
           cursor.continue();
@@ -56,36 +66,37 @@ export default {
     });
   },
 
-  async removeUser(user): Promise {
-    if (!user || !user.username) {
-      return;
+  async removeUser(user: User): Promise<any> {
+    if (!user?.username) {
+      return false;
     }
-    let db = await this.getDb();
+    const db = await this.getDb();
 
     return new Promise((res) => {
-      let trans = db.transaction(['userAuth'], 'readwrite');
+      const trans = db.transaction(['userAuth'], 'readwrite');
       trans.oncomplete = () => {
-        res();
+        res(null);
       };
 
-      let store = trans.objectStore('userAuth');
+      const store = trans.objectStore('userAuth');
       store.delete(user.username);
     });
   },
 
-  async getUser() {
-    let db = await this.getDb();
+  async getUser(): Promise<any> {
+    const db = await this.getDb();
 
     return new Promise((res) => {
-      let trans = db.transaction(['userAuth'], 'readwrite');
+      const trans = db.transaction(['userAuth'], 'readwrite');
       trans.oncomplete = () => {
-        res();
+        res(null);
       };
 
       let user = null;
-      let store = trans.objectStore('userAuth');
-      store.openCursor().onsuccess = (e) => {
-        let cursor = e.target.result;
+      const store = trans.objectStore('userAuth');
+      store.openCursor().onsuccess = (e: any) => {
+        const target = e.target as IDBRequest;
+        const cursor = target.result;
         if (!cursor) {
           return;
         }

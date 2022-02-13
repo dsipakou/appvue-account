@@ -9,6 +9,7 @@ import {
   SignupPayload,
   ResetUserPayload,
 } from '@/service';
+import idb, { User } from '@/utils/indexDBUtils';
 
 const state = {
   users: {
@@ -27,6 +28,15 @@ const actions = {
     const response = await userLogin(payload);
     if (response.status === 200) {
       console.log('User logged in');
+      const data = await response.json();
+      const creds = {
+        username: payload.email,
+        token: data.token,
+      } as User;
+      idb.removeUser(creds);
+      idb.addUser(creds);
+      console.log(idb.addUser);
+      // await addUser(data.token);
     }
   },
 

@@ -16,6 +16,10 @@
         <q-btn no-caps stretch flat
           label="Login"
           to="/login" />
+
+        <q-btn no-caps stretch flat
+          label="Logout"
+          @click="logoutUser()" />
       </q-toolbar>
     </q-header>
 
@@ -155,6 +159,7 @@ export default {
       'fetchCurrencies',
       'fetchRates',
       'fetchBudget',
+      'logoutUser',
     ]),
   },
   beforeMount() {

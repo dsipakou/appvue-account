@@ -12,6 +12,8 @@ import {
 import idb, { User } from '@/utils/indexDBUtils';
 
 const state = {
+  username: null,
+  token: null,
   users: {
     items: [],
     isLoading: false,
@@ -25,19 +27,26 @@ const getters = {
 
 const actions = {
   async loginUser({ commit }: any, payload: LoginPayload) {
+    const user = {
+      username: payload.email,
+      token: '',
+    } as User;
     const response = await userLogin(payload);
     if (response.status === 200) {
-      console.log('User logged in');
       const data = await response.json();
-      const creds = {
-        username: payload.email,
-        token: data.token,
-      } as User;
-      idb.removeUser(creds);
-      idb.addUser(creds);
-      console.log(idb.addUser);
-      // await addUser(data.token);
+      user.token = data.token;
+      await idb.addUser(user);
+      commit('login', user);
+    } else {
+      commit('logout');
+      await idb.removeUser(user);
     }
+  },
+
+  async logoutUser({ commit }: any) {
+    console.log('Going to logout user');
+    await idb.removeUser({ username: state.username || '', token: state.token || '' });
+    commit('logout');
   },
 
   async createUser({ commit }: any, payload: SignupPayload) {
@@ -66,6 +75,16 @@ const actions = {
 };
 
 const mutations = {
+  login(state: any, user: User) {
+    state.username = user.username;
+    state.token = user.token;
+  },
+
+  logout(state: any) {
+    state.username = null;
+    state.token = null;
+  },
+
   setUsers(state: any, users: any) {
     state.users.items = users;
   },

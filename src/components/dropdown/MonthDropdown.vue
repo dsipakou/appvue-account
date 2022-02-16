@@ -16,7 +16,7 @@ export default defineComponent({
     monthsList() {
       const months = [];
       for (let i = 0; i < 12; i += 1) {
-        months.push(enUS.localize.month(i, { width: 'abbreviated' }));
+        months.push(enUS!.localize!.month(i, { width: 'abbreviated' }));
       }
       return months;
     },

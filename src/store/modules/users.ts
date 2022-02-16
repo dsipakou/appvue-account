@@ -26,6 +26,13 @@ const getters = {
 };
 
 const actions = {
+  async loadUser({ commit }: any) {
+    const user = await idb.getUser();
+    if (user) {
+      commit('login', user);
+    }
+  },
+
   async loginUser({ commit }: any, payload: LoginPayload) {
     const user = {
       username: payload.email,

@@ -160,8 +160,10 @@ export default {
       'fetchRates',
       'fetchBudget',
       'logoutUser',
+      'loadUser',
     ]),
   },
+
   beforeMount() {
     this.fetchAccounts();
     this.fetchCategories();
@@ -169,6 +171,7 @@ export default {
     this.fetchCurrencies();
     this.fetchRates();
     this.fetchBudget();
+    this.loadUser();
   },
 };
 </script>

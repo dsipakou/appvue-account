@@ -100,8 +100,8 @@ export default {
         if (!cursor) {
           return;
         }
-        console.log(cursor.value);
         user = cursor.value;
+        res(user);
       };
     });
   },

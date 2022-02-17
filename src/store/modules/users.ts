@@ -21,6 +21,8 @@ const state = {
 };
 
 const getters = {
+  activeUser: (state: any) => state.username,
+  token: (state: any) => state.token,
   userList: (state: any) => state.users.items,
   isUserListLoading: (state: any) => state.users.isLoading,
 };

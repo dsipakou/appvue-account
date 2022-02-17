@@ -14,11 +14,17 @@
         <q-space />
 
         <q-btn no-caps stretch flat
+          v-show="!activeUser"
           label="Login"
           to="/login" />
 
+        <span
+          v-show="activeUser">{{this.activeUser}}
+        </span>
+
         <q-btn no-caps stretch flat
           label="Logout"
+          v-show="activeUser"
           @click="logoutUser()" />
       </q-toolbar>
     </q-header>
@@ -138,6 +144,7 @@
 import { ref } from 'vue';
 import {
   mapActions,
+  mapGetters,
 } from 'vuex';
 
 export default {
@@ -151,6 +158,13 @@ export default {
       },
     };
   },
+
+  computed: {
+    ...mapGetters([
+      'activeUser',
+    ]),
+  },
+
   methods: {
     ...mapActions([
       'fetchAccounts',
@@ -172,6 +186,10 @@ export default {
     this.fetchRates();
     this.fetchBudget();
     this.loadUser();
+  },
+
+  mounted() {
+    console.log(this.activeUser);
   },
 };
 </script>

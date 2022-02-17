@@ -51,7 +51,6 @@ const actions = {
   },
 
   async logoutUser({ commit }: any) {
-    console.log('Going to logout user');
     await idb.removeUser({ username: state.username || '', token: state.token || '' });
     commit('logout');
   },

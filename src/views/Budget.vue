@@ -9,6 +9,11 @@
            label="Planner >" to='/budget/planner'/>
       </div>
       <div class="row q-mt-lg justify-left">
+        <div class="col-4 q-px-md">
+          <MainCategoryCard amount="123" title="Денис" />
+        </div>
+      </div>
+      <div class="row q-mt-lg justify-left">
         <div class="col-8 q-px-md">
           <MonthlyBudget
             :budgetItems="budgetList"
@@ -46,8 +51,9 @@ import { mapActions, mapGetters } from 'vuex';
 import moment from 'moment';
 import { format } from 'date-fns';
 import { getFirstDayOfMonth, getLastDayOfMonth, DATE_FORMAT } from '@/utils/dateTimeUtils';
-import WeekBudget from './budget/WeekBudget.vue';
-import MonthlyBudget from './budget/MonthlyBudget.vue';
+import MainCategoryCard from '@/views/budget/components/MainCategoryCard.vue';
+import WeekBudget from '@/views/budget/WeekBudget.vue';
+import MonthlyBudget from '@/views/budget/MonthlyBudget.vue';
 
 export default {
   name: 'Budget',
@@ -55,6 +61,7 @@ export default {
   components: {
     WeekBudget,
     MonthlyBudget,
+    MainCategoryCard,
   },
 
   setup() {

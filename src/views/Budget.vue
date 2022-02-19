@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="q-pa-md">
-      <div>
+      <div class="header">
+        <h4>
+          Planner
+        </h4>
         <q-btn outline
            label="Planner >" to='/budget/planner'/>
       </div>
@@ -127,3 +130,12 @@ export default {
   },
 };
 </script>
+<style scoped>
+.header {
+  display: flex;
+}
+
+.header>h4 {
+  margin-right: 20px;
+}
+</style>

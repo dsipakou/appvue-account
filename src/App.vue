@@ -29,7 +29,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer overlay persistent bordered
+    <q-drawer overlay persistent bordered mini
       v-model="leftDrawerOpen"
       side="left">
       <q-list class="q-pt-md">

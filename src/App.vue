@@ -172,7 +172,6 @@ export default {
       'fetchUsers',
       'fetchCurrencies',
       'fetchRates',
-      'fetchBudget',
       'logoutUser',
       'loadUser',
     ]),
@@ -184,12 +183,7 @@ export default {
     this.fetchUsers();
     this.fetchCurrencies();
     this.fetchRates();
-    this.fetchBudget();
     this.loadUser();
-  },
-
-  mounted() {
-    console.log(this.activeUser);
   },
 };
 </script>

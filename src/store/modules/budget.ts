@@ -14,6 +14,7 @@ import {
 
 const state = {
   budget: {
+    selectedMonth: new Date(),
     items: [],
     usage: [],
     transactions: [],
@@ -25,6 +26,7 @@ const getters = {
   budgetList: (state: any) => state.budget.items,
   budgetUsage: (state: any) => state.budget.usage,
   budgetedTransactions: (state: any) => state.budget.transactions,
+  budgetSelectedMonth: (state: any) => state.budget.selectedMonth,
   isBudgetListLoading: (state: any) => state.budget.isLoading,
 };
 

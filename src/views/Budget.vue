@@ -10,13 +10,14 @@
       </div>
       <div class="row q-mt-lg justify-left">
         <div class="col-8 q-px-md">
-          <MonthlyBudget
+          <MonthlyBudgetOld
             :budgetItems="budgetList"
             :categoryItems="categoryList"
             :budgetUsage="budgetUsage"
             :createBudget="createBudget"
             :updateBudget="updateBudget"
             :deleteBudget="deleteBudget"
+            :selectedMonth="budgetSelectedMonth"
             :updateStatusBudget="updateStatusBudget" />
         </div>
         <div class="col-4 q-px-md">
@@ -27,6 +28,19 @@
             :transactionItems="budgetedTransactions"
             :updateBudget="updateBudget"
             :deleteBudget="deleteBudget"
+            :updateStatusBudget="updateStatusBudget" />
+        </div>
+      </div>
+      <div class="row q-mt-lg justify-left">
+        <div class="col-12 q-px-md">
+          <MonthlyBudget
+            :budgetItems="budgetList"
+            :categoryItems="categoryList"
+            :budgetUsage="budgetUsage"
+            :createBudget="createBudget"
+            :updateBudget="updateBudget"
+            :deleteBudget="deleteBudget"
+            :selectedMonth="budgetSelectedMonth"
             :updateStatusBudget="updateStatusBudget" />
         </div>
       </div>
@@ -48,6 +62,7 @@ import { format } from 'date-fns';
 import { getFirstDayOfMonth, getLastDayOfMonth, DATE_FORMAT } from '@/utils/dateTimeUtils';
 import WeekBudget from '@/views/budget/WeekBudget.vue';
 import MonthlyBudget from '@/views/budget/MonthlyBudget.vue';
+import MonthlyBudgetOld from '@/views/budget/MonthlyBudgetOld.vue';
 
 export default {
   name: 'Budget',
@@ -55,6 +70,7 @@ export default {
   components: {
     WeekBudget,
     MonthlyBudget,
+    MonthlyBudgetOld,
   },
 
   setup() {
@@ -69,6 +85,7 @@ export default {
       'budgetUsage',
       'budgetedTransactions',
       'categoryList',
+      'budgetSelectedMonth',
     ]),
 
     currentMonth() {
@@ -115,13 +132,11 @@ export default {
   },
 
   beforeMount() {
-    const dateFrom = `${moment().format('YYYY-MM')}-01`;
-    const dateTo = `${moment().add(1, 'month').format('YYYY-MM')}-01`;
+    console.log(this.budgetSelectedMonth);
+    const dateFrom = getFirstDayOfMonth(format(new Date(), DATE_FORMAT));
+    const dateTo = getLastDayOfMonth(format(new Date(), DATE_FORMAT));
     this.fetchBudgetUsage({ dateFrom, dateTo });
-    this.fetchBudgetForPeriod({
-      dateFrom: getFirstDayOfMonth(format(new Date(), DATE_FORMAT)),
-      dateTo: getLastDayOfMonth(format(new Date(), DATE_FORMAT)),
-    });
+    this.fetchBudgetForPeriod({ dateFrom, dateTo });
     this.fetchBudgetedTransactions({
       sorting: 'added',
       dateFrom: moment().add(-moment().weekday(), 'days').format('YYYY-MM-DD'),

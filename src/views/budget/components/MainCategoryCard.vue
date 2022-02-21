@@ -22,6 +22,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 320px;
   max-width: 320px;
   padding: 15px;
   border-radius: 20px;

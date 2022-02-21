@@ -1,17 +1,31 @@
 <template>
-  <div class="main-category-container" v-for="budget in budgetList" :key="budget.id">
-    <MainCategoryCard :amount="budget.amount" :title="budget.name" />
+  <div class="row">
+    <div class="col-4">
+      <div
+        class="row main-category-container"
+        v-for="budget in budgetList"
+        :key="budget.name">
+        <MainCategoryCard :amount="budget.amount" :title="budget.name" />
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="row">
+        <MainCategoryDetails />
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 import MainCategoryCard from '@/views/budget/components/MainCategoryCard.vue';
+import MainCategoryDetails from '@/views/budget/components/MainCategoryDetails.vue';
 
 export default defineComponent({
   name: 'MonthlyBudget',
 
   components: {
     MainCategoryCard,
+    MainCategoryDetails,
   },
 
   props: {

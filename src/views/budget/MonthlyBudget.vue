@@ -5,7 +5,11 @@
         class="row main-category-container"
         v-for="budget in budgetList"
         :key="budget.name">
-        <MainCategoryCard :amount="budget.amount" :title="budget.name" />
+        <MainCategoryCard
+          :amount="budget.amount"
+          :title="budget.name"
+          :activeCategory="activeCategory.title"
+          @categoryClick=mainCategoryClick($event) />
       </div>
     </div>
     <div class="col-8">
@@ -37,6 +41,15 @@ export default defineComponent({
     budgetUsage: { type: Array, required: true },
     selectedMonth: { type: Date, required: true },
     updateStatusBudget: { type: Function, required: true },
+  },
+
+  data() {
+    return {
+      activeCategory: {
+        title: '',
+        index: -1,
+      },
+    };
   },
 
   computed: {
@@ -98,10 +111,18 @@ export default defineComponent({
       });
     },
   },
+
+  methods: {
+    mainCategoryClick({ title }) {
+      this.activeCategory.title = title;
+      console.log(title);
+    },
+  },
 });
 </script>
 <style scoped>
 .main-category-container {
   margin: 5px 0;
+  justify-content: center;
 }
 </style>

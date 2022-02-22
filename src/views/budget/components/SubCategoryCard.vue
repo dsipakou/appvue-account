@@ -1,6 +1,6 @@
 <template>
   <q-card flat class="container">
-    Hello
+    {{ item.name }}
   </q-card>
 </template>
 <script lang="ts">
@@ -8,6 +8,10 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'SubCategoryCard',
+
+  props: {
+    item: { type: Object, required: true },
+  },
 });
 </script>
 <style scoped>

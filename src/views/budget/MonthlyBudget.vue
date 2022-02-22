@@ -15,7 +15,7 @@
     <div class="col-8">
       <div class="row" v-show="activeCategory.title != ''">
         <MainCategoryDetails
-          :item="activeBudget"/>
+          :items="activeBudget"/>
       </div>
     </div>
   </div>
@@ -120,12 +120,12 @@ export default defineComponent({
       });
     },
 
-    activeBudget(): object | undefined {
+    activeBudget(): any | undefined {
       const typedBudgetList = this.budgetList as [];
       const budgetItem: { value: object } = typedBudgetList.find(
         (item: { name: string, value: string }) => item.name === this.activeCategory.title,
       )! as { value: object };
-      return budgetItem.value;
+      return budgetItem?.value || undefined;
     },
   },
 

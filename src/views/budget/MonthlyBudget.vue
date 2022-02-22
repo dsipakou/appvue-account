@@ -13,16 +13,18 @@
       </div>
     </div>
     <div class="col-8">
-      <div class="row">
-        <MainCategoryDetails />
+      <div class="row" v-show="activeCategory.title != ''">
+        <MainCategoryDetails
+          :item="activeBudget"/>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import MainCategoryCard from '@/views/budget/components/MainCategoryCard.vue';
 import MainCategoryDetails from '@/views/budget/components/MainCategoryDetails.vue';
+import { Budget, Category } from '@/types';
 
 export default defineComponent({
   name: 'MonthlyBudget',
@@ -33,8 +35,8 @@ export default defineComponent({
   },
 
   props: {
-    budgetItems: { type: Array, required: true },
-    categoryItems: { type: Array, required: true },
+    budgetItems: { type: Array as PropType<Budget[]>, required: true },
+    categoryItems: { type: Array as PropType<Category[]>, required: true },
     createBudget: { type: Function, required: true },
     updateBudget: { type: Function, required: true },
     deleteBudget: { type: Function, required: true },
@@ -53,9 +55,9 @@ export default defineComponent({
   },
 
   computed: {
-    groupedByName(): Array<any> {
-      return this.budgetItems.reduce((acc, item) => {
-        const arr = acc[item.title] || [];
+    groupedByName(): object {
+      return this.budgetItems.reduce((acc: {[key: string]: Budget[]}, item) => {
+        const arr: Budget[] = acc[item.title] || [];
         arr.push(item);
         acc[item.title] = arr;
         return acc;
@@ -63,39 +65,46 @@ export default defineComponent({
     },
 
     groupedByCategory(): object {
-      const categoryClass = {};
+      const categoryClass: {[key: string]: any[]} = {};
       Object.entries(this.groupedByName).forEach((item) => {
         const { categoryId } = item[1][0];
         const categoryName = categoryId === null
           ? 'undefined'
-          : this.categoryItems.find((category) => category.id === categoryId).name;
-        const arr = categoryClass[categoryName] || [];
-        const sortedGroupedBudgets = item[1].sort((a, b) => {
-          if (a.budgetDate < b.budgetDate) {
-            return -1;
-          }
-          if (a.budgetDate > b.budgetDate) {
-            return 1;
-          }
-          return 0;
-        });
-        arr.push({
+          : this.categoryItems.find((category) => category.id === categoryId)!.name;
+        const arr: any[] = categoryClass[categoryName] || [];
+        const sortedGroupedBudgets = item[1].sort(
+          (a: { budgetDate: string }, b: { budgetDate: string }) => {
+            if (a.budgetDate < b.budgetDate) {
+              return -1;
+            }
+            if (a.budgetDate > b.budgetDate) {
+              return 1;
+            }
+            return 0;
+          },
+        );
+        const group = {
           name: item[0],
           value: sortedGroupedBudgets,
-          amount: item[1].reduce((acc, subItem) => acc + subItem.amount, 0),
-        });
+          amount: item[1].reduce(
+            (acc: number, subItem: { amount: number }) => acc + subItem.amount, 0,
+          ),
+        };
+        arr.push(group);
         categoryClass[categoryName] = arr;
       });
       return categoryClass;
     },
 
     budgetList() {
-      const groupedList = [];
+      const groupedList: any[] = [];
       Object.entries(this.groupedByCategory).forEach((item) => {
         const categoryItem = {
           name: item[0],
           value: item[1],
-          amount: item[1].reduce((acc, subItem) => acc + subItem.amount, 0),
+          amount: item[1].reduce(
+            (acc: number, subItem: { amount: number }) => acc + subItem.amount, 0,
+          ),
         };
         if (categoryItem.name === 'undefined') {
           groupedList.unshift(categoryItem);
@@ -104,18 +113,26 @@ export default defineComponent({
         }
       });
 
-      return groupedList.sort((a, b) => {
+      return groupedList.sort((a: { name: string }, b: { name: string }) => {
         if (a.name < b.name) return -1;
         if (a.name > b.name) return 1;
         return 0;
       });
     },
+
+    activeBudget(): object | undefined {
+      const typedBudgetList = this.budgetList as [];
+      const budgetItem: { value: object } = typedBudgetList.find(
+        (item: { name: string, value: string }) => item.name === this.activeCategory.title,
+      )! as { value: object };
+      return budgetItem.value;
+    },
   },
 
   methods: {
-    mainCategoryClick({ title }) {
-      this.activeCategory.title = title;
-      console.log(title);
+    mainCategoryClick(event: { title: string }) {
+      this.activeCategory.title = event.title;
+      console.log(event.title);
     },
   },
 });

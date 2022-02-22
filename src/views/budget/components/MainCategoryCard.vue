@@ -28,7 +28,7 @@ export default defineComponent({
   },
 
   methods: {
-    categoryClick(title) {
+    categoryClick(title: string) {
       this.$emit('categoryClick', { title });
     },
   },

@@ -2,6 +2,7 @@
   <q-card flat bordered
     class="row main-panel">
     <div class="col-6" style="height: 150px;">
+      {{ item }}
       <SubCategoryCard />
     </div>
     <div class="col-6" style="height: 150px;">
@@ -21,6 +22,10 @@ export default defineComponent({
 
   components: {
     SubCategoryCard,
+  },
+
+  props: {
+    item: { type: Array, required: true },
   },
 });
 </script>

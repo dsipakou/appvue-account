@@ -10,6 +10,7 @@
   "dependencies": {
     "@mdi/font": "5.9.55",
     "@quasar/extras": "^1.0.0",
+    "@splidejs/vue-splide": "^0.5.18",
     "@vueuse/core": "^6.7.3",
     "core-js": "^3.6.5",
     "date-fns": "^2.25.0",

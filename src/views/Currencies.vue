@@ -80,7 +80,7 @@ import { computed, ref } from 'vue';
 import { mapGetters, mapActions, useStore } from 'vuex';
 import moment from 'moment';
 import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
-import { Range } from '@/store/constants';
+import { ChartRange } from '@/store/constants';
 import AddForm from '@/views/currency/forms/AddForm.vue';
 import EditForm from '@/views/currency/forms/EditForm.vue';
 import ConfirmForm from '@/views/currency/forms/ConfirmForm.vue';
@@ -120,18 +120,18 @@ export default {
     return {
       selectedDays: ref([]),
       selectedCurrenciesModel,
-      selectedRange: ref(Range.Month),
+      selectedRange: ref(ChartRange.Month),
       createForm: ref(false),
       editForm: ref(false),
       confirmForm: ref(false),
       rangeSelect: ref(null),
       rangeOptions: [
         {
-          value: Range.Month,
+          value: ChartRange.Month,
           label: '30 days',
         },
         {
-          value: Range.Quater,
+          value: ChartRange.Quater,
           label: '90 days',
         },
       ],

@@ -1,8 +1,7 @@
 <template>
   <q-card flat bordered
     class="row main-panel">
-    {{ item }}
-    <div class="col-6" style="height: 150px;" v-for="item in items" :key="item.name">
+    <div class="col-6" v-for="item in items" :key="item.name">
       <SubCategoryCard :item=item />
     </div>
   </q-card>

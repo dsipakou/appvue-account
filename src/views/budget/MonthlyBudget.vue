@@ -26,6 +26,12 @@ import MainCategoryCard from '@/views/budget/components/MainCategoryCard.vue';
 import MainCategoryDetails from '@/views/budget/components/MainCategoryDetails.vue';
 import { Budget, Category } from '@/types';
 
+interface BudgetItem {
+  name: string,
+  items: any[],
+  amount: number,
+}
+
 export default defineComponent({
   name: 'MonthlyBudget',
 
@@ -85,7 +91,7 @@ export default defineComponent({
         );
         const group = {
           name: item[0],
-          value: sortedGroupedBudgets,
+          items: sortedGroupedBudgets,
           amount: item[1].reduce(
             (acc: number, subItem: { amount: number }) => acc + subItem.amount, 0,
           ),
@@ -101,7 +107,7 @@ export default defineComponent({
       Object.entries(this.groupedByCategory).forEach((item) => {
         const categoryItem = {
           name: item[0],
-          value: item[1],
+          items: item[1],
           amount: item[1].reduce(
             (acc: number, subItem: { amount: number }) => acc + subItem.amount, 0,
           ),
@@ -122,17 +128,16 @@ export default defineComponent({
 
     activeBudget(): any | undefined {
       const typedBudgetList = this.budgetList as [];
-      const budgetItem: { value: object } = typedBudgetList.find(
+      const budgetItem: BudgetItem = typedBudgetList.find(
         (item: { name: string, value: string }) => item.name === this.activeCategory.title,
-      )! as { value: object };
-      return budgetItem?.value || undefined;
+      )! as BudgetItem;
+      return budgetItem?.items || undefined;
     },
   },
 
   methods: {
     mainCategoryClick(event: { title: string }) {
       this.activeCategory.title = event.title;
-      console.log(event.title);
     },
   },
 });

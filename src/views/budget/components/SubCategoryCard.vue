@@ -1,15 +1,19 @@
 <template>
   <q-card flat class="container">
     <Splide :options="{ rewind: true }">
-      <SplideSlide>Hello</SplideSlide>
-      <SplideSlide>World</SplideSlide>
+      <SplideSlide
+        v-for="item in item.items"
+        :key="item.name"
+      >
+        <span class="title--subcat">{{ item.title }}</span>
+      </SplideSlide>
     </Splide>
-    {{ item.name }}
   </q-card>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
+import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 
 export default defineComponent({
   name: 'SubCategoryCard',
@@ -26,9 +30,13 @@ export default defineComponent({
 </script>
 <style scoped>
 .container {
-  width: 90%;
-  height: 100px;
+  width: 95%;
+  height: 150px;
   padding: 20px;
-  margin: 5px;
+  margin: 10px;
+}
+.title--subcat {
+  white-space: nowrap;
+  font-size: 22px;
 }
 </style>

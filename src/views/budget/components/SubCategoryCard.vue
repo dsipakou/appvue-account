@@ -37,6 +37,6 @@ export default defineComponent({
 }
 .title--subcat {
   white-space: nowrap;
-  font-size: 22px;
+  font-size: 21px;
 }
 </style>

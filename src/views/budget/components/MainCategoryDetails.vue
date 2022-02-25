@@ -2,7 +2,7 @@
   <q-card flat bordered
     class="row main-panel">
     <div class="col-6" v-for="item in items" :key="item.name">
-      <SubCategoryCard :item=item />
+      <SubCategoryCard :item=item :categories="categories" />
     </div>
   </q-card>
 </template>
@@ -19,6 +19,7 @@ export default defineComponent({
 
   props: {
     items: { type: Array, required: true },
+    categories: { type: Array, required: true },
   },
 });
 </script>

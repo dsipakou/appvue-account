@@ -1,11 +1,11 @@
 <script>
 import { Line } from 'vue3-chart-v2';
 import { format, parse } from 'date-fns';
-import { Range } from '@/store/constants';
+import { ChartRange } from '@/store/constants';
 
 const RangeMapping = {
-  [Range.Month]: 30,
-  [Range.Quater]: 90,
+  [ChartRange.Month]: 30,
+  [ChartRange.Quater]: 90,
 };
 
 const ColorMapping = {

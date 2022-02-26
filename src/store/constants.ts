@@ -7,7 +7,8 @@ export const itemStatus = {
   LOADED: 3,
 };
 
-export enum Range {
+/* eslint-disable no-shadow */
+export enum ChartRange {
   Month = 'MONTH',
   Quater = 'QUATER',
 }

@@ -3,6 +3,7 @@ import { VuesticPlugin } from 'vuestic-ui';
 import { Quasar } from 'quasar';
 import moment from 'moment';
 import { ru } from 'date-fns/locale';
+import VueSplide from '@splidejs/vue-splide';
 import router from './router';
 import store from './store';
 import App from './App.vue';
@@ -48,4 +49,5 @@ createApp(App).use(Quasar, quasarUserOptions)
   .use(store)
   .use(router)
   .use(VuesticPlugin)
+  .use(VueSplide)
   .mount('#app');

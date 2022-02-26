@@ -13,7 +13,7 @@ const state = {
     items: [],
     selectedItems: [],
     status: constants.itemStatus.INIT,
-    range: constants.Range.Month,
+    range: constants.ChartRange.Month,
   },
 };
 

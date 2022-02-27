@@ -25,19 +25,21 @@
       <div class="col-4">
         <q-date v-model="selectedDays" multiple mask="YYYY-MM-DD"></q-date>
       </div>
-      <div class="col-4">
+      <div class="col-6">
         <div class="column">
           Base currency: {{ baseCurrency?.verbalName }}
           <q-btn no-caps dense rounded style="width: 40px;" label="Edit"></q-btn>
-          <div v-for="currency in notBaseCurrencies" :key="currency.id">
+          <div class="row justify-start" v-for="currency in notBaseCurrencies" :key="currency.id">
+            <q-input dense outlined style="width: 40px;" />
             <q-toggle
               v-model="selectedCurrenciesModel"
               :label="currency.verbalName"
               :val="currency.code"
               :icon="currency.isDefault ? 'check': ''"
               />
-            <q-btn dense no-caps flat label="Edit" @click="edit(currency)"/>
-            <q-btn dense no-caps flat label="Delete" @click="remove(currency)"/>
+            <q-btn no-caps dense flat label="Save" @click="save(currency)" />
+            <q-btn dense no-caps flat label="Edit" @click="edit(currency)" />
+            <q-btn dense no-caps flat label="Delete" @click="remove(currency)" />
             <span v-if="currency.isDefault">(default currency)</span>
           </div>
         </div>
@@ -205,6 +207,14 @@ export default {
     remove(currency) {
       this.selectedCurrency = currency;
       this.confirmForm = true;
+    },
+
+    save(currency) {
+      if (this.selectedDays.length < 1) {
+        return;
+      }
+
+      console.log(`${currency} manual save`);
     },
   },
 

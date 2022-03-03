@@ -30,16 +30,23 @@
           Base currency: {{ baseCurrency?.verbalName }}
           <q-btn no-caps dense rounded style="width: 40px;" label="Edit"></q-btn>
           <div class="row justify-start" v-for="currency in notBaseCurrencies" :key="currency.id">
-            <div class="col-1">
-              <q-input dense outlined />
-            </div>
-            <div class="col-5">
+            <CurrencyItem />
+            <div class="col-4">
               <q-toggle
                 v-model="selectedCurrenciesModel"
                 :label="currency.verbalName"
                 :val="currency.code"
                 :icon="currency.isDefault ? 'check': ''"
                 />
+            </div>
+            <div class="col-2">
+              <q-input outlined stack-label dense
+                type="date"
+                label="Date"
+                />
+            </div>
+            <div class="col-1">
+              <q-input dense />
             </div>
             <div>
               <q-btn no-caps dense flat label="Save" @click="save(currency)" />
@@ -92,6 +99,7 @@ import { ChartRange } from '@/store/constants';
 import AddForm from '@/views/currency/forms/AddForm.vue';
 import EditForm from '@/views/currency/forms/EditForm.vue';
 import ConfirmForm from '@/views/currency/forms/ConfirmForm.vue';
+import CurrencyItem from '@/views/currency/components/CurrencyItem.vue';
 import { getRate } from '../service';
 
 export default {
@@ -102,6 +110,7 @@ export default {
     AddForm,
     EditForm,
     ConfirmForm,
+    CurrencyItem,
   },
 
   data() {

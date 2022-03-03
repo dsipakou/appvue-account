@@ -2,7 +2,10 @@
   <div class="row">
     <div class="col-4">
       <q-toggle
-        v-model="selectedCurrenciesModel"
+        v-model="selectedCurrencyModel"
+        :label="currency.verbalName"
+        :val="currency.code"
+        :icon="currency.isDefault ? 'check': ''"
         />
     </div>
     <div class="col-2">
@@ -19,10 +22,11 @@
       <q-btn dense no-caps flat label="Edit" @click="edit()" />
       <q-btn dense no-caps flat label="Delete" @click="remove()" />
     </div>
+    <span v-if="currency.isDefault">(default currency)</span>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'CurrencyItem',
@@ -32,6 +36,12 @@ export default defineComponent({
     'edit',
     'remove',
   ],
+
+  setup() {
+    return {
+      selectedCurrencyModel: ref(false),
+    };
+  },
 
   props: {
     currency: { type: Object, required: true },

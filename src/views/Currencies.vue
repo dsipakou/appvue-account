@@ -30,30 +30,12 @@
           Base currency: {{ baseCurrency?.verbalName }}
           <q-btn no-caps dense rounded style="width: 40px;" label="Edit"></q-btn>
           <div class="row justify-start" v-for="currency in notBaseCurrencies" :key="currency.id">
-            <CurrencyItem />
-            <div class="col-4">
-              <q-toggle
-                v-model="selectedCurrenciesModel"
-                :label="currency.verbalName"
-                :val="currency.code"
-                :icon="currency.isDefault ? 'check': ''"
-                />
-            </div>
-            <div class="col-2">
-              <q-input outlined stack-label dense
-                type="date"
-                label="Date"
-                />
-            </div>
-            <div class="col-1">
-              <q-input dense />
-            </div>
-            <div>
-              <q-btn no-caps dense flat label="Save" @click="save(currency)" />
-              <q-btn dense no-caps flat label="Edit" @click="edit(currency)" />
-              <q-btn dense no-caps flat label="Delete" @click="remove(currency)" />
-            </div>
-            <span v-if="currency.isDefault">(default currency)</span>
+            <CurrencyItem
+              :currency="currency"
+              @save="save($event)"
+              @edit="edit($event)"
+              @remove="remove($event)"
+            />
           </div>
         </div>
       </div>
@@ -91,8 +73,8 @@
   </div>
 </template>
 <script>
-import { computed, ref } from 'vue';
-import { mapGetters, mapActions, useStore } from 'vuex';
+import { ref } from 'vue';
+import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
 import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
 import { ChartRange } from '@/store/constants';
@@ -127,16 +109,8 @@ export default {
   },
 
   setup() {
-    const store = useStore();
-
-    const selectedCurrenciesModel = computed({
-      get: () => store.getters.selectedCurrencies,
-      set: (val) => store.commit('selectCurrency', val),
-    });
-
     return {
       selectedDays: ref([]),
-      selectedCurrenciesModel,
       selectedRange: ref(ChartRange.Month),
       createForm: ref(false),
       editForm: ref(false),
@@ -225,11 +199,12 @@ export default {
     },
 
     save(currency) {
+      console.log(`${currency} manual save`);
       if (this.selectedDays.length < 1) {
         return;
       }
 
-      console.log(`${currency} manual save`);
+      console.log(`${currency} manual save end`);
     },
   },
 

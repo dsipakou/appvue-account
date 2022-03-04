@@ -23,6 +23,7 @@ const postRequest = (url: string, requestBody: object) => {
 const patchRequest = (url: string, requestBody: object) => {
   const options = {
     method: 'PATCH',
+
     mode: 'cors' as RequestMode,
     body: JSON.stringify(requestBody),
   };
@@ -391,11 +392,11 @@ export const getRates = async () => {
   return response;
 };
 
-interface CreateRateRequest {
+export interface CreateRateRequest {
   currencyId: number,
   rateDate: string,
   rate: number,
-  description: string,
+  description?: string,
 }
 
 export const createRate = async ({
@@ -408,7 +409,7 @@ export const createRate = async ({
     {
       currencyId,
       rateDate,
-      rate,
+      rate: Number(rate),
       description,
     });
   return response;

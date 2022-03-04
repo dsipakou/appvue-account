@@ -6,23 +6,26 @@
         :label="currency.verbalName"
         :val="currency.code"
         :icon="currency.isDefault ? 'check': ''"
-        />
+      />
     </div>
-    <div class="col-2">
+    <div class="col-3">
       <q-input outlined stack-label dense
         type="date"
         label="Date"
-        />
+        v-model="currencyDate"
+      />
     </div>
     <div class="col-1">
-      <q-input dense />
+      <q-input dense
+        mask="#.####"
+        :rules="[ val => val.length > 5 || 'Should be #.#### number']"
+        v-model="currencyRate" />
     </div>
     <div>
       <q-btn dense no-caps flat label="Save" @click="save()" />
       <q-btn dense no-caps flat label="Edit" @click="edit()" />
       <q-btn dense no-caps flat label="Delete" @click="remove()" />
     </div>
-    <span v-if="currency.isDefault">(default currency)</span>
   </div>
 </template>
 <script lang="ts">
@@ -31,34 +34,47 @@ import { defineComponent, ref } from 'vue';
 export default defineComponent({
   name: 'CurrencyItem',
 
-  emits: [
-    'save',
-    'edit',
-    'remove',
-  ],
+  emits: ['save', 'edit', 'remove'],
 
   setup() {
     return {
       selectedCurrencyModel: ref(false),
+      currencyDate: ref(''),
+      currencyRate: ref(''),
     };
   },
 
   props: {
     currency: { type: Object, required: true },
+    createRate: { type: Function, required: true },
   },
 
   methods: {
     save() {
-      console.log(this.currency);
-      this.$emit('save', this.currency);
+      if (this.currencyDate && this.currencyRate.length > 5) {
+        this.createRate({
+          currencyId: this.currency.id,
+          rateDate: this.currencyDate,
+          rate: this.currencyRate,
+        });
+      }
+      this.$emit('save');
     },
 
     edit() {
+      console.log(`Edit: ${this.currency}`);
       this.$emit('edit', this.currency);
     },
 
     remove() {
+      console.log(`Remove: ${this.currency}`);
       this.$emit('remove', this.currency);
+    },
+  },
+
+  watch: {
+    selectedCurrencyModel() {
+      console.log(`${this.currency.code} - ${this.selectedCurrencyModel}`);
     },
   },
 

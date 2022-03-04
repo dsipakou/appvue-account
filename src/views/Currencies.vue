@@ -6,15 +6,13 @@
       </div>
     </div>
     <div class="row justify-center">
-      <q-btn
-        rounded
+      <q-btn rounded
         color="primary"
         @click="getCurrentRate"
         :disabled="ratesInProgress">
         Get rates
       </q-btn>
-      <q-btn
-        rounded
+      <q-btn rounded
         color="primary"
         class="q-ml-lg"
         @click="createForm = true">
@@ -32,6 +30,7 @@
           <div class="row justify-start" v-for="currency in notBaseCurrencies" :key="currency.id">
             <CurrencyItem
               :currency="currency"
+              :createRate="createRate"
               @save="save($event)"
               @edit="edit($event)"
               @remove="remove($event)"
@@ -198,13 +197,8 @@ export default {
       this.confirmForm = true;
     },
 
-    save(currency) {
-      console.log(`${currency} manual save`);
-      if (this.selectedDays.length < 1) {
-        return;
-      }
-
-      console.log(`${currency} manual save end`);
+    save() {
+      console.log('Saved!');
     },
   },
 

@@ -62,12 +62,10 @@ export default defineComponent({
     },
 
     edit() {
-      console.log(`Edit: ${this.currency}`);
       this.$emit('edit', this.currency);
     },
 
     remove() {
-      console.log(`Remove: ${this.currency}`);
       this.$emit('remove', this.currency);
     },
   },

@@ -75,9 +75,5 @@ export default defineComponent({
       console.log(`${this.currency.code} - ${this.selectedCurrencyModel}`);
     },
   },
-
-  mounted() {
-    console.log(this.currency);
-  },
 });
 </script>

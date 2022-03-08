@@ -71,8 +71,8 @@
       :range="selectedRange" />
   </div>
 </template>
-<script>
-import { ref } from 'vue';
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
 import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
@@ -83,7 +83,7 @@ import ConfirmForm from '@/views/currency/forms/ConfirmForm.vue';
 import CurrencyItem from '@/views/currency/components/CurrencyItem.vue';
 import { getRate } from '../service';
 
-export default {
+export default defineComponent({
   name: 'Currencies',
 
   components: {
@@ -93,7 +93,6 @@ export default {
     ConfirmForm,
     CurrencyItem,
   },
-
   data() {
     return {
       ratesInProgress: false,
@@ -219,5 +218,5 @@ export default {
   mounted() {
     this.rangeSelect = this.currencyRange;
   },
-};
+});
 </script>

@@ -81,6 +81,7 @@ import AddForm from '@/views/currency/forms/AddForm.vue';
 import EditForm from '@/views/currency/forms/EditForm.vue';
 import ConfirmForm from '@/views/currency/forms/ConfirmForm.vue';
 import CurrencyItem from '@/views/currency/components/CurrencyItem.vue';
+import { Currency, Rate } from '@/types';
 import { getRate } from '../service';
 
 export default defineComponent({
@@ -93,10 +94,11 @@ export default defineComponent({
     ConfirmForm,
     CurrencyItem,
   },
+
   data() {
     return {
       ratesInProgress: false,
-      selectedCurrency: null,
+      selectedCurrency: {},
       input: {
         code: '',
         sign: '',
@@ -137,12 +139,12 @@ export default defineComponent({
       'isRatesListLoading',
     ]),
 
-    notBaseCurrencies() {
-      return this.currencyList.filter((item) => !item.isBase);
+    notBaseCurrencies(): Currency[] {
+      return this.currencyList.filter((item: Currency) => !item.isBase);
     },
 
-    baseCurrency() {
-      return this.currencyList.find((item) => item.isBase);
+    baseCurrency(): Currency[] {
+      return this.currencyList.find((item: Currency) => item.isBase);
     },
   },
 
@@ -157,8 +159,8 @@ export default defineComponent({
       'selectCurrencyRange',
     ]),
 
-    async isRateExist(selectedDay, currencyId) {
-      return this.ratesList.find((rate) => {
+    async isRateExist(selectedDay: string, currencyId: number) {
+      return this.ratesList.find((rate: Rate) => {
         const selectedDate = moment(selectedDay).startOf('day');
         const existingDate = moment(rate.rateDate).startOf('day');
         return selectedDate.isSame(existingDate) && currencyId === rate.currencyId;
@@ -168,8 +170,10 @@ export default defineComponent({
     async getCurrentRate() {
       this.ratesInProgress = true;
       await Promise.all(this.selectedDays.map(async (day) => {
-        await Promise.all(this.currencyList.map(async (currency) => {
-          const fullCurrency = this.currencyList.find((item) => item.code === currency.code);
+        await Promise.all(this.currencyList.map(async (currency: Currency) => {
+          const fullCurrency = this.currencyList.find(
+            (item: Currency) => item.code === currency.code,
+          );
           const existingRate = await this.isRateExist(day, fullCurrency.id);
           if (!existingRate && !currency.isBase) {
             const rate = await getRate(currency.code, day);
@@ -186,12 +190,12 @@ export default defineComponent({
       this.ratesInProgress = false;
     },
 
-    edit(currency) {
+    edit(currency: Currency) {
       this.selectedCurrency = currency;
       this.editForm = true;
     },
 
-    remove(currency) {
+    remove(currency: Currency) {
       this.selectedCurrency = currency;
       this.confirmForm = true;
     },

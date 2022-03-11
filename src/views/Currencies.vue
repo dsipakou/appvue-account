@@ -169,7 +169,7 @@ export default defineComponent({
 
     async getCurrentRate() {
       this.ratesInProgress = true;
-      await Promise.all(this.selectedDays.map(async (day) => {
+      await Promise.all(this.selectedDays.map(async (day: string) => {
         await Promise.all(this.currencyList.map(async (currency: Currency) => {
           const fullCurrency = this.currencyList.find(
             (item: Currency) => item.code === currency.code,

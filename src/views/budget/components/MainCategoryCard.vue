@@ -47,6 +47,8 @@ export default defineComponent({
   align-items: center;
   width: 280px;
   max-width: 280px;
+  height: 86px;
+  max-height: 86px;
   padding: 15px;
   border-radius: 20px;
   cursor: pointer;
@@ -67,11 +69,12 @@ export default defineComponent({
 }
 
 .selected {
-  border: 2px solid;
-  width: 300px;
+  border: 3px solid #B9B9B9;
+  height: 86px;
+  width: 322px;
   max-width: 300px;
   padding: 14px 0;
-  background-color: #DEE;
+  background-color: #BFF7FF;
 }
 
 .arrow {

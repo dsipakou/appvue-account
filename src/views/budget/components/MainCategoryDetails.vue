@@ -25,7 +25,7 @@ export default defineComponent({
 </script>
 <style scoped>
 .main-panel {
-  margin: 10px;
+  margin: 5px 10px;
   width: 100%;
   max-width: 100%;
   align-content: start;

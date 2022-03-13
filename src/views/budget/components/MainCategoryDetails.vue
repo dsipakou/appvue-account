@@ -32,7 +32,7 @@ export default defineComponent({
   margin: 5px 0;
   width: 100%;
   max-width: 100%;
-  justify-content: center;
+  justify-content: start;
   align-content: start;
   padding: 15px;
   border-radius: 20px;

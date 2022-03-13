@@ -15,6 +15,7 @@
     <div class="col-8">
       <div class="row" v-show="activeCategory.title != ''">
         <MainCategoryDetails
+          :title="activeCategory.title"
           :items="activeBudget"
           :categories="categoryItems" />
       </div>

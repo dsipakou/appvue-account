@@ -1,56 +1,51 @@
 <template>
   <div>
-    <div class="q-pa-md">
-      <div class="header">
-        <h4>
-          Planner
-        </h4>
-        <q-btn outline
-           label="Planner >" to='/budget/planner'/>
+    <div class="header">
+      <h4>
+        Planner
+      </h4>
+      <q-btn outline
+         label="Planner >" to='/budget/planner'/>
+    </div>
+    <div class="row justify-left">
+      <div class="col-8">
+        <MonthlyBudgetOld
+          :budgetItems="budgetList"
+          :categoryItems="categoryList"
+          :budgetUsage="budgetUsage"
+          :createBudget="createBudget"
+          :updateBudget="updateBudget"
+          :deleteBudget="deleteBudget"
+          :selectedMonth="budgetSelectedMonth"
+          :updateStatusBudget="updateStatusBudget" />
       </div>
-      <div class="row q-mt-lg justify-left">
-        <div class="col-8 q-px-md">
-          <MonthlyBudgetOld
-            :budgetItems="budgetList"
-            :categoryItems="categoryList"
-            :budgetUsage="budgetUsage"
-            :createBudget="createBudget"
-            :updateBudget="updateBudget"
-            :deleteBudget="deleteBudget"
-            :selectedMonth="budgetSelectedMonth"
-            :updateStatusBudget="updateStatusBudget" />
-        </div>
-        <div class="col-4 q-px-md">
-          <WeekBudget
-            class="col-4 q-px-md"
-            :budgetItems="budgetList"
-            :categoryItems="categoryList"
-            :transactionItems="budgetedTransactions"
-            :updateBudget="updateBudget"
-            :deleteBudget="deleteBudget"
-            :updateStatusBudget="updateStatusBudget" />
-        </div>
+      <div class="col-4">
+        <WeekBudget
+          :budgetItems="budgetList"
+          :categoryItems="categoryList"
+          :transactionItems="budgetedTransactions"
+          :updateBudget="updateBudget"
+          :deleteBudget="deleteBudget"
+          :updateStatusBudget="updateStatusBudget" />
       </div>
-      <div class="row q-mt-lg justify-left">
-        <div class="col-12 q-px-md">
-          <MonthlyBudget
-            :budgetItems="budgetList"
-            :categoryItems="categoryList"
-            :budgetUsage="budgetUsage"
-            :createBudget="createBudget"
-            :updateBudget="updateBudget"
-            :deleteBudget="deleteBudget"
-            :selectedMonth="budgetSelectedMonth"
-            :updateStatusBudget="updateStatusBudget" />
-        </div>
-      </div>
-      <div>
-        <q-date
-          v-model="dateModel"
-          ref="budgetCal"
-          @update:model-value="dateSelected"
-          />
-      </div>
+    </div>
+    <div class="col-12">
+      <MonthlyBudget
+        :budgetItems="budgetList"
+        :categoryItems="categoryList"
+        :budgetUsage="budgetUsage"
+        :createBudget="createBudget"
+        :updateBudget="updateBudget"
+        :deleteBudget="deleteBudget"
+        :selectedMonth="budgetSelectedMonth"
+        :updateStatusBudget="updateStatusBudget" />
+    </div>
+    <div>
+      <q-date
+        v-model="dateModel"
+        ref="budgetCal"
+        @update:model-value="dateSelected"
+        />
     </div>
   </div>
 </template>

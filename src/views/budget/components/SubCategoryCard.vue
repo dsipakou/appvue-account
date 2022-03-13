@@ -41,9 +41,10 @@ export default defineComponent({
 <style scoped>
 .container {
   width: 95%;
-  height: 150px;
+  height: 162px;
+  width: 362px;
   padding: 20px;
-  margin: 10px;
+  margin: 10px 0;
 }
 
 .content {

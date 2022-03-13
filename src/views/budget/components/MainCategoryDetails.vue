@@ -1,7 +1,10 @@
 <template>
   <q-card flat bordered
     class="row main-panel">
-    <div class="col-6" v-for="item in items" :key="item.name">
+    <div class="row col-12 justify-center header">
+      {{ title }}
+    </div>
+    <div class="row col-6 justify-center" v-for="item in items" :key="item.name">
       <SubCategoryCard :item=item :categories="categories" />
     </div>
   </q-card>
@@ -18,6 +21,7 @@ export default defineComponent({
   },
 
   props: {
+    title: { type: String, required: true },
     items: { type: Array, required: true },
     categories: { type: Array, required: true },
   },
@@ -25,13 +29,18 @@ export default defineComponent({
 </script>
 <style scoped>
 .main-panel {
-  margin: 5px 10px;
+  margin: 5px 0;
   width: 100%;
   max-width: 100%;
+  justify-content: center;
   align-content: start;
   padding: 15px;
   border-radius: 20px;
-  min-height: 800px;
   background-color: #EED;
+}
+
+.header {
+  font-size: 22px;
+  font-weight: bold;
 }
 </style>

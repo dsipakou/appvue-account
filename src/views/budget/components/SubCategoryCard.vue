@@ -1,30 +1,15 @@
 <template>
   <q-card flat class="container">
-    <Splide :options="{ rewind: true }">
-      <SplideSlide
-        class="content"
-        v-for="item in item.items"
-        :key="item.name"
-      >
-        <span class="title--main">{{ item.title }}</span>
-        <span class="caption--main">{{ getCategory(item.categoryId).name }}</span>
-      </SplideSlide>
-    </Splide>
+    <div class="row title--main">{{ item.name }}</div>
   </q-card>
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import { Category } from '@/types';
 import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 
 export default defineComponent({
   name: 'SubCategoryCard',
-
-  components: {
-    Splide,
-    SplideSlide,
-  },
 
   props: {
     item: { type: Object, required: true },
@@ -43,9 +28,11 @@ export default defineComponent({
   width: 95%;
   height: 162px;
   width: 362px;
-  padding: 20px;
   margin: 10px 0;
+  border-radius: 10px;
 }
+
+.title
 
 .content {
   display: flex;
@@ -54,7 +41,8 @@ export default defineComponent({
 
 .title--main {
   white-space: nowrap;
-  font-size: 20px;
+  font-size: 18px;
+  padding: 15px 0 0 15px;
 }
 
 .caption--main {

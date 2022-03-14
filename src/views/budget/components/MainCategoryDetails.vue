@@ -4,20 +4,30 @@
     <div class="row col-12 justify-center header">
       {{ title }}
     </div>
-    <div class="row col-6 justify-center" v-for="item in items" :key="item.name">
-      <SubCategoryCard :item=item :categories="categories" />
+    <div class="row col-12">
+      <div class="row col justify-center">
+        <CategoryMonthSummary />
+      </div>
+      <div class="row col"></div>
+    </div>
+    <div class="row justify-start">
+      <div class="row col-6 justify-center" v-for="item in items" :key="item.name">
+        <SubCategoryCard :item=item :categories="categories" />
+      </div>
     </div>
   </q-card>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
 import SubCategoryCard from '@/views/budget/components/SubCategoryCard.vue';
+import CategoryMonthSummary from '@/views/budget/components/CategoryMonthSummary.vue';
 
 export default defineComponent({
   name: 'MainCategoryDetails',
 
   components: {
     SubCategoryCard,
+    CategoryMonthSummary,
   },
 
   props: {
@@ -36,7 +46,7 @@ export default defineComponent({
   align-content: start;
   padding: 15px;
   border-radius: 20px;
-  background-color: #EED;
+  background-color: #EEE;
 }
 
 .header {

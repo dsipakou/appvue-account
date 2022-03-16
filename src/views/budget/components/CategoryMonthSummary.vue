@@ -18,18 +18,33 @@
     </div>
     <div class="row bottom">
       <div class="row col spent-container"><span>24p. spent</span></div>
-      <div class="row col overall-container"><span>of 1000p.</span></div>
+      <div class="row col overall-container"><span>of {{ getPlannedAmount(title) }}</span></div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
+
+interface BudgetUsageItem {
+  name: string,
+  amount: number,
+}
 
 export default defineComponent({
   name: 'Category Month Summary component',
 
   props: {
-    budgetUsage: { type: Array, required: true },
+    budgetUsage: { type: Array as PropType<BudgetUsageItem[]>, required: true },
+    title: { type: String, required: true },
+  },
+
+  methods: {
+    getPlannedAmount(category: string): number {
+      const budgetItem: BudgetUsageItem | undefined = this.budgetUsage.find(
+        (item: BudgetUsageItem) => item.name === category,
+      );
+      return budgetItem?.amount || 0;
+    },
   },
 });
 </script>

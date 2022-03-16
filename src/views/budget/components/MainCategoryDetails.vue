@@ -8,6 +8,7 @@
       <div class="row col justify-center">
         <CategoryMonthSummary
           :budgetUsage="budgetUsage"
+          :title="title"
         />
       </div>
       <div class="row col"></div>

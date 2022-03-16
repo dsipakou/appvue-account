@@ -27,6 +27,10 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'Category Month Summary component',
+
+  props: {
+    budgetUsage: { type: Array, required: true },
+  },
 });
 </script>
 <style scoped>

@@ -6,7 +6,9 @@
     </div>
     <div class="row col-12">
       <div class="row col justify-center">
-        <CategoryMonthSummary />
+        <CategoryMonthSummary
+          :budgetUsage="budgetUsage"
+        />
       </div>
       <div class="row col"></div>
     </div>
@@ -31,6 +33,7 @@ export default defineComponent({
   },
 
   props: {
+    budgetUsage: { type: Array, required: true },
     title: { type: String, required: true },
     items: { type: Array, required: true },
     categories: { type: Array, required: true },

@@ -4,21 +4,31 @@
      This month
     </div>
     <div class="row remains">
-      Hello
+      <span class="number">{{ Math.abs(getDiff(title)).toFixed(2) }}</span>
+      <span class="text" v-if="getDiff(title) < 0">over</span>
+      <span class="text" v-else>left</span>
     </div>
     <div class="row">
       <q-linear-progress
         size="50px"
-        value="0.36"
+        :value="getProgressRate(title)"
         class="progress-bar"
-        color="green-14"
+        :color="getDiff(title) < 0 ? 'red-14' : 'green-14'"
         track-color="grey-6">
-        <div class="absolute-full flex flex-center progress-text">76%</div>
+        <div class="absolute-full flex flex-center progress-text">
+          {{ Math.min((getProgressRate(title) * 100).toFixed(0), 100) }}%
+        </div>
       </q-linear-progress>
     </div>
     <div class="row bottom">
-      <div class="row col spent-container"><span>24p. spent</span></div>
-      <div class="row col overall-container"><span>of {{ getPlannedAmount(title) }}</span></div>
+      <div class="row col spent-container">
+        <span class="number">{{ getActualAmount(title).toFixed(2) }}</span>
+        <span class="text">spent</span>
+      </div>
+      <div class="row col overall-container">
+        <span class="text">of</span>
+        <span class="number">{{ getPlannedAmount(title).toFixed(2) }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -30,20 +40,44 @@ interface BudgetUsageItem {
   amount: number,
 }
 
+interface BudgetPlannedItem {
+  name: string,
+  items: object[],
+  amount: number,
+}
+
 export default defineComponent({
   name: 'Category Month Summary component',
 
   props: {
+    budgetList: { type: Array as PropType<BudgetPlannedItem[]>, required: true },
     budgetUsage: { type: Array as PropType<BudgetUsageItem[]>, required: true },
     title: { type: String, required: true },
   },
 
   methods: {
     getPlannedAmount(category: string): number {
+      const budgetItem: BudgetPlannedItem | undefined = this.budgetList.find(
+        (item: BudgetPlannedItem) => item.name === category,
+      );
+      return budgetItem?.amount || 0;
+    },
+
+    getActualAmount(category: string): number {
       const budgetItem: BudgetUsageItem | undefined = this.budgetUsage.find(
         (item: BudgetUsageItem) => item.name === category,
       );
       return budgetItem?.amount || 0;
+    },
+
+    getDiff(category: string): number {
+      return this.getPlannedAmount(category) - this.getActualAmount(category);
+    },
+
+    getProgressRate(category: string): number {
+      const planned: number = this.getPlannedAmount(category);
+      if (planned === 0) return 1;
+      return this.getActualAmount(category) / this.getPlannedAmount(category);
     },
   },
 });
@@ -74,7 +108,7 @@ export default defineComponent({
 }
 
 .bottom {
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .spent-container {
@@ -84,6 +118,14 @@ export default defineComponent({
 .overall-container {
   margin: 5px 5px 0 0;
   justify-content: end;
+}
+
+.remains>.text, .bottom .text {
+  margin: 0 5px;
+}
+
+.remains>.number, .bottom .number {
+  font-weight: bold;
 }
 
 </style>

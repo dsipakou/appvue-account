@@ -7,6 +7,7 @@
     <div class="row col-12">
       <div class="row col justify-center">
         <CategoryMonthSummary
+          :budgetList="budgetList"
           :budgetUsage="budgetUsage"
           :title="title"
         />
@@ -15,6 +16,7 @@
     </div>
     <div class="row justify-start">
       <div class="row col-6 justify-center" v-for="item in items" :key="item.name">
+        {{ item }}
         <SubCategoryCard :item=item :categories="categories" />
       </div>
     </div>
@@ -34,6 +36,7 @@ export default defineComponent({
   },
 
   props: {
+    budgetList: { type: Array, required: true },
     budgetUsage: { type: Array, required: true },
     title: { type: String, required: true },
     items: { type: Array, required: true },

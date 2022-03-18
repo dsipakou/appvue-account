@@ -37,37 +37,38 @@ import { defineComponent, PropType } from 'vue';
 
 interface BudgetUsageItem {
   name: string,
-  amount: number,
+  actualUsage: number,
 }
 
-interface BudgetPlannedItem {
+interface BudgetItem {
   name: string,
   items: object[],
-  amount: number,
+  planned: number,
+  actualUsage: number,
 }
 
 export default defineComponent({
   name: 'Category Month Summary component',
 
   props: {
-    budgetList: { type: Array as PropType<BudgetPlannedItem[]>, required: true },
+    budgetList: { type: Array as PropType<BudgetItem[]>, required: true },
     budgetUsage: { type: Array as PropType<BudgetUsageItem[]>, required: true },
     title: { type: String, required: true },
   },
 
   methods: {
     getPlannedAmount(category: string): number {
-      const budgetItem: BudgetPlannedItem | undefined = this.budgetList.find(
-        (item: BudgetPlannedItem) => item.name === category,
+      const budgetItem: BudgetItem | undefined = this.budgetList.find(
+        (item: BudgetItem) => item.name === category,
       );
-      return budgetItem?.amount || 0;
+      return budgetItem?.planned || 0;
     },
 
     getActualAmount(category: string): number {
-      const budgetItem: BudgetUsageItem | undefined = this.budgetUsage.find(
-        (item: BudgetUsageItem) => item.name === category,
+      const budgetItem: BudgetItem | undefined = this.budgetList.find(
+        (item: BudgetItem) => item.name === category,
       );
-      return budgetItem?.amount || 0;
+      return budgetItem?.actualUsage || 0;
     },
 
     getDiff(category: string): number {

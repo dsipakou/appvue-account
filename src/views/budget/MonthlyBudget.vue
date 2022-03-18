@@ -6,7 +6,7 @@
         v-for="budget in budgetList"
         :key="budget.name">
         <MainCategoryCard
-          :amount="budget.amount"
+          :amount="budget.planned"
           :title="budget.name"
           :activeCategory="activeCategory.title"
           @categoryClick=mainCategoryClick($event) />
@@ -94,8 +94,14 @@ export default defineComponent({
           },
         );
 
-        const countedAmountObject = item[1].reduce(
-          (acc: { ids: number[], sum: number }, subItem: { id: number, amount: number }) => {
+        const countedPlannedObject = item[1].reduce(
+          (acc: {
+            ids: number[],
+            sum: number
+          }, subItem: {
+            id: number,
+            amount: number
+          }) => {
             if (!acc.ids.includes(subItem.id)) {
               acc.ids.push(subItem.id);
               acc.sum += subItem.amount;
@@ -103,13 +109,15 @@ export default defineComponent({
             return acc;
           }, { ids: [], sum: 0 },
         );
-
         const group = {
           name: item[0],
           items: sortedGroupedBudgets,
-          amount: countedAmountObject.sum,
+          planned: countedPlannedObject.sum,
           actualUsage: item[1].reduce(
-            (acc: number, subItem: { actualUsage: number }) => acc + subItem.actualUsage, 0,
+            (
+              acc: number,
+              subItem: { spentInBaseCurrency: number },
+            ) => acc + subItem.spentInBaseCurrency, 0,
           ),
         };
         arr.push(group);
@@ -124,8 +132,11 @@ export default defineComponent({
         const categoryItem = {
           name: item[0],
           items: item[1],
-          amount: item[1].reduce(
-            (acc: number, subItem: { amount: number }) => acc + subItem.amount, 0,
+          planned: item[1].reduce(
+            (acc: number, subItem: { planned: number }) => acc + subItem.planned, 0,
+          ),
+          actualUsage: item[1].reduce(
+            (acc: number, subItem: { actualUsage: number }) => acc + subItem.actualUsage, 0,
           ),
         };
         if (categoryItem.name === 'undefined') {
@@ -134,7 +145,6 @@ export default defineComponent({
           groupedList.push(categoryItem);
         }
       });
-
       return groupedList.sort((a: { name: string }, b: { name: string }) => {
         if (a.name < b.name) return -1;
         if (a.name > b.name) return 1;

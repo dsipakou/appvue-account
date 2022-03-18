@@ -127,7 +127,6 @@ export default {
   },
 
   beforeMount() {
-    console.log(this.budgetSelectedMonth);
     const dateFrom = getFirstDayOfMonth(format(new Date(), DATE_FORMAT));
     const dateTo = getLastDayOfMonth(format(new Date(), DATE_FORMAT));
     this.fetchBudgetUsage({ dateFrom, dateTo });

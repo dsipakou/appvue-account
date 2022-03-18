@@ -93,11 +93,23 @@ export default defineComponent({
             return 0;
           },
         );
+
+        const countedAmountObject = item[1].reduce(
+          (acc: { ids: number[], sum: number }, subItem: { id: number, amount: number }) => {
+            if (!acc.ids.includes(subItem.id)) {
+              acc.ids.push(subItem.id);
+              acc.sum += subItem.amount;
+            }
+            return acc;
+          }, { ids: [], sum: 0 },
+        );
+
         const group = {
           name: item[0],
           items: sortedGroupedBudgets,
-          amount: item[1].reduce(
-            (acc: number, subItem: { amount: number }) => acc + subItem.amount, 0,
+          amount: countedAmountObject.sum,
+          actualUsage: item[1].reduce(
+            (acc: number, subItem: { actualUsage: number }) => acc + subItem.actualUsage, 0,
           ),
         };
         arr.push(group);

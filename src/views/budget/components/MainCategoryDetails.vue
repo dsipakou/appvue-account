@@ -16,7 +16,6 @@
     </div>
     <div class="row justify-start">
       <div class="row col-6 justify-center" v-for="item in items" :key="item.name">
-        {{ item }}
         <SubCategoryCard :item=item :categories="categories" />
       </div>
     </div>

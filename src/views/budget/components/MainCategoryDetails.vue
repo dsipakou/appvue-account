@@ -35,7 +35,6 @@ export default defineComponent({
   },
 
   props: {
-    budgetList: { type: Array, required: true },
     budgetUsage: { type: Array, required: true },
     title: { type: String, required: true },
     items: { type: Array, required: true },

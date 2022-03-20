@@ -119,7 +119,7 @@ export default {
   },
 
   props: {
-    budgetItems: { type: Array, required: true },
+    budgetPlan: { type: Array, required: true },
     categoryItems: { type: Array, required: true },
     transactionItems: { type: Array, required: true },
     updateBudget: { type: Function, required: true },
@@ -133,7 +133,7 @@ export default {
     },
 
     currentWeek() {
-      const thisWeek = this.budgetItems.filter((item) => (
+      const thisWeek = this.budgetPlan.filter((item) => (
         moment(item.budgetDate).week() === moment().week()
       ));
       return [
@@ -192,9 +192,9 @@ export default {
   },
 
   methods: {
-    spentOnItem(budgetItem) {
+    spentOnItem(budgetPlan) {
       return this.transactionItems.filter((item) => (
-        item.budgetId === budgetItem.id
+        item.budgetId === budgetPlan.id
       )).reduce((acc, item) => (
         acc + item.amount
       ), 0).toFixed(2);

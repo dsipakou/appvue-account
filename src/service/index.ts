@@ -422,8 +422,8 @@ export const getBudget = async () => {
   return response;
 };
 
-export const getBudgetForPeriod = async (payload: IGetBudgetForPeriod) => {
-  const url = `http://localhost:9091/api/budget/date?dateFrom=${payload.dateFrom}&dateTo=${payload.dateTo}`;
+export const getBudgetUsage = async (payload: IGetBudgetForPeriod) => {
+  const url = `http://localhost:9091/api/budget/usage?dateFrom=${payload.dateFrom}&dateTo=${payload.dateTo}`;
   const response = await getRequest(url);
   return response;
 };
@@ -459,11 +459,11 @@ interface GetBudgetRequest {
   dateTo: string,
 }
 
-export const getBudgetUsage = async ({
+export const getBudgetPlan = async ({
   dateFrom,
   dateTo,
 }: GetBudgetRequest) => {
-  const response = await getRequest(`http://localhost:9091/api/budget/period?dateFrom=${dateFrom}&dateTo=${dateTo}`);
+  const response = await getRequest(`http://localhost:9091/api/budget/planned?dateFrom=${dateFrom}&dateTo=${dateTo}`);
   return response;
 };
 

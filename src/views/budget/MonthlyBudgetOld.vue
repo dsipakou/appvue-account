@@ -85,7 +85,6 @@ export default {
   },
 
   props: {
-    budgetItems: { type: Array, required: true },
     categoryItems: { type: Array, required: true },
     createBudget: { type: Function, required: true },
     updateBudget: { type: Function, required: true },
@@ -115,7 +114,7 @@ export default {
     },
 
     currentMonth() {
-      return this.budgetItems.filter((item) => (
+      return this.budgetUsage.filter((item) => (
         moment(item.budgetDate).month() === moment().month()
       ));
     },

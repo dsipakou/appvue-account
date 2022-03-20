@@ -3,7 +3,7 @@
     <div class="col-4">
       <div
         class="row main-category-container"
-        v-for="budget in budgetList"
+        v-for="budget in budgetUsage"
         :key="budget.name">
         <MainCategoryCard
           :amount="budget.planned"
@@ -15,7 +15,6 @@
     <div class="col-8">
       <div class="row" v-show="activeCategory.title != ''">
         <MainCategoryDetails
-          :budgetList="budgetList"
           :budgetUsage="budgetUsage"
           :title="activeCategory.title"
           :items="activeBudget"
@@ -45,7 +44,6 @@ export default defineComponent({
   },
 
   props: {
-    budgetItems: { type: Array as PropType<Budget[]>, required: true },
     categoryItems: { type: Array as PropType<Category[]>, required: true },
     createBudget: { type: Function, required: true },
     updateBudget: { type: Function, required: true },
@@ -66,7 +64,7 @@ export default defineComponent({
 
   computed: {
     groupedByName(): object {
-      return this.budgetItems.reduce((acc: {[key: string]: Budget[]}, item) => {
+      return this.budgetUsage.reduce((acc: {[key: string]: Budget[]}, item: any) => {
         const arr: Budget[] = acc[item.title] || [];
         arr.push(item);
         acc[item.title] = arr;

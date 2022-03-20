@@ -3,11 +3,11 @@
     <div class="col-4">
       <div
         class="row main-category-container"
-        v-for="item in Object.entries(monthlyBudget)"
-        :key="item[0]">
+        v-for="[ name, amount ] in Object.entries(monthlyBudget)"
+        :key="name">
         <MainCategoryCard
-          :amount="item[1]"
-          :title="item[0]"
+          :amount="amount"
+          :title="name"
           :activeCategory="activeCategory.title"
           @categoryClick=mainCategoryClick($event) />
       </div>
@@ -35,6 +35,19 @@ interface BudgetItem {
   amount: number,
 }
 
+interface BudgetPlan {
+  id: number,
+  categoryId: number,
+  title: string,
+  amount: number,
+  budgetDate: string,
+  description: string,
+  isCompleted: boolean,
+  createdAt: string,
+  updatedAt: string,
+  categoryName: string,
+}
+
 export default defineComponent({
   name: 'MonthlyBudget',
 
@@ -49,7 +62,7 @@ export default defineComponent({
     updateBudget: { type: Function, required: true },
     deleteBudget: { type: Function, required: true },
     budgetUsage: { type: Array, required: true },
-    budgetPlan: { type: Array, required: true },
+    budgetPlan: { type: Array as PropType<BudgetPlan[]>, required: true },
     selectedMonth: { type: Date, required: true },
     updateStatusBudget: { type: Function, required: true },
   },
@@ -64,8 +77,8 @@ export default defineComponent({
   },
 
   computed: {
-    monthlyBudget(): object {
-      return this.budgetPlan.reduce((acc: any, item: Budget) => {
+    monthlyBudget(): { [key: string]: number } {
+      return this.budgetPlan.reduce((acc: {[key: string]: number}, item: BudgetPlan) => {
         const amount = acc[item.categoryName] || 0;
         acc[item.categoryName] = amount + item.amount;
         return acc;

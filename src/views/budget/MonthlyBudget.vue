@@ -15,7 +15,7 @@
     <div class="col-8">
       <div class="row" v-show="activeCategory.title != ''">
         <MainCategoryDetails
-          :budgetUsage="budgetUsage"
+          :budgetUsage="groupedBudgetUsage"
           :title="activeCategory.title"
           :items="activeBudget"
           :categories="categoryItems" />
@@ -125,7 +125,7 @@ export default defineComponent({
       return categoryClass;
     },
 
-    budgetList() {
+    groupedBudgetUsage() {
       const groupedList: any[] = [];
       Object.entries(this.groupedByCategory).forEach((item) => {
         const categoryItem = {
@@ -152,7 +152,7 @@ export default defineComponent({
     },
 
     activeBudget(): any | undefined {
-      const typedBudgetList = this.budgetList as [];
+      const typedBudgetList = this.groupedBudgetUsage as [];
       const budgetItem: BudgetItem = typedBudgetList.find(
         (item: { name: string, value: string }) => item.name === this.activeCategory.title,
       )! as BudgetItem;

@@ -3,10 +3,10 @@
     <div class="col-4">
       <div
         class="row main-category-container"
-        v-for="budget in budgetUsage"
+        v-for="budget in budgetPlan"
         :key="budget.name">
         <MainCategoryCard
-          :amount="budget.planned"
+          :amount="budget.amount"
           :title="budget.name"
           :activeCategory="activeCategory.title"
           @categoryClick=mainCategoryClick($event) />
@@ -49,6 +49,7 @@ export default defineComponent({
     updateBudget: { type: Function, required: true },
     deleteBudget: { type: Function, required: true },
     budgetUsage: { type: Array, required: true },
+    budgetPlan: { type: Array, required: true },
     selectedMonth: { type: Date, required: true },
     updateStatusBudget: { type: Function, required: true },
   },

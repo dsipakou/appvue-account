@@ -10,7 +10,7 @@
       </div>
       <q-linear-progress
         class="progress-bar"
-        value="0.46"
+        value=0.46
         color="green-14"
         size="34px"
         track-color="grey-6">

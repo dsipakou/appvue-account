@@ -99,14 +99,14 @@ export default defineComponent({
     userId: { type: Number, required: true },
     category: { type: Object, required: true },
     transactionLastAdded: { type: Object, default: () => ({}) },
-    budgetList: { type: Array, required: true },
+    budgetPlan: { type: Array, required: true },
     categoryList: { type: Array, requierd: true },
     currencyList: { type: Array, required: true },
     ratesList: { type: Array, required: true },
     currencyListLoaded: { type: Boolean, required: true },
     createTransaction: { type: Function, required: true },
     setTransactionLastAdded: { type: Function, required: true },
-    fetchBudgetForPeriod: { type: Function, required: true },
+    fetchBudgetPlan: { type: Function, required: true },
     updateBudget: { type: Function, required: true },
   },
 
@@ -126,11 +126,11 @@ export default defineComponent({
 
   computed: {
     selectedWeekBudget(): Array<BudgetItem> {
-      const incompletedItems = this.budgetList.filter((budget) => (
+      const incompletedItems = this.budgetPlan.filter((budget) => (
         !(budget as Budget).isCompleted
       )) as Array<BudgetItem>;
 
-      const completedItems = this.budgetList.filter((budget) => (
+      const completedItems = this.budgetPlan.filter((budget) => (
         (budget as Budget).isCompleted
       )) as Array<BudgetItem>;
 
@@ -148,7 +148,7 @@ export default defineComponent({
 
   methods: {
     getBudget(id: number): Budget {
-      return this.budgetList.find((item: any) => item.id === id) as Budget;
+      return this.budgetPlan.find((item: any) => item.id === id) as Budget;
     },
 
     getCategory(id: number) {
@@ -168,7 +168,7 @@ export default defineComponent({
     },
 
     setBudgetList() {
-      this.fetchBudgetForPeriod({
+      this.fetchBudgetPlan({
         dateFrom: getFirstDayOfWeek(this.input.transactionDate),
         dateTo: getLastDayOfWeek(this.input.transactionDate),
       });

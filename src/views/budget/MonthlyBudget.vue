@@ -3,11 +3,11 @@
     <div class="col-4">
       <div
         class="row main-category-container"
-        v-for="budget in budgetPlan"
-        :key="budget.name">
+        v-for="item in Object.entries(monthlyBudget)"
+        :key="item[0]">
         <MainCategoryCard
-          :amount="budget.amount"
-          :title="budget.name"
+          :amount="item[1]"
+          :title="item[0]"
           :activeCategory="activeCategory.title"
           @categoryClick=mainCategoryClick($event) />
       </div>
@@ -64,6 +64,14 @@ export default defineComponent({
   },
 
   computed: {
+    monthlyBudget(): object {
+      return this.budgetPlan.reduce((acc: any, item: Budget) => {
+        const amount = acc[item.categoryName] || 0;
+        acc[item.categoryName] = amount + item.amount;
+        return acc;
+      }, {});
+    },
+
     groupedByName(): object {
       return this.budgetUsage.reduce((acc: {[key: string]: Budget[]}, item: any) => {
         const arr: Budget[] = acc[item.title] || [];

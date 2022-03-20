@@ -29,7 +29,7 @@
         <TransactionList
           :transactions="transactionList.slice(0, 15)"
           :accountList="accountList"
-          :budgetList="budgetList"
+          :budgetPlan="budgetPlan"
           :categoryList="categoryList"
           :currencyList="currencyList"
           :ratesList="ratesList"
@@ -48,7 +48,7 @@
         :accountId="selectedAccountId"
         :category="selectedCategory"
         :userId="selectedUserId"
-        :budgetList="budgetList"
+        :budgetPlan="budgetPlan"
         :categoryList="categoryList"
         :currencyList="currencyList"
         :ratesList="ratesList"
@@ -56,7 +56,7 @@
         :currencyListLoaded="currencyListLoaded"
         :createTransaction="createTransaction"
         :setTransactionLastAdded="setTransactionLastAdded"
-        :fetchBudgetForPeriod="fetchBudgetForPeriod"
+        :fetchBudgetPlan="fetchBudgetPlan"
         :updateBudget="updateBudget"
         @closeForm="createForm = false"
       />
@@ -65,7 +65,7 @@
       <EditForm
         :transaction="editedTransaction"
         :accountList="accountList"
-        :budgetList="budgetList"
+        :budgetPlan="budgetPlan"
         :categoryList="categoryList"
         :currencyList="currencyList"
         :currencyListLoaded="currencyListLoaded"
@@ -128,7 +128,7 @@ export default {
       'categoryList',
       'currencyList',
       'ratesList',
-      'budgetList',
+      'budgetPlan',
       'transactionLastAdded',
       'currencyListLoaded',
       'transactionListLoaded',
@@ -163,7 +163,7 @@ export default {
       'deleteTransaction',
       'updateTransaction',
       'setTransactionLastAdded',
-      'fetchBudgetForPeriod',
+      'fetchBudgetPlan',
       'updateBudget',
     ]),
 

@@ -26,7 +26,7 @@
             :currencyListLoaded="currencyListLoaded"
             :selectedCurrencies="selectedCurrencies"
             :accountList="accountList"
-            :budgetList="budgetList"
+            :budgetPlan="budgetPlan"
             :categoryList="categoryList"
             :ratesList="ratesList"
             :userList="userList"
@@ -53,7 +53,7 @@ export default {
   props: {
     transactions: Array,
     accountList: Array,
-    budgetList: Array,
+    budgetPlan: Array,
     categoryList: Array,
     currencyList: Array,
     ratesList: Array,

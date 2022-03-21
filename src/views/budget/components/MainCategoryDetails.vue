@@ -15,7 +15,12 @@
     </div>
     <div class="row justify-start">
       <div class="row col-6 justify-center" v-for="item in items" :key="item.name">
-        <SubCategoryCard :item=item :categories="categories" :budgetPlan="budgetPlan" />
+        <SubCategoryCard
+          :item=item
+          :categories="categories"
+          :budgetPlan="budgetPlan"
+          @selectSubCategory="selectSubCategory($event)"
+        />
       </div>
     </div>
   </q-card>
@@ -33,12 +38,22 @@ export default defineComponent({
     CategoryMonthSummary,
   },
 
+  emits: [
+    'selectSubCategory',
+  ],
+
   props: {
     budgetUsage: { type: Array, required: true },
     budgetPlan: { type: Array, required: true },
     title: { type: String, required: true },
     items: { type: Array, required: true },
     categories: { type: Array, required: true },
+  },
+
+  methods: {
+    selectSubCategory(title: string) {
+      this.$emit('selectSubCategory', title);
+    },
   },
 });
 </script>

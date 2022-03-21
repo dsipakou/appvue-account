@@ -1,5 +1,5 @@
 <template>
-  <q-card flat class="container">
+  <q-card flat class="container" @click="selectSubCategory(item.name)">
     <div class="row col-12 title--main">{{ item.name }}</div>
     <div class="row progress-container">
       <div class="row col-12 justify-center remains">
@@ -48,6 +48,10 @@ export default defineComponent({
     budgetPlan: { type: Array as PropType<BudgetPlan[]>, required: true },
   },
 
+  emits: [
+    'selectSubCategory',
+  ],
+
   computed: {
     getPlanned(): string {
       return this.item.planned.toFixed(2);
@@ -79,6 +83,10 @@ export default defineComponent({
 
     getMultiplier(title: string): number {
       return this.budgetPlan.filter((item: BudgetPlan) => item.title === title)?.length || 0;
+    },
+
+    selectSubCategory(title: string) {
+      this.$emit('selectSubCategory', title);
     },
   },
 });

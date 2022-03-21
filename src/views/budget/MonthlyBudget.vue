@@ -13,13 +13,18 @@
       </div>
     </div>
     <div class="col-8">
-      <div class="row" v-show="activeCategory.title != ''">
+      <div class="row" v-show="activeCategory.title && !activeSubCategory.title">
         <MainCategoryDetails
           :budgetUsage="groupedBudgetUsage"
           :budgetPlan="budgetPlan"
           :title="activeCategory.title"
           :items="activeBudget"
-          :categories="categoryItems" />
+          :categories="categoryItems"
+          @selectSubCategory="selectSubCategory($event)"
+        />
+      </div>
+      <div class="row" v-show="activeSubCategory.title">
+        <SubCategoryDetailsPanel />
       </div>
     </div>
   </div>
@@ -28,7 +33,17 @@
 import { defineComponent, PropType } from 'vue';
 import MainCategoryCard from '@/views/budget/components/MainCategoryCard.vue';
 import MainCategoryDetails from '@/views/budget/components/MainCategoryDetails.vue';
+import SubCategoryDetailsPanel from '@/views/budget/subcategory/SubCategoryDetailsPanel.vue';
 import { Budget, Category } from '@/types';
+
+interface ActiveCategory {
+  index: number,
+  title: undefined | string,
+}
+
+interface ActiveSubCategory {
+  title: undefined | string,
+}
 
 interface BudgetItem {
   name: string,
@@ -55,6 +70,7 @@ export default defineComponent({
   components: {
     MainCategoryCard,
     MainCategoryDetails,
+    SubCategoryDetailsPanel,
   },
 
   props: {
@@ -71,9 +87,12 @@ export default defineComponent({
   data() {
     return {
       activeCategory: {
-        title: '',
+        title: undefined,
         index: -1,
-      },
+      } as ActiveCategory,
+      activeSubCategory: {
+        title: undefined,
+      } as ActiveSubCategory,
     };
   },
 
@@ -185,6 +204,10 @@ export default defineComponent({
   methods: {
     mainCategoryClick(event: { title: string }) {
       this.activeCategory.title = event.title;
+    },
+
+    selectSubCategory(title: string) {
+      this.activeSubCategory.title = title;
     },
   },
 });

@@ -23,8 +23,10 @@
           @selectSubCategory="selectSubCategory($event)"
         />
       </div>
-      <div class="row" v-show="activeSubCategory.title">
-        <SubCategoryDetailsPanel />
+      <div class="row" v-show="activeSubCategory.title && activeSubCategoryObject">
+        <SubCategoryDetailsPanel
+          :category="activeSubCategoryObject"
+        />
       </div>
     </div>
   </div>
@@ -198,6 +200,14 @@ export default defineComponent({
         (item: { name: string, value: string }) => item.name === this.activeCategory.title,
       )! as BudgetItem;
       return budgetItem?.items || undefined;
+    },
+
+    activeSubCategoryObject(): any {
+      if (this.activeBudget && this.activeSubCategory.title) {
+        return this.activeBudget.find((item: any) => item.name === this.activeSubCategory.title);
+      }
+
+      return {};
     },
   },
 

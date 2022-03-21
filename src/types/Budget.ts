@@ -10,6 +10,10 @@ export interface Budget {
   updatedAt: string,
 }
 
+export interface BudgetPlan extends Budget {
+  categoryName: string,
+}
+
 export interface IGetBudgetForPeriod {
   dateFrom: string,
   dateTo: string,

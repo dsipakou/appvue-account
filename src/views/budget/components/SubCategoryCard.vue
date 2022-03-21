@@ -8,7 +8,7 @@
         <span class="text" v-else>left</span>
       </div>
       <div class="row desc-text multiply">
-        <span>{{ item.items.length }}x</span>
+        <span>{{ getMultiplier(item.name) }}x</span>
       </div>
       <q-linear-progress
         class="progress-bar"
@@ -36,6 +36,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { Category } from '@/types';
+import { BudgetPlan } from '@/types/Budget';
 import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 
 export default defineComponent({
@@ -44,6 +45,7 @@ export default defineComponent({
   props: {
     item: { type: Object, required: true },
     categories: { type: Array as PropType<Category[]>, required: true },
+    budgetPlan: { type: Array as PropType<BudgetPlan[]>, required: true },
   },
 
   computed: {
@@ -73,6 +75,10 @@ export default defineComponent({
   methods: {
     getCategory(id: number): Category|undefined {
       return this.categories.find((item: Category) => item.id === id);
+    },
+
+    getMultiplier(title: string): number {
+      return this.budgetPlan.filter((item: BudgetPlan) => item.title === title)?.length || 0;
     },
   },
 });

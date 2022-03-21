@@ -16,6 +16,7 @@
       <div class="row" v-show="activeCategory.title != ''">
         <MainCategoryDetails
           :budgetUsage="groupedBudgetUsage"
+          :budgetPlan="budgetPlan"
           :title="activeCategory.title"
           :items="activeBudget"
           :categories="categoryItems" />

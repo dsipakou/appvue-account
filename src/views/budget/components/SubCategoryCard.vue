@@ -3,23 +3,32 @@
     <div class="row col-12 title--main">{{ item.name }}</div>
     <div class="row progress-container">
       <div class="row col-12 justify-center remains">
-        <span>53 left</span>
+        <span class="number">{{ Math.abs(getDiff) }}</span>
+        <span class="text" v-if="getDiff < 0">over</span>
+        <span class="text" v-else>left</span>
       </div>
       <div class="row desc-text multiply">
-        <span>2x</span>
+        <span>{{ item.items.length }}x</span>
       </div>
       <q-linear-progress
         class="progress-bar"
-        value=0.46
-        color="green-14"
+        :value="getProgressRate"
+        :color="getDiff < 0 ? 'red-14' : 'green-14'"
         size="34px"
         track-color="grey-6">
+        <div class="absolute-full flex flex-center progress-text">
+          {{ getProgressRateText }}
+        </div>
       </q-linear-progress>
       <div class="row bottom">
         <div class="row desc-text col-6">
-          <span>250 spent</span></div>
+          <span class="number">{{ getActualUsage }}</span>
+          <span class="text">spent</span>
+        </div>
         <div class="row desc-text justify-end col-6">
-          <span>of 300</span></div>
+          <span class="text">of</span>
+          <span class="number">{{ getPlanned }}</span>
+        </div>
       </div>
     </div>
   </q-card>
@@ -37,6 +46,30 @@ export default defineComponent({
     categories: { type: Array as PropType<Category[]>, required: true },
   },
 
+  computed: {
+    getPlanned(): string {
+      return this.item.planned.toFixed(2);
+    },
+
+    getActualUsage(): string {
+      return this.item.actualUsage.toFixed(2);
+    },
+
+    getDiff(): string {
+      return (this.item.planned - this.item.actualUsage).toFixed(2);
+    },
+
+    getProgressRate(): number {
+      if (this.item.planned === 0) return 1;
+      return this.item.actualUsage / this.item.planned;
+    },
+
+    getProgressRateText(): string {
+      if (this.item.planned === 0) return 'Unplanned';
+      return `${(this.getProgressRate * 100).toFixed(0)}%`;
+    },
+  },
+
   methods: {
     getCategory(id: number): Category|undefined {
       return this.categories.find((item: Category) => item.id === id);
@@ -51,6 +84,11 @@ export default defineComponent({
   width: 362px;
   margin: 10px 0;
   border-radius: 10px;
+}
+
+.progress-text {
+  font-size: 13px;
+  color: white;
 }
 
 .title
@@ -100,4 +138,11 @@ export default defineComponent({
   padding: 0 5px;
 }
 
+.remains>.text, .bottom .text {
+  margin: 0 5px;
+}
+
+.remains>.number, .bottom .number {
+  font-weight: bold;
+}
 </style>

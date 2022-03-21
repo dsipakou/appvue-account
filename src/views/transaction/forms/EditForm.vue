@@ -88,7 +88,7 @@ export default {
   props: {
     transaction: Object,
     accountList: Array,
-    budgetList: Array,
+    budgetPlan: Array,
     categoryList: Array,
     currencyList: Array,
     ratesList: Array,
@@ -124,7 +124,7 @@ export default {
     },
 
     getBudget(id) {
-      return this.budgetList.find((item) => item.id === id);
+      return this.budgetPlan.find((item) => item.id === id);
     },
 
     getCategory(id) {
@@ -190,7 +190,7 @@ export default {
     },
 
     currentWeekBudget() {
-      const items = this.budgetList.filter((item) => (
+      const items = this.budgetPlan.filter((item) => (
         moment(item.budgetDate).week() === moment().week()
         && !item.isCompleted
       ));

@@ -39,7 +39,7 @@ export default {
   props: {
     transaction: Object,
     accountList: Array,
-    budgetList: Array,
+    budgetPlan: Array,
     categoryList: Array,
     currencyList: Array,
     ratesList: Array,
@@ -97,7 +97,7 @@ export default {
     },
 
     getBudget(id) {
-      return this.budgetList.find((item) => item.id === id);
+      return this.budgetPlan.find((item) => item.id === id);
     },
 
     getCategory(id) {

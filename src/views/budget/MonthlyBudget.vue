@@ -3,11 +3,11 @@
     <div class="col-4">
       <div
         class="row main-category-container"
-        v-for="budget in budgetList"
-        :key="budget.name">
+        v-for="[ name, amount ] in Object.entries(monthlyBudget)"
+        :key="name">
         <MainCategoryCard
-          :amount="budget.planned"
-          :title="budget.name"
+          :amount="amount"
+          :title="name"
           :activeCategory="activeCategory.title"
           @categoryClick=mainCategoryClick($event) />
       </div>
@@ -15,8 +15,8 @@
     <div class="col-8">
       <div class="row" v-show="activeCategory.title != ''">
         <MainCategoryDetails
-          :budgetList="budgetList"
-          :budgetUsage="budgetUsage"
+          :budgetUsage="groupedBudgetUsage"
+          :budgetPlan="budgetPlan"
           :title="activeCategory.title"
           :items="activeBudget"
           :categories="categoryItems" />
@@ -36,6 +36,19 @@ interface BudgetItem {
   amount: number,
 }
 
+interface BudgetPlan {
+  id: number,
+  categoryId: number,
+  title: string,
+  amount: number,
+  budgetDate: string,
+  description: string,
+  isCompleted: boolean,
+  createdAt: string,
+  updatedAt: string,
+  categoryName: string,
+}
+
 export default defineComponent({
   name: 'MonthlyBudget',
 
@@ -45,12 +58,12 @@ export default defineComponent({
   },
 
   props: {
-    budgetItems: { type: Array as PropType<Budget[]>, required: true },
     categoryItems: { type: Array as PropType<Category[]>, required: true },
     createBudget: { type: Function, required: true },
     updateBudget: { type: Function, required: true },
     deleteBudget: { type: Function, required: true },
     budgetUsage: { type: Array, required: true },
+    budgetPlan: { type: Array as PropType<BudgetPlan[]>, required: true },
     selectedMonth: { type: Date, required: true },
     updateStatusBudget: { type: Function, required: true },
   },
@@ -65,8 +78,16 @@ export default defineComponent({
   },
 
   computed: {
+    monthlyBudget(): { [key: string]: number } {
+      return this.budgetPlan.reduce((acc: {[key: string]: number}, item: BudgetPlan) => {
+        const amount = acc[item.categoryName] || 0;
+        acc[item.categoryName] = amount + item.amount;
+        return acc;
+      }, {});
+    },
+
     groupedByName(): object {
-      return this.budgetItems.reduce((acc: {[key: string]: Budget[]}, item) => {
+      return this.budgetUsage.reduce((acc: {[key: string]: Budget[]}, item: any) => {
         const arr: Budget[] = acc[item.title] || [];
         arr.push(item);
         acc[item.title] = arr;
@@ -126,7 +147,7 @@ export default defineComponent({
       return categoryClass;
     },
 
-    budgetList() {
+    groupedBudgetUsage() {
       const groupedList: any[] = [];
       Object.entries(this.groupedByCategory).forEach((item) => {
         const categoryItem = {
@@ -153,7 +174,7 @@ export default defineComponent({
     },
 
     activeBudget(): any | undefined {
-      const typedBudgetList = this.budgetList as [];
+      const typedBudgetList = this.groupedBudgetUsage as [];
       const budgetItem: BudgetItem = typedBudgetList.find(
         (item: { name: string, value: string }) => item.name === this.activeCategory.title,
       )! as BudgetItem;

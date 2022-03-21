@@ -4,9 +4,9 @@ import { IGetBudgetForPeriod } from '@/types/Budget';
 
 import {
   getBudget,
-  getBudgetForPeriod,
-  getTransactions,
   getBudgetUsage,
+  getBudgetPlan,
+  getTransactions,
   createBudget,
   updateBudget,
   deleteBudget,
@@ -15,48 +15,38 @@ import {
 const state = {
   budget: {
     selectedMonth: new Date(),
-    items: [],
     usage: [],
+    plan: [],
     transactions: [],
     isLoading: false,
   },
 };
 
 const getters = {
-  budgetList: (state: any) => state.budget.items,
   budgetUsage: (state: any) => state.budget.usage,
+  budgetPlan: (state: any) => state.budget.plan,
   budgetedTransactions: (state: any) => state.budget.transactions,
   budgetSelectedMonth: (state: any) => state.budget.selectedMonth,
   isBudgetListLoading: (state: any) => state.budget.isLoading,
 };
 
 const actions = {
-  async fetchBudget({ commit }: any) {
-    commit('setBudgetLoading', true);
-    const response = await getBudget();
-    if (response.status === 200) {
-      const body = await response.json();
-      commit('setBudget', body);
-    }
-    commit('setBudgetLoading', false);
-  },
-
-  async fetchBudgetForPeriod({ commit }: any, payload: IGetBudgetForPeriod) {
-    commit('setBudgetLoading', true);
-    const response = await getBudgetForPeriod(payload);
-    if (response.status === 200) {
-      const body = await response.json();
-      commit('setBudget', body);
-    }
-    commit('setBudgetLoading', false);
-  },
-
-  async fetchBudgetUsage({ commit }: any, payload: any) {
+  async fetchBudgetUsage({ commit }: any, payload: IGetBudgetForPeriod) {
     commit('setBudgetLoading', true);
     const response = await getBudgetUsage(payload);
     if (response.status === 200) {
       const body = await response.json();
       commit('setBudgetUsage', body);
+    }
+    commit('setBudgetLoading', false);
+  },
+
+  async fetchBudgetPlan({ commit }: any, payload: any) {
+    commit('setBudgetLoading', true);
+    const response = await getBudgetPlan(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setBudgetPlan', body);
     }
     commit('setBudgetLoading', false);
   },
@@ -104,12 +94,12 @@ const actions = {
 };
 
 const mutations = {
-  setBudget(state: any, budget: any) {
-    state.budget.items = budget;
-  },
-
   setBudgetUsage(state: any, budget: any) {
     state.budget.usage = budget;
+  },
+
+  setBudgetPlan(state: any, budget: any) {
+    state.budget.plan = budget;
   },
 
   setBudgetedTransactions(state: any, budget: any) {

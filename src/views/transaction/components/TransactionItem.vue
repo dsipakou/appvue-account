@@ -74,7 +74,7 @@
           <EditInlineForm
             :transaction="editedTransaction"
             :accountList="accountList"
-            :budgetList="budgetList"
+            :budgetPlan="budgetPlan"
             :categoryList="categoryList"
             :currencyList="currencyList"
             :currencyListLoaded="currencyListLoaded"
@@ -90,7 +90,7 @@
     <EditForm
       :transaction="editedTransaction"
       :accountList="accountList"
-      :budgetList="budgetList"
+      :budgetPlan="budgetPlan"
       :categoryList="categoryList"
       :currencyList="currencyList"
       :currencyListLoaded="currencyListLoaded"
@@ -148,7 +148,7 @@ export default defineComponent({
   props: {
     account: { type: Object as PropType<Account>, required: true },
     accountList: { type: Array as PropType<Array<Account>>, required: true },
-    budgetList: { type: Array, required: true },
+    budgetPlan: { type: Array, required: true },
     category: { type: Object as PropType<Category>, required: true },
     categoryList: { type: Array as PropType<Array<Category>>, required: true },
     currencyList: { type: Array as PropType<Array<Currency>>, required: true },

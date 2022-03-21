@@ -10,9 +10,9 @@
     <div class="row justify-left">
       <div class="col-8">
         <MonthlyBudgetOld
-          :budgetItems="budgetList"
-          :categoryItems="categoryList"
           :budgetUsage="budgetUsage"
+          :budgetPlan="budgetPlan"
+          :categoryItems="categoryList"
           :createBudget="createBudget"
           :updateBudget="updateBudget"
           :deleteBudget="deleteBudget"
@@ -21,7 +21,8 @@
       </div>
       <div class="col-4">
         <WeekBudget
-          :budgetItems="budgetList"
+          :budgetUsage="budgetUsage"
+          :budgetPlan="budgetPlan"
           :categoryItems="categoryList"
           :transactionItems="budgetedTransactions"
           :updateBudget="updateBudget"
@@ -31,9 +32,9 @@
     </div>
     <div class="col-12">
       <MonthlyBudget
-        :budgetItems="budgetList"
-        :categoryItems="categoryList"
         :budgetUsage="budgetUsage"
+        :budgetPlan="budgetPlan"
+        :categoryItems="categoryList"
         :createBudget="createBudget"
         :updateBudget="updateBudget"
         :deleteBudget="deleteBudget"
@@ -76,31 +77,15 @@ export default {
 
   computed: {
     ...mapGetters([
-      'budgetList',
+      'budgetPlan',
       'budgetUsage',
       'budgetedTransactions',
       'categoryList',
       'budgetSelectedMonth',
     ]),
 
-    currentMonth() {
-      return this.budgetList.filter((item) => (
-        moment(item.budgetDate).month() === moment().month()
-      ));
-    },
-
     categories() {
       return this.categoryList.filter((item) => item.isParent);
-    },
-
-    budgetCurrentMonth() {
-      const groupedMonth = this.currentMonth.reduce((acc, item) => {
-        const arr = acc[item.title] || [];
-        arr.push(item);
-        acc[item.title] = arr;
-        return acc;
-      }, {});
-      return groupedMonth;
     },
   },
 
@@ -108,7 +93,7 @@ export default {
     ...mapActions([
       'fetchBudgetUsage',
       'fetchBudgetedTransactions',
-      'fetchBudgetForPeriod',
+      'fetchBudgetPlan',
       'createBudget',
       'updateBudget',
       'updateStatusBudget',
@@ -130,7 +115,7 @@ export default {
     const dateFrom = getFirstDayOfMonth(format(new Date(), DATE_FORMAT));
     const dateTo = getLastDayOfMonth(format(new Date(), DATE_FORMAT));
     this.fetchBudgetUsage({ dateFrom, dateTo });
-    this.fetchBudgetForPeriod({ dateFrom, dateTo });
+    this.fetchBudgetPlan({ dateFrom, dateTo });
     this.fetchBudgetedTransactions({
       sorting: 'added',
       dateFrom: moment().add(-moment().weekday(), 'days').format('YYYY-MM-DD'),

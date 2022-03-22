@@ -13,7 +13,7 @@
       <q-linear-progress
         class="progress-bar"
         :value="getProgressRate"
-        :color="getDiff < 0 ? 'red-14' : 'green-14'"
+        :color="getProgressColor"
         size="34px"
         track-color="grey-6">
         <div class="absolute-full flex flex-center progress-text">
@@ -68,6 +68,12 @@ export default defineComponent({
     getProgressRate(): number {
       if (this.item.planned === 0) return 1;
       return this.item.actualUsage / this.item.planned;
+    },
+
+    getProgressColor(): string {
+      if (this.item.planned === 0) return 'brown-14';
+      if (this.getProgressRate > 1) return 'red-14';
+      return 'green-14';
     },
 
     getProgressRateText(): string {

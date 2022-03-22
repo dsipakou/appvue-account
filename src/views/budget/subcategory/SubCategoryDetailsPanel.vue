@@ -124,7 +124,7 @@ export default defineComponent({
 }
 
 .timeline {
-  margin-top: 90px;
+  margin-top: 60px;
 }
 
 </style>

@@ -1,5 +1,6 @@
 <template>
-  <q-card flat bordered class="card">
+  <q-card flat bordered class="card" :style="cardBackground">
+    <div v-show="getActualWeek === 0" class="absolute-left current-indicator"></div>
     <div class="row justify-center top remains">
       <div class="absolute-left date-badge">
         <q-badge :label="getDate" class="badge" />
@@ -12,8 +13,8 @@
       <q-linear-progress
           class="progress-bar"
           :value="getProgressRate"
-          :color="getProgressRate >= 1 ? 'red-14' : 'green-14'"
-          size="18px"
+          :color="getProgressColor"
+          size="24px"
           track-color="grey-6">
         <div class="absolute-full flex flex-center progress-text">
           {{ getProgressRateText }}
@@ -35,7 +36,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { BudgetUsage } from '@/types/Budget';
-import { format } from 'date-fns';
+import { format, getWeekOfMonth } from 'date-fns';
 
 const DATE_FORMAT = 'dd - MMM';
 
@@ -47,34 +48,71 @@ export default defineComponent({
   },
 
   computed: {
+    cardBackground() {
+      let color = '#FFFFFF';
+      if (this.getActualWeek === 0) {
+        color = '#D2ECFF';
+      } else if (this.getActualWeek === -1) {
+        color = '#DDDDDD';
+      }
+
+      return {
+        'background-color': color,
+      };
+    },
+
     getDate(): string {
       if (this.item?.amount === undefined) return '';
+
       return format(new Date(this.item.budgetDate), DATE_FORMAT);
+    },
+
+    getActualWeek(): number {
+      if (this.item?.amount === undefined) return 0;
+
+      const currentWeek = getWeekOfMonth(new Date(), { weekStartsOn: 1 });
+      const budgetWeek = getWeekOfMonth(new Date(this.item.budgetDate), { weekStartsOn: 1 });
+      if (currentWeek === budgetWeek) return 0;
+      if (currentWeek < budgetWeek) return 1;
+      return -1;
     },
 
     getPlanned(): string {
       if (this.item?.amount === undefined) return '';
+
       return this.item?.amount.toFixed(2);
     },
 
     getActualUsage(): string {
       if (this.item?.amount === undefined) return '';
+
       return this.item?.spentInBaseCurrency?.toFixed(2) || '0.00';
     },
 
     getDiff(): string {
       if (!this.item?.amount === undefined) return '';
+
       return (this.item.amount - this.item.spentInBaseCurrency).toFixed(2);
     },
 
     getProgressRate(): number {
       if (!this.item?.amount === undefined) return 0;
+
       if (this.item.amount === 0) return 1;
       return this.item.spentInBaseCurrency / this.item.amount;
     },
 
+    getProgressColor(): string {
+      if (!this.item?.amount === undefined) return '';
+
+      if (this.item.amount === 0) return 'brown-14';
+      if (this.getProgressRate > 1) return 'red-14';
+      return 'green-14';
+    },
+
     getProgressRateText(): string {
       if (!this.item?.amount === undefined) return '';
+
       if (this.item.amount === 0) return 'Unplanned';
       return `${(this.getProgressRate * 100).toFixed(0)}%`;
     },
@@ -83,8 +121,15 @@ export default defineComponent({
 </script>
 <style scoped>
 .card {
-  height: 83px;
-  background-color: #DDDDDD;
+  height: 90px;
+}
+
+.current-indicator {
+  height: 65px;
+  width: 5px;
+  background-color: #0094FF;
+  border-radius: 2px !important;
+  margin: auto 0 auto 5px;
 }
 
 .date-badge {

@@ -145,6 +145,7 @@ export default defineComponent({
   font-size: 13px;
   font-weight: bold;
   color: white;
+  border-radius: 3px;
 }
 
 .bottom {

@@ -8,13 +8,13 @@
     <div class="row col-8">
       <q-timeline color="grey" side="right" layout="comfortable" class="timeline">
         <q-timeline-entry
-          v-for="i in [1,2,3,4,5]"
+          v-for="i in [...Array(numberOfWeeks).keys()]"
           :key="i">
           <template v-slot:subtitle>
-            <span style="color: black !important;">{{ `Week ${i}` }}</span>
+            <span style="color: black !important;">{{ `Week ${i + 1}` }}</span>
           </template>
-          <div v-show="groupedByWeek[i]">
-            <div v-for="item in groupedByWeek[i]" :key="item">
+          <div v-show="groupedByWeek[i + 1]">
+            <div v-for="item in groupedByWeek[i + 1]" :key="item">
               <BudgetItem :item="item" />
             </div>
           </div>
@@ -25,7 +25,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { getWeekOfMonth } from 'date-fns';
+import { getWeekOfMonth, getWeeksInMonth } from 'date-fns';
 import { BudgetUsage } from '@/types/Budget';
 import BudgetItem from '@/views/budget/subcategory/components/BudgetItem.vue';
 
@@ -88,6 +88,10 @@ export default defineComponent({
       }
 
       return {};
+    },
+
+    numberOfWeeks(): number {
+      return getWeeksInMonth(new Date());
     },
   },
 

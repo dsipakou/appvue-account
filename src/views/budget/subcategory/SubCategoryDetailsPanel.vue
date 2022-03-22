@@ -5,16 +5,13 @@
       <q-icon name="arrow_back" size="33px" class="pointer" @click="closeSubCategory" />
       <div class="header-title">{{ category.name }}</div>
     </div>
-    {{ groupedByWeek }}
     <div class="row col-10">
       <q-timeline color="grey" layout="comfortable" class="timeline">
         <q-timeline-entry
           v-for="i in [1,2,3,4,5]"
           :subtitle="`Week ${i}`"
           :key="i">
-          <div style="height: 50px;">
-            Hello there
-          </div>
+          <BudgetItem v-show="groupedByWeek[i]" />
         </q-timeline-entry>
       </q-timeline>
     </div>
@@ -24,6 +21,7 @@
 import { defineComponent, PropType } from 'vue';
 import { getWeekOfMonth } from 'date-fns';
 import { BudgetUsage } from '@/types/Budget';
+import BudgetItem from '@/views/budget/subcategory/components/BudgetItem.vue';
 
 interface Category {
   name: string,
@@ -32,6 +30,10 @@ interface Category {
 
 export default defineComponent({
   name: 'Sub category details',
+
+  components: {
+    BudgetItem,
+  },
 
   emits: [
     'closeSubCategory',
@@ -66,7 +68,7 @@ export default defineComponent({
       return [];
     },
 
-    groupedByWeek() {
+    groupedByWeek(): {[key: number]: BudgetUsage[]} {
       if (this.mergedByBudget) {
         return this.mergedByBudget.reduce(
           (acc: {[key: number]: BudgetUsage[]}, item: BudgetUsage) => {
@@ -78,16 +80,8 @@ export default defineComponent({
           }, {},
         );
       }
-      return [];
-      /* return this.category.items.reduce(
-        (acc: WeekGroup, item: BudgetPlan) => {
-          const week = this.getWeek(item.budgetDate);
-          const arr = acc[week]?.items || [];
-          arr.push(item);
-          acc[week] = arr;
-          return acc;
-        }, {},
-      ); */
+
+      return {};
     },
   },
 
@@ -97,7 +91,7 @@ export default defineComponent({
     },
 
     getWeek(date: string): number {
-      return getWeekOfMonth(new Date(date));
+      return getWeekOfMonth(new Date(date), { weekStartsOn: 1 });
     },
   },
 });

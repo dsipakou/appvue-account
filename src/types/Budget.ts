@@ -14,6 +14,11 @@ export interface BudgetPlan extends Budget {
   categoryName: string,
 }
 
+export interface BudgetUsage extends Budget {
+  spentInOriginalCurrency: number,
+  spentInBaseCurrency: number,
+}
+
 export interface IGetBudgetForPeriod {
   dateFrom: string,
   dateTo: string,

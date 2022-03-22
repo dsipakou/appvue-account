@@ -26,6 +26,7 @@
       <div class="row" v-show="activeSubCategory.title && activeSubCategoryObject">
         <SubCategoryDetailsPanel
           :category="activeSubCategoryObject"
+          @closeSubCategory="closeSubCategory"
         />
       </div>
     </div>
@@ -214,10 +215,15 @@ export default defineComponent({
   methods: {
     mainCategoryClick(event: { title: string }) {
       this.activeCategory.title = event.title;
+      this.activeSubCategory.title = undefined;
     },
 
     selectSubCategory(title: string) {
       this.activeSubCategory.title = title;
+    },
+
+    closeSubCategory() {
+      this.activeSubCategory.title = undefined;
     },
   },
 });

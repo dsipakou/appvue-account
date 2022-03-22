@@ -1,6 +1,6 @@
 <template>
   <q-card flat bordered
-    class="row col-12 main-panel">
+    class="row main-panel">
     <div class="row col-12">
       <q-icon name="arrow_back" size="33px" class="pointer" @click="closeSubCategory" />
       <div class="header-title">{{ category.name }}</div>
@@ -11,7 +11,7 @@
           v-for="i in [1,2,3,4,5]"
           :key="i">
           <template v-slot:subtitle>
-            <span>{{ `Week ${i}` }}</span>
+            <span style="color: black !important;">{{ `Week ${i}` }}</span>
           </template>
           <div v-show="groupedByWeek[i]">
             <div v-for="item in groupedByWeek[i]" :key="item">
@@ -102,7 +102,7 @@ export default defineComponent({
   },
 });
 </script>
-<style>
+<style scoped>
 .main-panel {
   margin: 5px 0;
   width: 100%;
@@ -127,7 +127,12 @@ export default defineComponent({
   margin-top: 90px;
 }
 
+</style>
+<style>
 .q-timeline__subtitle {
   width: auto !important;
+  text-transform: none !important;
+  font-size: 12px !important;
+  font-weight: normal !important;
 }
 </style>

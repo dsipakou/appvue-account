@@ -2,7 +2,7 @@
   <q-card flat bordered class="card">
     <div class="row justify-center top remains">
       <div class="absolute-left date-badge">
-        <q-badge label="26 Feb" class="badge" />
+        <q-badge :label="getDate" class="badge" />
       </div>
       <span class="number">{{ getDiff }}</span>
       <span v-if="getDiff < 0" class="text">over</span>
@@ -35,6 +35,9 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { BudgetUsage } from '@/types/Budget';
+import { format } from 'date-fns';
+
+const DATE_FORMAT = 'dd - MMM';
 
 export default defineComponent({
   name: 'Budget Item',
@@ -44,6 +47,11 @@ export default defineComponent({
   },
 
   computed: {
+    getDate(): string {
+      if (this.item?.amount === undefined) return '';
+      return format(new Date(this.item.budgetDate), DATE_FORMAT);
+    },
+
     getPlanned(): string {
       if (this.item?.amount === undefined) return '';
       return this.item?.amount.toFixed(2);
@@ -92,6 +100,7 @@ export default defineComponent({
 .badge {
   background-color: #555555;
   color: white;
+  font-size: 10px;
 }
 
 .progress-container {

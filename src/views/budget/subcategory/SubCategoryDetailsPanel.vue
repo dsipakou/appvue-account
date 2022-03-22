@@ -1,17 +1,23 @@
 <template>
   <q-card flat bordered
     class="row col-12 main-panel">
-    <div class="row">
+    <div class="row col-12">
       <q-icon name="arrow_back" size="33px" class="pointer" @click="closeSubCategory" />
       <div class="header-title">{{ category.name }}</div>
     </div>
-    <div class="row col-10">
-      <q-timeline color="grey" layout="comfortable" class="timeline">
+    <div class="row col-8">
+      <q-timeline color="grey" side="right" layout="comfortable" class="timeline">
         <q-timeline-entry
           v-for="i in [1,2,3,4,5]"
-          :subtitle="`Week ${i}`"
           :key="i">
-          <BudgetItem v-show="groupedByWeek[i]" />
+          <template v-slot:subtitle>
+            <span>{{ `Week ${i}` }}</span>
+          </template>
+          <div v-show="groupedByWeek[i]">
+            <div v-for="item in groupedByWeek[i]" :key="item">
+              <BudgetItem :item="item" />
+            </div>
+          </div>
         </q-timeline-entry>
       </q-timeline>
     </div>
@@ -96,7 +102,7 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped>
+<style>
 .main-panel {
   margin: 5px 0;
   width: 100%;
@@ -119,5 +125,9 @@ export default defineComponent({
 
 .timeline {
   margin-top: 90px;
+}
+
+.q-timeline__subtitle {
+  width: auto !important;
 }
 </style>

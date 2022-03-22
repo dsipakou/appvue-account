@@ -105,8 +105,6 @@ export default defineComponent({
   color: white;
 }
 
-.title
-
 .content {
   display: flex;
   flex-direction: column;

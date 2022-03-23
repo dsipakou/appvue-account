@@ -23,3 +23,9 @@ export interface IGetBudgetForPeriod {
   dateFrom: string,
   dateTo: string,
 }
+
+/* eslint-disable no-shadow */
+export enum BudgetToggle {
+  Monthly = 'monthly',
+  Weekly = 'weekly',
+}

@@ -62,8 +62,8 @@
   </div>
 </template>
 <script>
-import { ref } from 'vue';
-import { mapActions, mapGetters } from 'vuex';
+import { computed, ref } from 'vue';
+import { mapActions, mapGetters, useStore } from 'vuex';
 import moment from 'moment';
 import { format } from 'date-fns';
 import { getFirstDayOfMonth, getLastDayOfMonth, DATE_FORMAT } from '@/utils/dateTimeUtils';
@@ -81,9 +81,16 @@ export default {
   },
 
   setup() {
+    const $store = useStore();
+    const budgetType = computed({
+      get: () => $store.state.budget.budgetToggle,
+      set: (val) => {
+        $store.commit('setBudgetToggle', val);
+      },
+    });
     return {
       dateModel: ref(''),
-      budgetType: ref('monthly'),
+      budgetType,
     };
   },
 

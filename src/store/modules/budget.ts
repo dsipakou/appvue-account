@@ -1,6 +1,6 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
-import { IGetBudgetForPeriod } from '@/types/Budget';
+import { IGetBudgetForPeriod, BudgetToggle } from '@/types/Budget';
 
 import {
   getBudget,
@@ -13,21 +13,20 @@ import {
 } from '../../service';
 
 const state = {
-  budget: {
-    selectedMonth: new Date(),
-    usage: [],
-    plan: [],
-    transactions: [],
-    isLoading: false,
-  },
+  selectedMonth: new Date(),
+  usage: [],
+  plan: [],
+  transactions: [],
+  budgetToggle: BudgetToggle.Monthly,
+  isLoading: false,
 };
 
 const getters = {
-  budgetUsage: (state: any) => state.budget.usage,
-  budgetPlan: (state: any) => state.budget.plan,
-  budgetedTransactions: (state: any) => state.budget.transactions,
-  budgetSelectedMonth: (state: any) => state.budget.selectedMonth,
-  isBudgetListLoading: (state: any) => state.budget.isLoading,
+  budgetUsage: (state: any) => state.usage,
+  budgetPlan: (state: any) => state.plan,
+  budgetedTransactions: (state: any) => state.transactions,
+  budgetSelectedMonth: (state: any) => state.selectedMonth,
+  isBudgetListLoading: (state: any) => state.isLoading,
 };
 
 const actions = {
@@ -95,23 +94,23 @@ const actions = {
 
 const mutations = {
   setBudgetUsage(state: any, budget: any) {
-    state.budget.usage = budget;
+    state.usage = budget;
   },
 
   setBudgetPlan(state: any, budget: any) {
-    state.budget.plan = budget;
+    state.plan = budget;
   },
 
   setBudgetedTransactions(state: any, budget: any) {
-    state.budget.transactions = budget;
+    state.transactions = budget;
   },
 
   createBudget(state: any, budget: any) {
-    state.budget.items.push({ ...budget });
+    state.items.push({ ...budget });
   },
 
   updateBudget(state: any, budget: any) {
-    state.budget.items = state.budget.items.map((item: any) => {
+    state.items = state.items.map((item: any) => {
       if (item.id === budget.id) {
         return budget;
       }
@@ -120,11 +119,15 @@ const mutations = {
   },
 
   deleteBudget(state: any, id: number) {
-    state.budget.items = state.budget.items.filter((budget: any) => budget.id !== id);
+    state.items = state.items.filter((budget: any) => budget.id !== id);
   },
 
   setBudgetLoading(state: any, isLoading: boolean) {
-    state.budget.isLoading = isLoading;
+    state.isLoading = isLoading;
+  },
+
+  setBudgetToggle(state: any, value: BudgetToggle) {
+    state.budgetToggle = value;
   },
 };
 

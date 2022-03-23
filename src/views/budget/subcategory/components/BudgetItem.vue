@@ -150,7 +150,7 @@ export default defineComponent({
 .badge {
   background-color: #555555;
   color: white;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .progress-container {

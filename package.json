@@ -19,7 +19,7 @@
     "mathjs": "^10.0.0",
     "moment": "^2.29.1",
     "npm": "^8.1.1",
-    "quasar": "^2.0.0",
+    "quasar": "^2.1.4",
     "roboto-fontface": "*",
     "vue": "^3.2.27",
     "vue-class-component": "^8.0.0-0",

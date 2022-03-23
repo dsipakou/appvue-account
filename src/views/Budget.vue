@@ -30,7 +30,18 @@
           :updateStatusBudget="updateStatusBudget" />
       </div>
     </div>
-    <div class="col-12">
+    <div class="row col-12">
+      <div class="row col-12 justify-center">
+        <div class="budget-toggle">
+          <q-tabs no-caps dense
+            v-model="budgetType"
+            indicator-color="transparent"
+            active-class="budget-toggle-selected">
+            <q-tab name="monthly" label="Monthly" />
+            <q-tab name="weekly" label="Weekly" />
+          </q-tabs>
+        </div>
+      </div>
       <MonthlyBudget
         :budgetUsage="budgetUsage"
         :budgetPlan="budgetPlan"
@@ -72,6 +83,7 @@ export default {
   setup() {
     return {
       dateModel: ref(''),
+      budgetType: ref('monthly'),
     };
   },
 
@@ -131,5 +143,24 @@ export default {
 
 .header>h4 {
   margin-right: 20px;
+}
+
+.budget-toggle {
+  width: 370px;
+  margin: 30px 0;
+  color: white;
+  border-radius: 20px;
+  background-color: #444444;
+}
+
+.budget-toggle-selected {
+  border-radius: 20px;
+  background-color: white;
+  color: black;
+  border: 4px solid #444444;
+}
+
+.toggle-tab {
+  font-size: 22px !important;
 }
 </style>

@@ -9,7 +9,9 @@
       <q-timeline color="grey" side="right" layout="comfortable" class="timeline">
         <q-timeline-entry
           v-for="i in [...Array(numberOfWeeks).keys()]"
-          :key="i">
+          :key="i"
+          v-bind="currentWeekItem(i + 1) ? iconBinding : null"
+          :color="currentWeekItem(i + 1) ? 'blue' : ''" >
           <template v-slot:subtitle>
             <span style="color: black !important;">{{ `Week ${i + 1}` }}</span>
           </template>
@@ -50,6 +52,12 @@ export default defineComponent({
   },
 
   computed: {
+    iconBinding(): object {
+      return {
+        icon: '',
+      };
+    },
+
     mergedByBudget(): Array<BudgetUsage> {
       if (this.category?.items) {
         return this.category.items.reduce(
@@ -93,6 +101,7 @@ export default defineComponent({
     numberOfWeeks(): number {
       return getWeeksInMonth(new Date());
     },
+
   },
 
   methods: {
@@ -102,6 +111,10 @@ export default defineComponent({
 
     getWeek(date: string): number {
       return getWeekOfMonth(new Date(date), { weekStartsOn: 1 });
+    },
+
+    currentWeekItem(index: number): boolean {
+      return getWeekOfMonth(new Date()) === index;
     },
   },
 });
@@ -138,5 +151,6 @@ export default defineComponent({
   text-transform: none !important;
   font-size: 12px !important;
   font-weight: normal !important;
+  color: rgba(0, 0, 0, 1) !important;
 }
 </style>

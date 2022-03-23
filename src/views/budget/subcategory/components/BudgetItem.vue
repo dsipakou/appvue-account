@@ -3,6 +3,7 @@
     <div v-show="getActualWeek === 0" class="absolute-left current-indicator"></div>
     <div class="row justify-center top remains">
       <div class="absolute-left date-badge">
+        <q-icon v-show="item.isCompleted" name="lock" class="lock-icon" />
         <q-badge :label="getDate" class="badge" />
       </div>
       <span class="number">{{ getDiff }}</span>
@@ -122,6 +123,10 @@ export default defineComponent({
 <style scoped>
 .card {
   height: 90px;
+}
+
+.lock-icon {
+  margin-right: 5px;
 }
 
 .current-indicator {

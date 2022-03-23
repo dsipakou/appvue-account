@@ -20,7 +20,7 @@
           :updateStatusBudget="updateStatusBudget" />
       </div>
       <div class="col-4">
-        <WeekBudget
+        <WeekBudgetOld
           :budgetUsage="budgetUsage"
           :budgetPlan="budgetPlan"
           :categoryItems="categoryList"
@@ -43,6 +43,7 @@
         </div>
       </div>
       <MonthlyBudget
+        v-show="budgetType === 'monthly'"
         :budgetUsage="budgetUsage"
         :budgetPlan="budgetPlan"
         :categoryItems="categoryList"
@@ -51,6 +52,8 @@
         :deleteBudget="deleteBudget"
         :selectedMonth="budgetSelectedMonth"
         :updateStatusBudget="updateStatusBudget" />
+      <WeekBudget
+        v-show="budgetType === 'weekly'" />
     </div>
     <div>
       <q-date
@@ -67,6 +70,7 @@ import { mapActions, mapGetters, useStore } from 'vuex';
 import moment from 'moment';
 import { format } from 'date-fns';
 import { getFirstDayOfMonth, getLastDayOfMonth, DATE_FORMAT } from '@/utils/dateTimeUtils';
+import WeekBudgetOld from '@/views/budget/WeekBudgetOld.vue';
 import WeekBudget from '@/views/budget/WeekBudget.vue';
 import MonthlyBudget from '@/views/budget/MonthlyBudget.vue';
 import MonthlyBudgetOld from '@/views/budget/MonthlyBudgetOld.vue';
@@ -75,6 +79,7 @@ export default {
   name: 'Budget',
 
   components: {
+    WeekBudgetOld,
     WeekBudget,
     MonthlyBudget,
     MonthlyBudgetOld,

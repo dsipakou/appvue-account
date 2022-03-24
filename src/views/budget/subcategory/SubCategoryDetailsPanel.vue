@@ -6,14 +6,14 @@
       <div class="header-title">{{ category.name }}</div>
     </div>
     <div class="row col-8">
-      <q-timeline color="grey" side="right" layout="comfortable" class="timeline">
+      <q-timeline color="grey-5" side="right" layout="comfortable" class="timeline">
         <q-timeline-entry
           v-for="i in [...Array(numberOfWeeks).keys()]"
           :key="i"
           v-bind="currentWeekItem(i + 1) ? iconBinding : null"
           :color="currentWeekItem(i + 1) ? 'blue' : ''" >
           <template v-slot:subtitle>
-            <span style="color: black !important;">{{ `Week ${i + 1}` }}</span>
+            <span>{{ `Week ${i + 1}` }}</span>
           </template>
           <div v-show="groupedByWeek[i + 1]">
             <div v-for="item in groupedByWeek[i + 1]" :key="item">

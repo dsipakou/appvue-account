@@ -68,8 +68,16 @@
 import { computed, ref } from 'vue';
 import { mapActions, mapGetters, useStore } from 'vuex';
 import moment from 'moment';
-import { format } from 'date-fns';
-import { getFirstDayOfMonth, getLastDayOfMonth, DATE_FORMAT } from '@/utils/dateTimeUtils';
+import {
+  endOfMonth,
+  endOfWeek,
+  format,
+  max,
+} from 'date-fns';
+import {
+  getFirstDayOfMonth,
+  DATE_FORMAT,
+} from '@/utils/dateTimeUtils';
 import WeekBudgetOld from '@/views/budget/WeekBudgetOld.vue';
 import WeekBudget from '@/views/budget/WeekBudget.vue';
 import MonthlyBudget from '@/views/budget/MonthlyBudget.vue';
@@ -137,7 +145,10 @@ export default {
 
   beforeMount() {
     const dateFrom = getFirstDayOfMonth(format(new Date(), DATE_FORMAT));
-    const dateTo = getLastDayOfMonth(format(new Date(), DATE_FORMAT));
+    const month = endOfMonth(new Date());
+    const week = endOfWeek(new Date());
+    const dateTo = format(max([month, week]), DATE_FORMAT);
+    console.log(dateTo);
     this.fetchBudgetUsage({ dateFrom, dateTo });
     this.fetchBudgetPlan({ dateFrom, dateTo });
     this.fetchBudgetedTransactions({

@@ -53,6 +53,7 @@
         :selectedMonth="budgetSelectedMonth"
         :updateStatusBudget="updateStatusBudget" />
       <WeekBudget
+        :budgetUsage="budgetUsage"
         v-show="budgetType === 'weekly'" />
     </div>
     <div>
@@ -148,7 +149,6 @@ export default {
     const month = endOfMonth(new Date());
     const week = endOfWeek(new Date());
     const dateTo = format(max([month, week]), DATE_FORMAT);
-    console.log(dateTo);
     this.fetchBudgetUsage({ dateFrom, dateTo });
     this.fetchBudgetPlan({ dateFrom, dateTo });
     this.fetchBudgetedTransactions({

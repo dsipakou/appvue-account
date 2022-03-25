@@ -10,6 +10,9 @@
           :key="day.formated">
           <template v-slot:subtitle>
             <span>{{ day.formated }}</span>
+            <div v-for="item in getDayBudget(day.full)" :key="item">
+              <BudgetItem :item="item" />
+            </div>
           </template>
         </q-timeline-entry>
       </q-timeline>
@@ -17,16 +20,31 @@
   </q-card>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { startOfWeek, addDays, format } from 'date-fns';
+import { defineComponent, PropType } from 'vue';
+import {
+  startOfWeek,
+  addDays,
+  format,
+  isSameDay,
+} from 'date-fns';
+import { BudgetUsage } from '@/types/Budget';
+import BudgetItem from '@/views/budget/weekly/BudgetItem.vue';
 
 const DATE_FORMAT = 'dd MMM';
 
 export default defineComponent({
   name: 'Week Budget',
 
+  components: {
+    BudgetItem,
+  },
+
+  props: {
+    budgetUsage: { type: Array as PropType<BudgetUsage[]>, required: true },
+  },
+
   computed: {
-    weekDays() {
+    weekDays(): { full: Date, formated: string }[] {
       const firstDayOfWeek = startOfWeek(new Date(), { weekStartsOn: 1 });
       const days = [];
       for (let i = 0; i < 7; i += 1) {
@@ -36,6 +54,14 @@ export default defineComponent({
         });
       }
       return days;
+    },
+  },
+
+  methods: {
+    getDayBudget(date: string): BudgetUsage[] {
+      return this.budgetUsage.filter((item: BudgetUsage) => (
+        isSameDay(new Date(item.budgetDate), new Date(date))
+      ));
     },
   },
 });

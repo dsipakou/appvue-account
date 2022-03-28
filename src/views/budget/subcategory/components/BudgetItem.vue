@@ -1,5 +1,5 @@
 <template>
-  <q-card flat bordered class="card" :style="cardBackground">
+  <q-card flat bordered class="card" :style="cardBackground" @click="budgetItemClick">
     <div v-show="getActualWeek === 0" class="absolute-left current-indicator"></div>
     <div class="row justify-center top remains">
       <div class="absolute-left date-badge">
@@ -47,6 +47,10 @@ export default defineComponent({
   props: {
     item: { type: Object as PropType<BudgetUsage>, required: true },
   },
+
+  emits: [
+    'budgetItemClick',
+  ],
 
   computed: {
     cardBackground() {
@@ -118,11 +122,17 @@ export default defineComponent({
       return `${(this.getProgressRate * 100).toFixed(0)}%`;
     },
   },
+
+  budgetItemClick() {
+    console.log('Click');
+    this.$emit('budgetItemClick', this.item);
+  },
 });
 </script>
 <style scoped>
 .card {
   height: 90px;
+  cursor: pointer;
 }
 
 .lock-icon {

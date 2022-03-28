@@ -1,6 +1,11 @@
 <template>
-  <q-card>
-    {{ item.title }}
+  <q-card flat bordered class="row main-card">
+    <div class="row col-12 justify-center">
+      <span class="header">{{ item.title }}</span>
+    </div>
+    <div class="row col-12">
+      {{ item.budgetDate }}
+    </div>
   </q-card>
 </template>
 <script lang="ts">
@@ -15,3 +20,14 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped>
+.main-card {
+  height: 73px;
+  width: 350px;
+  max-width: 350px;
+}
+
+.header {
+  font-size: 18px;
+}
+</style>

@@ -8,7 +8,7 @@ interface GroupedByName {
   [key: string]: BudgetUsage[],
 }
 
-interface GroupedByCategoryItem {
+export interface GroupedByCategoryItem {
   name: string,
   items: BudgetUsage[],
   planned: number,
@@ -22,6 +22,13 @@ interface GroupedByCategory {
 interface CountPlannedBudget {
   ids: number[],
   sum: number,
+}
+
+interface GroupedBudgetUsageItem {
+  name: string,
+  items: GroupedByCategoryItem[],
+  planned: number,
+  actualUsage: number,
 }
 
 class BudgetUtils {
@@ -52,18 +59,19 @@ class BudgetUtils {
   }
 
   private groupedByName(budgetList: BudgetUsage[]): GroupedByName {
-    return budgetList.reduce((acc: GroupedByName, item: BudgetUsage) => {
+    const group = budgetList.reduce((acc: GroupedByName, item: BudgetUsage) => {
       const arr: BudgetUsage[] = acc[item.title] || [];
       arr.push(item);
       acc[item.title] = arr;
       return acc;
     }, {});
+    return group;
   }
 
   private groupedByCategory(
     budgetList: BudgetUsage[],
     categoryItems: Category[],
-  ): object {
+  ): GroupedByCategory {
     const categoryClass: GroupedByCategory = {};
     Object.entries(this.groupedByName(budgetList)).forEach(([key, value]) => {
       const { categoryId } = value[0];
@@ -92,8 +100,11 @@ class BudgetUtils {
     return categoryClass;
   }
 
-  groupedBudgetUsage(budgetList: BudgetUsage[], categoryItems: Category[]): GroupedByCategoryItem[] {
-    const groupedList: GroupedByCategoryItem[] = [];
+  groupedBudgetUsage(
+    budgetList: BudgetUsage[],
+    categoryItems: Category[],
+  ): GroupedBudgetUsageItem[] {
+    const groupedList: GroupedBudgetUsageItem[] = [];
     Object.entries(this.groupedByCategory(budgetList, categoryItems)).forEach(([key, value]) => {
       const planned = value.reduce(
         (acc: number, subItem: GroupedByCategoryItem) => acc + subItem.planned, 0,
@@ -101,7 +112,7 @@ class BudgetUtils {
       const actualUsage = value.reduce(
         (acc: number, subItem: GroupedByCategoryItem) => acc + subItem.actualUsage, 0,
       );
-      const categoryItem: GroupedByCategoryItem = {
+      const categoryItem: GroupedBudgetUsageItem = {
         name: key,
         items: value,
         planned,
@@ -113,8 +124,27 @@ class BudgetUtils {
         groupedList.push(categoryItem);
       }
     });
-
     return this.sortByField(groupedList, 'name');
+  }
+
+  static mergedByBudget(items: BudgetUsage[]): BudgetUsage[] {
+    return items.reduce(
+      (acc: BudgetUsage[], item: BudgetUsage) => {
+        const index: number = acc.findIndex((groupedItem: BudgetUsage) => groupedItem.id === item.id);
+        if (index > -1) {
+          acc[index] = {
+            ...acc[index],
+            spentInOriginalCurrency: acc[index].spentInOriginalCurrency
+              + item.spentInOriginalCurrency,
+            spentInBaseCurrency: acc[index].spentInBaseCurrency + item.spentInBaseCurrency,
+          };
+        } else {
+          acc.push(item);
+        }
+
+        return acc;
+      }, [],
+    );
   }
 }
 

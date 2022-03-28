@@ -54,6 +54,7 @@
         :updateStatusBudget="updateStatusBudget" />
       <WeekBudget
         :budgetUsage="budgetUsage"
+        :categoryItems="categoryList"
         v-show="budgetType === 'weekly'" />
     </div>
     <div>
@@ -63,6 +64,23 @@
         @update:model-value="dateSelected"
         />
     </div>
+    <q-dialog v-model="createForm">
+      <AddForm
+        :categories="categories"
+        :createBudget="createBudget"
+        :budget="budgetCopy"
+        />
+    </q-dialog>
+    <q-dialog v-model="editForm">
+      <EditForm
+        :categories="categories"
+        :item="selectedBudget"
+        :updateBudget="updateBudget"
+        :deleteBudget="deleteBudget"
+        @duplicateClick="makeDuplicate($event)"
+        @closeForm="editForm = false"
+      />
+    </q-dialog>
   </div>
 </template>
 <script>
@@ -108,6 +126,12 @@ export default {
     };
   },
 
+  data() {
+    return {
+      budgetCopy: {},
+    };
+  },
+
   computed: {
     ...mapGetters([
       'budgetPlan',
@@ -141,6 +165,11 @@ export default {
         from: fromDate,
         to: toDate,
       };
+    },
+
+    makeDuplicate(budget) {
+      this.budgetCopy = budget;
+      this.createForm = true;
     },
   },
 

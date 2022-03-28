@@ -114,7 +114,7 @@ export default defineComponent({
     },
 
     currentWeekItem(index: number): boolean {
-      return getWeekOfMonth(new Date()) === index;
+      return getWeekOfMonth(new Date(), { weekStartsOn: 1 }) === index;
     },
   },
 });

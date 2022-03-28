@@ -1,7 +1,7 @@
 <template>
   <q-card flat bordered class="main-panel">
     <div class="row justify-center col-12">
-      <span>{{ weekDays[0].formated }} - {{ weekDays[weekDays.length - 1].formated }}</span>
+      <span>{{ weekDays[0].formated }} - {{ weekDays.at(-1).formated }}</span>
     </div>
     <div class="row justify-left">
       <q-timeline color="grey-5" side="right" layout="comfortable" class="timeline">
@@ -10,10 +10,10 @@
           :key="day.formated">
           <template v-slot:subtitle>
             <span>{{ day.formated }}</span>
-            <div v-for="item in getDayBudget(day.full)" :key="item">
-              <BudgetItem :item="item" />
-            </div>
           </template>
+          <div v-for="item in getDayBudget(day.full)" :key="item">
+            <BudgetItem :item="item" />
+          </div>
         </q-timeline-entry>
       </q-timeline>
     </div>
@@ -28,7 +28,16 @@ import {
   isSameDay,
 } from 'date-fns';
 import { BudgetUsage } from '@/types/Budget';
+import { Category } from '@/types';
 import BudgetItem from '@/views/budget/weekly/BudgetItem.vue';
+import BudgetUtils from '@/utils/budgetUtils';
+
+export interface GroupedByCategoryItem {
+  name: string,
+  items: BudgetUsage[],
+  planned: number,
+  actualUsage: number,
+}
 
 const DATE_FORMAT = 'dd MMM';
 
@@ -41,6 +50,7 @@ export default defineComponent({
 
   props: {
     budgetUsage: { type: Array as PropType<BudgetUsage[]>, required: true },
+    categoryItems: { type: Array as PropType<Category[]>, required: true },
   },
 
   computed: {
@@ -55,11 +65,15 @@ export default defineComponent({
       }
       return days;
     },
+
+    mergedBudgetUsage() {
+      return BudgetUtils.mergedByBudget(this.budgetUsage);
+    },
   },
 
   methods: {
-    getDayBudget(date: string): BudgetUsage[] {
-      return this.budgetUsage.filter((item: BudgetUsage) => (
+    getDayBudget(date: string): any {
+      return this.mergedBudgetUsage.filter((item: BudgetUsage) => (
         isSameDay(new Date(item.budgetDate), new Date(date))
       ));
     },

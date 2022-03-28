@@ -27,6 +27,7 @@
         <SubCategoryDetailsPanel
           :category="activeSubCategoryObject"
           @closeSubCategory="closeSubCategory"
+          @budgetItemClick="budgetItemClick($event)"
         />
       </div>
     </div>
@@ -77,6 +78,10 @@ export default defineComponent({
     MainCategoryDetails,
     SubCategoryDetailsPanel,
   },
+
+  emits: [
+    'budgetItemClick',
+  ],
 
   props: {
     categoryItems: { type: Array as PropType<Category[]>, required: true },
@@ -144,6 +149,10 @@ export default defineComponent({
 
     closeSubCategory() {
       this.activeSubCategory.title = undefined;
+    },
+
+    budgetItemClick(item: BudgetUsage) {
+      this.$emit('budgetItemClick', item);
     },
   },
 });

@@ -17,7 +17,10 @@
           </template>
           <div v-show="groupedByWeek[i + 1]">
             <div v-for="item in groupedByWeek[i + 1]" :key="item">
-              <BudgetItem :item="item" />
+              <BudgetItem
+                :item="item"
+                @budgetItemClick="budgetItemClick($event)"
+              />
             </div>
           </div>
         </q-timeline-entry>
@@ -45,6 +48,7 @@ export default defineComponent({
 
   emits: [
     'closeSubCategory',
+    'budgetItemClick',
   ],
 
   props: {
@@ -107,6 +111,10 @@ export default defineComponent({
   methods: {
     closeSubCategory() {
       this.$emit('closeSubCategory');
+    },
+
+    budgetItemClick(item: BudgetUsage) {
+      this.$emit('budgetItemClick', item);
     },
 
     getWeek(date: string): number {

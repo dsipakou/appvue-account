@@ -1,5 +1,9 @@
 <template>
-  <q-card flat bordered class="card" :style="cardBackground" @click="budgetItemClick">
+  <q-card flat bordered
+    class="card"
+    :style="cardBackground"
+    @click="budgetItemClick"
+  >
     <div v-show="getActualWeek === 0" class="absolute-left current-indicator"></div>
     <div class="row justify-center top remains">
       <div class="absolute-left date-badge">
@@ -123,9 +127,10 @@ export default defineComponent({
     },
   },
 
-  budgetItemClick() {
-    console.log('Click');
-    this.$emit('budgetItemClick', this.item);
+  methods: {
+    budgetItemClick() {
+      this.$emit('budgetItemClick', this.item);
+    },
   },
 });
 </script>

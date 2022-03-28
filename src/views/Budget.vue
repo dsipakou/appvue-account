@@ -51,7 +51,9 @@
         :updateBudget="updateBudget"
         :deleteBudget="deleteBudget"
         :selectedMonth="budgetSelectedMonth"
-        :updateStatusBudget="updateStatusBudget" />
+        :updateStatusBudget="updateStatusBudget"
+        @budgetItemClick="budgetItemClick($event)"
+        />
       <WeekBudget
         :budgetUsage="budgetUsage"
         :categoryItems="categoryList"
@@ -101,6 +103,8 @@ import WeekBudgetOld from '@/views/budget/WeekBudgetOld.vue';
 import WeekBudget from '@/views/budget/WeekBudget.vue';
 import MonthlyBudget from '@/views/budget/MonthlyBudget.vue';
 import MonthlyBudgetOld from '@/views/budget/MonthlyBudgetOld.vue';
+import AddForm from '@/views/budget/forms/AddForm.vue';
+import EditForm from '@/views/budget/forms/EditForm.vue';
 
 export default {
   name: 'Budget',
@@ -110,6 +114,8 @@ export default {
     WeekBudget,
     MonthlyBudget,
     MonthlyBudgetOld,
+    AddForm,
+    EditForm,
   },
 
   setup() {
@@ -121,6 +127,8 @@ export default {
       },
     });
     return {
+      createForm: ref(false),
+      editForm: ref(false),
       dateModel: ref(''),
       budgetType,
     };
@@ -128,6 +136,7 @@ export default {
 
   data() {
     return {
+      selectedBudget: {},
       budgetCopy: {},
     };
   },
@@ -170,6 +179,11 @@ export default {
     makeDuplicate(budget) {
       this.budgetCopy = budget;
       this.createForm = true;
+    },
+
+    budgetItemClick(item) {
+      this.selectedBudget = item;
+      this.editForm = true;
     },
   },
 

@@ -129,6 +129,7 @@ export default defineComponent({
 
   methods: {
     budgetItemClick() {
+      console.log(this.item);
       this.$emit('budgetItemClick', this.item);
     },
   },

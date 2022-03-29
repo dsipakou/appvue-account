@@ -41,6 +41,7 @@ import SubCategoryDetailsPanel from '@/views/budget/subcategory/SubCategoryDetai
 import { Category } from '@/types';
 import { BudgetUsage } from '@/types/Budget';
 import BudgetUtils from '@/utils/budgetUtils';
+import { isSameMonth } from 'date-fns';
 
 interface ActiveCategory {
   index: number,
@@ -108,16 +109,28 @@ export default defineComponent({
 
   computed: {
     monthlyBudget(): { [key: string]: number } {
-      return this.budgetPlan.reduce((acc: {[key: string]: number}, item: BudgetPlan) => {
-        const amount = acc[item.categoryName] || 0;
-        acc[item.categoryName] = amount + item.amount;
-        return acc;
-      }, {});
+      const mainCategoryObj = this.budgetPlan.reduce(
+        (acc: {[key: string]: number}, item: BudgetPlan) => {
+          const amount = acc[item.categoryName] || 0;
+          acc[item.categoryName] = amount + item.amount;
+          return acc;
+        }, {},
+      );
+
+      return Object.keys(mainCategoryObj).sort().reduce(
+        (acc: {[key: string]: number}, key) => {
+          acc[key] = mainCategoryObj[key];
+          return acc;
+        }, {},
+      );
     },
 
     groupedBudgetUsage() {
       const budgetUtils = new BudgetUtils();
-      return budgetUtils.groupedBudgetUsage(this.budgetUsage, this.categoryItems);
+      const filteredMonthBudgetUsage = this.budgetUsage.filter((item: BudgetUsage) => (
+        isSameMonth(new Date(), new Date(item.budgetDate))
+      ));
+      return budgetUtils.groupedBudgetUsage(filteredMonthBudgetUsage, this.categoryItems);
     },
 
     activeBudget(): any | undefined {
@@ -153,6 +166,15 @@ export default defineComponent({
 
     budgetItemClick(item: BudgetUsage) {
       this.$emit('budgetItemClick', item);
+    },
+  },
+
+  watch: {
+    monthlyBudget() {
+      if (!this.activeCategory.title) {
+        const name = Object.keys(this.monthlyBudget)[0];
+        this.activeCategory.title = name;
+      }
     },
   },
 });

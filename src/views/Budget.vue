@@ -7,29 +7,6 @@
       <q-btn outline
          label="Planner >" to='/budget/planner'/>
     </div>
-    <div class="row justify-left">
-      <div class="col-8">
-        <MonthlyBudgetOld
-          :budgetUsage="budgetUsage"
-          :budgetPlan="budgetPlan"
-          :categoryItems="categoryList"
-          :createBudget="createBudget"
-          :updateBudget="updateBudget"
-          :deleteBudget="deleteBudget"
-          :selectedMonth="budgetSelectedMonth"
-          :updateStatusBudget="updateStatusBudget" />
-      </div>
-      <div class="col-4">
-        <WeekBudgetOld
-          :budgetUsage="budgetUsage"
-          :budgetPlan="budgetPlan"
-          :categoryItems="categoryList"
-          :transactionItems="budgetedTransactions"
-          :updateBudget="updateBudget"
-          :deleteBudget="deleteBudget"
-          :updateStatusBudget="updateStatusBudget" />
-      </div>
-    </div>
     <div class="row col-12">
       <div class="row col-12 justify-center">
         <div class="budget-toggle">
@@ -71,6 +48,7 @@
         :categories="categories"
         :createBudget="createBudget"
         :budget="budgetCopy"
+        @closeForm="addFormClosed"
         />
     </q-dialog>
     <q-dialog v-model="editForm">
@@ -99,10 +77,8 @@ import {
   getFirstDayOfMonth,
   DATE_FORMAT,
 } from '@/utils/dateTimeUtils';
-import WeekBudgetOld from '@/views/budget/WeekBudgetOld.vue';
 import WeekBudget from '@/views/budget/WeekBudget.vue';
 import MonthlyBudget from '@/views/budget/MonthlyBudget.vue';
-import MonthlyBudgetOld from '@/views/budget/MonthlyBudgetOld.vue';
 import AddForm from '@/views/budget/forms/AddForm.vue';
 import EditForm from '@/views/budget/forms/EditForm.vue';
 
@@ -110,10 +86,8 @@ export default {
   name: 'Budget',
 
   components: {
-    WeekBudgetOld,
     WeekBudget,
     MonthlyBudget,
-    MonthlyBudgetOld,
     AddForm,
     EditForm,
   },
@@ -153,6 +127,7 @@ export default {
     categories() {
       return this.categoryList.filter((item) => item.isParent);
     },
+
   },
 
   methods: {
@@ -185,20 +160,28 @@ export default {
       this.selectedBudget = item;
       this.editForm = true;
     },
+
+    fetchAllBudget() {
+      const dateFrom = getFirstDayOfMonth(format(new Date(), DATE_FORMAT));
+      const month = endOfMonth(new Date());
+      const week = endOfWeek(new Date(), { weekStartsOn: 1 });
+      const dateTo = format(max([month, week]), DATE_FORMAT);
+      this.fetchBudgetUsage({ dateFrom, dateTo });
+      this.fetchBudgetPlan({ dateFrom, dateTo });
+      this.fetchBudgetedTransactions({
+        sorting: 'added',
+        dateFrom: moment().add(-moment().weekday(), 'days').format('YYYY-MM-DD'),
+        dateTo: moment().add(6 - moment().weekday(), 'days').format('YYYY-MM-DD'),
+      });
+    },
+
+    addFormClosed() {
+      this.fetchAllBudget();
+    },
   },
 
   beforeMount() {
-    const dateFrom = getFirstDayOfMonth(format(new Date(), DATE_FORMAT));
-    const month = endOfMonth(new Date());
-    const week = endOfWeek(new Date());
-    const dateTo = format(max([month, week]), DATE_FORMAT);
-    this.fetchBudgetUsage({ dateFrom, dateTo });
-    this.fetchBudgetPlan({ dateFrom, dateTo });
-    this.fetchBudgetedTransactions({
-      sorting: 'added',
-      dateFrom: moment().add(-moment().weekday(), 'days').format('YYYY-MM-DD'),
-      dateTo: moment().add(6 - moment().weekday(), 'days').format('YYYY-MM-DD'),
-    });
+    this.fetchAllBudget();
   },
 };
 </script>

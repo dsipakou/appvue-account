@@ -4,6 +4,10 @@
       <span class="header">{{ item.title }}</span>
     </div>
     <div class="row progress-container">
+      <div class="absolute-left flex flex-center">
+        <q-icon v-if="item.isCompleted" name="lock" class="lock-icon" />
+        <q-icon v-else name="lock_open" class="lock-icon" />
+      </div>
       <q-linear-progress
           class="progress-bar"
           :value="getProgressRate"
@@ -14,11 +18,16 @@
         </div>
       </q-linear-progress>
       <div class="row bottom">
-        <div class="row desc-text col-6">
+        <div class="row desc-text col-4">
           <span class="number">{{ getActualUsage }}</span>
           <span class="text">spent</span>
         </div>
-        <div class="row desc-text justify-end col-6">
+        <div class="row justify-center col-4">
+          <span class="overall-text">{{ getDiff }}</span>
+          <span v-if="getDiff < 0" class="overall-subtext">over</span>
+          <span v-else class="overall-subtext">left</span>
+        </div>
+        <div class="row desc-text justify-end col-4">
           <span class="text">of</span>
           <span class="number">{{ getPlanned }}</span>
         </div>
@@ -109,9 +118,29 @@ export default defineComponent({
 
 .remains>.text, .bottom .text {
   margin: 0 5px;
+  font-size: 11px;
 }
 
 .remains>.number, .bottom .number {
   font-weight: bold;
+  font-size: 11px;
+}
+
+.desc-text {
+  padding: 0 5px;
+}
+
+.overall-text {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.overall-subtext {
+  font-weight: normal;
+  margin-left: 5px;
+}
+
+.lock-icon {
+  margin-left: 15px;
 }
 </style>

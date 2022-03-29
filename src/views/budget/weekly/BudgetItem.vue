@@ -6,11 +6,11 @@
     <div class="row progress-container">
       <q-linear-progress
           class="progress-bar"
-          value=0.5
-          color="blue"
+          :value="getProgressRate"
+          :color="getProgressColor"
           track-color="grey-6">
         <div class="absolute-full flex flex-center progress-text">
-          51%
+          {{ getProgressRateText }}
         </div>
       </q-linear-progress>
       <div class="row bottom">
@@ -49,6 +49,34 @@ export default defineComponent({
 
       return this.item?.spentInBaseCurrency?.toFixed(2) || '0.00';
     },
+
+    getDiff(): string {
+      if (!this.item?.amount === undefined) return '';
+
+      return (this.item.amount - this.item.spentInBaseCurrency).toFixed(2);
+    },
+
+    getProgressRate(): number {
+      if (!this.item?.amount === undefined) return 0;
+
+      if (this.item.amount === 0) return 1;
+      return this.item.spentInBaseCurrency / this.item.amount;
+    },
+
+    getProgressColor(): string {
+      if (!this.item?.amount === undefined) return '';
+
+      if (this.item.amount === 0) return 'brown-14';
+      if (this.getProgressRate > 1) return 'red-14';
+      return 'green-14';
+    },
+
+    getProgressRateText(): string {
+      if (!this.item?.amount === undefined) return '';
+
+      if (this.item.amount === 0) return 'Unplanned';
+      return `${(this.getProgressRate * 100).toFixed(0)}%`;
+    },
   },
 });
 </script>
@@ -76,6 +104,14 @@ export default defineComponent({
   font-size: 12px;
   color: white;
   align-content: center;
+  font-weight: bold;
+}
+
+.remains>.text, .bottom .text {
+  margin: 0 5px;
+}
+
+.remains>.number, .bottom .number {
   font-weight: bold;
 }
 </style>

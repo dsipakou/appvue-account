@@ -188,8 +188,7 @@ export default {
   display: flex;
 }
 
-.header>h4 {
-  margin-right: 20px;
+.header>h4 { margin-right: 20px;
 }
 
 .btn-add {
@@ -215,7 +214,8 @@ export default {
   border: 4px solid #444444;
 }
 
-.toggle-tab {
-  font-size: 22px !important;
+:deep(.q-tab__label) {
+   font-size: 22px !important;
+   line-height: 1.2em !important;
 }
 </style>

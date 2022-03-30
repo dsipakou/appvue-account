@@ -1,5 +1,8 @@
 <template>
-  <q-card flat bordered class="row main-card">
+  <q-card flat bordered
+    :style="cardBackground"
+    class="row main-card">
+    <div v-show="getActualDay === 0" class="absolute-left current-indicator"></div>
     <div class="row col-12 justify-center">
       <span class="header">{{ item.title }}</span>
     </div>
@@ -38,6 +41,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { BudgetUsage } from '@/types/Budget';
+import { getDayOfYear } from 'date-fns';
 
 export default defineComponent({
   name: 'Budget Item',
@@ -86,6 +90,29 @@ export default defineComponent({
       if (this.item.amount === 0) return 'Unplanned';
       return `${(this.getProgressRate * 100).toFixed(0)}%`;
     },
+
+    cardBackground() {
+      let color = '#FFFFFF';
+      if (this.getActualDay === 0) {
+        color = '#D2ECFF';
+      } else if (this.getActualDay === -1) {
+        color = '#DDDDDD';
+      }
+
+      return {
+        'background-color': color,
+      };
+    },
+
+    getActualDay(): number {
+      if (this.item?.amount === undefined) return 0;
+
+      const currentDay = getDayOfYear(new Date());
+      const budgetDay = getDayOfYear(new Date(this.item.budgetDate));
+      if (currentDay === budgetDay) return 0;
+      if (currentDay < budgetDay) return 1;
+      return -1;
+    },
   },
 });
 </script>
@@ -98,6 +125,14 @@ export default defineComponent({
 
 .header {
   font-size: 18px;
+}
+
+.current-indicator {
+  height: 55px;
+  width: 3px;
+  background-color: #0094FF;
+  border-radius: 2px !important;
+  margin: auto 0 auto 5px;
 }
 
 .progress-container {

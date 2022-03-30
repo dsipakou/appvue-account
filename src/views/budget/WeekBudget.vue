@@ -7,7 +7,10 @@
       <q-timeline color="grey-5" side="right" layout="comfortable" class="timeline">
         <q-timeline-entry
           v-for="day in weekDays"
-          :key="day.formated">
+          :key="day.formated"
+          v-bind="currentDayItem(day) ? iconBinding : null"
+          :color="currentDayItem(day) ? 'blue' : ''"
+          >
           <template v-slot:subtitle>
             <span>{{ day.formated }}</span>
           </template>
@@ -54,6 +57,12 @@ export default defineComponent({
   },
 
   computed: {
+    iconBinding(): object {
+      return {
+        icon: '',
+      };
+    },
+
     weekDays(): { full: Date, formated: string }[] {
       const firstDayOfWeek = startOfWeek(new Date(), { weekStartsOn: 1 });
       const days = [];
@@ -76,6 +85,10 @@ export default defineComponent({
       return this.mergedBudgetUsage.filter((item: BudgetUsage) => (
         isSameDay(new Date(item.budgetDate), new Date(date))
       ));
+    },
+
+    currentDayItem(date: { full: string, formatted: string }) {
+      return isSameDay(new Date(), new Date(date.full));
     },
   },
 });

@@ -1,12 +1,10 @@
 <template>
   <div>
-    <div class="header">
-      <h4>
-        Planner
-      </h4>
-      <q-btn outline
-         label="Planner >" to='/budget/planner'/>
-    </div>
+    <q-btn rounded
+      color="primary"
+      class="btn-add fixed"
+      icon="add"
+      @click="createForm = true" />
     <div class="row col-12">
       <div class="row col-12 justify-center">
         <div class="budget-toggle">
@@ -192,6 +190,14 @@ export default {
 
 .header>h4 {
   margin-right: 20px;
+}
+
+.btn-add {
+  width: 55px;
+  height: 55px;
+  right: 30px;
+  bottom: 30px;
+  z-index: 10;
 }
 
 .budget-toggle {

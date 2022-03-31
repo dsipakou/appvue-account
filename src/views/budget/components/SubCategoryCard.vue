@@ -3,7 +3,7 @@
     <div class="row col-12 title--main">{{ item.name }}</div>
     <div class="row progress-container">
       <div class="row col-12 justify-center remains">
-        <span class="number">{{ Math.abs(getDiff) }}</span>
+        <span class="number">{{ getDiff }}</span>
         <span class="text" v-if="getDiff < 0">over</span>
         <span class="text" v-else>left</span>
       </div>

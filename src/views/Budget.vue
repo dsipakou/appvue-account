@@ -5,9 +5,11 @@
       class="btn-add fixed"
       icon="add"
       @click="createForm = true" />
-    <div class="row col-12">
-      <div class="row col-12 justify-center">
-        <div class="budget-toggle">
+    <div class="row col-12 relative-position">
+      <div class="row col-12 justify-center vertical-middle">
+        <div class="row"></div>
+        <q-space />
+        <div class="row budget-toggle">
           <q-tabs no-caps dense
             v-model="budgetType"
             indicator-color="transparent"
@@ -15,6 +17,10 @@
             <q-tab name="monthly" label="Monthly" />
             <q-tab name="weekly" label="Weekly" />
           </q-tabs>
+        </div>
+        <q-space />
+        <div class="row float-right">
+          <q-select map-options v-model="selectedMonth" :options="selectMonthOptions" />
         </div>
       </div>
       <MonthlyBudget
@@ -70,6 +76,7 @@ import {
   endOfWeek,
   format,
   max,
+  subMonths,
 } from 'date-fns';
 import {
   getFirstDayOfMonth,
@@ -98,11 +105,18 @@ export default {
         $store.commit('setBudgetToggle', val);
       },
     });
+    const selectedMonth = computed({
+      get: () => $store.state.budget.selectedMonth,
+      set: (val) => {
+        $store.commit('setBudgetMonth', val.value);
+      },
+    });
     return {
       createForm: ref(false),
       editForm: ref(false),
       dateModel: ref(''),
       budgetType,
+      selectedMonth,
     };
   },
 
@@ -120,12 +134,25 @@ export default {
       'budgetedTransactions',
       'categoryList',
       'budgetSelectedMonth',
+      'selectedMonth',
     ]),
 
     categories() {
       return this.categoryList.filter((item) => item.isParent);
     },
 
+    selectMonthOptions() {
+      const options = [];
+      for (let i = 0; i < 12; i += 1) {
+        const month = subMonths(new Date(), i);
+        options.push({
+          label: format(month, 'yyyy/MMMM'),
+          value: month,
+        });
+      }
+
+      return options;
+    },
   },
 
   methods: {
@@ -160,9 +187,9 @@ export default {
     },
 
     fetchAllBudget() {
-      const dateFrom = getFirstDayOfMonth(format(new Date(), DATE_FORMAT));
-      const month = endOfMonth(new Date());
-      const week = endOfWeek(new Date(), { weekStartsOn: 1 });
+      const dateFrom = getFirstDayOfMonth(format(new Date(this.selectedMonth), DATE_FORMAT));
+      const month = endOfMonth(new Date(this.selectedMonth));
+      const week = endOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
       const dateTo = format(max([month, week]), DATE_FORMAT);
       this.fetchBudgetUsage({ dateFrom, dateTo });
       this.fetchBudgetPlan({ dateFrom, dateTo });
@@ -180,6 +207,12 @@ export default {
 
   beforeMount() {
     this.fetchAllBudget();
+  },
+
+  watch: {
+    selectedMonth() {
+      this.fetchAllBudget();
+    },
   },
 };
 </script>
@@ -200,7 +233,7 @@ export default {
 }
 
 .budget-toggle {
-  width: 370px;
+  max-width: 370px;
   margin: 30px 0;
   color: white;
   border-radius: 20px;

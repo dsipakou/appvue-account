@@ -109,6 +109,10 @@ const mutations = {
   setBudgetToggle(state: any, value: BudgetToggle) {
     state.budgetToggle = value;
   },
+
+  setBudgetMonth(state: any, value: string) {
+    state.selectedMonth = value;
+  },
 };
 
 export default {

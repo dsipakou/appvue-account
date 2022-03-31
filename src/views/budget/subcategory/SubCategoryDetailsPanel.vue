@@ -53,6 +53,7 @@ export default defineComponent({
 
   props: {
     category: { type: Object as PropType<Category>, required: true },
+    selectedMonth: { type: Date, required: true },
   },
 
   computed: {
@@ -105,7 +106,6 @@ export default defineComponent({
     numberOfWeeks(): number {
       return getWeeksInMonth(new Date());
     },
-
   },
 
   methods: {

@@ -1,16 +1,16 @@
 <template>
   <div class="row">
     <div class="col-4">
-      <div
-        class="row main-category-container"
-        v-for="[ name, amount ] in Object.entries(monthlyBudget)"
-        :key="name">
-        <MainCategoryCard
-          :amount="amount"
-          :title="name"
-          :activeCategory="activeCategory.title"
-          @categoryClick=mainCategoryClick($event) />
-      </div>
+        <div
+          class="row main-category-container"
+          v-for="[ name, amount ] in Object.entries(monthlyBudget)"
+          :key="name">
+          <MainCategoryCard
+            :amount="amount"
+            :title="name"
+            :activeCategory="activeCategory.title"
+            @categoryClick=mainCategoryClick($event) />
+        </div>
     </div>
     <div class="col-8">
       <div class="row" v-show="activeCategory.title && !activeSubCategory.title">
@@ -26,6 +26,7 @@
       <div class="row" v-show="activeSubCategory.title && activeSubCategoryObject">
         <SubCategoryDetailsPanel
           :category="activeSubCategoryObject"
+          :selectedMonth="selectedMonth"
           @closeSubCategory="closeSubCategory"
           @budgetItemClick="budgetItemClick($event)"
         />
@@ -128,7 +129,7 @@ export default defineComponent({
     groupedBudgetUsage() {
       const budgetUtils = new BudgetUtils();
       const filteredMonthBudgetUsage = this.budgetUsage.filter((item: BudgetUsage) => (
-        isSameMonth(new Date(), new Date(item.budgetDate))
+        isSameMonth(new Date(this.selectedMonth), new Date(item.budgetDate))
       ));
       return budgetUtils.groupedBudgetUsage(filteredMonthBudgetUsage, this.categoryItems);
     },
@@ -175,6 +176,10 @@ export default defineComponent({
         const name = Object.keys(this.monthlyBudget)[0];
         this.activeCategory.title = name;
       }
+    },
+
+    selectedMonth() {
+      this.closeSubCategory();
     },
   },
 });

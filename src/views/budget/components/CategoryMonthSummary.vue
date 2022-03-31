@@ -4,7 +4,7 @@
      This month
     </div>
     <div class="row remains">
-      <span class="number">{{ Math.abs(getDiff(title)).toFixed(2) }}</span>
+      <span class="number">{{ getDiff(title).toFixed(2) }}</span>
       <span class="text" v-if="getDiff(title) < 0">over</span>
       <span class="text" v-else>left</span>
     </div>

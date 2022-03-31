@@ -60,9 +60,9 @@ class BudgetUtils {
 
   private groupedByName(budgetList: BudgetUsage[]): GroupedByName {
     const group = budgetList.reduce((acc: GroupedByName, item: BudgetUsage) => {
-      const arr: BudgetUsage[] = acc[item.title] || [];
+      const arr: BudgetUsage[] = acc[`${item.title}${item.categoryId}`] || [];
       arr.push(item);
-      acc[item.title] = arr;
+      acc[`${item.title}${item.categoryId}`] = arr;
       return acc;
     }, {});
     return group;
@@ -73,8 +73,8 @@ class BudgetUtils {
     categoryItems: Category[],
   ): GroupedByCategory {
     const categoryClass: GroupedByCategory = {};
-    Object.entries(this.groupedByName(budgetList)).forEach(([key, value]) => {
-      const { categoryId } = value[0];
+    Object.values(this.groupedByName(budgetList)).forEach((value) => {
+      const { categoryId, title } = value[0];
       const categoryName = categoryId === null
         ? 'undefined'
         : categoryItems.find((category: Category) => (
@@ -84,7 +84,7 @@ class BudgetUtils {
       const sortedGroupedBudgets: BudgetUsage[] = this.sortByField(value, 'budgetName');
       const countedPlannedObject: CountPlannedBudget = this.countPlannedBudget(value);
       const group: GroupedByCategoryItem = {
-        name: key,
+        name: title,
         items: sortedGroupedBudgets,
         planned: countedPlannedObject.sum,
         actualUsage: value.reduce(

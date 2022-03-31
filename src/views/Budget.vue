@@ -74,12 +74,14 @@ import moment from 'moment';
 import {
   endOfMonth,
   endOfWeek,
+  startOfWeek,
+  startOfMonth,
   format,
+  min,
   max,
   subMonths,
 } from 'date-fns';
 import {
-  getFirstDayOfMonth,
   DATE_FORMAT,
 } from '@/utils/dateTimeUtils';
 import WeekBudget from '@/views/budget/WeekBudget.vue';
@@ -187,10 +189,12 @@ export default {
     },
 
     fetchAllBudget() {
-      const dateFrom = getFirstDayOfMonth(format(new Date(this.selectedMonth), DATE_FORMAT));
-      const month = endOfMonth(new Date(this.selectedMonth));
-      const week = endOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
-      const dateTo = format(max([month, week]), DATE_FORMAT);
+      const startMonth = startOfMonth(new Date(this.selectedMonth));
+      const endMonth = endOfMonth(new Date(this.selectedMonth));
+      const endWeek = endOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
+      const startWeek = startOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
+      const dateFrom = format(min([startMonth, startWeek]), DATE_FORMAT);
+      const dateTo = format(max([endMonth, endWeek]), DATE_FORMAT);
       this.fetchBudgetUsage({ dateFrom, dateTo });
       this.fetchBudgetPlan({ dateFrom, dateTo });
       this.fetchBudgetedTransactions({

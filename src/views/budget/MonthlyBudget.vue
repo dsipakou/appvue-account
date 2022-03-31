@@ -1,16 +1,16 @@
 <template>
   <div class="row">
     <div class="col-4">
-        <div
-          class="row main-category-container"
-          v-for="[ name, amount ] in Object.entries(monthlyBudget)"
-          :key="name">
-          <MainCategoryCard
-            :amount="amount"
-            :title="name"
-            :activeCategory="activeCategory.title"
-            @categoryClick=mainCategoryClick($event) />
-        </div>
+      <div
+        class="row main-category-container"
+        v-for="[ name, amount ] in Object.entries(monthlyBudget)"
+        :key="name">
+        <MainCategoryCard
+          :amount="amount"
+          :title="name"
+          :activeCategory="activeCategory.title"
+          @categoryClick=mainCategoryClick($event) />
+      </div>
     </div>
     <div class="col-8">
       <div class="row" v-show="activeCategory.title && !activeSubCategory.title">
@@ -112,8 +112,10 @@ export default defineComponent({
     monthlyBudget(): { [key: string]: number } {
       const mainCategoryObj = this.budgetPlan.reduce(
         (acc: {[key: string]: number}, item: BudgetPlan) => {
-          const amount = acc[item.categoryName] || 0;
-          acc[item.categoryName] = amount + item.amount;
+          if (isSameMonth(new Date(item.budgetDate), new Date(this.selectedMonth))) {
+            const amount = acc[item.categoryName] || 0;
+            acc[item.categoryName] = amount + item.amount;
+          }
           return acc;
         }, {},
       );

@@ -1,6 +1,7 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
 import { IGetBudgetForPeriod, BudgetToggle } from '@/types/Budget';
+import { startOfDay } from 'date-fns';
 
 import {
   getBudget,
@@ -13,7 +14,7 @@ import {
 } from '../../service';
 
 const state = {
-  selectedMonth: new Date(),
+  selectedMonth: startOfDay(new Date()),
   usage: [],
   plan: [],
   transactions: [],

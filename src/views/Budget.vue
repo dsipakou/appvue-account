@@ -74,6 +74,7 @@ import moment from 'moment';
 import {
   endOfMonth,
   endOfWeek,
+  startOfDay,
   startOfWeek,
   startOfMonth,
   format,
@@ -146,9 +147,9 @@ export default {
     selectMonthOptions() {
       const options = [];
       for (let i = 0; i < 12; i += 1) {
-        const month = subMonths(new Date(), i);
+        const month = startOfDay(subMonths(new Date(), i));
         options.push({
-          label: format(month, 'yyyy/MMMM'),
+          label: format(month, 'yyyy / MMMM'),
           value: month,
         });
       }
@@ -192,9 +193,11 @@ export default {
       const startMonth = startOfMonth(new Date(this.selectedMonth));
       const endMonth = endOfMonth(new Date(this.selectedMonth));
       const endWeek = endOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
+      const endCurrentWeek = endOfWeek(new Date(), { weekStartsOn: 1 });
       const startWeek = startOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
-      const dateFrom = format(min([startMonth, startWeek]), DATE_FORMAT);
-      const dateTo = format(max([endMonth, endWeek]), DATE_FORMAT);
+      const startCurrentWeek = startOfWeek(new Date(), { weekStartsOn: 1 });
+      const dateFrom = format(min([startMonth, startWeek, startCurrentWeek]), DATE_FORMAT);
+      const dateTo = format(max([endMonth, endWeek, endCurrentWeek]), DATE_FORMAT);
       this.fetchBudgetUsage({ dateFrom, dateTo });
       this.fetchBudgetPlan({ dateFrom, dateTo });
       this.fetchBudgetedTransactions({

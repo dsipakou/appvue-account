@@ -140,8 +140,10 @@ export default {
       const options = [];
       for (let i = 0; i < 12; i += 1) {
         const month = startOfDay(subMonths(new Date(), i));
+        let label = format(month, 'MMMM yyyy');
+        if (i === 0) label += ' (current)';
         options.push({
-          label: format(month, 'yyyy / MMMM'),
+          label,
           value: month,
         });
       }

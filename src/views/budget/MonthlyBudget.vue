@@ -3,11 +3,12 @@
     <div class="col-4">
       <div
         class="row main-category-container"
-        v-for="[ name, amount ] in Object.entries(monthlyBudget)"
-        :key="name">
+        v-for="item in groupedBudgetUsage"
+        :key="item.name">
         <MainCategoryCard
-          :amount="amount"
-          :title="name"
+          :planned="item.planned"
+          :spent="item.actualUsage"
+          :title="item.name"
           :activeCategory="activeCategory.title"
           @categoryClick=mainCategoryClick($event) />
       </div>
@@ -40,7 +41,7 @@ import MainCategoryCard from '@/views/budget/components/MainCategoryCard.vue';
 import MainCategoryDetails from '@/views/budget/components/MainCategoryDetails.vue';
 import SubCategoryDetailsPanel from '@/views/budget/subcategory/SubCategoryDetailsPanel.vue';
 import { Category } from '@/types';
-import { BudgetUsage } from '@/types/Budget';
+import { BudgetUsage, BudgetPlan } from '@/types/Budget';
 import BudgetUtils from '@/utils/budgetUtils';
 import { isSameMonth } from 'date-fns';
 
@@ -57,19 +58,6 @@ interface BudgetItem {
   name: string,
   items: any[],
   amount: number,
-}
-
-interface BudgetPlan {
-  id: number,
-  categoryId: number,
-  title: string,
-  amount: number,
-  budgetDate: string,
-  description: string,
-  isCompleted: boolean,
-  createdAt: string,
-  updatedAt: string,
-  categoryName: string,
 }
 
 export default defineComponent({
@@ -110,8 +98,8 @@ export default defineComponent({
 
   computed: {
     monthlyBudget(): { [key: string]: number } {
-      const mainCategoryObj = this.budgetPlan.reduce(
-        (acc: {[key: string]: number}, item: BudgetPlan) => {
+      const mainCategoryObj = this.budgetUsage.reduce(
+        (acc: {[key: string]: number}, item: BudgetUsage) => {
           if (isSameMonth(new Date(item.budgetDate), new Date(this.selectedMonth))) {
             const amount = acc[item.categoryName] || 0;
             acc[item.categoryName] = amount + item.amount;

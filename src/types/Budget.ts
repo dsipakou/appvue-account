@@ -14,7 +14,7 @@ export interface BudgetPlan extends Budget {
   categoryName: string,
 }
 
-export interface BudgetUsage extends Budget {
+export interface BudgetUsage extends BudgetPlan {
   spentInOriginalCurrency: number,
   spentInBaseCurrency: number,
 }

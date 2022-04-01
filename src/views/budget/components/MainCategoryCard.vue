@@ -4,7 +4,8 @@
       class="main-category-card"
       :class="activeCategory === title ? 'selected': ''"
       @click="categoryClick(title)">
-      <span class="text-h6 text-weight-bold">{{ amount }}</span>
+      <span class="text-h6 text-weight-bold">{{ planned }} / {{ spent.toFixed(2) }}</span>
+      <span class="text-h6 text-weight-bold"></span>
       <span class="text-subtitle2">{{ title }}</span>
     </q-card>
   </div>
@@ -23,7 +24,8 @@ export default defineComponent({
 
   props: {
     title: { type: String, required: true },
-    amount: { type: Number, required: true },
+    planned: { type: Number, required: true },
+    spent: { type: Number, required: true },
     activeCategory: { type: String, default: '' },
   },
 

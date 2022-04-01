@@ -4,9 +4,17 @@
       class="main-category-card"
       :class="activeCategory === title ? 'selected': ''"
       @click="categoryClick(title)">
-      <span class="text-h6 text-weight-bold">{{ planned }} / {{ spent.toFixed(2) }}</span>
-      <span class="text-h6 text-weight-bold"></span>
-      <span class="text-subtitle2">{{ title }}</span>
+      <div class="row col-12 price-container">
+        <div class="row col-6 left-block items-center">
+          <span class="planned-text">{{ planned }}</span>
+          <div class="planned-chart"></div>
+        </div>
+        <div class="row col-6 items-center">
+          <div class="actual-chart"></div>
+          <span class="actual-text">  {{ spent.toFixed(2) }}</span>
+        </div>
+      </div>
+      <span class="category-name">{{ title }}</span>
     </q-card>
   </div>
   <div class="arrow" v-show="activeCategory === title">
@@ -79,6 +87,40 @@ export default defineComponent({
   background-color: #BFF7FF;
 }
 
-.arrow {
+.price-container {
+  width: 100%;
+}
+
+.left-block {
+  border-right: 1px solid black;
+  justify-content: right;
+}
+
+.planned-text {
+  font-size: 20px;
+}
+
+.actual-text {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.planned-chart {
+  width: 7px;
+  height: 24px;
+  background-color: #23A8F5;
+  margin: 0 5px 0 11px;
+}
+
+.actual-chart {
+  width: 7px;
+  height: 24px;
+  background-color: #23A8F5;
+  margin: 0 11px 0 6px;
+}
+
+.category-name {
+  margin-top: 4px;
+  font-size: 20px;
 }
 </style>

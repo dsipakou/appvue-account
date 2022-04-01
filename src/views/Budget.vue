@@ -40,13 +40,6 @@
         :categoryItems="categoryList"
         v-show="budgetType === 'weekly'" />
     </div>
-    <div>
-      <q-date
-        v-model="dateModel"
-        ref="budgetCal"
-        @update:model-value="dateSelected"
-        />
-    </div>
     <q-dialog v-model="createForm">
       <AddForm
         :categories="categories"
@@ -117,7 +110,6 @@ export default {
     return {
       createForm: ref(false),
       editForm: ref(false),
-      dateModel: ref(''),
       budgetType,
       selectedMonth,
     };
@@ -168,16 +160,6 @@ export default {
       'updateStatusBudget',
       'deleteBudget',
     ]),
-
-    dateSelected(value) {
-      const selectedDate = moment(value, 'YYYY-MM-DD');
-      const fromDate = selectedDate.add(-selectedDate.day(), 'days').format('YYYY/MM/DD');
-      const toDate = selectedDate.add(6 - selectedDate.day(), 'days').format('YYYY/MM/DD');
-      this.dateModel = {
-        from: fromDate,
-        to: toDate,
-      };
-    },
 
     makeDuplicate(budget) {
       this.budgetCopy = budget;

@@ -71,7 +71,7 @@ const actions = {
   async updateStatusBudget({ commit }: any, payload: any) {
     const response = await updateBudget(payload);
     if (response.status === 200) {
-      console.log('updated');
+      commit('setStatusUpdate', payload);
     }
   },
 
@@ -109,6 +109,19 @@ const mutations = {
 
   setBudgetToggle(state: any, value: BudgetToggle) {
     state.budgetToggle = value;
+  },
+
+  setStatusUpdate(state: any, item: any) {
+    state.plan = state.plan.map((plan: any) => (
+      plan.id === item.id
+        ? { ...plan, isCompleted: !plan.isCompleted }
+        : plan
+    ));
+    state.usage = state.usage.map((usage: any) => (
+      usage.id === item.id
+        ? { ...usage, isCompleted: !usage.isCompleted }
+        : usage
+    ));
   },
 
   setBudgetMonth(state: any, value: string) {

@@ -15,7 +15,10 @@
             <span>{{ day.formated }}</span>
           </template>
           <div v-for="item in getDayBudget(day.full)" :key="item">
-            <BudgetItem :item="item" />
+            <BudgetItem
+              :item="item"
+              :updateStatusBudget="updateStatusBudget"
+            />
           </div>
         </q-timeline-entry>
       </q-timeline>
@@ -54,6 +57,7 @@ export default defineComponent({
   props: {
     budgetUsage: { type: Array as PropType<BudgetUsage[]>, required: true },
     categoryItems: { type: Array as PropType<Category[]>, required: true },
+    updateStatusBudget: { type: Function, required: true },
   },
 
   computed: {

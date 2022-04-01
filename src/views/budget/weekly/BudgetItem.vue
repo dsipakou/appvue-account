@@ -8,8 +8,8 @@
     </div>
     <div class="row progress-container">
       <div class="absolute-left flex flex-center">
-        <q-icon v-if="item.isCompleted" name="lock" class="lock-icon" />
-        <q-icon v-else name="lock_open" class="lock-icon" />
+        <q-icon v-if="item.isCompleted" name="lock" class="lock-icon" @click="completeBudget()" />
+        <q-icon v-else name="lock_open" class="lock-icon" @click="completeBudget()" />
       </div>
       <q-linear-progress
           class="progress-bar"
@@ -48,6 +48,7 @@ export default defineComponent({
 
   props: {
     item: { type: Object as PropType<BudgetUsage>, required: true },
+    updateStatusBudget: { type: Function, required: true },
   },
 
   computed: {
@@ -114,6 +115,16 @@ export default defineComponent({
       return -1;
     },
   },
+
+  methods: {
+    completeBudget() {
+      const item = {
+        ...this.item,
+        isCompleted: !this.item.isCompleted,
+      };
+      this.updateStatusBudget(item);
+    },
+  },
 });
 </script>
 <style scoped>
@@ -177,5 +188,10 @@ export default defineComponent({
 
 .lock-icon {
   margin-left: 15px;
+  cursor: pointer;
+}
+
+.lock-icon:hover {
+  transform: scale(1.3);
 }
 </style>

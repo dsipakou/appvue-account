@@ -38,7 +38,9 @@
       <WeekBudget
         :budgetUsage="budgetUsage"
         :categoryItems="categoryList"
-        v-show="budgetType === 'weekly'" />
+        :updateStatusBudget="updateStatusBudget"
+        v-show="budgetType === 'weekly'"
+      />
     </div>
     <q-dialog v-model="createForm">
       <AddForm

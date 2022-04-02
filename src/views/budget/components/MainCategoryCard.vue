@@ -5,16 +5,16 @@
       :class="activeCategory === title ? 'selected': ''"
       @click="categoryClick(title)">
       <div class="row col-12 price-container">
-        <div class="row col-6 left-block items-center">
+        <div class="row col-6 left-block items-end">
           <span class="planned-text">{{ planned }}</span>
-          <div class="planned-chart"></div>
+          <div class="planned-chart" :style="plannedHeight"></div>
         </div>
-        <div class="row col-6 items-center">
-          <div class="actual-chart"></div>
+        <div class="row col-6 items-end">
+          <div class="actual-chart" :style="actualHeight"></div>
           <span class="actual-text">  {{ spent.toFixed(2) }}</span>
         </div>
       </div>
-      <span class="category-name">{{ title }}</span>
+      <span class="category-name no-wrap overflow-hidden">{{ title }}</span>
     </q-card>
   </div>
   <div class="arrow" v-show="activeCategory === title">
@@ -22,6 +22,8 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+
+const MAX_CHART_HEIGHT = 28;
 
 export default defineComponent({
   name: 'MainCategoryCard',
@@ -35,6 +37,20 @@ export default defineComponent({
     planned: { type: Number, required: true },
     spent: { type: Number, required: true },
     activeCategory: { type: String, default: '' },
+  },
+
+  computed: {
+    plannedHeight(): string {
+      const spent = this.spent || 0;
+      if (this.planned > spent) return `height: ${MAX_CHART_HEIGHT}px`;
+      return `height: ${((this.planned / spent) * MAX_CHART_HEIGHT).toFixed(0)}px`;
+    },
+
+    actualHeight(): string {
+      const spent = this.spent || 0;
+      if (this.planned < spent) return `height: ${MAX_CHART_HEIGHT}px`;
+      return `height: ${((spent / this.planned) * MAX_CHART_HEIGHT).toFixed(0)}px`;
+    },
   },
 
   methods: {
@@ -59,8 +75,8 @@ export default defineComponent({
   max-width: 280px;
   height: 86px;
   max-height: 86px;
-  padding: 15px;
   border-radius: 20px;
+  padding: 12px;
   cursor: pointer;
 }
 
@@ -83,7 +99,7 @@ export default defineComponent({
   height: 86px;
   width: 322px;
   max-width: 300px;
-  padding: 14px 0;
+  padding: 11px 0;
   background-color: #BFF7FF;
 }
 
@@ -107,20 +123,17 @@ export default defineComponent({
 
 .planned-chart {
   width: 7px;
-  height: 24px;
   background-color: #23A8F5;
   margin: 0 5px 0 11px;
 }
 
 .actual-chart {
   width: 7px;
-  height: 24px;
   background-color: #23A8F5;
   margin: 0 11px 0 6px;
 }
 
 .category-name {
-  margin-top: 4px;
-  font-size: 20px;
+  font-size: 21px;
 }
 </style>

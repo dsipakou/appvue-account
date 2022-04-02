@@ -7,9 +7,8 @@
       @click="createForm = true" />
     <div class="row col-12 relative-position">
       <div class="row col-12 justify-center vertical-middle">
-        <div class="row"></div>
-        <q-space />
-        <div class="row budget-toggle">
+        <div class="row col-4"></div>
+        <div class="row col-4 budget-toggle">
           <q-tabs no-caps dense
             v-model="budgetType"
             indicator-color="transparent"
@@ -18,9 +17,12 @@
             <q-tab name="weekly" label="Weekly" />
           </q-tabs>
         </div>
-        <q-space />
-        <div class="row float-right">
-          <q-select map-options v-model="selectedMonth" :options="selectMonthOptions" />
+        <div class="row col-4 justify-end items-center">
+          <q-select map-options
+            v-model="selectedMonth"
+            :options="selectMonthOptions"
+            class="periodDropdown"
+          />
         </div>
       </div>
       <MonthlyBudget
@@ -238,6 +240,10 @@ export default {
   background-color: white;
   color: black;
   border: 4px solid #444444;
+}
+
+.periodDropdown {
+  max-width: 300px;
 }
 
 :deep(.q-tab__label) {

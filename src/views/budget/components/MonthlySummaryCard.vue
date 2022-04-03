@@ -7,7 +7,7 @@
       <div class="row justify-end data-container content-planned">
         <div class="column planned-values-container">
           <div class="planned-number">
-            2,540
+            {{ plannedUsage }}
           </div>
           <div class="planned-text">
             Planned
@@ -21,7 +21,7 @@
         <div class="row actual-bar self-end"></div>
         <div class="column actual-values-container">
           <div class="actual-number">
-            1,540
+            {{ actualUsage }}
           </div>
           <div class="actual-text">
             Actual
@@ -38,6 +38,20 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'Monthly Summary Card',
 
+  props: {
+    planned: { type: Number, required: true },
+    actual: { type: Number, required: true },
+  },
+
+  computed: {
+    plannedUsage(): string {
+      return this.planned.toFixed(2);
+    },
+
+    actualUsage(): string {
+      return this.actual.toFixed(2);
+    },
+  },
 });
 </script>
 <style scoped>
@@ -60,6 +74,8 @@ export default defineComponent({
 }
 
 .planned-number {
+  display: flex;
+  justify-content: end;
   font-size: 20px;
 }
 

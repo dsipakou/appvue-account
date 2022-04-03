@@ -8,7 +8,10 @@
     <div class="row col-12 relative-position">
       <div class="row col-12 justify-center vertical-middle">
         <div class="row col-4 justify-center items-center">
-          <MonthlySummaryCard />
+          <MonthlySummaryCard
+            :planned="plannedSum"
+            :actual="actualSum"
+          />
         </div>
         <div class="row col-4 budget-toggle">
           <q-tabs no-caps dense
@@ -76,6 +79,7 @@ import {
   startOfDay,
   startOfWeek,
   startOfMonth,
+  isSameMonth,
   format,
   min,
   max,
@@ -157,6 +161,25 @@ export default {
       }
 
       return options;
+    },
+
+    plannedSum() {
+      return this.budgetPlan.reduce((acc, item) => {
+        if (isSameMonth(new Date(this.selectedMonth), new Date(item.budgetDate))) {
+          return acc + item.amount;
+        }
+        return acc;
+      }, 0);
+    },
+
+    actualSum() {
+      return this.budgetUsage.reduce((acc, item) => {
+        if (isSameMonth(new Date(this.selectedMonth), new Date(item.budgetDate))) {
+          const currentUsage = item.spentInBaseCurrency || 0;
+          return acc + currentUsage;
+        }
+        return acc;
+      }, 0);
     },
   },
 

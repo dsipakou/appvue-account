@@ -7,7 +7,9 @@
       @click="createForm = true" />
     <div class="row col-12 relative-position">
       <div class="row col-12 justify-center vertical-middle">
-        <div class="row col-4"></div>
+        <div class="row col-4 justify-center items-center">
+          <MonthlySummaryCard />
+        </div>
         <div class="row col-4 budget-toggle">
           <q-tabs no-caps dense
             v-model="budgetType"
@@ -86,6 +88,7 @@ import WeekBudget from '@/views/budget/WeekBudget.vue';
 import MonthlyBudget from '@/views/budget/MonthlyBudget.vue';
 import AddForm from '@/views/budget/forms/AddForm.vue';
 import EditForm from '@/views/budget/forms/EditForm.vue';
+import MonthlySummaryCard from '@/views/budget/components/MonthlySummaryCard.vue';
 
 export default {
   name: 'Budget',
@@ -95,6 +98,7 @@ export default {
     MonthlyBudget,
     AddForm,
     EditForm,
+    MonthlySummaryCard,
   },
 
   setup() {

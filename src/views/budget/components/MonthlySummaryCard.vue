@@ -45,18 +45,24 @@ export default defineComponent({
 
   computed: {
     plannedUsage(): string {
-      return this.planned.toFixed(2);
+      return new Intl.NumberFormat('en-US', {
+        maximumFractinoDigits: 2,
+        minimumFractionDigits: 2,
+      }).format(this.planned);
     },
 
     actualUsage(): string {
-      return this.actual.toFixed(2);
+      return new Intl.NumberFormat('en-US', {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2,
+      }).format(this.actual);
     },
   },
 });
 </script>
 <style scoped>
 .main-card {
-  width: 260px;
+  width: 300px;
   height: 54px;
   background-color: #666666;
 }

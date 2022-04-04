@@ -10,8 +10,12 @@
         <div class="row col-4 justify-center items-center">
           <MonthlySummaryCard
             :planned="plannedSum"
-            :actual="actualSum"
-          />
+            :spent="actualSum"
+          >
+            <template v-slot:header>
+              {{ budgetType.charAt(0).toUpperCase() + budgetType.slice(1) }} summary
+            </template>
+          </MonthlySummaryCard>
         </div>
         <div class="row col-4 budget-toggle">
           <q-tabs no-caps dense
@@ -80,6 +84,7 @@ import {
   startOfWeek,
   startOfMonth,
   isSameMonth,
+  isSameWeek,
   format,
   min,
   max,
@@ -164,8 +169,14 @@ export default {
     },
 
     plannedSum() {
+      let func = isSameWeek;
+      let options = { weekStartsOn: 1 };
+      if (this.budgetType === 'monthly') {
+        func = isSameMonth;
+        options = {};
+      }
       return this.budgetPlan.reduce((acc, item) => {
-        if (isSameMonth(new Date(this.selectedMonth), new Date(item.budgetDate))) {
+        if (func(new Date(this.selectedMonth), new Date(item.budgetDate), options)) {
           return acc + item.amount;
         }
         return acc;
@@ -173,8 +184,14 @@ export default {
     },
 
     actualSum() {
+      let func = isSameWeek;
+      let options = { weekStartsOn: 1 };
+      if (this.budgetType === 'monthly') {
+        func = isSameMonth;
+        options = {};
+      }
       return this.budgetUsage.reduce((acc, item) => {
-        if (isSameMonth(new Date(this.selectedMonth), new Date(item.budgetDate))) {
+        if (func(new Date(this.selectedMonth), new Date(item.budgetDate), options)) {
           const currentUsage = item.spentInBaseCurrency || 0;
           return acc + currentUsage;
         }

@@ -4,7 +4,8 @@
       color="primary"
       class="btn-add fixed"
       icon="add"
-      @click="createForm = true" />
+      @click="createForm = true"
+    />
     <div class="row col-12 relative-position">
       <div class="row col-12 justify-center vertical-middle">
         <div class="row col-4 justify-center items-center">
@@ -29,7 +30,7 @@
         <div class="row col-4 justify-end items-center">
           <q-select map-options
             v-model="selectedMonth"
-            :options="selectMonthOptions"
+            :options="budgetType === 'monthly' ? selectMonthOptions : selectWeekOptions"
             class="periodDropdown"
           />
         </div>
@@ -89,6 +90,7 @@ import {
   min,
   max,
   subMonths,
+  subWeeks,
 } from 'date-fns';
 import {
   DATE_FORMAT,
@@ -162,6 +164,22 @@ export default {
         options.push({
           label,
           value: month,
+        });
+      }
+
+      return options;
+    },
+
+    selectWeekOptions() {
+      const options = [];
+      for (let i = 0; i < 20; i += 1) {
+        const day = startOfDay(subWeeks(new Date(), i));
+        const from = startOfWeek(day, { weekStartsOn: 1 });
+        const to = endOfWeek(day, { weekStartsOn: 1 });
+        const label = `${format(from, 'dd-MMM-yyyy')} - ${format(to, 'dd-MMM-yyyy')}`;
+        options.push({
+          label,
+          value: day,
         });
       }
 

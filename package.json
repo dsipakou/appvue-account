@@ -22,9 +22,9 @@
     "quasar": "^2.1.4",
     "roboto-fontface": "*",
     "vue": "^3.2.27",
+    "vue-chart-3": "^3.1.8",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0",
-    "vue3-chart-v2": "^0.8.3",
     "vuestic-ui": "^1.1.2",
     "vuex": "^4.0.0-0"
   },

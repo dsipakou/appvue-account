@@ -1,7 +1,7 @@
 <template>
   <q-card flat bordered class="main-panel">
     <div class="row justify-center col-12">
-      <span>{{ weekDays[0].formated }} - {{ weekDays.at(-1).formated }}</span>
+      <span class="weekly-title">{{ weekDays[0].formated }} -- {{ weekDays.at(-1).formated }}</span>
     </div>
     <div class="row justify-left">
       <q-timeline color="grey-5" side="right" layout="comfortable" class="timeline">
@@ -57,6 +57,7 @@ export default defineComponent({
   props: {
     budgetUsage: { type: Array as PropType<BudgetUsage[]>, required: true },
     categoryItems: { type: Array as PropType<Category[]>, required: true },
+    selectedDay: { type: Date, required: true },
     updateStatusBudget: { type: Function, required: true },
   },
 
@@ -68,7 +69,7 @@ export default defineComponent({
     },
 
     weekDays(): { full: Date, formated: string }[] {
-      const firstDayOfWeek = startOfWeek(new Date(), { weekStartsOn: 1 });
+      const firstDayOfWeek = startOfWeek(new Date(this.selectedDay), { weekStartsOn: 1 });
       const days = [];
       for (let i = 0; i < 7; i += 1) {
         days.push({
@@ -117,5 +118,9 @@ export default defineComponent({
   font-size: 12px !important;
   font-weight: normal !important;
   color: rgba(0, 0, 0, 1) !important;
+}
+
+.weekly-title {
+  font-size: 24px;
 }
 </style>

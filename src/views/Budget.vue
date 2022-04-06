@@ -50,6 +50,7 @@
       <WeekBudget
         :budgetUsage="budgetUsage"
         :categoryItems="categoryList"
+        :selectedDay="selectedMonth"
         :updateStatusBudget="updateStatusBudget"
         v-show="budgetType === 'weekly'"
       />

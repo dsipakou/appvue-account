@@ -47,6 +47,7 @@ export default defineComponent({
   props: {
     currency: { type: Object, required: true },
     createRate: { type: Function, required: true },
+    selectCurrency: { type: Function, required: true },
   },
 
   methods: {
@@ -72,7 +73,7 @@ export default defineComponent({
 
   watch: {
     selectedCurrencyModel() {
-      console.log(`${this.currency.code} - ${this.selectedCurrencyModel}`);
+      this.selectCurrency({ code: this.currency.code, status: this.selectedCurrencyModel });
     },
   },
 });

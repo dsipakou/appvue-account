@@ -3,24 +3,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { LineChart } from 'vue-chart-3';
 import { Chart, registerables } from 'chart.js';
 import { format } from 'date-fns';
-// import { ChartRange } from '@/store/constants';
+import { ChartRange } from '@/store/constants';
+import { Rate, Currency } from '@/types';
 
 Chart.register(...registerables);
 
-/* const RangeMapping = {
+const RangeMapping = {
   [ChartRange.Month]: 30,
   [ChartRange.Quater]: 90,
-}; */
+};
 
 const ColorMapping = {
-  USD: 'rgba(54, 162, 235, 0.2)',
-  EUR: 'rgba(153, 102, 255, 0.2)',
-  RUB: 'brown',
-  PLN: 'burlywood',
+  USD: {
+    color: 'rgba(54, 162, 235, 0.8)',
+  },
+  EUR: {
+    color: 'rgba(153, 102, 255, 0.8)',
+  },
+  RUB: {
+    color: 'brown',
+  },
+  PLN: {
+    color: 'burlywood',
+  },
 };
 
 export default defineComponent({
@@ -29,50 +38,48 @@ export default defineComponent({
   components: { LineChart },
 
   props: {
-    ratesList: { type: Array, required: true },
-    currencyList: { type: Array, required: true },
-    selectedCurrencies: { type: Array, required: true },
-    range: { type: String, default: Range.Month },
-  },
-
-  setup() {
-    const testData = {
-      labels: ['Paris', 'Nîmes', 'Toulon', 'Perpignan', 'Autre'],
-      datasets: [
-        {
-          data: [30, 40, 60, 70, 5],
-          backgroundColor: ['#77CEFF', '#0079AF', '#123E6B', '#97B0C4', '#A5C8ED'],
-        },
-      ],
-    };
-
-    return { testData };
+    ratesList: { type: Array as PropType<Array<Rate>>, required: true },
+    currencyList: { type: Array as PropType<Array<Currency>>, required: true },
+    selectedCurrencies: { type: Array as PropType<Array<string>>, required: true },
+    range: { type: String as PropType<ChartRange>, default: ChartRange.Month },
   },
 
   computed: {
     chartData() {
+      const dataset: object[] = [];
+      const currencyIds: number[] = [];
+
+      this.selectedCurrencies.forEach((currency: string) => {
+        const currencyId = this.currencyList.find(
+          (item: Currency) => item.code === currency,
+        )?.id || -1;
+
+        if (currencyId >= 0) currencyIds.push(currencyId);
+      });
+
+      currencyIds.forEach((id) => {
+        const data = this.ratesList.filter((item: Rate) => (
+          item.currencyId === id
+        )).map((item: Rate) => item.rate).slice(0, RangeMapping[this.range]).reverse();
+        const { code } = this.currencyList.find((item: Currency) => item.id === id)!;
+        const borderColor = ColorMapping[code]?.color || 'black';
+        const chartItem = {
+          data,
+          cubicInterpolationMode: 'monotone',
+          borderColor,
+          label: code,
+          tension: 0.4,
+          position: 'start',
+        };
+        dataset.push(chartItem);
+      });
+
       return {
-        labels: [...this.ratesList.filter((item) => (
+        labels: [...this.ratesList.filter((item: Rate) => (
           item.currencyId === 7
-        )).map((item) => format(new Date(item.rateDate), 'yyyy-MM-dd'))].slice(0, 40),
-        datasets: [
-          {
-            data: [...this.ratesList.filter((item) => (
-              item.currencyId === 2
-            )).map((item) => item.rate)].slice(0, 40),
-            cubicInterpolationMode: 'monotone',
-            borderColor: ColorMapping.USD,
-            label: 'USD',
-          },
-          {
-            data: [...this.ratesList.filter((item) => (
-              item.currencyId === 4
-            )).map((item) => item.rate)].slice(0, 40),
-            cubicInterpolationMode: 'monotone',
-            borderColor: ColorMapping.EUR,
-            label: 'EUR',
-          },
-        ],
+        )).map((item: Rate) => format(new Date(item.rateDate), 'yyyy-MM-dd'))].slice(0, RangeMapping[this.range]).reverse(),
+
+        datasets: dataset,
       };
     },
   },

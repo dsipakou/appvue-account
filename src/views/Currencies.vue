@@ -31,6 +31,7 @@
             <CurrencyItem
               :currency="currency"
               :createRate="createRate"
+              :selectCurrency="selectCurrency"
               @save="save($event)"
               @edit="edit($event)"
               @remove="remove($event)"
@@ -156,6 +157,7 @@ export default defineComponent({
       'deleteCurrency',
       'fetchCurrencies',
       'fetchRates',
+      'selectCurrency',
       'selectCurrencyRange',
     ]),
 

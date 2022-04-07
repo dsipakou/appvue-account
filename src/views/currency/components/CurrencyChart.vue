@@ -1,9 +1,13 @@
 <template>
-  <LineChart :chartData="chartData" />
+  <LineChart v-if="renderComponent" ref="chartRef" :chartData="chartData" />
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import {
+  defineComponent,
+  PropType,
+  ref,
+} from 'vue';
 import { LineChart } from 'vue-chart-3';
 import { Chart, registerables } from 'chart.js';
 import { format } from 'date-fns';
@@ -17,19 +21,11 @@ const RangeMapping = {
   [ChartRange.Quater]: 90,
 };
 
-const ColorMapping = {
-  USD: {
-    color: 'rgba(54, 162, 235, 0.8)',
-  },
-  EUR: {
-    color: 'rgba(153, 102, 255, 0.8)',
-  },
-  RUB: {
-    color: 'brown',
-  },
-  PLN: {
-    color: 'burlywood',
-  },
+const ColorMapping: { [key: string]: string } = {
+  USD: 'rgba(54, 162, 235, 0.8)',
+  EUR: 'rgba(153, 102, 255, 0.8)',
+  RUB: 'brown',
+  PLN: 'burlywood',
 };
 
 export default defineComponent({
@@ -44,25 +40,41 @@ export default defineComponent({
     range: { type: String as PropType<ChartRange>, default: ChartRange.Month },
   },
 
+  data() {
+    return {
+      renderComponent: true,
+    };
+  },
+
+  setup() {
+    const chartRef = ref();
+
+    return { chartRef };
+  },
+
   computed: {
-    chartData() {
-      const dataset: object[] = [];
-      const currencyIds: number[] = [];
+    currencyIds() {
+      const ids: number[] = [];
 
       this.selectedCurrencies.forEach((currency: string) => {
         const currencyId = this.currencyList.find(
           (item: Currency) => item.code === currency,
         )?.id || -1;
 
-        if (currencyId >= 0) currencyIds.push(currencyId);
+        if (currencyId >= 0) ids.push(currencyId);
       });
 
-      currencyIds.forEach((id) => {
+      return ids;
+    },
+
+    chartData() {
+      const dataset: object[] = [];
+      this.currencyIds.forEach((id) => {
         const data = this.ratesList.filter((item: Rate) => (
           item.currencyId === id
         )).map((item: Rate) => item.rate).slice(0, RangeMapping[this.range]).reverse();
         const { code } = this.currencyList.find((item: Currency) => item.id === id)!;
-        const borderColor = ColorMapping[code]?.color || 'black';
+        const borderColor = ColorMapping[code] || 'black';
         const chartItem = {
           data,
           cubicInterpolationMode: 'monotone',
@@ -81,6 +93,13 @@ export default defineComponent({
 
         datasets: dataset,
       };
+    },
+  },
+
+  watch: {
+    chartData() {
+      this.renderComponent = false;
+      this.$nextTick(() => { this.renderComponent = true; });
     },
   },
 });

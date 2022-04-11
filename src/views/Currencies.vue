@@ -1,7 +1,13 @@
 <template>
   <div class="q-pa-md">
     <div class="row col-12">
-      <CurrencyCard />
+      <div v-for="currency in currencyList" :key="currency.id">
+        <CurrencyCard
+          title="US Dollars"
+          rate=2
+          :lastDate="new Date()"
+        />
+      </div>
     </div>
     <div class="q-pb-md row justify-center">
       <div class="header">

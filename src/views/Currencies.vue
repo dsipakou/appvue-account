@@ -5,6 +5,7 @@
         <CurrencyCard
           :currency="currency"
           :rate="getLastRateForCurrency(currency.id)"
+          :selectCurrency="selectCurrency"
           :selectedCurrencies="selectedCurrencies"
         />
       </div>
@@ -40,7 +41,6 @@
             <CurrencyItem
               :currency="currency"
               :createRate="createRate"
-              :selectCurrency="selectCurrency"
               @save="save($event)"
               @edit="edit($event)"
               @remove="remove($event)"

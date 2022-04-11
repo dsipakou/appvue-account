@@ -1,13 +1,5 @@
 <template>
   <div class="row">
-    <div class="col-4">
-      <q-toggle
-        v-model="selectedCurrencyModel"
-        :label="currency.verbalName"
-        :val="currency.code"
-        :icon="currency.isDefault ? 'check': ''"
-      />
-    </div>
     <div class="col-3">
       <q-input outlined stack-label dense
         type="date"
@@ -38,7 +30,6 @@ export default defineComponent({
 
   setup() {
     return {
-      selectedCurrencyModel: ref(false),
       currencyDate: ref(''),
       currencyRate: ref(''),
     };
@@ -47,7 +38,6 @@ export default defineComponent({
   props: {
     currency: { type: Object, required: true },
     createRate: { type: Function, required: true },
-    selectCurrency: { type: Function, required: true },
   },
 
   methods: {
@@ -68,12 +58,6 @@ export default defineComponent({
 
     remove() {
       this.$emit('remove', this.currency);
-    },
-  },
-
-  watch: {
-    selectedCurrencyModel() {
-      this.selectCurrency({ code: this.currency.code, status: this.selectedCurrencyModel });
     },
   },
 });

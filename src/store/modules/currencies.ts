@@ -90,13 +90,14 @@ const mutations = {
     state.currencies.items = state.currencies.items.filter((currency: any) => currency.id !== id);
   },
 
-  selectCurrency(state: any, currency: { code: string, status: boolean }) {
-    if (!currency.status) {
+  selectCurrency(state: any, code: string) {
+    const isExist = state.currencies.selectedItems.find((item: string) => item === code);
+    if (isExist) {
       state.currencies.selectedItems = state.currencies.selectedItems.filter(
-        (item: string) => item !== currency.code,
+        (item: string) => item !== code,
       );
     } else {
-      state.currencies.selectedItems = [...state.currencies.selectedItems, currency.code];
+      state.currencies.selectedItems.push(code);
     }
   },
 

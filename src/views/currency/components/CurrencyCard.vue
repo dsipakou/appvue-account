@@ -1,7 +1,8 @@
 <template>
   <q-card
     class="currency-card"
-    :class="isActive ? 'active' : 'inactive'">
+    :class="isActive ? 'active' : 'inactive'"
+    @click="currencyClick">
     <div class="row col-12 cur-title">
       <span>{{ currency.verbalName }}</span>
     </div>
@@ -31,6 +32,7 @@ export default defineComponent({
     currency: { type: Object as PropType<Currency>, required: true },
     rate: { type: Object as PropType<Rate>, required: true },
     lastDate: { type: String, required: true },
+    selectCurrency: { type: Function, required: true },
     selectedCurrencies: { type: Array as PropType<string[]>, required: true },
   },
 
@@ -44,6 +46,12 @@ export default defineComponent({
 
     isActive() {
       return this.selectedCurrencies.find((item: string) => item === this.currency.code);
+    },
+  },
+
+  methods: {
+    currencyClick() {
+      this.selectCurrency(this.currency.code);
     },
   },
 });

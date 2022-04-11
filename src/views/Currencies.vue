@@ -1,5 +1,8 @@
 <template>
   <div class="q-pa-md">
+    <div class="row col-12">
+      <CurrencyCard />
+    </div>
     <div class="q-pb-md row justify-center">
       <div class="header">
         <h3>Currencies</h3>
@@ -82,6 +85,7 @@ import AddForm from '@/views/currency/forms/AddForm.vue';
 import EditForm from '@/views/currency/forms/EditForm.vue';
 import ConfirmForm from '@/views/currency/forms/ConfirmForm.vue';
 import CurrencyItem from '@/views/currency/components/CurrencyItem.vue';
+import CurrencyCard from '@/views/currency/components/CurrencyCard.vue';
 import { Currency, Rate } from '@/types';
 import { getRate } from '../service';
 
@@ -94,6 +98,7 @@ export default defineComponent({
     EditForm,
     ConfirmForm,
     CurrencyItem,
+    CurrencyCard,
   },
 
   data() {

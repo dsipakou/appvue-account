@@ -1,11 +1,11 @@
 <template>
   <div class="q-pa-md">
     <div class="row col-12">
-      <div v-for="currency in currencyList" :key="currency.id">
+      <div v-for="currency in notBaseCurrencies" :key="currency.id">
         <CurrencyCard
-          title="US Dollars"
-          rate=2
-          :lastDate="new Date()"
+          :title="currency.verbalName"
+          :rate="getLastRateForCurrency(currency.id).rate"
+          :lastDate="getLastRateForCurrency(currency.id).rateDate"
         />
       </div>
     </div>
@@ -215,6 +215,10 @@ export default defineComponent({
 
     save() {
       console.log('Saved!');
+    },
+
+    getLastRateForCurrency(currencyId: number) {
+      return this.ratesList.filter((item: Rate) => item.currencyId === currencyId)[0];
     },
   },
 

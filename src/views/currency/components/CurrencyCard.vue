@@ -1,11 +1,13 @@
 <template>
-  <q-card class="currency-card inactive">
+  <q-card
+    class="currency-card"
+    :class="isActive ? 'active' : 'inactive'">
     <div class="row col-12 cur-title">
-      <span>{{ title }}</span>
+      <span>{{ currency.verbalName }}</span>
     </div>
     <div class="row col-12 cur-rate">
       <div class="row col-6">
-        <span>{{ rate }}</span>
+        <span>{{ rate?.rate }}</span>
       </div>
       <div class="row col-6 chart">
       </div>
@@ -16,8 +18,9 @@
   </q-card>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { format } from 'date-fns';
+import { Currency, Rate } from '@/types';
 
 const DATE_FORMAT = 'dd-MMM-yyyy';
 
@@ -25,14 +28,22 @@ export default defineComponent({
   name: 'Currency card',
 
   props: {
-    title: { type: String, required: true },
-    rate: { type: Number, required: true },
+    currency: { type: Object as PropType<Currency>, required: true },
+    rate: { type: Object as PropType<Rate>, required: true },
     lastDate: { type: String, required: true },
+    selectedCurrencies: { type: Array as PropType<string[]>, required: true },
   },
 
   computed: {
     formattedDate() {
-      return format(new Date(this.lastDate), DATE_FORMAT);
+      if (this.rate) {
+        return format(new Date(this.rate.rateDate), DATE_FORMAT);
+      }
+      return null;
+    },
+
+    isActive() {
+      return this.selectedCurrencies.find((item: string) => item === this.currency.code);
     },
   },
 });
@@ -43,6 +54,14 @@ export default defineComponent({
   width: 236px;
   padding: 10px 0 10px 21px;
   margin-left: 10px;
+  cursor: pointer;
+}
+
+.active {
+  color: #047A94;
+  background-color: white !important;
+  border: 1px solid #ADADAD;
+  box-shadow: none !important;
 }
 
 .inactive {

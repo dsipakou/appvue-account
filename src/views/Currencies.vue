@@ -3,9 +3,9 @@
     <div class="row col-12">
       <div v-for="currency in notBaseCurrencies" :key="currency.id">
         <CurrencyCard
-          :title="currency.verbalName"
-          :rate="getLastRateForCurrency(currency.id).rate"
-          :lastDate="getLastRateForCurrency(currency.id).rateDate"
+          :currency="currency"
+          :rate="getLastRateForCurrency(currency.id)"
+          :selectedCurrencies="selectedCurrencies"
         />
       </div>
     </div>

@@ -65,16 +65,16 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.active {
+.inactive {
   color: #047A94;
   background-color: white !important;
   border: 1px solid #ADADAD;
-  box-shadow: none !important;
 }
 
-.inactive {
+.active {
   color: white;
   background-color: #047A94 !important;
+  box-shadow: none !important;
 }
 
 .cur-title {

@@ -1,5 +1,10 @@
 <template>
-  <LineChart v-if="renderComponent" ref="chartRef" :chartData="chartData" />
+  <LineChart
+    v-if="renderComponent"
+    ref="chartRef"
+    :chartData="chartData"
+    class="chart-container"
+    />
 </template>
 
 <script lang="ts">
@@ -104,3 +109,8 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+.chart-container {
+  width: 100%;
+}
+</style>

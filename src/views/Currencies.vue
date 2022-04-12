@@ -10,9 +10,17 @@
         />
       </div>
     </div>
-    <div class="q-pb-md row justify-center">
-      <div class="header">
-        <h3>Currencies</h3>
+    <div class="row col-12 chart-area">
+      <div class="row col-8">
+        <CurrencyChart
+          style="height: 300px;"
+          :ratesList="ratesList"
+          :currencyList="currencyList"
+          :selectedCurrencies="selectedCurrencies"
+          :range="selectedRange" />
+      </div>
+      <div class="row col-4">
+        <q-date v-model="selectedDays" multiple mask="YYYY-MM-DD"></q-date>
       </div>
     </div>
     <div class="row justify-center">
@@ -30,9 +38,6 @@
       </q-btn>
     </div>
     <div class="row justify-center q-mt-lg">
-      <div class="col-4">
-        <q-date v-model="selectedDays" multiple mask="YYYY-MM-DD"></q-date>
-      </div>
       <div class="col-6">
         <div class="column">
           Base currency: {{ baseCurrency?.verbalName }}
@@ -73,12 +78,6 @@
         :options="rangeOptions"
         class="col-2" />
     </div>
-    <CurrencyChart
-      style="height: 300px;"
-      :ratesList="ratesList"
-      :currencyList="currencyList"
-      :selectedCurrencies="selectedCurrencies"
-      :range="selectedRange" />
   </div>
 </template>
 <script lang="ts">
@@ -241,3 +240,8 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+.chart-area {
+  margin-top: 15px;
+}
+</style>

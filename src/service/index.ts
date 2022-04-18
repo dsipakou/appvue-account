@@ -33,7 +33,7 @@ const patchRequest = (url: string, requestBody: object) => {
   return fetch(url, options);
 };
 
-const deleteRequest = (url: string, requestBody: object) => {
+const deleteRequest = (url: string, requestBody: object = {}) => {
   const options = {
     method: 'DELETE',
     mode: 'cors' as RequestMode,
@@ -210,63 +210,59 @@ export const deleteTransaction = async (id: number) => {
 /* Categories section */
 
 export const getCategories = async () => {
-  const response = await getRequest(`${BASE_URL}/categories`);
+  const response = await getRequest(`${BASE_URL}/categories/`);
   return response;
 };
 
 interface CreateCategoryRequest {
   name: string,
-  parentName: string,
-  isParent: boolean,
+  parent: string | undefined,
 }
 
-export const createCategory = async ({ name, parentName, isParent }: CreateCategoryRequest) => {
-  const response = await postRequest('http://localhost:9091/api/categories',
+export const createCategory = async ({ name, parent }: CreateCategoryRequest) => {
+  const response = await postRequest(`${BASE_URL}/categories/`,
     {
       name,
-      parentName,
-      isParent,
+      parent,
     });
   return response;
 };
 
 interface UpdateCategoryRequest extends CreateCategoryRequest {
-  id: number,
-  isSystem: boolean,
+  uuid: string,
+  isIncome: boolean,
 }
 
 export const updateCategory = async ({
-  id,
+  uuid,
   name,
-  parentName,
-  isParent,
-  isSystem,
+  parent,
+  isIncome,
 }: UpdateCategoryRequest) => {
-  const response = await patchRequest('http://localhost:9091/api/categories',
+  const response = await patchRequest(`${BASE_URL}/categories/`,
     {
-      id,
+      uuid,
       name,
-      parentName,
-      isParent,
-      isSystem,
+      parent,
+      isIncome,
     });
   return response;
 };
 
-export const deleteCategory = async (id: number) => {
-  const response = await deleteRequest('http://localhost:9091/api/categories', { id });
+export const deleteCategory = async (uuid: number) => {
+  const response = await deleteRequest(`${BASE_URL}/categories/${uuid}/`);
   return response;
 };
 
 /* Accounts section */
 
 export const getAccounts = async () => {
-  const response = await getRequest('http://127.0.0.1:9091/api/accounts');
+  const response = await getRequest(`${BASE_URL}/accounts/`);
   return response;
 };
 
 export interface CreateAccountRequest {
-  userId: number,
+  user: number,
   source: string,
   amount: number,
   description: string,
@@ -274,15 +270,15 @@ export interface CreateAccountRequest {
 }
 
 export const createAccount = async ({
-  userId,
+  user,
   source,
   amount,
   description,
   isMain,
 }: CreateAccountRequest) => {
-  const response = await postRequest('http://localhost:9091/api/accounts',
+  const response = await postRequest(`${BASE_URL}/accounts/`,
     {
-      userId,
+      user,
       source,
       amount,
       description,
@@ -291,27 +287,26 @@ export const createAccount = async ({
   return response;
 };
 
-export const deleteAccount = async (id: number) => {
-  const response = await deleteRequest('http://localhost:9091/api/accounts', { id });
+export const deleteAccount = async (uuid: string) => {
+  const response = await deleteRequest(`${BASE_URL}/accounts/${uuid}`);
   return response;
 };
 
 interface UpdateAccountRequest extends CreateAccountRequest {
-  id: number
+  uuid: number
 }
 
 export const updateAccount = async ({
-  id,
-  userId,
+  uuid,
+  user,
   source,
   amount,
   description,
   isMain,
 }: UpdateAccountRequest) => {
-  const response = await patchRequest('http://localhost:9091/api/accounts',
+  const response = await patchRequest(`${BASE_URL}/accounts/${uuid}`,
     {
-      id,
-      userId,
+      user,
       source,
       amount,
       description,
@@ -323,7 +318,7 @@ export const updateAccount = async ({
 /* Currencies section */
 
 export const getCurrencies = async () => {
-  const response = await getRequest('http://localhost:9091/api/currencies');
+  const response = await getRequest(`${BASE_URL}/currencies`);
   return response;
 };
 
@@ -341,7 +336,7 @@ interface UpdateCurrencyRequest {
   verbalName: string,
   isDefault: boolean,
   comments: string,
-  id: number,
+  uuid: string,
 }
 
 export const createCurrency = async ({
@@ -351,7 +346,7 @@ export const createCurrency = async ({
   isDefault,
   comments,
 }: CreateCurrencyRequest) => {
-  const response = await postRequest('http://localhost:9091/api/currencies',
+  const response = await postRequest(`${BASE_URL}/currencies/`,
     {
       code,
       sign,
@@ -368,29 +363,28 @@ export const updateCurrency = async ({
   verbalName,
   isDefault,
   comments,
-  id,
+  uuid,
 }: UpdateCurrencyRequest) => {
-  const response = await patchRequest('http://localhost:9091/api/currencies',
+  const response = await patchRequest(`${BASE_URL}/currencies/${uuid}/`,
     {
       code,
       sign,
       verbalName,
       isDefault,
       comments,
-      id,
     });
   return response;
 };
 
-export const deleteCurrency = async (id: number) => {
-  const response = await deleteRequest('http://localhost:9091/api/currencies', { id });
+export const deleteCurrency = async (uuid: string) => {
+  const response = await deleteRequest(`${BASE_URL}/currencies/${uuid}/`);
   return response;
 };
 
 /* Rates section */
 
 export const getRates = async () => {
-  const response = await getRequest('http://localhost:9091/api/rates');
+  const response = await getRequest(`${BASE_URL}/rates/`);
   return response;
 };
 

@@ -59,26 +59,26 @@ export default defineComponent({
 
   computed: {
     currencyIds() {
-      const ids: number[] = [];
+      const uuids: string[] = [];
 
       this.selectedCurrencies.forEach((currency: string) => {
-        const currencyId = this.currencyList.find(
+        const currencyUuid = this.currencyList.find(
           (item: Currency) => item.code === currency,
-        )?.id || -1;
+        )?.uuid || '';
 
-        if (currencyId >= 0) ids.push(currencyId);
+        if (currency !== '') uuids.push(currencyUuid);
       });
 
-      return ids;
+      return uuids;
     },
 
     chartData() {
       const dataset: object[] = [];
-      this.currencyIds.forEach((id) => {
+      this.currencyIds.forEach((uuid) => {
         const data = this.ratesList.filter((item: Rate) => (
-          item.currencyId === id
+          item.currency === uuid
         )).map((item: Rate) => item.rate).slice(0, RangeMapping[this.range]).reverse();
-        const { code } = this.currencyList.find((item: Currency) => item.id === id)!;
+        const { code } = this.currencyList.find((item: Currency) => item.uuid === uuid)!;
         const borderColor = ColorMapping[code] || 'black';
         const chartItem = {
           data,
@@ -93,7 +93,7 @@ export default defineComponent({
 
       return {
         labels: [...this.ratesList.filter((item: Rate) => (
-          item.currencyId === 7
+          item.currency === '7'
         )).map((item: Rate) => format(new Date(item.rateDate), 'yyyy-MM-dd'))].slice(0, RangeMapping[this.range]).reverse(),
 
         datasets: dataset,

@@ -52,10 +52,10 @@ const actions = {
     }
   },
 
-  async deleteCurrency({ commit }: any, id: number) {
-    const response = await deleteCurrency(id);
+  async deleteCurrency({ commit }: any, uuid: string) {
+    const response = await deleteCurrency(uuid);
     if (response.status === 204) {
-      commit('deleteCurrency', id);
+      commit('deleteCurrency', uuid);
     }
   },
 
@@ -79,15 +79,17 @@ const mutations = {
 
   updateCurrency(state: any, newItem: any) {
     state.currencies.items = state.currencies.items.map((item: any) => {
-      if (item.id === newItem.id) {
+      if (item.uuid === newItem.uuid) {
         return newItem;
       }
       return item;
     });
   },
 
-  deleteCurrency(state: any, id: number) {
-    state.currencies.items = state.currencies.items.filter((currency: any) => currency.id !== id);
+  deleteCurrency(state: any, uuid: string) {
+    state.currencies.items = state.currencies.items.filter(
+      (currency: any) => currency.uuid !== uuid,
+    );
   },
 
   selectCurrency(state: any, code: string) {

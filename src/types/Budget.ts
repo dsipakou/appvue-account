@@ -1,6 +1,6 @@
 export interface Budget {
-  id: number,
-  categoryId: number,
+  uuid: string,
+  category: number,
   title: string,
   amount: number,
   budgetDate: string,

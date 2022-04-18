@@ -73,7 +73,7 @@ import TransactionItemLight from '@/views/transaction/components/TransactionItem
 import { Account, Category, Transaction } from '@/types';
 
 interface ModifiedCategory {
-  id: number,
+  uuid: string,
   value: string,
 }
 
@@ -138,13 +138,11 @@ export default defineComponent({
     },
 
     categories(): ModifiedCategory[] {
-      const filteredCategoryList = this.categoryList.filter((item: Category) => (
-        !item.isParent && !item.isSystem
-      ));
+      const filteredCategoryList = this.categoryList.filter((item: Category) => !item.isIncome);
       const modifiedCategoryList = filteredCategoryList.map((item: Category) => (
         {
-          id: item.id,
-          value: `${item.name} / ${item.parentName}`,
+          uuid: item.uuid,
+          value: `${item.name} / ${item.parent}`,
         }
       )) as ModifiedCategory[];
       return modifiedCategoryList;
@@ -152,7 +150,7 @@ export default defineComponent({
 
     systemCategories(): Category[] {
       const filteredCategoryList = this.categoryList.filter((item: Category) => (
-        item.isSystem
+        item.isIncome
       ));
       return filteredCategoryList;
     },
@@ -160,16 +158,16 @@ export default defineComponent({
     groupedTransactions(): any {
       const transactionList = [...this.transactions];
       const result = transactionList.reduce((acc: GroupedTransaction, item: Transaction) => {
-        const parentCategory = this.getCategory(item.categoryId)?.parentName || 'unknown';
-        const subCategory = this.getCategory(item.categoryId)?.name || 'unknown';
+        const parentCategory = this.getCategory(item.category)?.parent || 'unknown';
+        const subCategory = this.getCategory(item.category)?.name || 'unknown';
 
         acc[parentCategory] = acc[parentCategory]
-          || { items: {}, name: parentCategory, sum: 0 } as MainCategory;
-        acc[parentCategory].items[item.categoryId] = acc[parentCategory].items[item.categoryId]
+          || { items: {} as object, name: parentCategory, sum: 0 } as MainCategory;
+        acc[parentCategory].items[item.category as string] = acc[parentCategory].items[item.category as string]
           || { items: [], name: subCategory, sum: 0 } as SubCategory;
-        acc[parentCategory].items[item.categoryId].items.push(item);
+        acc[parentCategory].items[item.category as string].items.push(item);
         acc[parentCategory].sum += item.baseAmount;
-        acc[parentCategory].items[item.categoryId].sum += item.baseAmount;
+        acc[parentCategory].items[item.category as string].sum += item.baseAmount;
 
         return acc;
       }, {});
@@ -181,12 +179,12 @@ export default defineComponent({
   },
 
   methods: {
-    getCategory(id: number): Category | undefined {
-      return this.categoryList.find((item: Category) => item.id === id);
+    getCategory(uuid: string): Category | undefined {
+      return this.categoryList.find((category: Category) => category.uuid === uuid);
     },
 
-    getAccount(id: number): Account | undefined {
-      return this.accountList.find((item: Account) => item.id === id);
+    getAccount(uuid: string): Account | undefined {
+      return this.accountList.find((account: Account) => account.uuid === uuid);
     },
   },
 });

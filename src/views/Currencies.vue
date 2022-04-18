@@ -1,10 +1,10 @@
 <template>
   <div class="q-pa-md">
     <div class="row col-12">
-      <div v-for="currency in notBaseCurrencies" :key="currency.id">
+      <div v-for="currency in notBaseCurrencies" :key="currency.uuid">
         <CurrencyCard
           :currency="currency"
-          :rate="getLastRateForCurrency(currency.id)"
+          :rate="getLastRateForCurrency(currency.uuid)"
           :selectCurrency="selectCurrency"
           :selectedCurrencies="selectedCurrencies"
         />
@@ -48,7 +48,7 @@
         <div class="column">
           Base currency: {{ baseCurrency?.verbalName }}
           <q-btn no-caps dense rounded style="width: 40px;" label="Edit"></q-btn>
-          <div class="row justify-start" v-for="currency in notBaseCurrencies" :key="currency.id">
+          <div class="row justify-start" v-for="currency in notBaseCurrencies" :key="currency.uuid">
             <CurrencyItem
               :currency="currency"
               :createRate="createRate"
@@ -177,11 +177,11 @@ export default defineComponent({
       'selectCurrencyRange',
     ]),
 
-    async isRateExist(selectedDay: string, currencyId: number) {
+    async isRateExist(selectedDay: string, currencyUuid: string) {
       return this.ratesList.find((rate: Rate) => {
         const selectedDate = moment(selectedDay).startOf('day');
         const existingDate = moment(rate.rateDate).startOf('day');
-        return selectedDate.isSame(existingDate) && currencyId === rate.currencyId;
+        return selectedDate.isSame(existingDate) && currencyUuid === rate.currency;
       });
     },
 
@@ -192,11 +192,11 @@ export default defineComponent({
           const fullCurrency = this.currencyList.find(
             (item: Currency) => item.code === currency.code,
           );
-          const existingRate = await this.isRateExist(day, fullCurrency.id);
+          const existingRate = await this.isRateExist(day, fullCurrency.uuid);
           if (!existingRate && !currency.isBase) {
             const rate = await getRate(currency.code, day);
             const payload = {
-              currencyId: fullCurrency.id,
+              currency: fullCurrency.uuid,
               rateDate: day,
               rate,
               description: '',
@@ -222,8 +222,8 @@ export default defineComponent({
       console.log('Saved!');
     },
 
-    getLastRateForCurrency(currencyId: number) {
-      return this.ratesList.filter((item: Rate) => item.currencyId === currencyId)[0];
+    getLastRateForCurrency(currencyUuid: string) {
+      return this.ratesList.filter((item: Rate) => item.currency === currencyUuid)[0];
     },
   },
 

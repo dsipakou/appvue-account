@@ -83,8 +83,8 @@ export default defineComponent({
   },
 
   methods: {
-    getCategory(id: number): Category|undefined {
-      return this.categories.find((item: Category) => item.id === id);
+    getCategory(uuid: string): Category|undefined {
+      return this.categories.find((item: Category) => item.uuid === uuid);
     },
 
     getMultiplier(title: string): number {

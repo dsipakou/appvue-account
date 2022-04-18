@@ -40,7 +40,7 @@
               color="info"
               text-color="white"
               class="text-caption text-weight-bold">
-              {{ transaction.amount }} {{ getCurrency(transaction.currencyId)?.sign }}
+              {{ transaction.amount }} {{ getCurrency(transaction.currency)?.sign }}
             </q-chip>
           </div>
           <div class="col self-center items-end">
@@ -121,7 +121,7 @@ interface InputData {
 }
 
 interface ShortTransaction {
-  id: number,
+  uuid: string,
   amount?: string,
   baseAmount: string,
   sign: string,
@@ -191,7 +191,7 @@ export default defineComponent({
       if (this.currencyListLoaded) {
         const baseCurrency = this.currencyList.find((item) => item.isBase);
         const objDefault: ShortTransaction = {
-          id: transaction.currencyId,
+          uuid: transaction.currency,
           amount: transaction.amount.toFixed(2),
           baseAmount: transaction.baseAmount.toFixed(2),
           sign: baseCurrency!.sign,
@@ -202,7 +202,7 @@ export default defineComponent({
         Object.values(this.selectedCurrencies).forEach((currency) => {
           const rate = this.getRate(currency.id, transaction.transactionDate);
           const obj = {
-            id: currency.value,
+            uuid: currency.value,
             baseAmount: rate ? (transaction.baseAmount / rate.rate).toFixed(2) : '-',
             sign: currency.sign,
           } as ShortTransaction;
@@ -214,16 +214,16 @@ export default defineComponent({
       return currencies;
     },
 
-    getRate(id: number, date: string): Rate | undefined {
+    getRate(uuid: string, date: string): Rate | undefined {
       return this.ratesList.find((item) => {
         const transactionDate = moment(date).startOf('day');
         const rateDate = moment(item.rateDate).startOf('day');
-        return transactionDate.isSame(rateDate) && item.currencyId === id;
+        return transactionDate.isSame(rateDate) && item.currency === uuid;
       });
     },
 
-    getCurrency(id: number): Currency | undefined {
-      return this.currencyList.find((item) => item.id === id);
+    getCurrency(uuid: string): Currency | undefined {
+      return this.currencyList.find((item) => item.uuid === uuid);
     },
 
     clickItem() {

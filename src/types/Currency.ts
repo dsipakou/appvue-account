@@ -1,5 +1,5 @@
 export interface Currency {
-  id: number,
+  uuid: string,
   code: string,
   sign: string,
   verbalName: string,
@@ -7,5 +7,5 @@ export interface Currency {
   isBase: boolean,
   comments: string,
   createdAt: string,
-  updatedAt: string,
+  modifiedAt: string,
 }

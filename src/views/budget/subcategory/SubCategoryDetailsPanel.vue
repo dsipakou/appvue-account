@@ -67,7 +67,9 @@ export default defineComponent({
       if (this.category?.items) {
         return this.category.items.reduce(
           (acc: Array<BudgetUsage>, item: BudgetUsage) => {
-            const index = acc.findIndex((groupedItem: BudgetUsage) => groupedItem.id === item.id);
+            const index = acc.findIndex(
+              (groupedItem: BudgetUsage) => groupedItem.uuid === item.uuid,
+            );
             if (index > -1) {
               acc[index] = {
                 ...acc[index],

@@ -180,8 +180,8 @@ export default defineComponent({
         categoryId: this.category.id,
         amount: String(evaluate(this.input.amount.replace(',', '.'))),
         accountId: this.accountId,
-        currencyId: this.input.currency.id,
-        budgetId: this.input.budget?.id || null,
+        currencyId: this.input.currency.uuid,
+        budgetId: this.input.budget?.uuid || null,
         transactionDate: this.input.transactionDate,
         type: constants.transactionTypes.OUTCOME,
         description: this.input.description,
@@ -196,7 +196,7 @@ export default defineComponent({
       }
       this.setTransactionLastAdded({
         date: this.input.transactionDate,
-        budget: this.input.budgetDone ? null : this.input.budget?.id,
+        budget: this.input.budgetDone ? null : this.input.budget?.uuid,
       });
 
       this.createTransaction(transaction);

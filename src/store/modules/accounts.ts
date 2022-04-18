@@ -38,10 +38,10 @@ const actions = {
     }
   },
 
-  async deleteAccount({ commit }: any, id: number) {
-    const response = await deleteAccount(id);
+  async deleteAccount({ commit }: any, uuid: string) {
+    const response = await deleteAccount(uuid);
     if (response.status === 204) {
-      commit('deleteAccount', id);
+      commit('deleteAccount', uuid);
     }
   },
 
@@ -63,13 +63,13 @@ const mutations = {
     state.accounts.items.unshift({ ...account });
   },
 
-  deleteAccount(state: any, id: any) {
-    state.accounts.items = state.accounts.items.filter((account: any) => account.id !== id);
+  deleteAccount(state: any, uuid: any) {
+    state.accounts.items = state.accounts.items.filter((account: any) => account.uuid !== uuid);
   },
 
   updateAccount(state: any, account: any) {
     state.accounts.items = state.accounts.items.map((item: any) => {
-      if (item.id === account.id) {
+      if (item.uuid === account.uuid) {
         return account;
       }
       return item;

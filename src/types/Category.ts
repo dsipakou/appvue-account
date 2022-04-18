@@ -1,9 +1,8 @@
 export interface Category {
-  id: number,
+  uuid: string,
   name: string,
-  parentName: string,
-  isParent: boolean,
-  isSystem: boolean,
-  createdAt: string,
-  updatedAt: string,
+  parent: string,
+  is_income: boolean,
+  created_at: string,
+  modified_at: string,
 }

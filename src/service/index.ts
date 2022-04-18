@@ -2,6 +2,8 @@
 
 import { IGetBudgetForPeriod } from '@/types/Budget';
 
+const BASE_URL = 'http://127.0.0.1:8000';
+
 const getRequest = (url: string) => {
   const options = {
     method: 'GET',
@@ -208,7 +210,7 @@ export const deleteTransaction = async (id: number) => {
 /* Categories section */
 
 export const getCategories = async () => {
-  const response = await getRequest('http://localhost:9091/api/categories');
+  const response = await getRequest(`${BASE_URL}/categories`);
   return response;
 };
 
@@ -259,7 +261,7 @@ export const deleteCategory = async (id: number) => {
 /* Accounts section */
 
 export const getAccounts = async () => {
-  const response = await getRequest('http://localhost:9091/api/accounts');
+  const response = await getRequest('http://127.0.0.1:9091/api/accounts');
   return response;
 };
 

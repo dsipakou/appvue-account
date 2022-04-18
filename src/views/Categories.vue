@@ -18,11 +18,8 @@
     <div class="categories-block" v-for="parent in parentCategories" :key="parent.id">
       <div class="row justify-left">
         <div class="q-my-sm col-2 categories-block--main">
-          <q-card
-            v-ripple
+          <q-card v-ripple bordered flat
             class="q-hoverable cursor-pointer parent-card"
-            bordered
-            flat
             @click="edit(parent)">
             <div tabindex="-1" class="q-focus-helper"></div>
             {{ parent.name }}
@@ -230,7 +227,7 @@ export default {
     },
     parentCategories() {
       return this.categoryList.filter((item) => (
-        item.parentName === '' && !item.isSystem
+        item.parent === null && !item.is_income
       )).sort((a, b) => {
         const left = a.name;
         const right = b.name;

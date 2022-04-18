@@ -7,8 +7,10 @@
       <span>{{ currency.verbalName }}</span>
     </div>
     <div class="row col-12 cur-rate">
-      <div class="row col-6">
-        <span>{{ rate?.rate }}</span>
+      <div class="row col-6 rate-container"
+        @click="rateClick">
+        <span v-if="!rateEdit" class="cur-rate">{{ rate?.rate }}</span>
+        <q-input v-else class="cur-rate" dense v-model="rateModel" />
       </div>
       <div class="row col-6 chart">
       </div>
@@ -19,7 +21,7 @@
   </q-card>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 import { format } from 'date-fns';
 import { Currency, Rate } from '@/types';
 
@@ -34,6 +36,18 @@ export default defineComponent({
     lastDate: { type: String, required: true },
     selectCurrency: { type: Function, required: true },
     selectedCurrencies: { type: Array as PropType<string[]>, required: true },
+  },
+
+  setup() {
+    return {
+      rateModel: ref(0),
+    };
+  },
+
+  data() {
+    return {
+      rateEdit: false,
+    };
   },
 
   computed: {
@@ -52,6 +66,18 @@ export default defineComponent({
   methods: {
     currencyClick() {
       this.selectCurrency(this.currency.code);
+    },
+
+    rateClick() {
+      this.rateEdit = true;
+    },
+  },
+
+  watch: {
+    rate() {
+      if (this.rate) {
+        this.rateModel = this.rate.rate;
+      }
     },
   },
 });
@@ -82,10 +108,15 @@ export default defineComponent({
 }
 
 .cur-rate {
-  font-size: 32px;
+  font-size: 32px !important;
+  height: 44px;
 }
 
 .cur-date {
   font-size: 14px;
+}
+
+.rate-container {
+  cursor: text;
 }
 </style>

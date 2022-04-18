@@ -12,6 +12,12 @@
     </div>
     <div class="row col-12 chart-area">
       <div class="row col-8">
+        <div class="row justify-between chart-buttons">
+          <div class="range-button active-range-button">30 days</div>
+          <div class="range-button inactive-range-button">90 days</div>
+          <div class="range-button">180 days</div>
+          <div class="range-button">1 year</div>
+        </div>
         <CurrencyChart
           style="height: 300px;"
           :ratesList="ratesList"
@@ -243,5 +249,33 @@ export default defineComponent({
 <style>
 .chart-area {
   margin-top: 15px;
+}
+
+.chart-buttons {
+  padding: 0 72px;
+}
+
+.range-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 33px;
+  width: 132px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.inactive-range-button {
+  border: 1px solid #ADADAD;
+  color: #047A94;
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 20%),
+    0 1px 1px rgb(0 0 0 / 14%),
+    0 1px 1px rgb(0 0 0 / 12%);
+}
+
+.active-range-button {
+  background-color: #047A94;
+  color: white;
 }
 </style>

@@ -162,17 +162,15 @@ export default defineComponent({
         const subCategory = this.getCategory(item.category)?.name || 'unknown';
 
         acc[parentCategory] = acc[parentCategory]
-          || { items: {} as object, name: parentCategory, sum: 0 } as MainCategory;
-        acc[parentCategory].items[item.category as string] = acc[parentCategory].items[item.category as string]
+          || { items: {}, name: parentCategory, sum: 0 } as MainCategory;
+        acc[parentCategory].items[item.category] = acc[parentCategory].items[item.category]
           || { items: [], name: subCategory, sum: 0 } as SubCategory;
-        acc[parentCategory].items[item.category as string].items.push(item);
+        acc[parentCategory].items[item.category].items.push(item);
         acc[parentCategory].sum += item.baseAmount;
-        acc[parentCategory].items[item.category as string].sum += item.baseAmount;
+        acc[parentCategory].items[item.category].sum += item.baseAmount;
 
         return acc;
       }, {});
-
-      console.log(result);
 
       return result;
     },

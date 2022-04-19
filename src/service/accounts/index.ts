@@ -23,26 +23,26 @@ export const getAccounts = async () => {
   return response;
 };
 
-export const createAccount = async (payload: CreateAccountRequest) => {
+export const createAccount = async (data: CreateAccountRequest) => {
   const response = await postRequest(`${BASE_URL}/accounts/`,
     {
-      user: payload.user,
-      source: payload.source,
-      amount: payload.amount,
-      description: payload.description,
-      isMain: payload.isMain,
+      user: data.user,
+      source: data.source,
+      amount: data.amount,
+      description: data.description,
+      isMain: data.isMain,
     });
   return response;
 };
 
-export const updateAccount = async (payload: UpdateAccountRequest) => {
+export const updateAccount = async (data: UpdateAccountRequest) => {
   const response = await patchRequest(`${BASE_URL}/accounts/${payload.uuid}/`,
     {
-      user: payload.user,
-      source: payload.source,
-      amount: payload.amount,
-      description: payload.description,
-      isMain: payload.isMain,
+      user: data.user,
+      source: data.source,
+      amount: data.amount,
+      description: data.description,
+      isMain: data.isMain,
     });
   return response;
 };

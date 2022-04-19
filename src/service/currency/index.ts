@@ -23,26 +23,26 @@ interface UpdateCurrencyRequest extends CreateCurrencyRequest {
   uuid: string,
 }
 
-export const createCurrency = async (payload: CreateCurrencyRequest) => {
+export const createCurrency = async (data: CreateCurrencyRequest) => {
   const response = await postRequest(`${BASE_URL}/currencies/`,
     {
-      code: payload.code,
-      sign: payload.sign,
-      verbalName: payload.verbalName,
-      isDefault: payload.isDefault,
-      comments: payload.comments,
+      code: data.code,
+      sign: data.sign,
+      verbalName: data.verbalName,
+      isDefault: data.isDefault,
+      comments: data.comments,
     });
   return response;
 };
 
-export const updateCurrency = async (payload: UpdateCurrencyRequest) => {
+export const updateCurrency = async (data: UpdateCurrencyRequest) => {
   const response = await patchRequest(`${BASE_URL}/currencies/${payload.uuid}/`,
     {
-      code: payload.code,
-      sign: payload.sign,
-      verbalName: payload.verbalName,
-      isDefault: payload.isDefault,
-      comments: payload.comments,
+      code: data.code,
+      sign: data.sign,
+      verbalName: data.verbalName,
+      isDefault: data.isDefault,
+      comments: data.comments,
     });
   return response;
 };

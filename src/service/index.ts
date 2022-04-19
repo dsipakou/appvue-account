@@ -220,44 +220,6 @@ export const deleteTransaction = async (id: number) => {
   const response = await deleteRequest('http://localhost:9091/api/transactions', { id });
   return response;
 };
-/* Accounts section */
-
-
-
-/* Rates section */
-
-export const getRates = async () => {
-  const response = await getRequest(`${BASE_URL}/rates/`);
-  return response;
-};
-
-export const getRateChartData = async (range: number) => {
-  const response = await getRequest(`${BASE_URL}/rates/chart?range=${range}`);
-  return response;
-};
-
-export interface CreateRateRequest {
-  currency: string,
-  rateDate: string,
-  rate: number,
-  description?: string,
-}
-
-export const createRate = async ({
-  currency,
-  rateDate,
-  rate,
-  description,
-}: CreateRateRequest) => {
-  const response = await postRequest(`${BASE_URL}/rates/`,
-    {
-      currency,
-      rateDate,
-      rate: Number(rate),
-      description,
-    });
-  return response;
-};
 
 /* Budget section */
 

@@ -21,21 +21,21 @@ export const getCategories = async () => {
   return response;
 };
 
-export const createCategory = async (payload: CreateCategoryRequest) => {
+export const createCategory = async (data: CreateCategoryRequest) => {
   const response = await postRequest(`${BASE_URL}/categories/`,
     {
-      name: payload.name,
-      parent: payload.parent,
+      name: data.name,
+      parent: data.parent,
     });
   return response;
 };
 
-export const updateCategory = async (payload: UpdateCategoryRequest) => {
+export const updateCategory = async (data: UpdateCategoryRequest) => {
   const response = await patchRequest(`${BASE_URL}/categories/${payload.uuid}/`,
     {
-      name: payload.name,
-      parent: payload.parent,
-      isIncome: payload.isIncome,
+      name: data.name,
+      parent: data.parent,
+      isIncome: data.isIncome,
     });
   return response;
 };

@@ -4,7 +4,7 @@ import {
   getRates,
   createRate,
   getRateChartData,
-} from '../../service';
+} from '../../service/rates';
 
 const state = {
   rates: {

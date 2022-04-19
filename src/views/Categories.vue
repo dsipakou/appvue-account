@@ -14,7 +14,6 @@
       </div>
     </div>
     <div class="categories-block" v-for="parent in parentCategories" :key="parent.uuid">
-      {{ parent }}
       <div class="row justify-left">
         <div class="q-my-sm col-2 categories-block--main">
           <q-card v-ripple bordered flat
@@ -200,7 +199,7 @@ export default {
     },
 
     categoryByParent(parentUuid) {
-      return this.categoryList.filter((item) => item.parentUuid === parentUuid);
+      return this.categoryList.filter((item) => item.parent === parentUuid);
     },
   },
   computed: {

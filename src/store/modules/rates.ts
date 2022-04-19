@@ -3,18 +3,21 @@
 import {
   getRates,
   createRate,
+  getRateChartData,
 } from '../../service';
 
 const state = {
   rates: {
     items: [],
     isLoading: false,
+    chart: [],
   },
 };
 
 const getters = {
   ratesList: (state: any) => state.rates.items,
   isRatesListLoading: (state: any) => state.rates.isLoading,
+  ratesChartData: (state: any) => state.rates.chart,
 };
 
 const actions = {
@@ -26,6 +29,16 @@ const actions = {
       commit('setRatesLoading', false);
       commit('setRates', body);
     }
+  },
+
+  async fetchChartData({ commit }: any) {
+    commit('setRatesLoading', true);
+    const response = await getRateChartData(30);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setRatesChartData', body);
+    }
+    commit('setRatesLoading', false);
   },
 
   async createRate({ commit }: any, payload: any) {
@@ -40,6 +53,10 @@ const actions = {
 const mutations = {
   setRates(state: any, rates: any) {
     state.rates.items = rates;
+  },
+
+  setRatesChartData(state: any, data: any) {
+    state.rates.chart = data;
   },
 
   createRate(state: any, rate: any) {

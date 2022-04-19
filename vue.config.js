@@ -19,5 +19,6 @@ module.exports = {
       },
       extensions: ['.vue', '.js', '.json'],
     },
+    devtool: 'source-map',
   },
 };

@@ -22,6 +22,7 @@
           style="height: 300px;"
           :ratesList="ratesList"
           :currencyList="currencyList"
+          :data="ratesChartData"
           :selectedCurrencies="selectedCurrencies"
           :range="selectedRange" />
       </div>
@@ -152,6 +153,7 @@ export default defineComponent({
       'selectedCurrencies',
       'currencyRange',
       'ratesList',
+      'ratesChartData',
       'isCurrencyListLoading',
       'isRatesListLoading',
     ]),
@@ -173,6 +175,7 @@ export default defineComponent({
       'deleteCurrency',
       'fetchCurrencies',
       'fetchRates',
+      'fetchChartData',
       'selectCurrency',
       'selectCurrencyRange',
     ]),
@@ -218,8 +221,8 @@ export default defineComponent({
       this.confirmForm = true;
     },
 
-    save() {
-      console.log('Saved!');
+    save(data: any) {
+      console.log(`Saved! - ${data}`);
     },
 
     getLastRateForCurrency(currencyUuid: string) {
@@ -238,7 +241,9 @@ export default defineComponent({
 
   beforeMount() {
     this.fetchCurrencies();
+    this.fetchChartData();
     this.fetchRates();
+    this.fetchChartData();
   },
 
   mounted() {

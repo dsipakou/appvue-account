@@ -163,11 +163,11 @@ export default defineComponent({
 
         acc[parentCategory] = acc[parentCategory]
           || { items: {}, name: parentCategory, sum: 0 } as MainCategory;
-        acc[parentCategory].items[item.category] = acc[parentCategory].items[item.category]
+        acc[parentCategory].items[1] = acc[parentCategory].items[1]
           || { items: [], name: subCategory, sum: 0 } as SubCategory;
-        acc[parentCategory].items[item.category].items.push(item);
+        acc[parentCategory].items[1].items.push(item);
         acc[parentCategory].sum += item.baseAmount;
-        acc[parentCategory].items[item.category].sum += item.baseAmount;
+        acc[parentCategory].items[1].sum += item.baseAmount;
 
         return acc;
       }, {});

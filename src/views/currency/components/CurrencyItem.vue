@@ -44,7 +44,7 @@ export default defineComponent({
     save() {
       if (this.currencyDate && this.currencyRate.length > 5) {
         this.createRate({
-          currencyId: this.currency.id,
+          currency: this.currency.uuid,
           rateDate: this.currencyDate,
           rate: this.currencyRate,
         });

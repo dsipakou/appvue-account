@@ -13,8 +13,13 @@ const getRequest = (url: string) => {
 };
 
 const postRequest = (url: string, requestBody: object) => {
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+  });
+
   const options = {
     method: 'POST',
+    headers,
     mode: 'cors' as RequestMode,
     body: JSON.stringify(requestBody),
   };
@@ -388,22 +393,27 @@ export const getRates = async () => {
   return response;
 };
 
+export const getRateChartData = async (range: number) => {
+  const response = await getRequest(`${BASE_URL}/rates/chart?range=${range}`);
+  return response;
+};
+
 export interface CreateRateRequest {
-  currencyId: number,
+  currency: string,
   rateDate: string,
   rate: number,
   description?: string,
 }
 
 export const createRate = async ({
-  currencyId,
+  currency,
   rateDate,
   rate,
   description,
 }: CreateRateRequest) => {
-  const response = await postRequest('http://localhost:9091/api/rates',
+  const response = await postRequest(`${BASE_URL}/rates/`,
     {
-      currencyId,
+      currency,
       rateDate,
       rate: Number(rate),
       description,

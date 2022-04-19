@@ -30,9 +30,9 @@ const actions = {
     const response = await getCurrencies();
     if (response.status === 200) {
       const body = await response.json();
-      commit('setCurrenciesStatus', constants.itemStatus.LOADED);
       commit('setCurrencies', body);
     }
+    commit('setCurrenciesStatus', constants.itemStatus.LOADED);
   },
 
   async createCurrency({ commit }: any, payload: any) {

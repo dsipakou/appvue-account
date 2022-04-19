@@ -19,12 +19,7 @@ interface CreateCurrencyRequest {
   comments: string,
 }
 
-interface UpdateCurrencyRequest {
-  code: string,
-  sign: string,
-  verbalName: string,
-  isDefault: boolean,
-  comments: string,
+interface UpdateCurrencyRequest extends CreateCurrencyRequest {
   uuid: string,
 }
 

@@ -5,7 +5,7 @@ import {
   createAccount,
   deleteAccount,
   updateAccount,
-} from '../../service';
+} from '../../service/accounts';
 
 const state = {
   accounts: {

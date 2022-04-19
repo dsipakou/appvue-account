@@ -220,71 +220,9 @@ export const deleteTransaction = async (id: number) => {
   const response = await deleteRequest('http://localhost:9091/api/transactions', { id });
   return response;
 };
-
-/* Categories section */
-
-
-
 /* Accounts section */
 
-export const getAccounts = async () => {
-  const response = await getRequest(`${BASE_URL}/accounts/`);
-  return response;
-};
 
-export interface CreateAccountRequest {
-  user: number,
-  source: string,
-  amount: number,
-  description: string,
-  isMain: boolean
-}
-
-export const createAccount = async ({
-  user,
-  source,
-  amount,
-  description,
-  isMain,
-}: CreateAccountRequest) => {
-  const response = await postRequest(`${BASE_URL}/accounts/`,
-    {
-      user,
-      source,
-      amount,
-      description,
-      isMain,
-    });
-  return response;
-};
-
-export const deleteAccount = async (uuid: string) => {
-  const response = await deleteRequest(`${BASE_URL}/accounts/${uuid}`);
-  return response;
-};
-
-interface UpdateAccountRequest extends CreateAccountRequest {
-  uuid: number
-}
-
-export const updateAccount = async ({
-  uuid,
-  user,
-  source,
-  amount,
-  description,
-  isMain,
-}: UpdateAccountRequest) => {
-  const response = await patchRequest(`${BASE_URL}/accounts/${uuid}`,
-    {
-      user,
-      source,
-      amount,
-      description,
-      isMain,
-    });
-  return response;
-};
 
 /* Rates section */
 

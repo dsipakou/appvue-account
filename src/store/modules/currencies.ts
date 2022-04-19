@@ -5,7 +5,7 @@ import {
   createCurrency,
   updateCurrency,
   deleteCurrency,
-} from '../../service';
+} from '../../service/currency';
 import * as constants from '../constants';
 
 const state = {

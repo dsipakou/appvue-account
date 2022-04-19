@@ -2,9 +2,9 @@
 
 import { IGetBudgetForPeriod } from '@/types/Budget';
 
-const BASE_URL = 'http://127.0.0.1:8000';
+export const BASE_URL = 'http://127.0.0.1:8000';
 
-const getRequest = (url: string) => {
+export const getRequest = (url: string) => {
   const options = {
     method: 'GET',
   };
@@ -12,7 +12,7 @@ const getRequest = (url: string) => {
   return fetch(url, options);
 };
 
-const postRequest = (url: string, requestBody: object) => {
+export const postRequest = (url: string, requestBody: object) => {
   const headers = new Headers({
     'Content-Type': 'application/json',
   });
@@ -27,7 +27,7 @@ const postRequest = (url: string, requestBody: object) => {
   return fetch(url, options);
 };
 
-const patchRequest = (url: string, requestBody: object) => {
+export const patchRequest = (url: string, requestBody: object) => {
   const options = {
     method: 'PATCH',
 
@@ -38,7 +38,7 @@ const patchRequest = (url: string, requestBody: object) => {
   return fetch(url, options);
 };
 
-const deleteRequest = (url: string, requestBody: object = {}) => {
+export const deleteRequest = (url: string, requestBody: object = {}) => {
   const options = {
     method: 'DELETE',
     mode: 'cors' as RequestMode,
@@ -317,72 +317,6 @@ export const updateAccount = async ({
       description,
       isMain,
     });
-  return response;
-};
-
-/* Currencies section */
-
-export const getCurrencies = async () => {
-  const response = await getRequest(`${BASE_URL}/currencies`);
-  return response;
-};
-
-interface CreateCurrencyRequest {
-  code: string,
-  sign: string,
-  verbalName: string,
-  isDefault: boolean,
-  comments: string,
-}
-
-interface UpdateCurrencyRequest {
-  code: string,
-  sign: string,
-  verbalName: string,
-  isDefault: boolean,
-  comments: string,
-  uuid: string,
-}
-
-export const createCurrency = async ({
-  code,
-  sign,
-  verbalName,
-  isDefault,
-  comments,
-}: CreateCurrencyRequest) => {
-  const response = await postRequest(`${BASE_URL}/currencies/`,
-    {
-      code,
-      sign,
-      verbalName,
-      isDefault,
-      comments,
-    });
-  return response;
-};
-
-export const updateCurrency = async ({
-  code,
-  sign,
-  verbalName,
-  isDefault,
-  comments,
-  uuid,
-}: UpdateCurrencyRequest) => {
-  const response = await patchRequest(`${BASE_URL}/currencies/${uuid}/`,
-    {
-      code,
-      sign,
-      verbalName,
-      isDefault,
-      comments,
-    });
-  return response;
-};
-
-export const deleteCurrency = async (uuid: string) => {
-  const response = await deleteRequest(`${BASE_URL}/currencies/${uuid}/`);
   return response;
 };
 

@@ -36,7 +36,7 @@ export const createCurrency = async (data: CreateCurrencyRequest) => {
 };
 
 export const updateCurrency = async (data: UpdateCurrencyRequest) => {
-  const response = await patchRequest(`${BASE_URL}/currencies/${payload.uuid}/`,
+  const response = await patchRequest(`${BASE_URL}/currencies/${data.uuid}/`,
     {
       code: data.code,
       sign: data.sign,

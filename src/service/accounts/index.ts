@@ -36,7 +36,7 @@ export const createAccount = async (data: CreateAccountRequest) => {
 };
 
 export const updateAccount = async (data: UpdateAccountRequest) => {
-  const response = await patchRequest(`${BASE_URL}/accounts/${payload.uuid}/`,
+  const response = await patchRequest(`${BASE_URL}/accounts/${data.uuid}/`,
     {
       user: data.user,
       source: data.source,

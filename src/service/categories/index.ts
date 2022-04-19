@@ -31,7 +31,7 @@ export const createCategory = async (data: CreateCategoryRequest) => {
 };
 
 export const updateCategory = async (data: UpdateCategoryRequest) => {
-  const response = await patchRequest(`${BASE_URL}/categories/${payload.uuid}/`,
+  const response = await patchRequest(`${BASE_URL}/categories/${data.uuid}/`,
     {
       name: data.name,
       parent: data.parent,

@@ -28,9 +28,13 @@ export const postRequest = (url: string, requestBody: object) => {
 };
 
 export const patchRequest = (url: string, requestBody: object) => {
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+  });
+
   const options = {
     method: 'PATCH',
-
+    headers,
     mode: 'cors' as RequestMode,
     body: JSON.stringify(requestBody),
   };
@@ -39,8 +43,13 @@ export const patchRequest = (url: string, requestBody: object) => {
 };
 
 export const deleteRequest = (url: string, requestBody: object = {}) => {
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+  });
+
   const options = {
     method: 'DELETE',
+    headers,
     mode: 'cors' as RequestMode,
     body: JSON.stringify(requestBody),
   };
@@ -214,50 +223,7 @@ export const deleteTransaction = async (id: number) => {
 
 /* Categories section */
 
-export const getCategories = async () => {
-  const response = await getRequest(`${BASE_URL}/categories/`);
-  return response;
-};
 
-interface CreateCategoryRequest {
-  name: string,
-  parent: string | undefined,
-}
-
-export const createCategory = async ({ name, parent }: CreateCategoryRequest) => {
-  const response = await postRequest(`${BASE_URL}/categories/`,
-    {
-      name,
-      parent,
-    });
-  return response;
-};
-
-interface UpdateCategoryRequest extends CreateCategoryRequest {
-  uuid: string,
-  isIncome: boolean,
-}
-
-export const updateCategory = async ({
-  uuid,
-  name,
-  parent,
-  isIncome,
-}: UpdateCategoryRequest) => {
-  const response = await patchRequest(`${BASE_URL}/categories/`,
-    {
-      uuid,
-      name,
-      parent,
-      isIncome,
-    });
-  return response;
-};
-
-export const deleteCategory = async (uuid: number) => {
-  const response = await deleteRequest(`${BASE_URL}/categories/${uuid}/`);
-  return response;
-};
 
 /* Accounts section */
 

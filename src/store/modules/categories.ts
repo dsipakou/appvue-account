@@ -5,7 +5,7 @@ import {
   createCategory,
   deleteCategory,
   updateCategory,
-} from '../../service';
+} from '../../service/categories';
 
 const state = {
   categories: {

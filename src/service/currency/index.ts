@@ -28,39 +28,26 @@ interface UpdateCurrencyRequest {
   uuid: string,
 }
 
-export const createCurrency = async ({
-  code,
-  sign,
-  verbalName,
-  isDefault,
-  comments,
-}: CreateCurrencyRequest) => {
+export const createCurrency = async (payload: CreateCurrencyRequest) => {
   const response = await postRequest(`${BASE_URL}/currencies/`,
     {
-      code,
-      sign,
-      verbalName,
-      isDefault,
-      comments,
+      code: payload.code,
+      sign: payload.sign,
+      verbalName: payload.verbalName,
+      isDefault: payload.isDefault,
+      comments: payload.comments,
     });
   return response;
 };
 
-export const updateCurrency = async ({
-  code,
-  sign,
-  verbalName,
-  isDefault,
-  comments,
-  uuid,
-}: UpdateCurrencyRequest) => {
-  const response = await patchRequest(`${BASE_URL}/currencies/${uuid}/`,
+export const updateCurrency = async (payload: UpdateCurrencyRequest) => {
+  const response = await patchRequest(`${BASE_URL}/currencies/${payload.uuid}/`,
     {
-      code,
-      sign,
-      verbalName,
-      isDefault,
-      comments,
+      code: payload.code,
+      sign: payload.sign,
+      verbalName: payload.verbalName,
+      isDefault: payload.isDefault,
+      comments: payload.comments,
     });
   return response;
 };

@@ -6,11 +6,6 @@ import {
   deleteRequest,
 } from '../index';
 
-export const getCurrencies = async () => {
-  const response = await getRequest(`${BASE_URL}/currencies`);
-  return response;
-};
-
 interface CreateCurrencyRequest {
   code: string,
   sign: string,
@@ -23,8 +18,13 @@ interface UpdateCurrencyRequest extends CreateCurrencyRequest {
   uuid: string,
 }
 
+export const getCurrencies = async () => {
+  const response = await getRequest('currencies/');
+  return response;
+};
+
 export const createCurrency = async (data: CreateCurrencyRequest) => {
-  const response = await postRequest(`${BASE_URL}/currencies/`,
+  const response = await postRequest('currencies/',
     {
       code: data.code,
       sign: data.sign,
@@ -36,7 +36,7 @@ export const createCurrency = async (data: CreateCurrencyRequest) => {
 };
 
 export const updateCurrency = async (data: UpdateCurrencyRequest) => {
-  const response = await patchRequest(`${BASE_URL}/currencies/${data.uuid}/`,
+  const response = await patchRequest(`currencies/${data.uuid}/`,
     {
       code: data.code,
       sign: data.sign,
@@ -48,6 +48,6 @@ export const updateCurrency = async (data: UpdateCurrencyRequest) => {
 };
 
 export const deleteCurrency = async (uuid: string) => {
-  const response = await deleteRequest(`${BASE_URL}/currencies/${uuid}/`);
+  const response = await deleteRequest(`currencies/${uuid}/`);
   return response;
 };

@@ -19,7 +19,7 @@ export interface BudgetUsage extends BudgetPlan {
   spentInBaseCurrency: number,
 }
 
-export interface IGetBudgetForPeriod {
+export interface GetBudgetForPeriod {
   dateFrom: string,
   dateTo: string,
 }

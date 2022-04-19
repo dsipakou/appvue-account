@@ -1,5 +1,4 @@
 import {
-  BASE_URL,
   getRequest,
   postRequest,
   patchRequest,
@@ -17,12 +16,12 @@ interface UpdateCategoryRequest extends CreateCategoryRequest {
 }
 
 export const getCategories = async () => {
-  const response = await getRequest(`${BASE_URL}/categories/`);
+  const response = await getRequest('categories/');
   return response;
 };
 
 export const createCategory = async (data: CreateCategoryRequest) => {
-  const response = await postRequest(`${BASE_URL}/categories/`,
+  const response = await postRequest('categories/',
     {
       name: data.name,
       parent: data.parent,
@@ -31,7 +30,7 @@ export const createCategory = async (data: CreateCategoryRequest) => {
 };
 
 export const updateCategory = async (data: UpdateCategoryRequest) => {
-  const response = await patchRequest(`${BASE_URL}/categories/${data.uuid}/`,
+  const response = await patchRequest(`categories/${data.uuid}/`,
     {
       name: data.name,
       parent: data.parent,
@@ -41,6 +40,6 @@ export const updateCategory = async (data: UpdateCategoryRequest) => {
 };
 
 export const deleteCategory = async (uuid: number) => {
-  const response = await deleteRequest(`${BASE_URL}/categories/${uuid}/`);
+  const response = await deleteRequest(`categories/${uuid}/`);
   return response;
 };

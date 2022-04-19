@@ -1,7 +1,5 @@
 /* General requests */
 
-import { IGetBudgetForPeriod } from '@/types/Budget';
-
 export const BASE_URL = 'http://127.0.0.1:8000';
 
 export const getRequest = (url: string) => {
@@ -9,7 +7,7 @@ export const getRequest = (url: string) => {
     method: 'GET',
   };
 
-  return fetch(url, options);
+  return fetch(`${BASE_URL}/${url}`, options);
 };
 
 export const postRequest = (url: string, requestBody: object) => {
@@ -24,7 +22,7 @@ export const postRequest = (url: string, requestBody: object) => {
     body: JSON.stringify(requestBody),
   };
 
-  return fetch(url, options);
+  return fetch(`${BASE_URL}/${url}`, options);
 };
 
 export const patchRequest = (url: string, requestBody: object) => {
@@ -39,7 +37,7 @@ export const patchRequest = (url: string, requestBody: object) => {
     body: JSON.stringify(requestBody),
   };
 
-  return fetch(url, options);
+  return fetch(`${BASE_URL}/${url}`, options);
 };
 
 export const deleteRequest = (url: string, requestBody: object = {}) => {
@@ -54,7 +52,7 @@ export const deleteRequest = (url: string, requestBody: object = {}) => {
     body: JSON.stringify(requestBody),
   };
 
-  return fetch(url, options);
+  return fetch(`${BASE_URL}/${url}`, options);
 };
 
 /* Users section */
@@ -218,90 +216,6 @@ export const updateTransaction = async ({
 
 export const deleteTransaction = async (id: number) => {
   const response = await deleteRequest('http://localhost:9091/api/transactions', { id });
-  return response;
-};
-
-/* Budget section */
-
-export const getBudget = async () => {
-  const response = await getRequest('http://localhost:9091/api/budget');
-  return response;
-};
-
-export const getBudgetUsage = async (payload: IGetBudgetForPeriod) => {
-  const url = `http://localhost:9091/api/budget/usage?dateFrom=${payload.dateFrom}&dateTo=${payload.dateTo}`;
-  const response = await getRequest(url);
-  return response;
-};
-
-interface CreateBudgetRequest {
-  budgetDate: string,
-  title: string,
-  amount: number,
-  categoryId: number,
-  description: string,
-}
-
-export const createBudget = async ({
-  budgetDate,
-  title,
-  amount,
-  categoryId,
-  description,
-}: CreateBudgetRequest) => {
-  const response = await postRequest('http://localhost:9091/api/budget',
-    {
-      budgetDate,
-      title,
-      categoryId,
-      amount,
-      description,
-    });
-  return response;
-};
-
-interface GetBudgetRequest {
-  dateFrom: string,
-  dateTo: string,
-}
-
-export const getBudgetPlan = async ({
-  dateFrom,
-  dateTo,
-}: GetBudgetRequest) => {
-  const response = await getRequest(`http://localhost:9091/api/budget/planned?dateFrom=${dateFrom}&dateTo=${dateTo}`);
-  return response;
-};
-
-interface UpdateBudgetRequest extends CreateBudgetRequest {
-  id: number,
-  isCompleted: boolean,
-}
-
-export const updateBudget = async ({
-  id,
-  budgetDate,
-  title,
-  amount,
-  categoryId,
-  description,
-  isCompleted,
-}: UpdateBudgetRequest) => {
-  const response = await patchRequest('http://localhost:9091/api/budget',
-    {
-      id,
-      budgetDate,
-      title,
-      amount,
-      categoryId,
-      description,
-      isCompleted,
-    });
-  return response;
-};
-
-export const deleteBudget = async (id: number) => {
-  const response = await deleteRequest('http://localhost:9091/api/budget', { id });
   return response;
 };
 

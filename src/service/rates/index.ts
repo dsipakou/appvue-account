@@ -12,17 +12,17 @@ interface CreateRateRequest {
 }
 
 export const getRates = async () => {
-  const response = await getRequest(`${BASE_URL}/rates/`);
+  const response = await getRequest('rates/');
   return response;
 };
 
 export const getRateChartData = async (range: number) => {
-  const response = await getRequest(`${BASE_URL}/rates/chart?range=${range}`);
+  const response = await getRequest(`rates/chart?range=${range}`);
   return response;
 };
 
 export const createRate = async (data: CreateRateRequest) => {
-  const response = await postRequest(`${BASE_URL}/rates/`,
+  const response = await postRequest('rates/',
     {
       currency: data.currency,
       rateDate: data.rateDate,

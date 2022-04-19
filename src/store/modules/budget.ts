@@ -1,17 +1,17 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
-import { IGetBudgetForPeriod, BudgetToggle } from '@/types/Budget';
+import { GetBudgetForPeriod, BudgetToggle } from '@/types/Budget';
 import { startOfDay } from 'date-fns';
 
 import {
   getBudget,
   getBudgetUsage,
   getBudgetPlan,
-  getTransactions,
   createBudget,
   updateBudget,
   deleteBudget,
-} from '../../service';
+} from '../../service/budget';
+import { getTransactions } from '../../service';
 
 const state = {
   selectedMonth: startOfDay(new Date()),
@@ -31,7 +31,7 @@ const getters = {
 };
 
 const actions = {
-  async fetchBudgetUsage({ commit }: any, payload: IGetBudgetForPeriod) {
+  async fetchBudgetUsage({ commit }: any, payload: GetBudgetForPeriod) {
     commit('setBudgetLoading', true);
     const response = await getBudgetUsage(payload);
     if (response.status === 200) {

@@ -1,5 +1,4 @@
 import {
-  BASE_URL,
   getRequest,
   postRequest,
   patchRequest,
@@ -19,12 +18,12 @@ interface UpdateAccountRequest extends CreateAccountRequest {
 }
 
 export const getAccounts = async () => {
-  const response = await getRequest(`${BASE_URL}/accounts/`);
+  const response = await getRequest('accounts/');
   return response;
 };
 
 export const createAccount = async (data: CreateAccountRequest) => {
-  const response = await postRequest(`${BASE_URL}/accounts/`,
+  const response = await postRequest('accounts/',
     {
       user: data.user,
       source: data.source,
@@ -36,7 +35,7 @@ export const createAccount = async (data: CreateAccountRequest) => {
 };
 
 export const updateAccount = async (data: UpdateAccountRequest) => {
-  const response = await patchRequest(`${BASE_URL}/accounts/${data.uuid}/`,
+  const response = await patchRequest(`accounts/${data.uuid}/`,
     {
       user: data.user,
       source: data.source,
@@ -48,6 +47,6 @@ export const updateAccount = async (data: UpdateAccountRequest) => {
 };
 
 export const deleteAccount = async (uuid: string) => {
-  const response = await deleteRequest(`${BASE_URL}/accounts/${uuid}/`);
+  const response = await deleteRequest(`accounts/${uuid}/`);
   return response;
 };

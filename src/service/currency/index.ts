@@ -1,5 +1,4 @@
 import {
-  BASE_URL,
   getRequest,
   postRequest,
   patchRequest,

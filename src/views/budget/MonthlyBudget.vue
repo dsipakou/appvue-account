@@ -18,7 +18,6 @@
         <MainCategoryDetails
           :budgetUsage="budgetUsage"
           :categoryUsage="activeCategory"
-          :budgetPlan="budgetPlan"
           :items="activeBudget"
           :categories="categoryItems"
           @selectSubCategory="selectSubCategory($event)"

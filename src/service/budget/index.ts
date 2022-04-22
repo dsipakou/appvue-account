@@ -35,6 +35,12 @@ export const getBudgetUsage = async (data: GetBudgetForPeriod) => {
   return response;
 };
 
+export const getWeeklyBudgetUsage = async (data: GetBudgetForPeriod) => {
+  const url = `budget/weekly-usage?dateFrom=${data.dateFrom}&dateTo=${data.dateTo}`;
+  const response = await getRequest(url);
+  return response;
+};
+
 export const getBudgetPlan = async (data: GetBudgetRequest) => {
   const response = await getRequest(`budget/planned?dateFrom=${data.dateFrom}&dateTo=${data.dateTo}`);
   return response;

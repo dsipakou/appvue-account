@@ -47,7 +47,6 @@ export default defineComponent({
   props: {
     budgetUsage: { type: Array, required: true },
     categoryUsage: { type: Object as PropType<CategoryBudgetUsageItem>, required: true },
-    budgetPlan: { type: Array, required: true },
     items: { type: Array, required: true },
     categories: { type: Array, required: true },
   },

@@ -38,7 +38,6 @@
       <MonthlyBudget
         v-show="budgetType === 'monthly'"
         :budgetUsage="budgetUsage"
-        :budgetPlan="budgetPlan"
         :categoryItems="categoryList"
         :createBudget="createBudget"
         :updateBudget="updateBudget"
@@ -48,7 +47,7 @@
         @budgetItemClick="budgetItemClick($event)"
         />
       <WeekBudget
-        :budgetUsage="budgetUsage"
+        :weeklyUsage="weeklyUsage"
         :categoryItems="categoryList"
         :selectedDay="selectedMonth"
         :updateStatusBudget="updateStatusBudget"
@@ -78,7 +77,6 @@
 <script>
 import { computed, ref } from 'vue';
 import { mapActions, mapGetters, useStore } from 'vuex';
-import moment from 'moment';
 import {
   endOfMonth,
   endOfWeek,
@@ -88,8 +86,6 @@ import {
   isSameMonth,
   isSameWeek,
   format,
-  min,
-  max,
   subMonths,
   subWeeks,
 } from 'date-fns';
@@ -144,8 +140,8 @@ export default {
 
   computed: {
     ...mapGetters([
-      'budgetPlan',
       'budgetUsage',
+      'weeklyUsage',
       'budgetedTransactions',
       'categoryList',
       'budgetSelectedMonth',
@@ -195,21 +191,6 @@ export default {
       return this.budgetUsage.reduce((acc, item) => acc + item.spentInBaseCurrency, 0);
     },
 
-    plannedSum() {
-      let func = isSameWeek;
-      let options = { weekStartsOn: 1 };
-      if (this.budgetType === 'monthly') {
-        func = isSameMonth;
-        options = {};
-      }
-      return this.budgetPlan.reduce((acc, item) => {
-        if (func(new Date(this.selectedMonth), new Date(item.budgetDate), options)) {
-          return acc + item.amount;
-        }
-        return acc;
-      }, 0);
-    },
-
     actualSum() {
       let func = isSameWeek;
       let options = { weekStartsOn: 1 };
@@ -229,9 +210,9 @@ export default {
 
   methods: {
     ...mapActions([
-      'fetchBudgetUsage',
+      'fetchMonthlyUsage',
+      'fetchWeeklyUsage',
       'fetchBudgetedTransactions',
-      'fetchBudgetPlan',
       'createBudget',
       'updateBudget',
       'updateStatusBudget',
@@ -252,20 +233,14 @@ export default {
       const startMonth = startOfMonth(new Date(this.selectedMonth));
       const endMonth = endOfMonth(new Date(this.selectedMonth));
       const endWeek = endOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
-      const endCurrentWeek = endOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
       const startWeek = startOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
-      const startCurrentWeek = startOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
-      const dateFrom = format(min([startMonth, startWeek, startCurrentWeek]), DATE_FORMAT);
-      const dateTo = format(max([endMonth, endWeek, endCurrentWeek]), DATE_FORMAT);
-      this.fetchBudgetUsage({
+      this.fetchMonthlyUsage({
         dateFrom: format(startMonth, DATE_FORMAT),
         dateTo: format(endMonth, DATE_FORMAT),
       });
-      this.fetchBudgetPlan({ dateFrom, dateTo });
-      this.fetchBudgetedTransactions({
-        sorting: 'added',
-        dateFrom: moment().add(-moment().weekday(), 'days').format('YYYY-MM-DD'),
-        dateTo: moment().add(6 - moment().weekday(), 'days').format('YYYY-MM-DD'),
+      this.fetchWeeklyUsage({
+        dateFrom: format(startWeek, DATE_FORMAT),
+        dateTo: format(endWeek, DATE_FORMAT),
       });
     },
 
@@ -321,7 +296,7 @@ export default {
 }
 
 :deep(.q-tab__label) {
-   font-size: 22px !important;
-   line-height: 1.2em !important;
+  font-size: 22px !important;
+  line-height: 1.2em !important;
 }
 </style>

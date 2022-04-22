@@ -4,39 +4,47 @@ import { GetBudgetForPeriod, BudgetToggle } from '@/types/Budget';
 import { startOfDay } from 'date-fns';
 
 import {
-  getBudget,
   getBudgetUsage,
   getBudgetPlan,
   createBudget,
   updateBudget,
   deleteBudget,
+  getWeeklyBudgetUsage,
 } from '../../service/budget';
-import { getTransactions } from '../../service';
 
 const state = {
   selectedMonth: startOfDay(new Date()),
   usage: [],
   plan: [],
-  transactions: [],
   budgetToggle: BudgetToggle.Monthly,
   isLoading: false,
 };
 
 const getters = {
   budgetUsage: (state: any) => state.usage,
+  weeklyUsage: (state: any) => state.weeklyUsage,
   budgetPlan: (state: any) => state.plan,
-  budgetedTransactions: (state: any) => state.transactions,
   budgetSelectedMonth: (state: any) => state.selectedMonth,
   isBudgetListLoading: (state: any) => state.isLoading,
 };
 
 const actions = {
-  async fetchBudgetUsage({ commit }: any, payload: GetBudgetForPeriod) {
+  async fetchMonthlyUsage({ commit }: any, payload: GetBudgetForPeriod) {
     commit('setBudgetLoading', true);
     const response = await getBudgetUsage(payload);
     if (response.status === 200) {
       const body = await response.json();
       commit('setBudgetUsage', body);
+    }
+    commit('setBudgetLoading', false);
+  },
+
+  async fetchWeeklyUsage({ commit }: any, payload: GetBudgetForPeriod) {
+    commit('setBudgetLoading', true);
+    const response = await getWeeklyBudgetUsage(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setWeeklyBudgetUsage', body);
     }
     commit('setBudgetLoading', false);
   },
@@ -47,16 +55,6 @@ const actions = {
     if (response.status === 200) {
       const body = await response.json();
       commit('setBudgetPlan', body);
-    }
-    commit('setBudgetLoading', false);
-  },
-
-  async fetchBudgetedTransactions({ commit }: any, payload: any) {
-    commit('setBudgetLoading', true);
-    const response = await getTransactions(payload);
-    if (response.status === 200) {
-      const body = await response.json();
-      commit('setBudgetedTransactions', body);
     }
     commit('setBudgetLoading', false);
   },
@@ -95,12 +93,12 @@ const mutations = {
     state.usage = budget;
   },
 
-  setBudgetPlan(state: any, budget: any) {
-    state.plan = budget;
+  setWeeklyBudgetUsage(state: any, budget: any) {
+    state.weeklyUsage = budget;
   },
 
-  setBudgetedTransactions(state: any, budget: any) {
-    state.transactions = budget;
+  setBudgetPlan(state: any, budget: any) {
+    state.plan = budget;
   },
 
   setBudgetLoading(state: any, isLoading: boolean) {

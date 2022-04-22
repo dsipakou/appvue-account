@@ -35,7 +35,7 @@ import {
 } from 'date-fns';
 import { Category } from '@/types';
 import BudgetItem from '@/views/budget/weekly/BudgetItem.vue';
-import BudgetUtils from '@/utils/budgetUtils';
+import { BudgetUsageItem } from '@/types/Budget';
 
 export interface GroupedByCategoryItem {
   name: string,
@@ -54,6 +54,7 @@ export default defineComponent({
   },
 
   props: {
+    weeklyUsage: { type: Array as PropType<Array<BudgetUsageItem>>, required: true },
     budgetUsage: { type: Array as PropType<any[]>, required: true },
     categoryItems: { type: Array as PropType<Category[]>, required: true },
     selectedDay: { type: Date, required: true },
@@ -78,15 +79,11 @@ export default defineComponent({
       }
       return days;
     },
-
-    mergedBudgetUsage() {
-      return BudgetUtils.mergedByBudget(this.budgetUsage);
-    },
   },
 
   methods: {
     getDayBudget(date: string): any {
-      return this.mergedBudgetUsage.filter((item: any) => (
+      return this.weeklyUsage?.filter((item: any) => (
         isSameDay(new Date(item.budgetDate), new Date(date))
       ));
     },

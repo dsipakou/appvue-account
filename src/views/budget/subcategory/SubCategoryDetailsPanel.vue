@@ -73,7 +73,6 @@ export default defineComponent({
       if (this.budgets) {
         return this.budgets.reduce(
           (acc: Array<any>, item: BudgetUsageItem) => {
-            console.log(`  Item here - ${item}`);
             const index = acc.findIndex(
               (groupedItem: any) => groupedItem.uuid === item.uuid,
             );

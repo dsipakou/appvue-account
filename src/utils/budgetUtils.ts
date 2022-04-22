@@ -51,7 +51,7 @@ class BudgetUtils {
       (acc: CountPlannedBudget, subItem: BudgetUsage) => {
         if (!acc.uuids.includes(subItem.uuid)) {
           acc.uuids.push(subItem.uuid);
-          acc.sum += subItem.amount;
+          acc.sum += subItem.planned;
         }
         return acc;
       }, { uuids: [], sum: 0 },
@@ -77,8 +77,8 @@ class BudgetUtils {
       const { category, title } = value[0];
       const categoryName = category === null
         ? 'undefined'
-        : categoryItems.find((cat: Category) => (
-          cat.uuid === category
+        : categoryItems.find((item: Category) => (
+          item.uuid === category
         ))!.name;
       const arr: GroupedByCategoryItem[] = categoryClass[categoryName] || [];
       const sortedGroupedBudgets: BudgetUsage[] = this.sortByField(value, 'budgetName');

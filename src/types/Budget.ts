@@ -7,7 +7,7 @@ export interface Budget {
   description: string,
   isCompleted: boolean,
   createdAt: string,
-  updatedAt: string,
+  modifiedAt: string,
 }
 
 export interface BudgetPlan extends Budget {
@@ -15,6 +15,17 @@ export interface BudgetPlan extends Budget {
 }
 
 export interface BudgetUsage extends BudgetPlan {
+  uuid: string,
+  category: string,
+  categoryName: string,
+  currencyCode: string,
+  title: string,
+  planned: number,
+  budgetDate: string,
+  description: string,
+  isCompleted: boolean,
+  createdAt: string,
+  modifiedAt: string,
   spentInOriginalCurrency: number,
   spentInBaseCurrency: number,
 }

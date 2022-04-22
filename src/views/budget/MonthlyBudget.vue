@@ -3,12 +3,12 @@
     <div class="col-4">
       <div
         class="row main-category-container"
-        v-for="item in groupedBudgetUsage"
-        :key="item.name">
+        v-for="item in budgetUsage"
+        :key="item.categoryName">
         <MainCategoryCard
           :planned="item.planned"
-          :spent="item.actualUsage"
-          :title="item.name"
+          :spent="item.spentInBaseCurrency"
+          :title="item.categoryName"
           :activeCategory="activeCategory.title"
           @categoryClick=mainCategoryClick($event) />
       </div>
@@ -42,7 +42,6 @@ import MainCategoryDetails from '@/views/budget/components/MainCategoryDetails.v
 import SubCategoryDetailsPanel from '@/views/budget/subcategory/SubCategoryDetailsPanel.vue';
 import { Category } from '@/types';
 import { BudgetUsage, BudgetPlan } from '@/types/Budget';
-import BudgetUtils from '@/utils/budgetUtils';
 import { isSameMonth } from 'date-fns';
 
 interface ActiveCategory {
@@ -117,11 +116,19 @@ export default defineComponent({
     },
 
     groupedBudgetUsage() {
-      const budgetUtils = new BudgetUtils();
       const filteredMonthBudgetUsage = this.budgetUsage.filter((item: BudgetUsage) => (
         isSameMonth(new Date(this.selectedMonth), new Date(item.budgetDate))
       ));
-      return budgetUtils.groupedBudgetUsage(filteredMonthBudgetUsage, this.categoryItems);
+      return filteredMonthBudgetUsage.map(
+        (item: any) => (
+          {
+            ...item,
+            actualUsage: item.budgetTransactions.reduce(
+              (acc: any, subItem: any) => acc + subItem.spentInBaseCurrency, 0,
+            ),
+          }
+        ),
+      );
     },
 
     activeBudget(): any | undefined {

@@ -10,8 +10,8 @@
       <div class="row col-12 justify-center vertical-middle">
         <div class="row col-4 justify-center items-center">
           <MonthlySummaryCard
-            :planned="plannedSum"
-            :spent="actualSum"
+            :planned="plannedMonth"
+            :spent="spentMonth"
           >
             <template v-slot:header>
               {{ budgetType.charAt(0).toUpperCase() + budgetType.slice(1) }} summary
@@ -187,6 +187,14 @@ export default {
       return options;
     },
 
+    plannedMonth() {
+      return this.budgetUsage.reduce((acc, item) => acc + item.planned, 0);
+    },
+
+    spentMonth() {
+      return this.budgetUsage.reduce((acc, item) => acc + item.spentInBaseCurrency, 0);
+    },
+
     plannedSum() {
       let func = isSameWeek;
       let options = { weekStartsOn: 1 };
@@ -244,12 +252,15 @@ export default {
       const startMonth = startOfMonth(new Date(this.selectedMonth));
       const endMonth = endOfMonth(new Date(this.selectedMonth));
       const endWeek = endOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
-      const endCurrentWeek = endOfWeek(new Date(), { weekStartsOn: 1 });
+      const endCurrentWeek = endOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
       const startWeek = startOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
-      const startCurrentWeek = startOfWeek(new Date(), { weekStartsOn: 1 });
+      const startCurrentWeek = startOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
       const dateFrom = format(min([startMonth, startWeek, startCurrentWeek]), DATE_FORMAT);
       const dateTo = format(max([endMonth, endWeek, endCurrentWeek]), DATE_FORMAT);
-      this.fetchBudgetUsage({ dateFrom, dateTo });
+      this.fetchBudgetUsage({
+        dateFrom: format(startMonth, DATE_FORMAT),
+        dateTo: format(endMonth, DATE_FORMAT),
+      });
       this.fetchBudgetPlan({ dateFrom, dateTo });
       this.fetchBudgetedTransactions({
         sorting: 'added',

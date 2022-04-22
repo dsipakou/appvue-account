@@ -2,23 +2,24 @@
   <q-card flat bordered
     class="row main-panel">
     <div class="row col-12 justify-center header">
-      {{ title }}
+      {{ categoryUsage.categoryName }}
     </div>
     <div class="row col-12">
       <div class="row col justify-center">
         <CategoryMonthSummary
-          :budgetUsage="budgetUsage"
-          :title="title"
+          :categoryUsage="categoryUsage"
         />
       </div>
       <div class="row col"></div>
     </div>
     <div class="row justify-start">
-      <div class="row col-6 justify-center" v-for="item in items" :key="item.name">
+      <div
+        class="row col-6 justify-center"
+        v-for="budget in categoryUsage.budgets"
+        :key="budget.title"
+      >
         <SubCategoryCard
-          :item=item
-          :categories="categories"
-          :budgetPlan="budgetPlan"
+          :item=budget
           @selectSubCategory="selectSubCategory($event)"
         />
       </div>
@@ -26,9 +27,10 @@
   </q-card>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import SubCategoryCard from '@/views/budget/components/SubCategoryCard.vue';
 import CategoryMonthSummary from '@/views/budget/components/CategoryMonthSummary.vue';
+import { CategoryBudgetUsageItem } from '@/types/Budget';
 
 export default defineComponent({
   name: 'MainCategoryDetails',
@@ -44,15 +46,15 @@ export default defineComponent({
 
   props: {
     budgetUsage: { type: Array, required: true },
+    categoryUsage: { type: Object as PropType<CategoryBudgetUsageItem>, required: true },
     budgetPlan: { type: Array, required: true },
-    title: { type: String, required: true },
     items: { type: Array, required: true },
     categories: { type: Array, required: true },
   },
 
   methods: {
-    selectSubCategory(title: string) {
-      this.$emit('selectSubCategory', title);
+    selectSubCategory(uuid: string) {
+      this.$emit('selectSubCategory', uuid);
     },
   },
 });

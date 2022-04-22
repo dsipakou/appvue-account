@@ -9,23 +9,24 @@
           :planned="item.planned"
           :spent="item.spentInBaseCurrency"
           :title="item.categoryName"
-          :activeCategory="activeCategory.title"
+          :activeCategory="activeCategory.categoryName"
           @categoryClick=mainCategoryClick($event) />
       </div>
     </div>
     <div class="col-8">
-      <div class="row" v-show="activeCategory.title && !activeSubCategory.title">
+      <div class="row" v-show="activeCategory.categoryName && !activeSubCategory">
         <MainCategoryDetails
-          :budgetUsage="groupedBudgetUsage"
+          :budgetUsage="budgetUsage"
+          :categoryUsage="activeCategory"
           :budgetPlan="budgetPlan"
-          :title="activeCategory.title"
           :items="activeBudget"
           :categories="categoryItems"
           @selectSubCategory="selectSubCategory($event)"
         />
       </div>
-      <div class="row" v-show="activeSubCategory.title && activeSubCategoryObject">
+      <div class="row" v-show="activeSubCategory !== undefined">
         <SubCategoryDetailsPanel
+          :budgets="activeSubCategory?.items"
           :category="activeSubCategoryObject"
           :selectedMonth="selectedMonth"
           @closeSubCategory="closeSubCategory"
@@ -41,23 +42,7 @@ import MainCategoryCard from '@/views/budget/components/MainCategoryCard.vue';
 import MainCategoryDetails from '@/views/budget/components/MainCategoryDetails.vue';
 import SubCategoryDetailsPanel from '@/views/budget/subcategory/SubCategoryDetailsPanel.vue';
 import { Category } from '@/types';
-import { BudgetUsage, BudgetPlan } from '@/types/Budget';
-import { isSameMonth } from 'date-fns';
-
-interface ActiveCategory {
-  index: number,
-  title: undefined | string,
-}
-
-interface ActiveSubCategory {
-  title: undefined | string,
-}
-
-interface BudgetItem {
-  name: string,
-  items: any[],
-  amount: number,
-}
+import { CategoryBudgetUsageItem, BudgetPlan, GroupedBudgetUsageItem } from '@/types/Budget';
 
 export default defineComponent({
   name: 'MonthlyBudget',
@@ -77,7 +62,7 @@ export default defineComponent({
     createBudget: { type: Function, required: true },
     updateBudget: { type: Function, required: true },
     deleteBudget: { type: Function, required: true },
-    budgetUsage: { type: Array as PropType<BudgetUsage[]>, required: true },
+    budgetUsage: { type: Array as PropType<CategoryBudgetUsageItem[]>, required: true },
     budgetPlan: { type: Array as PropType<BudgetPlan[]>, required: true },
     selectedMonth: { type: Date, required: true },
     updateStatusBudget: { type: Function, required: true },
@@ -85,93 +70,40 @@ export default defineComponent({
 
   data() {
     return {
-      activeCategory: {
-        title: undefined,
-        index: -1,
-      } as ActiveCategory,
-      activeSubCategory: {
-        title: undefined,
-      } as ActiveSubCategory,
+      activeCategory: {} as CategoryBudgetUsageItem,
+      activeSubCategory: undefined as GroupedBudgetUsageItem | undefined,
     };
-  },
-
-  computed: {
-    monthlyBudget(): { [key: string]: number } {
-      const mainCategoryObj = this.budgetUsage.reduce(
-        (acc: {[key: string]: number}, item: BudgetUsage) => {
-          if (isSameMonth(new Date(item.budgetDate), new Date(this.selectedMonth))) {
-            const amount = acc[item.categoryName] || 0;
-            acc[item.categoryName] = amount + item.amount;
-          }
-          return acc;
-        }, {},
-      );
-
-      return Object.keys(mainCategoryObj).sort().reduce(
-        (acc: {[key: string]: number}, key) => {
-          acc[key] = mainCategoryObj[key];
-          return acc;
-        }, {},
-      );
-    },
-
-    groupedBudgetUsage() {
-      const filteredMonthBudgetUsage = this.budgetUsage.filter((item: BudgetUsage) => (
-        isSameMonth(new Date(this.selectedMonth), new Date(item.budgetDate))
-      ));
-      return filteredMonthBudgetUsage.map(
-        (item: any) => (
-          {
-            ...item,
-            actualUsage: item.budgetTransactions.reduce(
-              (acc: any, subItem: any) => acc + subItem.spentInBaseCurrency, 0,
-            ),
-          }
-        ),
-      );
-    },
-
-    activeBudget(): any | undefined {
-      const typedBudgetList = this.groupedBudgetUsage as [];
-      const budgetItem: BudgetItem = typedBudgetList.find(
-        (item: { name: string, value: string }) => item.name === this.activeCategory.title,
-      )! as BudgetItem;
-      return budgetItem?.items || undefined;
-    },
-
-    activeSubCategoryObject(): any {
-      if (this.activeBudget && this.activeSubCategory.title) {
-        return this.activeBudget.find((item: any) => item.name === this.activeSubCategory.title);
-      }
-
-      return {};
-    },
   },
 
   methods: {
     mainCategoryClick(event: { title: string }) {
-      this.activeCategory.title = event.title;
-      this.activeSubCategory.title = undefined;
+      this.activeCategory = this.getCategoryByName(event.title);
+      this.activeSubCategory = undefined;
     },
 
-    selectSubCategory(title: string) {
-      this.activeSubCategory.title = title;
+    selectSubCategory(uuid: string) {
+      this.activeSubCategory = this.activeCategory.budgets.find(
+        (item: GroupedBudgetUsageItem) => item.uuid === uuid,
+      );
     },
 
     closeSubCategory() {
-      this.activeSubCategory.title = undefined;
+      this.activeSubCategory = undefined;
     },
 
-    budgetItemClick(item: BudgetUsage) {
+    getCategoryByName(name: string): CategoryBudgetUsageItem {
+      return this.budgetUsage.find((item: CategoryBudgetUsageItem) => item.categoryName === name)!;
+    },
+
+    budgetItemClick(item: CategoryBudgetUsageItem) {
       this.$emit('budgetItemClick', item);
     },
   },
 
   watch: {
-    monthlyBudget() {
-      if (!this.activeCategory.title) {
-        const name = Object.keys(this.monthlyBudget)[0];
-        this.activeCategory.title = name;
+    budgetUsage() {
+      if (this.budgetUsage.length > 0) {
+        [this.activeCategory] = this.budgetUsage;
       }
     },
 

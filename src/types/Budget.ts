@@ -10,24 +10,49 @@ export interface Budget {
   modifiedAt: string,
 }
 
+export interface BudgetTransactionItem {
+  uuid: string,
+  currency: string,
+  currencyCode: string,
+  spentInBaseCurrency: number,
+  spentInOriginalCurrency: number,
+}
+
+export interface BudgetUsageItem {
+  uuid: string,
+  title: string,
+  budgetDate: string,
+  category: string,
+  description: string,
+  planned: number,
+  spentInBaseCurrency: number,
+  spentInOriginalCurrency: number,
+  isCompleted: boolean,
+  transactions: BudgetTransactionItem[],
+  createdAt: string,
+  modifiedAt: string,
+}
+
+export interface GroupedBudgetUsageItem {
+  uuid: string,
+  title: string,
+  planned: number,
+  spentInBaseCurrency: number,
+  spentInOriginalCurrency: number,
+  items: BudgetUsageItem[],
+}
+
 export interface BudgetPlan extends Budget {
   categoryName: string,
 }
 
-export interface BudgetUsage extends BudgetPlan {
+export interface CategoryBudgetUsageItem {
   uuid: string,
-  category: string,
   categoryName: string,
-  currencyCode: string,
-  title: string,
   planned: number,
-  budgetDate: string,
-  description: string,
-  isCompleted: boolean,
-  createdAt: string,
-  modifiedAt: string,
-  spentInOriginalCurrency: number,
   spentInBaseCurrency: number,
+  spentInOriginalCurrency: number,
+  budgets: GroupedBudgetUsageItem[],
 }
 
 export interface GetBudgetForPeriod {

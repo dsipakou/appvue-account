@@ -18,10 +18,8 @@
     </div>
     <div class="row">
       <div class="col transaction-list">
-        <div v-for="transaction in transactions" :key="transaction.id">
+        <div v-for="transaction in transactions" :key="transaction.uuid">
           <TransactionItem
-            :account="getAccount(transaction.accountId)"
-            :category="getCategory(transaction.categoryId)"
             :currencyList="currencyList"
             :currencyListLoaded="currencyListLoaded"
             :selectedCurrencies="selectedCurrencies"
@@ -95,16 +93,6 @@ export default {
         item.isSystem
       ));
       return filteredCategoryList;
-    },
-  },
-
-  methods: {
-    getCategory(id) {
-      return this.categoryList.find((item) => item.id === id);
-    },
-
-    getAccount(id) {
-      return this.accountList.find((item) => item.id === id);
     },
   },
 };

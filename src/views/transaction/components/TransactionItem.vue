@@ -6,15 +6,19 @@
           <q-avatar
             color="primary"
             text-color="white">
-            {{ category.name[0] }}
+            {{ transaction.categoryDetails?.name[0] }}
           </q-avatar>
         </div>
         <div class="row items-center" v-if="!editMode">
           <div class="col-7 align-center">
             <div class="text-h6" @click="clickItem">
-              {{ transaction.type === 'income' ? account.source : category.name }}
+              {{
+                transaction.type === 'income'
+                ? transaction.accountDetails.source
+                : transaction.categoryDetails?.name
+              }}
               <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
-                {{ category.parentName }}
+                {{ transaction.categoryDetails?.parentName }}
               </q-chip>
             </div>
             <div class="text-subtitle2">
@@ -23,14 +27,14 @@
           </div>
           <div class="col self-center">
             <q-chip square outline color="primary"
-               class="q-ml-sm overflow-hidden align-center text-caption">
+              class="q-ml-sm overflow-hidden align-center text-caption">
               <q-avatar
                 color="primary"
                 text-color="white"
                 class="vertical-middle"
                 icon="credit_card" />
                 <span>
-                  {{ account.source }}
+                  {{ transaction.accountDetails.source }}
                 </span>
             </q-chip>
           </div>
@@ -40,7 +44,8 @@
               color="info"
               text-color="white"
               class="text-caption text-weight-bold">
-              {{ transaction.amount }} {{ getCurrency(transaction.currency)?.sign }}
+              {{ transaction.amount }}
+              {{ getCurrency(transaction.currency)?.sign }}
             </q-chip>
           </div>
           <div class="col self-center items-end">
@@ -146,10 +151,8 @@ export default defineComponent({
   },
 
   props: {
-    account: { type: Object as PropType<Account>, required: true },
     accountList: { type: Array as PropType<Array<Account>>, required: true },
     budgetPlan: { type: Array, required: true },
-    category: { type: Object as PropType<Category>, required: true },
     categoryList: { type: Array as PropType<Array<Category>>, required: true },
     currencyList: { type: Array as PropType<Array<Currency>>, required: true },
     currencyListLoaded: { type: Boolean, required: true },
@@ -192,8 +195,8 @@ export default defineComponent({
         const baseCurrency = this.currencyList.find((item) => item.isBase);
         const objDefault: ShortTransaction = {
           uuid: transaction.currency,
-          amount: transaction.amount.toFixed(2),
-          baseAmount: transaction.baseAmount.toFixed(2),
+          amount: transaction.amount?.toFixed(2),
+          baseAmount: transaction.spentInBaseCurrency?.toFixed(2),
           sign: baseCurrency!.sign,
         } as ShortTransaction;
 
@@ -203,7 +206,7 @@ export default defineComponent({
           const rate = this.getRate(currency.id, transaction.transactionDate);
           const obj = {
             uuid: currency.value,
-            baseAmount: rate ? (transaction.baseAmount / rate.rate).toFixed(2) : '-',
+            baseAmount: rate ? (transaction.baseAmount / rate.rate)?.toFixed(2) : '-',
             sign: currency.sign,
           } as ShortTransaction;
 

@@ -5,7 +5,7 @@
         <div v-if="isAvailable" class="row justify-center">
           <q-card flat bordered
             v-for="category in subCategories"
-            :key="category.id"
+            :key="category.uuid"
             @click="selectCategory(category)"
             class="column bg-secondary q-pb-sm q-ma-sm avatar-container align-center">
             <div class="row text-center text-white text-weight-bolder">
@@ -26,9 +26,9 @@
           class="text-dark">
           <q-tab :ripple="false"
             v-for="category in mainCategories"
-            :name="category.id"
+            :name="category.uuid"
             :label="category.name"
-            :key="category.id"
+            :key="category.uuid"
             @click="chooseCategory(category)"/>
         </q-tabs>
       </div>
@@ -66,7 +66,7 @@ export default {
   computed: {
     mainCategories() {
       const categories = this.categoryList.filter((item) => (
-        item.parentName === '' && !item.isSystem
+        item.parent === null && !item.isIncome
       )).sort((a, b) => {
         const left = a.name;
         const right = b.name;
@@ -84,7 +84,7 @@ export default {
 
   methods: {
     chooseCategory(category) {
-      this.subCategories = this.categoryList.filter((item) => item.parentName === category.name);
+      this.subCategories = this.categoryList.filter((item) => item.parent === category.uuid);
     },
 
     selectCategory(category) {

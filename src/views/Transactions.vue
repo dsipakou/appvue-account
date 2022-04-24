@@ -8,26 +8,26 @@
       <div class="row justify-center">
         <MainAccounts
           :accountList="accountList"
-          :selectedAccountId="selectedAccountId"
+          :selectedAccountUuid="selectedAccountUuid"
           @selectAccount="selectAccount($event)" />
       </div>
     </div>
     <div class="row justify-center">
       <AdditionalAccounts
         :accountList="accountList"
-        :selectedAccountId="selectedAccountId"
+        :selectedAccountUuid="selectedAccountUuid"
         @selectAccount="selectAccount($event)" />
     </div>
     <CategoryList
       :categoryList="categoryList"
       :isCategoryListLoading="isCategoryListLoading"
-      :isAvailable="selectedAccountId > 0"
+      :isAvailable="selectedAccountUuid !== ''"
       @selectCategory="selectCategory($event)"
     />
     <div class="row">
       <div class="col-12">
         <TransactionList
-          :transactions="transactionList.slice(0, 15)"
+          :transactions="transactionList"
           :accountList="accountList"
           :budgetPlan="budgetPlan"
           :categoryList="categoryList"
@@ -45,9 +45,9 @@
     </div>
     <q-dialog v-model="createForm">
       <AddForm
-        :accountId="selectedAccountId"
+        :accountId="selectedAccountUuid"
         :category="selectedCategory"
-        :userId="selectedUserId"
+        :userId="selectedUserUuid"
         :budgetPlan="budgetPlan"
         :categoryList="categoryList"
         :currencyList="currencyList"
@@ -115,8 +115,8 @@ export default {
       editedTransaction: null,
       subCategories: [],
       selectedCategory: null,
-      selectedAccountId: 0,
-      selectedUserId: 0,
+      selectedAccountUuid: '',
+      selectedUserUuid: '',
     };
   },
 
@@ -173,8 +173,8 @@ export default {
     },
 
     selectAccount(account) {
-      this.selectedAccountId = this.selectedAccountId === account.id ? 0 : account.id;
-      this.selectedUserId = account.userId;
+      this.selectedAccountUuid = this.selectedAccountUuid === account.uuid ? '' : account.uuid;
+      this.selectedUserUuid = account.user;
     },
   },
 };

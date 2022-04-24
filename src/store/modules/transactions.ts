@@ -7,7 +7,7 @@ import {
   deleteTransaction,
   updateTransaction,
   createTransaction,
-} from '../../service';
+} from '@/service/transactions';
 import { itemStatus } from '../constants';
 
 const state = {

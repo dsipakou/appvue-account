@@ -6,19 +6,18 @@
     </q-card-section>
 
     <q-separator />
-
     <q-card-section>
       <q-select outlined map-options
         v-model="input.user"
         :options="userList"
-        option-value="id"
-        option-label="name" label="User" />
+        option-value="uuid"
+        option-label="username" label="User" />
     </q-card-section>
     <q-card-section>
       <q-select outlined map-options
         v-model="input.account"
         :options="accountList"
-        option-value="id"
+        option-value="uuid"
         option-label="source"
         label="Account" />
     </q-card-section>
@@ -26,16 +25,17 @@
       <q-select outlined map-options
         v-model="input.category"
         :options="input.type === 'income' ? systemCategories : categories"
-        option-value="id"
+        option-value="uuid"
         option-label="value"
         label="Category" />
     </q-card-section>
     <q-card-section>
+      {{ currentWeekBudget }}
       <q-select
         outlined
         label="Budget items"
         label-stacked
-        :options="currentWeekBudget"
+        :options="selectedWeekBudget"
         option-value="id"
         option-label="title"
         v-model="input.budget" />
@@ -77,6 +77,8 @@
 <script>
 import moment from 'moment';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
+import * as constants from '@/utils/constants';
+import { getFirstDayOfWeek, getLastDayOfWeek } from '@/utils/dateTimeUtils';
 
 export default {
   name: 'EditForm',
@@ -93,6 +95,7 @@ export default {
     currencyList: Array,
     ratesList: Array,
     userList: Array,
+    fetchBudgetPlan: { type: Function, required: true, default: () => {} },
     updateTransaction: Function,
     deleteTransaction: Function,
     currencyListLoaded: Boolean,
@@ -106,53 +109,68 @@ export default {
     return {
       activeDate: '',
       input: {
-        accountId: 0,
+        account: '',
         amount: '',
-        budgetId: null,
-        categoryId: 0,
+        budget: null,
+        category: '',
         currency: '',
         description: '',
         transactionDate: '',
-        userId: 0,
+        user: '',
       },
     };
   },
 
   methods: {
-    getAccount(id) {
-      return this.accountList.find((item) => item.id === id);
-    },
-
-    getBudget(id) {
-      return this.budgetPlan.find((item) => item.id === id);
-    },
-
-    getCategory(id) {
-      return this.categories.find((item) => item.id === id)
-        || this.systemCategories.find((item) => item.id === id);
-    },
-
-    getRate(id, date) {
-      return this.ratesList.find((item) => {
-        const transactionDate = moment(date).startOf('day');
-        const rateDate = moment(item.rateDate).startOf('day');
-        return transactionDate.isSame(rateDate) && item.currencyId === id;
+    setBudgetList() {
+      this.fetchBudgetPlan({
+        dateFrom: getFirstDayOfWeek(this.input.transactionDate),
+        dateTo: getLastDayOfWeek(this.input.transactionDate),
       });
     },
 
-    getUser(id) {
-      return this.userList.find((item) => item.id === id);
+    setActiveDate() {
+      this.activeDate = this.input.transactionDate;
+    },
+
+    getAccount(uuid) {
+      return this.accountList.find((item) => item.uuid === uuid);
+    },
+
+    getBudget(uuid) {
+      return this.budgetPlan.find((item) => item.uuid === uuid);
+    },
+
+    getCategory(uuid) {
+      return this.categories.find((item) => item.uuid === uuid)
+        || this.systemCategories.find((item) => item.uuid === uuid);
+    },
+
+    getParentCategory(uuid) {
+      return this.categoryList.find((item) => item.uuid === uuid);
+    },
+
+    getRate(uuid, date) {
+      return this.ratesList.find((item) => {
+        const transactionDate = moment(date).startOf('day');
+        const rateDate = moment(item.rateDate).startOf('day');
+        return transactionDate.isSame(rateDate) && item.currency === uuid;
+      });
+    },
+
+    getUser(uuid) {
+      return this.userList.find((item) => item.uuid === uuid);
     },
 
     update() {
       const transaction = {
-        id: this.input.id,
-        userId: this.input.user.id,
-        categoryId: this.input.category.id,
-        budgetId: this.input.budget?.id,
+        uuid: this.input.uuid,
+        user: this.input.user.uuid,
+        category: this.input.category.uuid,
+        budget: this.input.budget?.uuid,
         amount: this.input.amount.toString(),
-        currencyId: this.input.currency.id,
-        accountId: this.input.account.id,
+        currency: this.input.currency.uuid,
+        account: this.input.account.uuid,
         transactionDate: this.input.transactionDate,
         type: this.input.type,
         description: this.input.description,
@@ -165,12 +183,12 @@ export default {
   computed: {
     categories() {
       const filteredCategoryList = this.categoryList.filter((item) => (
-        !item.isParent && !item.isSystem
+        item.parent && !item.isIncome
       ));
       const modifiedCategoryList = filteredCategoryList.map((item) => (
         {
-          id: item.id,
-          value: `${item.name} / ${item.parentName}`,
+          uuid: item.uuid,
+          value: `${item.name} / ${this.getParentCategory(item.parent).name}`,
         }
       ));
       const sortedCategoryList = modifiedCategoryList.sort((a, b) => {
@@ -189,12 +207,23 @@ export default {
       return filteredCategoryList;
     },
 
-    currentWeekBudget() {
-      const items = this.budgetPlan.filter((item) => (
-        moment(item.budgetDate).week() === moment().week()
-        && !item.isCompleted
+    selectedWeekBudget() {
+      const incompletedItems = this.budgetPlan.filter((budget) => (
+        !budget.isCompleted
       ));
-      items.unshift({ id: null, title: 'Default' });
+
+      const completedItems = this.budgetPlan.filter((budget) => (
+        budget.isCompleted
+      ));
+
+      const separator = { id: 0, title: constants.dropdownSeparator, disable: true };
+
+      const items = [];
+
+      items.push(...incompletedItems);
+      items.push(separator);
+      items.push(...completedItems);
+
       return items;
     },
   },
@@ -202,18 +231,19 @@ export default {
   watch: {
     'input.transactionDate': {
       handler() {
-        this.activeDate = this.input.transactionDate;
+        this.setActiveDate();
+        this.setBudgetList();
       },
     },
   },
 
   mounted() {
-    this.input.id = this.transaction.id;
-    this.input.user = this.getUser(this.transaction.userId);
-    this.input.budget = this.getBudget(this.transaction.budgetId);
-    this.input.category = this.getCategory(this.transaction.categoryId);
+    this.input.uuid = this.transaction.uuid;
+    this.input.user = this.getUser(this.transaction.user);
+    this.input.budget = this.getBudget(this.transaction.budget);
+    this.input.category = this.getCategory(this.transaction.category);
     this.input.amount = this.transaction.amount;
-    this.input.account = this.getAccount(this.transaction.accountId);
+    this.input.account = this.getAccount(this.transaction.account);
     this.input.transactionDate = this.transaction.transactionDate.substr(0, 10);
     this.input.type = this.transaction.type;
     this.input.description = this.transaction.description;

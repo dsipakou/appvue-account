@@ -20,11 +20,11 @@
       <q-card-section>
         <q-select outlined label-stacked map-options emit-value
           label="Category"
-          option-value="id"
+          option-value="uuid"
           option-label="name"
           :options="categories"
           style="width: 200px;"
-          v-model="input.categoryId" />
+          v-model="input.category" />
       </q-card-section>
     </q-card-section>
     <q-card-section>
@@ -83,11 +83,11 @@ export default {
   methods: {
     save() {
       const budget = {
-        id: this.input.id,
+        uuid: this.input.uuid,
         budgetDate: this.input.budgetDate,
         title: this.input.title,
         amount: this.input.amount,
-        categoryId: this.input.categoryId,
+        category: this.input.category,
         description: this.input.description,
       };
 
@@ -100,7 +100,7 @@ export default {
     this.input.amount = this.budget.amount;
     this.input.title = this.budget.title;
     this.input.description = this.budget.description;
-    this.input.categoryId = this.budget.categoryId;
+    this.input.category = this.budget.category;
   },
 };
 </script>

@@ -15,8 +15,8 @@
         <div class="row justify-between chart-buttons">
           <div class="range-button active-range-button">30 days</div>
           <div class="range-button inactive-range-button">90 days</div>
-          <div class="range-button">180 days</div>
-          <div class="range-button">1 year</div>
+          <div class="range-button inactive-range-button">180 days</div>
+          <div class="range-button inactive-range-button">1 year</div>
         </div>
         <CurrencyChart
           style="height: 300px;"

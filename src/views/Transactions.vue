@@ -34,6 +34,7 @@
           :currencyList="currencyList"
           :ratesList="ratesList"
           :userList="userList"
+          :fetchBudgetPlan="fetchBudgetPlan"
           :updateTransaction="updateTransaction"
           :deleteTransaction="deleteTransaction"
           :currencyListLoaded="currencyListLoaded">
@@ -61,6 +62,7 @@
         @closeForm="createForm = false"
       />
     </q-dialog>
+    {{ fetchBudgetPlan }}
     <q-dialog v-model="editForm">
       <EditForm
         :transaction="editedTransaction"
@@ -71,6 +73,7 @@
         :currencyListLoaded="currencyListLoaded"
         :ratesList="ratesList"
         :userList="userList"
+        :fetchBudgetPlan="fetchBudgetPlan"
         :updateTransaction="updateTransaction"
         @closeForm="editForm = false"
       />

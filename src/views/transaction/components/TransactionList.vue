@@ -28,6 +28,7 @@
             :categoryList="categoryList"
             :ratesList="ratesList"
             :userList="userList"
+            :fetchBudgetPlan="fetchBudgetPlan"
             :updateTransaction="updateTransaction"
             :deleteTransaction="deleteTransaction"
             :transaction="transaction" />
@@ -56,6 +57,7 @@ export default {
     currencyList: Array,
     ratesList: Array,
     userList: Array,
+    fetchBudgetPlan: Function,
     updateTransaction: Function,
     deleteTransaction: Function,
     currencyListLoaded: Boolean,

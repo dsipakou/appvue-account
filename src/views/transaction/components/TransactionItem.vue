@@ -66,7 +66,7 @@
                     <q-item-label>Edit</q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
+                <q-item clickable v-close-popup @click="deleteTransaction(transaction.uuid)">
                   <q-item-section>
                     <q-item-label>Delete</q-item-label>
                   </q-item-section>
@@ -85,6 +85,7 @@
             :currencyListLoaded="currencyListLoaded"
             :ratesList="ratesList"
             :userList="userList"
+            :fetchBudgetPlan="fetchBudgetPlan"
             :updateTransaction="updateTransaction"
             @close="editMode = false"/>
         </div>
@@ -101,6 +102,7 @@
       :currencyListLoaded="currencyListLoaded"
       :ratesList="ratesList"
       :userList="userList"
+      :fetchBudgetPlan="fetchBudgetPlan"
       :updateTransaction="updateTransaction"
       @closeForm="editForm = false"
     />
@@ -159,6 +161,7 @@ export default defineComponent({
     ratesList: { type: Array as PropType<Array<Rate>>, required: true },
     selectedCurrencies: { type: Array as PropType<Array<any>>, required: true },
     userList: { type: Array, required: true },
+    fetchBudgetPlan: { type: Function, required: true },
     updateTransaction: { type: Function, required: true },
     deleteTransaction: { type: Function, required: true },
     transaction: { type: Object as PropType<Transaction>, required: true },

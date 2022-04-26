@@ -37,7 +37,7 @@
                     <q-item-label>Edit</q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
+                <q-item clickable v-close-popup @click="deleteTransaction(transaction.uuid)">
                   <q-item-section>
                     <q-item-label>Delete</q-item-label>
                   </q-item-section>

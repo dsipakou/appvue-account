@@ -149,7 +149,7 @@ export default {
     ]),
 
     categories() {
-      return this.categoryList.filter((item) => item.isParent);
+      return this.categoryList.filter((item) => !item.parent && !item.isIncome);
     },
 
     selectMonthOptions() {

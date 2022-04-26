@@ -70,10 +70,10 @@ const actions = {
     }
   },
 
-  async deleteTransaction({ commit }: any, id: number) {
-    const response = await deleteTransaction(id);
+  async deleteTransaction({ commit }: any, uuid: string) {
+    const response = await deleteTransaction(uuid);
     if (response.status === 204) {
-      commit('deleteTransaction', id);
+      commit('deleteTransaction', uuid);
     }
   },
 
@@ -137,8 +137,8 @@ const mutations = {
     state.transactions.items.unshift({ ...transaction });
   },
 
-  deleteTransaction(state: any, id: number) {
-    state.transactions.items = state.transactions.items.filter((user: any) => user.id !== id);
+  deleteTransaction(state: any, uuid: string) {
+    state.transactions.items = state.transactions.items.filter((user: any) => user.uuid !== uuid);
   },
 
   updateTransaction(state: any, newItem: any) {

@@ -124,7 +124,7 @@ export const updateTransaction = async ({
   return response;
 };
 
-export const deleteTransaction = async (id: number) => {
-  const response = await deleteRequest('transactions/', { id });
+export const deleteTransaction = async (uuid: string) => {
+  const response = await deleteRequest(`transactions/${uuid}/`);
   return response;
 };

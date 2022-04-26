@@ -15,6 +15,7 @@ import {
 const state = {
   selectedMonth: startOfDay(new Date()),
   usage: [],
+  weeklyUsage: [],
   plan: [],
   budgetToggle: BudgetToggle.Monthly,
   isLoading: false,
@@ -110,6 +111,11 @@ const mutations = {
   },
 
   setStatusUpdate(state: any, item: any) {
+    state.weeklyUsage = state.weeklyUsage.map((usageItem: any) => (
+      usageItem.uuid === item.uuid
+        ? { ...usageItem, isCompleted: item.isCompleted }
+        : usageItem
+    ));
     state.plan = state.plan.map((plan: any) => (
       plan.id === item.id
         ? { ...plan, isCompleted: !plan.isCompleted }

@@ -93,11 +93,11 @@ export const createTransaction = async ({
 };
 
 interface UpdateTransactionRequest extends CreateTransactionRequest {
-  id: number,
+  uuid: string,
 }
 
 export const updateTransaction = async ({
-  id,
+  uuid,
   user,
   category,
   amount,
@@ -108,9 +108,8 @@ export const updateTransaction = async ({
   type,
   description,
 }: UpdateTransactionRequest) => {
-  const response = await patchRequest('transactions/',
+  const response = await patchRequest(`transactions/${uuid}/`,
     {
-      id,
       user,
       category,
       amount,

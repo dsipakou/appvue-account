@@ -63,7 +63,7 @@ const actions = {
     commit('selectCurrency', payload);
   },
 
-  async selectCurrencyRange({ commit }: any, payload: Range) {
+  async selectCurrencyRange({ commit }: any, payload: string) {
     commit('setRange', payload);
   },
 };
@@ -107,7 +107,7 @@ const mutations = {
     state.currencies.status = status;
   },
 
-  setRange(state: any, range: Range) {
+  setRange(state: any, range: string) {
     state.currencies.range = range;
   },
 };

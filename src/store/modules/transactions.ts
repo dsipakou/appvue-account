@@ -138,12 +138,14 @@ const mutations = {
   },
 
   deleteTransaction(state: any, uuid: string) {
-    state.transactions.items = state.transactions.items.filter((user: any) => user.uuid !== uuid);
+    state.transactions.items = state.transactions.items.filter(
+      (transaction: any) => transaction.uuid !== uuid,
+    );
   },
 
   updateTransaction(state: any, newItem: any) {
     state.transactions.items = state.transactions.items.map((item: any) => {
-      if (item.id === newItem.id) {
+      if (item.uuid === newItem.uuid) {
         return newItem;
       }
       return item;

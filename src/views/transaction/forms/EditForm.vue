@@ -7,14 +7,15 @@
 
     <q-separator />
     <q-card-section>
-      <q-select outlined map-options
+      <q-select outlined map-options emit-value
         v-model="input.user"
         :options="userList"
         option-value="uuid"
-        option-label="username" label="User" />
+        option-label="username"
+        label="User" />
     </q-card-section>
     <q-card-section>
-      <q-select outlined map-options
+      <q-select outlined map-options emit-value
         v-model="input.account"
         :options="accountList"
         option-value="uuid"
@@ -22,7 +23,7 @@
         label="Account" />
     </q-card-section>
     <q-card-section>
-      <q-select outlined map-options
+      <q-select outlined map-options emit-value
         v-model="input.category"
         :options="input.type === 'income' ? systemCategories : categories"
         option-value="uuid"
@@ -30,7 +31,6 @@
         label="Category" />
     </q-card-section>
     <q-card-section>
-      {{ currentWeekBudget }}
       <q-select
         outlined
         label="Budget items"
@@ -165,14 +165,13 @@ export default {
     update() {
       const transaction = {
         uuid: this.input.uuid,
-        user: this.input.user.uuid,
-        category: this.input.category.uuid,
-        budget: this.input.budget?.uuid,
+        user: this.input.user,
+        category: this.input.category,
+        budget: this.input.budget,
         amount: this.input.amount.toString(),
         currency: this.input.currency.uuid,
-        account: this.input.account.uuid,
+        account: this.input.account,
         transactionDate: this.input.transactionDate,
-        type: this.input.type,
         description: this.input.description,
       };
       this.updateTransaction(transaction);
@@ -239,14 +238,14 @@ export default {
 
   mounted() {
     this.input.uuid = this.transaction.uuid;
-    this.input.user = this.getUser(this.transaction.user);
+    this.input.user = this.transaction.user;
     this.input.budget = this.getBudget(this.transaction.budget);
-    this.input.category = this.getCategory(this.transaction.category);
+    this.input.category = this.transaction.category;
     this.input.amount = this.transaction.amount;
-    this.input.account = this.getAccount(this.transaction.account);
+    this.input.account = this.transaction.account;
     this.input.transactionDate = this.transaction.transactionDate.substr(0, 10);
-    this.input.type = this.transaction.type;
     this.input.description = this.transaction.description;
+    console.log(this.transaction);
   },
 };
 </script>

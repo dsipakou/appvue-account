@@ -31,9 +31,9 @@ const actions = {
     }
   },
 
-  async fetchChartData({ commit }: any) {
+  async fetchChartData({ commit }: any, range: number = 30) {
     commit('setRatesLoading', true);
-    const response = await getRateChartData(30);
+    const response = await getRateChartData(range);
     if (response.status === 200) {
       const body = await response.json();
       commit('setRatesChartData', body);

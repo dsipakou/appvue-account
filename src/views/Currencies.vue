@@ -11,13 +11,22 @@
       </div>
     </div>
     <div class="row col-12 chart-area">
-      <div class="row col-8">
-        <div class="row justify-between chart-buttons">
-          <div class="range-button active-range-button">30 days</div>
-          <div class="range-button inactive-range-button">90 days</div>
-          <div class="range-button inactive-range-button">180 days</div>
-          <div class="range-button inactive-range-button">1 year</div>
+      <div class="row col-8 justify-center">
+        <div>
+          <q-btn-group flat>
+            <q-btn no-caps
+              class="range-button"
+              v-for="item in rangeLabels"
+              :key="item.value"
+              :label="item.label"
+              :class="currencyRange === item.value
+                ? 'active-range-button'
+                : 'inactive-range-button'"
+              @click="selectCurrencyRange(item.value)"
+              />
+          </q-btn-group>
         </div>
+
         <CurrencyChart
           style="height: 300px;"
           :ratesList="ratesList"
@@ -78,21 +87,15 @@
         :deleteCurrency="deleteCurrency"
         @closeForm="confirmForm = false" />
     </q-dialog>
-    <div class="row">
-      <q-select map-options
-        v-model="rangeSelect"
-        label="Period"
-        :options="rangeOptions"
-        class="col-2" />
-    </div>
   </div>
 </template>
+
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
 import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
-import { ChartRange } from '@/store/constants';
+import { ChartRange, rangeLabels } from '@/store/constants';
 import AddForm from '@/views/currency/forms/AddForm.vue';
 import EditForm from '@/views/currency/forms/EditForm.vue';
 import ConfirmForm from '@/views/currency/forms/ConfirmForm.vue';
@@ -133,17 +136,7 @@ export default defineComponent({
       createForm: ref(false),
       editForm: ref(false),
       confirmForm: ref(false),
-      rangeSelect: ref(null),
-      rangeOptions: [
-        {
-          value: ChartRange.Month,
-          label: '30 days',
-        },
-        {
-          value: ChartRange.Quater,
-          label: '90 days',
-        },
-      ],
+      rangeLabels,
     };
   },
 
@@ -230,24 +223,16 @@ export default defineComponent({
     },
   },
 
-  watch: {
-    rangeSelect(data) {
-      if (data) {
-        this.selectCurrencyRange(data.value);
-        this.selectedRange = data.value;
-      }
-    },
-  },
-
   beforeMount() {
     this.fetchCurrencies();
-    this.fetchChartData();
     this.fetchRates();
-    this.fetchChartData();
+    this.fetchChartData(this.currencyRange);
   },
 
-  mounted() {
-    this.rangeSelect = this.currencyRange;
+  watch: {
+    currencyRange() {
+      this.fetchChartData(this.currencyRange);
+    },
   },
 });
 </script>
@@ -266,8 +251,10 @@ export default defineComponent({
   align-items: center;
   height: 33px;
   width: 132px;
-  border-radius: 5px;
+  border-radius: 5px !important;
   font-size: 16px;
+  color: #047A94;
+  margin: 0 20px;
 }
 
 .inactive-range-button {
@@ -280,7 +267,7 @@ export default defineComponent({
 }
 
 .active-range-button {
-  background-color: #047A94;
-  color: white;
+  background-color: #047A94 !important;
+  color: white !important;
 }
 </style>

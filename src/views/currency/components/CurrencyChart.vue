@@ -47,7 +47,7 @@ export default defineComponent({
     currencyList: { type: Array as PropType<Array<Currency>>, required: true },
     data: { type: Array as PropType<Array<RateDetails>>, required: true },
     selectedCurrencies: { type: Array as PropType<Array<string>>, required: true },
-    range: { type: String as PropType<ChartRange>, default: ChartRange.Month },
+    range: { type: Number as PropType<ChartRange>, default: ChartRange.Month },
   },
 
   data() {
@@ -84,7 +84,6 @@ export default defineComponent({
           (details: RateDetails) => details.currencyUuid === currencyUuid,
         );
         const data = rateDetails?.data.map((item: RateItem) => item.rate).reverse();
-        console.log(data);
         const { code } = this.currencyList.find((item: Currency) => item.uuid === currencyUuid)!;
         const borderColor = ColorMapping[code] || 'black';
         const chartItem = {

@@ -1,5 +1,11 @@
 <template>
   <div class="q-pa-md">
+    <q-btn rounded
+      color="primary"
+      class="btn-add fixed"
+      icon="add"
+      @click="ratesForm = true"
+    />
     <div class="row col-12">
       <div v-for="currency in notBaseCurrencies" :key="currency.uuid">
         <CurrencyCard
@@ -11,7 +17,7 @@
       </div>
     </div>
     <div class="row col-12 chart-area">
-      <div class="row col-8 justify-center">
+      <div class="row col-12 justify-center">
         <div>
           <q-btn-group flat>
             <q-btn no-caps
@@ -35,9 +41,6 @@
           :selectedCurrencies="selectedCurrencies"
           :range="selectedRange" />
       </div>
-      <div class="row col-4">
-        <q-date v-model="selectedDays" multiple mask="YYYY-MM-DD"></q-date>
-      </div>
     </div>
     <div class="row justify-center">
       <q-btn rounded
@@ -52,23 +55,6 @@
         @click="createForm = true">
         Add currency
       </q-btn>
-    </div>
-    <div class="row justify-center q-mt-lg">
-      <div class="col-6">
-        <div class="column">
-          Base currency: {{ baseCurrency?.verbalName }}
-          <q-btn no-caps dense rounded style="width: 40px;" label="Edit"></q-btn>
-          <div class="row justify-start" v-for="currency in notBaseCurrencies" :key="currency.uuid">
-            <CurrencyItem
-              :currency="currency"
-              :createRate="createRate"
-              @save="save($event)"
-              @edit="edit($event)"
-              @remove="remove($event)"
-            />
-          </div>
-        </div>
-      </div>
     </div>
     <q-dialog v-model="createForm">
       <AddForm
@@ -87,6 +73,16 @@
         :deleteCurrency="deleteCurrency"
         @closeForm="confirmForm = false" />
     </q-dialog>
+    <q-dialog v-model="ratesForm">
+      <RatesForm
+        :currencies="currencyList"
+        :rateListOnDate="rateListOnDate"
+        :isRatesListLoading="isRatesListLoading"
+        :createRate="createRate"
+        :updateRate="updateRate"
+        :fetchRatesOnDate="fetchRatesOnDate"
+        @closeForm="ratesForm = false" />
+    </q-dialog>
   </div>
 </template>
 
@@ -98,8 +94,8 @@ import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
 import { ChartRange, rangeLabels } from '@/store/constants';
 import AddForm from '@/views/currency/forms/AddForm.vue';
 import EditForm from '@/views/currency/forms/EditForm.vue';
+import RatesForm from '@/views/currency/forms/RatesForm.vue';
 import ConfirmForm from '@/views/currency/forms/ConfirmForm.vue';
-import CurrencyItem from '@/views/currency/components/CurrencyItem.vue';
 import CurrencyCard from '@/views/currency/components/CurrencyCard.vue';
 import { Currency, Rate } from '@/types';
 import { getRate } from '../service';
@@ -111,8 +107,8 @@ export default defineComponent({
     CurrencyChart,
     AddForm,
     EditForm,
+    RatesForm,
     ConfirmForm,
-    CurrencyItem,
     CurrencyCard,
   },
 
@@ -135,6 +131,7 @@ export default defineComponent({
       selectedRange: ref(ChartRange.Month),
       createForm: ref(false),
       editForm: ref(false),
+      ratesForm: ref(false),
       confirmForm: ref(false),
       rangeLabels,
     };
@@ -146,6 +143,7 @@ export default defineComponent({
       'selectedCurrencies',
       'currencyRange',
       'ratesList',
+      'rateListOnDate',
       'ratesChartData',
       'isCurrencyListLoading',
       'isRatesListLoading',
@@ -163,11 +161,13 @@ export default defineComponent({
   methods: {
     ...mapActions([
       'createRate',
+      'updateRate',
       'createCurrency',
       'updateCurrency',
       'deleteCurrency',
       'fetchCurrencies',
       'fetchRates',
+      'fetchRatesOnDate',
       'fetchChartData',
       'selectCurrency',
       'selectCurrencyRange',
@@ -202,20 +202,6 @@ export default defineComponent({
         }));
       }));
       this.ratesInProgress = false;
-    },
-
-    edit(currency: Currency) {
-      this.selectedCurrency = currency;
-      this.editForm = true;
-    },
-
-    remove(currency: Currency) {
-      this.selectedCurrency = currency;
-      this.confirmForm = true;
-    },
-
-    save(data: any) {
-      console.log(`Saved! - ${data}`);
     },
 
     getLastRateForCurrency(currencyUuid: string) {
@@ -269,5 +255,13 @@ export default defineComponent({
 .active-range-button {
   background-color: #047A94 !important;
   color: white !important;
+}
+
+.btn-add {
+  width: 55px !important;
+  height: 55px !important;
+  right: 30px;
+  bottom: 30px;
+  z-index: 10;
 }
 </style>

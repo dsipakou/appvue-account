@@ -32,7 +32,6 @@
               />
           </q-btn-group>
         </div>
-
         <CurrencyChart
           style="height: 300px;"
           :ratesList="ratesList"

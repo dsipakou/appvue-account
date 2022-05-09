@@ -62,7 +62,6 @@
         @closeForm="createForm = false"
       />
     </q-dialog>
-    {{ fetchBudgetPlan }}
     <q-dialog v-model="editForm">
       <EditForm
         :transaction="editedTransaction"

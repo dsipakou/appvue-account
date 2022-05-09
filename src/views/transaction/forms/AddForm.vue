@@ -147,8 +147,8 @@ export default defineComponent({
   },
 
   methods: {
-    getBudget(id: number): Budget {
-      return this.budgetPlan.find((item: any) => item.id === id) as Budget;
+    getBudget(uuid: string): Budget {
+      return this.budgetPlan.find((item: any) => item.uuid === uuid) as Budget;
     },
 
     getCategory(uuid: string) {

@@ -4,6 +4,7 @@ import { getDate, getMonth, getYear } from 'date-fns';
 import {
   getTransactions,
   getGroupedTransactions,
+  getGroupedByParentTransactions,
   deleteTransaction,
   updateTransaction,
   createTransaction,
@@ -21,6 +22,11 @@ const state = {
     status: itemStatus.INIT,
   },
 
+  groupedByParent: {
+    categoryName: '',
+    items: [],
+  },
+
   archive: {
     month: getMonth(new Date()) + 1,
     day: getDate(new Date()),
@@ -36,6 +42,7 @@ const state = {
 const getters = {
   transactionList: (state: any) => state.transactions.items,
   groupedTransactionList: (state: any) => state.groupedTransactions.items,
+  groupedByParentTransactionsList: (state: any) => state.groupedByParent,
   transactionListLoaded: (state: any) => state.transactions.status === itemStatus.LOADED,
   transactionArchive: (state: any) => state.archive,
   transactionLastAdded: (state: any) => state.lastAdded,
@@ -60,6 +67,17 @@ const actions = {
       commit('setGroupedTransactions', body);
     }
     commit('setGroupedTransactionsStatus', itemStatus.LOADED);
+  },
+
+  async fetchGroupedByParentTransaction(
+    { commit }: any,
+    payload: { dateFrom: string, dateTo: string},
+  ) {
+    const response = await getGroupedByParentTransactions(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setGroupedByParent', body);
+    }
   },
 
   async createTransaction({ commit }: any, payload: any) {
@@ -113,6 +131,10 @@ const mutations = {
 
   setGroupedTransactions(state: any, amounts: any) {
     state.groupedTransactions.items = amounts;
+  },
+
+  setGroupedByParent(state: any, payload: any) {
+    state.groupedByParent = payload;
   },
 
   setArchiveDay(state: any, day: any) {

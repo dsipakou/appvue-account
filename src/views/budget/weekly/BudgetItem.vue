@@ -1,7 +1,7 @@
 <template>
   <q-card flat bordered
     :style="cardBackground"
-    class="row main-card">
+    class="row main-card" >
     <div v-show="getActualDay === 0" class="absolute-left current-indicator"></div>
     <div class="row col-12 justify-center">
       <span class="header">{{ item.title }}</span>

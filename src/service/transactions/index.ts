@@ -41,6 +41,19 @@ export const getGroupedTransactions = async ({
   return response;
 };
 
+interface GroupedByParentTransactionRequest {
+  dateFrom: string,
+  dateTo: string,
+}
+
+export const getGroupedByParentTransactions = async ({
+  dateFrom,
+  dateTo,
+}: GroupedByParentTransactionRequest) => {
+  const response = await getRequest(`transactions/grouped?dateFrom=${dateFrom}&dateTo=${dateTo}`);
+  return response;
+};
+
 interface TransferRequest {
   userId: number,
 }

@@ -105,7 +105,7 @@ export default {
     },
 
     remove() {
-      this.deleteBudget(this.input.id);
+      this.deleteBudget(this.input.uuid);
       this.$emit('closeForm');
     },
 

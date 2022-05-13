@@ -22,10 +22,7 @@ const state = {
     status: itemStatus.INIT,
   },
 
-  groupedByParent: {
-    categoryName: '',
-    items: [],
-  },
+  groupedByParent: [],
 
   archive: {
     month: getMonth(new Date()) + 1,

@@ -17,7 +17,7 @@
             </q-chip>
           </div>
           <div class="col">
-            {{ getBudgetName(transaction.budgetId) }}
+            {{ getBudgetName(transaction.budget) }}
           </div>
           <div class="col self-center items-end">
             <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
@@ -149,7 +149,7 @@ export default defineComponent({
         const defaultCurrency = this.currencyList.find((item) => item.isBase);
         const objDefault: ShortTransaction = {
           uuid: transaction.currency,
-          baseAmount: transaction.baseAmount.toFixed(2),
+          baseAmount: transaction.spentInBaseCurrency.toFixed(2),
           sign: defaultCurrency!.sign,
         } as ShortTransaction;
 
@@ -159,7 +159,7 @@ export default defineComponent({
           const rate = this.getRate(currency.uuid, transaction.transactionDate);
           const obj = {
             uuid: currency!.value,
-            baseAmount: rate ? (transaction.baseAmount / rate.rate).toFixed(2) : '-',
+            baseAmount: rate ? (transaction.spentInBaseCurrency / rate.rate).toFixed(2) : '-',
             sign: currency!.sign,
           } as ShortTransaction;
 
@@ -180,7 +180,9 @@ export default defineComponent({
 
     getBudgetName(budgetUuid: string | undefined): string {
       if (budgetUuid) {
-        const budget: Budget | undefined = this.budgetList.find((item) => item.uuid === budgetUuid);
+        const budget: Budget | undefined = this.budgetList?.find(
+          (item) => item.uuid === budgetUuid,
+        );
         if (budget) {
           return budget.title;
         }

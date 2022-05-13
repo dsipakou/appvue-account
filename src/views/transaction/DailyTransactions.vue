@@ -200,6 +200,7 @@ export default {
 
   mounted() {
     this.updateDateInputs();
+    console.log(this.groupedByParentTransactionsList);
     this.activeDay = this.transactionArchive.day;
     this.activeMonth = this.months.find((item) => item.id === this.transactionArchive.month);
     this.activeYear = this.years.find((item) => item.id === this.transactionArchive.year);

@@ -17,7 +17,7 @@
             </q-chip>
           </div>
           <div class="col">
-            {{ getBudgetName(transaction.budgetId) }}
+            {{ getBudgetName(transaction.budget) }}
           </div>
           <div class="col self-center items-end">
             <div v-for="amount in transactionCurrencyList(transaction)" :key="amount.id">
@@ -37,7 +37,7 @@
                     <q-item-label>Edit</q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
+                <q-item clickable v-close-popup @click="deleteTransaction(transaction.uuid)">
                   <q-item-section>
                     <q-item-label>Delete</q-item-label>
                   </q-item-section>
@@ -84,7 +84,7 @@ interface InputData {
 }
 
 interface ShortTransaction {
-  id: number,
+  uuid: string,
   baseAmount: string,
   sign: string,
 }
@@ -148,18 +148,18 @@ export default defineComponent({
       if (this.currencyListLoaded) {
         const defaultCurrency = this.currencyList.find((item) => item.isBase);
         const objDefault: ShortTransaction = {
-          id: transaction.currencyId,
-          baseAmount: transaction.baseAmount.toFixed(2),
+          uuid: transaction.currency,
+          baseAmount: transaction.spentInBaseCurrency.toFixed(2),
           sign: defaultCurrency!.sign,
         } as ShortTransaction;
 
         currencies.push(objDefault);
 
         Object.values(this.selectedCurrencies).forEach((currency) => {
-          const rate = this.getRate(currency.id, transaction.transactionDate);
+          const rate = this.getRate(currency.uuid, transaction.transactionDate);
           const obj = {
-            id: currency!.value,
-            baseAmount: rate ? (transaction.baseAmount / rate.rate).toFixed(2) : '-',
+            uuid: currency!.value,
+            baseAmount: rate ? (transaction.spentInBaseCurrency / rate.rate).toFixed(2) : '-',
             sign: currency!.sign,
           } as ShortTransaction;
 
@@ -170,17 +170,19 @@ export default defineComponent({
       return currencies;
     },
 
-    getRate(id: number, date: string): Rate | undefined {
+    getRate(uuid: string, date: string): Rate | undefined {
       return this.ratesList.find((item) => {
         const transactionDate = moment(date).startOf('day');
         const rateDate = moment(item.rateDate).startOf('day');
-        return transactionDate.isSame(rateDate) && item.currencyId === id;
+        return transactionDate.isSame(rateDate) && item.currency === uuid;
       });
     },
 
-    getBudgetName(budgetId: number | undefined): string {
-      if (budgetId) {
-        const budget: Budget | undefined = this.budgetList.find((item) => item.id === budgetId);
+    getBudgetName(budgetUuid: string | undefined): string {
+      if (budgetUuid) {
+        const budget: Budget | undefined = this.budgetList?.find(
+          (item) => item.uuid === budgetUuid,
+        );
         if (budget) {
           return budget.title;
         }

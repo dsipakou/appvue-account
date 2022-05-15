@@ -94,7 +94,7 @@ export default {
 
   methods: {
     ...mapActions([
-      'fetchBudgetUsage',
+      'fetchMonthlyUsage',
       'fetchCategories',
       'createBudget',
       'updateBudget',
@@ -141,7 +141,7 @@ export default {
   beforeMount() {
     const dateFrom = `${moment().format('YYYY-MM')}-01`;
     const dateTo = `${moment().add(1, 'month').format('YYYY-MM')}-01`;
-    this.fetchBudgetUsage({ dateFrom, dateTo });
+    this.fetchMonthlyUsage({ dateFrom, dateTo });
     this.fetchCategories();
   },
 

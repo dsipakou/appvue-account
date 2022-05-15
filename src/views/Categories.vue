@@ -4,25 +4,20 @@
       <div class="header">
         <span>Your categories</span>
         <div>
-          <q-btn
-            rounded
+          <q-btn rounded unelevated
             color="primary"
             icon="add"
-            unelevated
             @click="add()">
             Add category
           </q-btn>
         </div>
       </div>
     </div>
-    <div class="categories-block" v-for="parent in parentCategories" :key="parent.id">
+    <div class="categories-block" v-for="parent in parentCategories" :key="parent.uuid">
       <div class="row justify-left">
         <div class="q-my-sm col-2 categories-block--main">
-          <q-card
-            v-ripple
+          <q-card v-ripple bordered flat
             class="q-hoverable cursor-pointer parent-card"
-            bordered
-            flat
             @click="edit(parent)">
             <div tabindex="-1" class="q-focus-helper"></div>
             {{ parent.name }}
@@ -31,7 +26,7 @@
         </div>
         <div
           class="col-2 categories-block--child"
-          v-for="child in categoryByParent(parent.name)"
+          v-for="child in categoryByParent(parent.uuid)"
           :key="child.name">
           <q-card
             v-ripple
@@ -86,7 +81,7 @@
     </q-dialog>
     <q-dialog v-model="updateForm">
       <q-card>
-        <input type="hidden" v-model="input.id" />
+        <input type="hidden" v-model="input.uuid" />
         <q-card-section>
           <h4>
             {{ formTitle }}
@@ -153,8 +148,7 @@ export default {
       formTitle: '',
       input: {
         name: '',
-        parentName: '',
-        isParent: false,
+        parentUuid: null,
       },
     };
   },
@@ -172,44 +166,40 @@ export default {
     create() {
       const category = {
         name: this.input.name,
-        parentName: this.input.isParent ? '' : this.input.parentName.label || this.input.parentName,
-        isParent: this.input.isParent,
+        parentUuid: this.input.parentUuid,
       };
       this.createCategory(category);
       this.createForm = false;
     },
 
     edit(category) {
+      console.log(category);
       this.currentCategory = category;
-      this.formTitle = category.parentName
-        ? `${category.name} (${category.parentName})`
-        : `${category.name}`;
-      this.input.id = category.id;
+      this.formTitle = category.name;
+      this.input.uuid = category.uuid;
       this.input.name = category.name;
-      this.input.parentName = category.parentName;
-      this.input.isParent = category.isParent;
+      this.input.parentUuid = category.parentUuid;
       this.updateForm = true;
     },
 
     update() {
       const category = {
-        id: this.input.id,
+        id: this.input.uuid,
         name: this.input.name,
-        parentName: this.input.isParent ? '' : this.input.parentName.label || this.input.parentName,
-        isParent: this.input.isParent,
-        isSystem: false,
+        parent: this.input.parent,
+        isIncome: false,
       };
       this.updateCategory(category);
       this.updateForm = false;
     },
 
     remove() {
-      this.deleteCategory(this.input.id);
+      this.deleteCategory(this.input.uuid);
       this.updateForm = false;
     },
 
-    categoryByParent(parentCategory) {
-      return this.categoryList.filter((item) => item.parentName === parentCategory);
+    categoryByParent(parentUuid) {
+      return this.categoryList.filter((item) => item.parent === parentUuid);
     },
   },
   computed: {
@@ -218,19 +208,20 @@ export default {
     ]),
 
     isAllowedToSave() {
+      console.log('isAllowedHere');
       return (
         !this.categoryList.some((item) => (
           item.name === this.input.name
-          && (item.parentName === this.input.parentName
-            || item.parentName === this.input.parentName?.label)
+          && (item.parentUuid === this.input.parentUuid
+            || item.parent === this.input.parent?.label)
           && item.isParent === this.input.isParent
         ))
-        && !(!this.input.isParent && !this.input.parentName)
+        && !!this.input.parent
       );
     },
     parentCategories() {
       return this.categoryList.filter((item) => (
-        item.parentName === '' && !item.isSystem
+        item.parent === null && !item.is_income
       )).sort((a, b) => {
         const left = a.name;
         const right = b.name;
@@ -248,7 +239,7 @@ export default {
       return this.parentCategories.map((item) => {
         const obj = {};
         obj.label = item.name;
-        obj.value = item.id;
+        obj.value = item.uuid;
         return obj;
       });
     },

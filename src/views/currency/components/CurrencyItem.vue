@@ -1,27 +1,21 @@
 <template>
   <div class="row">
-    <div class="col-3">
-      <q-input outlined stack-label dense
-        type="date"
-        label="Date"
-        v-model="currencyDate"
-      />
-    </div>
-    <div class="col-1">
+    <div class="row col-6">
       <q-input dense
         mask="#.####"
         :rules="[ val => val.length > 5 || 'Should be #.#### number']"
-        v-model="currencyRate" />
-    </div>
-    <div>
-      <q-btn dense no-caps flat label="Save" @click="save()" />
-      <q-btn dense no-caps flat label="Edit" @click="edit()" />
-      <q-btn dense no-caps flat label="Delete" @click="remove()" />
+        v-model="rate" >
+        <template v-slot:prepend>
+          {{ currency.sign }}
+        </template>
+      </q-input>
     </div>
   </div>
 </template>
+
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, PropType } from 'vue';
+import { Rate } from '@/types';
 
 export default defineComponent({
   name: 'CurrencyItem',
@@ -30,26 +24,42 @@ export default defineComponent({
 
   setup() {
     return {
-      currencyDate: ref(''),
-      currencyRate: ref(''),
+      rate: ref(''),
     };
   },
 
   props: {
     currency: { type: Object, required: true },
+    currencyDate: { type: String },
+    rateListOnDate: { type: Array as PropType<Array<Rate>>, required: true },
     createRate: { type: Function, required: true },
+    updateRate: { type: Function, required: true },
+  },
+
+  computed: {
+    rateOnDate() {
+      return this.rateListOnDate.find((item: Rate) => item.currency === this.currency.uuid);
+    },
   },
 
   methods: {
     save() {
-      if (this.currencyDate && this.currencyRate.length > 5) {
-        this.createRate({
-          currencyId: this.currency.id,
-          rateDate: this.currencyDate,
-          rate: this.currencyRate,
-        });
+      if (this.currencyDate && this.rate.length > 5) {
+        if (this.rateOnDate) {
+          if (Number(this.rate) !== this.rateOnDate.rate) {
+            this.updateRate({
+              uuid: this.rateOnDate.uuid,
+              rate: Number(this.rate),
+            });
+          }
+        } else {
+          this.createRate({
+            currency: this.currency.uuid,
+            rateDate: this.currencyDate,
+            rate: Number(this.rate),
+          });
+        }
       }
-      this.$emit('save');
     },
 
     edit() {
@@ -58,6 +68,16 @@ export default defineComponent({
 
     remove() {
       this.$emit('remove', this.currency);
+    },
+  },
+
+  watch: {
+    rateListOnDate() {
+      if (this.rateOnDate) {
+        this.rate = this.rateOnDate.rate.toString().padEnd(6, '0');
+      } else {
+        this.rate = '';
+      }
     },
   },
 });

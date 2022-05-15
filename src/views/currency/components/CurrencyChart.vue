@@ -15,16 +15,20 @@ import {
 } from 'vue';
 import { LineChart } from 'vue-chart-3';
 import { Chart, registerables } from 'chart.js';
-import { format } from 'date-fns';
 import { ChartRange } from '@/store/constants';
 import { Rate, Currency } from '@/types';
 
-Chart.register(...registerables);
+interface RateItem {
+    rateDate: string,
+    rate: number,
+}
 
-const RangeMapping = {
-  [ChartRange.Month]: 30,
-  [ChartRange.Quater]: 90,
-};
+interface RateDetails {
+    currencyUuid: string,
+    data: RateItem[],
+}
+
+Chart.register(...registerables);
 
 const ColorMapping: { [key: string]: string } = {
   USD: 'rgba(54, 162, 235, 0.8)',
@@ -41,8 +45,9 @@ export default defineComponent({
   props: {
     ratesList: { type: Array as PropType<Array<Rate>>, required: true },
     currencyList: { type: Array as PropType<Array<Currency>>, required: true },
+    data: { type: Array as PropType<Array<RateDetails>>, required: true },
     selectedCurrencies: { type: Array as PropType<Array<string>>, required: true },
-    range: { type: String as PropType<ChartRange>, default: ChartRange.Month },
+    range: { type: Number as PropType<ChartRange>, default: ChartRange.Month },
   },
 
   data() {
@@ -59,26 +64,27 @@ export default defineComponent({
 
   computed: {
     currencyIds() {
-      const ids: number[] = [];
+      const uuids: string[] = [];
 
       this.selectedCurrencies.forEach((currency: string) => {
-        const currencyId = this.currencyList.find(
+        const currencyUuid = this.currencyList.find(
           (item: Currency) => item.code === currency,
-        )?.id || -1;
+        )?.uuid || '';
 
-        if (currencyId >= 0) ids.push(currencyId);
+        if (currency !== '') uuids.push(currencyUuid);
       });
 
-      return ids;
+      return uuids;
     },
 
     chartData() {
       const dataset: object[] = [];
-      this.currencyIds.forEach((id) => {
-        const data = this.ratesList.filter((item: Rate) => (
-          item.currencyId === id
-        )).map((item: Rate) => item.rate).slice(0, RangeMapping[this.range]).reverse();
-        const { code } = this.currencyList.find((item: Currency) => item.id === id)!;
+      this.currencyIds.forEach((currencyUuid) => {
+        const rateDetails = this.data.find(
+          (details: RateDetails) => details.currencyUuid === currencyUuid,
+        );
+        const data = rateDetails?.data.map((item: RateItem) => item.rate).reverse();
+        const { code } = this.currencyList.find((item: Currency) => item.uuid === currencyUuid)!;
         const borderColor = ColorMapping[code] || 'black';
         const chartItem = {
           data,
@@ -91,11 +97,10 @@ export default defineComponent({
         dataset.push(chartItem);
       });
 
-      return {
-        labels: [...this.ratesList.filter((item: Rate) => (
-          item.currencyId === 7
-        )).map((item: Rate) => format(new Date(item.rateDate), 'yyyy-MM-dd'))].slice(0, RangeMapping[this.range]).reverse(),
+      const chartLabels = this.data[0]?.data.map((item: RateItem) => item.rateDate).reverse();
 
+      return {
+        labels: chartLabels,
         datasets: dataset,
       };
     },

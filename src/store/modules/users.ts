@@ -8,7 +8,7 @@ import {
   LoginPayload,
   SignupPayload,
   ResetUserPayload,
-} from '@/service';
+} from '@/service/users/';
 import idb, { User } from '@/utils/indexDBUtils';
 
 const state = {

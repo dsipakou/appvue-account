@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-md main-container">
     <div class="row q-ma-sm justify-center">
       <q-btn flat no-caps
         class="text-primary text-weight-bold"
@@ -39,7 +39,7 @@
     <div class="row">
       <div class="col-12">
         <TransactionGroupedList
-          :transactions="transactionList"
+          :transactions="groupedByParentTransactionsList"
           :accountList="accountList"
           :budgetList="budgetList"
           :categoryList="categoryList"
@@ -104,6 +104,7 @@ export default {
       'userList',
       'currencyListLoaded',
       'transactionList',
+      'groupedByParentTransactionsList',
       'transactionArchive',
     ]),
   },
@@ -132,6 +133,7 @@ export default {
     ...mapActions([
       'fetchTransactions',
       'fetchCurrencies',
+      'fetchGroupedByParentTransaction',
       'setTransactionArchiveDay',
       'setTransactionArchiveMonth',
       'setTransactionArchiveYear',
@@ -144,8 +146,7 @@ export default {
       const formattedMonth = String(this.transactionArchive.month).padStart(2, '0');
       const formattedDay = String(this.transactionArchive.day).padStart(2, '0');
       const selectedDate = `${this.transactionArchive.year}-${formattedMonth}-${formattedDay}`;
-      this.fetchTransactions({
-        sorting: 'added',
+      this.fetchGroupedByParentTransaction({
         dateFrom: selectedDate,
         dateTo: selectedDate,
       });
@@ -199,6 +200,7 @@ export default {
 
   mounted() {
     this.updateDateInputs();
+    console.log(this.groupedByParentTransactionsList);
     this.activeDay = this.transactionArchive.day;
     this.activeMonth = this.months.find((item) => item.id === this.transactionArchive.month);
     this.activeYear = this.years.find((item) => item.id === this.transactionArchive.year);

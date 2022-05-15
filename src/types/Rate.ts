@@ -1,9 +1,9 @@
 export interface Rate {
-  id: number,
-  currencyId: number,
+  uuid: string,
+  currency: string,
   rate: number,
   rateDate: string,
   description: string,
   createdAt: string,
-  updatedAt: string,
+  modifiedAt: string,
 }

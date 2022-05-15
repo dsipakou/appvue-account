@@ -1,502 +1,58 @@
 /* General requests */
 
-import { IGetBudgetForPeriod } from '@/types/Budget';
+export const BASE_URL = 'http://127.0.0.1:8000';
 
-const getRequest = (url: string) => {
+export const getRequest = (url: string) => {
   const options = {
     method: 'GET',
   };
 
-  return fetch(url, options);
+  return fetch(`${BASE_URL}/${url}`, options);
 };
 
-const postRequest = (url: string, requestBody: object) => {
+export const postRequest = (url: string, requestBody: object) => {
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+  });
+
   const options = {
     method: 'POST',
+    headers,
     mode: 'cors' as RequestMode,
     body: JSON.stringify(requestBody),
   };
 
-  return fetch(url, options);
+  return fetch(`${BASE_URL}/${url}`, options);
 };
 
-const patchRequest = (url: string, requestBody: object) => {
+export const patchRequest = (url: string, requestBody: object) => {
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+  });
+
   const options = {
     method: 'PATCH',
-
+    headers,
     mode: 'cors' as RequestMode,
     body: JSON.stringify(requestBody),
   };
 
-  return fetch(url, options);
+  return fetch(`${BASE_URL}/${url}`, options);
 };
 
-const deleteRequest = (url: string, requestBody: object) => {
+export const deleteRequest = (url: string, requestBody: object = {}) => {
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+  });
+
   const options = {
     method: 'DELETE',
+    headers,
     mode: 'cors' as RequestMode,
     body: JSON.stringify(requestBody),
   };
 
-  return fetch(url, options);
-};
-
-/* Users section */
-
-export interface LoginPayload {
-  email: string,
-  password: string,
-}
-
-export interface SignupPayload {
-  name: string,
-  email: string,
-  password: string,
-}
-
-export interface ResetUserPayload {
-  email: string,
-  password: string,
-}
-
-export const userLogin = async ({ email, password }: LoginPayload) => {
-  const response = await postRequest('http://localhost:9091/api/login', { email, password });
-  return response;
-};
-
-export const getUsers = async () => {
-  const response = await getRequest('http://localhost:9091/api/users');
-  return response;
-};
-
-export const createUser = async ({ name, email, password }: SignupPayload) => {
-  const response = await postRequest('http://localhost:9091/api/users', { name, email, password });
-  return response.json();
-};
-
-export const resetUser = async ({ email, password }: ResetUserPayload) => {
-  const response = await postRequest('http://localhost:9091/api/reset', { email, password });
-  return response;
-};
-
-/* Transactions section */
-
-interface TransactionRequest {
-  sorting: string,
-  limit: string,
-  dateFrom: string,
-  dateTo: string,
-}
-
-export const getTransactions = async ({
-  sorting,
-  limit = '15',
-  dateFrom = '',
-  dateTo = '',
-}: TransactionRequest) => {
-  let queryString = `sorting=${sorting}&limit=${limit}`;
-  if (dateFrom !== '' && dateTo !== '') {
-    queryString += `&dateFrom=${dateFrom}&dateTo=${dateTo}`;
-  }
-  const response = await getRequest(`http://localhost:9091/api/transactions?${queryString}`);
-  return response;
-};
-
-interface GroupedTransactionRequest {
-  dateFrom: string,
-  dateTo: string,
-  currency: string,
-}
-
-export const getGroupedTransactions = async ({
-  dateFrom,
-  dateTo,
-  currency,
-}: GroupedTransactionRequest) => {
-  const response = await getRequest(`http://localhost:9091/api/transactions/month?dateFrom=${dateFrom}&dateTo=${dateTo}&currency=${currency}`);
-  return response;
-};
-
-interface TransferRequest {
-  userId: number,
-}
-
-export const transferBetweenAccounts = async ({
-  userId,
-}: TransferRequest) => {
-  console.log(`Transfered from user ${userId}`);
-};
-
-interface CreateTransactionRequest {
-  userId: number,
-  categoryId: number,
-  amount: number,
-  rate: number,
-  accountId: number,
-  currencyId: number,
-  budgetId: number,
-  transactionDate: number,
-  type: string,
-  description: string,
-}
-export const createTransaction = async ({
-  userId,
-  categoryId,
-  amount,
-  rate,
-  accountId,
-  currencyId,
-  budgetId,
-  transactionDate,
-  type,
-  description,
-}: CreateTransactionRequest) => {
-  const response = await postRequest('http://localhost:9091/api/transactions',
-    {
-      userId,
-      categoryId,
-      amount,
-      rate,
-      accountId,
-      currencyId,
-      budgetId,
-      transactionDate,
-      type,
-      description,
-    });
-
-  return response;
-};
-
-interface UpdateTransactionRequest extends CreateTransactionRequest {
-  id: number,
-}
-
-export const updateTransaction = async ({
-  id,
-  userId,
-  categoryId,
-  amount,
-  currencyId,
-  accountId,
-  budgetId,
-  transactionDate,
-  type,
-  description,
-}: UpdateTransactionRequest) => {
-  const response = await patchRequest('http://localhost:9091/api/transactions',
-    {
-      id,
-      userId,
-      categoryId,
-      amount,
-      currencyId,
-      accountId,
-      budgetId,
-      transactionDate,
-      type,
-      description,
-    });
-  return response;
-};
-
-export const deleteTransaction = async (id: number) => {
-  const response = await deleteRequest('http://localhost:9091/api/transactions', { id });
-  return response;
-};
-
-/* Categories section */
-
-export const getCategories = async () => {
-  const response = await getRequest('http://localhost:9091/api/categories');
-  return response;
-};
-
-interface CreateCategoryRequest {
-  name: string,
-  parentName: string,
-  isParent: boolean,
-}
-
-export const createCategory = async ({ name, parentName, isParent }: CreateCategoryRequest) => {
-  const response = await postRequest('http://localhost:9091/api/categories',
-    {
-      name,
-      parentName,
-      isParent,
-    });
-  return response;
-};
-
-interface UpdateCategoryRequest extends CreateCategoryRequest {
-  id: number,
-  isSystem: boolean,
-}
-
-export const updateCategory = async ({
-  id,
-  name,
-  parentName,
-  isParent,
-  isSystem,
-}: UpdateCategoryRequest) => {
-  const response = await patchRequest('http://localhost:9091/api/categories',
-    {
-      id,
-      name,
-      parentName,
-      isParent,
-      isSystem,
-    });
-  return response;
-};
-
-export const deleteCategory = async (id: number) => {
-  const response = await deleteRequest('http://localhost:9091/api/categories', { id });
-  return response;
-};
-
-/* Accounts section */
-
-export const getAccounts = async () => {
-  const response = await getRequest('http://localhost:9091/api/accounts');
-  return response;
-};
-
-export interface CreateAccountRequest {
-  userId: number,
-  source: string,
-  amount: number,
-  description: string,
-  isMain: boolean
-}
-
-export const createAccount = async ({
-  userId,
-  source,
-  amount,
-  description,
-  isMain,
-}: CreateAccountRequest) => {
-  const response = await postRequest('http://localhost:9091/api/accounts',
-    {
-      userId,
-      source,
-      amount,
-      description,
-      isMain,
-    });
-  return response;
-};
-
-export const deleteAccount = async (id: number) => {
-  const response = await deleteRequest('http://localhost:9091/api/accounts', { id });
-  return response;
-};
-
-interface UpdateAccountRequest extends CreateAccountRequest {
-  id: number
-}
-
-export const updateAccount = async ({
-  id,
-  userId,
-  source,
-  amount,
-  description,
-  isMain,
-}: UpdateAccountRequest) => {
-  const response = await patchRequest('http://localhost:9091/api/accounts',
-    {
-      id,
-      userId,
-      source,
-      amount,
-      description,
-      isMain,
-    });
-  return response;
-};
-
-/* Currencies section */
-
-export const getCurrencies = async () => {
-  const response = await getRequest('http://localhost:9091/api/currencies');
-  return response;
-};
-
-interface CreateCurrencyRequest {
-  code: string,
-  sign: string,
-  verbalName: string,
-  isDefault: boolean,
-  comments: string,
-}
-
-interface UpdateCurrencyRequest {
-  code: string,
-  sign: string,
-  verbalName: string,
-  isDefault: boolean,
-  comments: string,
-  id: number,
-}
-
-export const createCurrency = async ({
-  code,
-  sign,
-  verbalName,
-  isDefault,
-  comments,
-}: CreateCurrencyRequest) => {
-  const response = await postRequest('http://localhost:9091/api/currencies',
-    {
-      code,
-      sign,
-      verbalName,
-      isDefault,
-      comments,
-    });
-  return response;
-};
-
-export const updateCurrency = async ({
-  code,
-  sign,
-  verbalName,
-  isDefault,
-  comments,
-  id,
-}: UpdateCurrencyRequest) => {
-  const response = await patchRequest('http://localhost:9091/api/currencies',
-    {
-      code,
-      sign,
-      verbalName,
-      isDefault,
-      comments,
-      id,
-    });
-  return response;
-};
-
-export const deleteCurrency = async (id: number) => {
-  const response = await deleteRequest('http://localhost:9091/api/currencies', { id });
-  return response;
-};
-
-/* Rates section */
-
-export const getRates = async () => {
-  const response = await getRequest('http://localhost:9091/api/rates');
-  return response;
-};
-
-export interface CreateRateRequest {
-  currencyId: number,
-  rateDate: string,
-  rate: number,
-  description?: string,
-}
-
-export const createRate = async ({
-  currencyId,
-  rateDate,
-  rate,
-  description,
-}: CreateRateRequest) => {
-  const response = await postRequest('http://localhost:9091/api/rates',
-    {
-      currencyId,
-      rateDate,
-      rate: Number(rate),
-      description,
-    });
-  return response;
-};
-
-/* Budget section */
-
-export const getBudget = async () => {
-  const response = await getRequest('http://localhost:9091/api/budget');
-  return response;
-};
-
-export const getBudgetUsage = async (payload: IGetBudgetForPeriod) => {
-  const url = `http://localhost:9091/api/budget/usage?dateFrom=${payload.dateFrom}&dateTo=${payload.dateTo}`;
-  const response = await getRequest(url);
-  return response;
-};
-
-interface CreateBudgetRequest {
-  budgetDate: string,
-  title: string,
-  amount: number,
-  categoryId: number,
-  description: string,
-}
-
-export const createBudget = async ({
-  budgetDate,
-  title,
-  amount,
-  categoryId,
-  description,
-}: CreateBudgetRequest) => {
-  const response = await postRequest('http://localhost:9091/api/budget',
-    {
-      budgetDate,
-      title,
-      categoryId,
-      amount,
-      description,
-    });
-  return response;
-};
-
-interface GetBudgetRequest {
-  dateFrom: string,
-  dateTo: string,
-}
-
-export const getBudgetPlan = async ({
-  dateFrom,
-  dateTo,
-}: GetBudgetRequest) => {
-  const response = await getRequest(`http://localhost:9091/api/budget/planned?dateFrom=${dateFrom}&dateTo=${dateTo}`);
-  return response;
-};
-
-interface UpdateBudgetRequest extends CreateBudgetRequest {
-  id: number,
-  isCompleted: boolean,
-}
-
-export const updateBudget = async ({
-  id,
-  budgetDate,
-  title,
-  amount,
-  categoryId,
-  description,
-  isCompleted,
-}: UpdateBudgetRequest) => {
-  const response = await patchRequest('http://localhost:9091/api/budget',
-    {
-      id,
-      budgetDate,
-      title,
-      amount,
-      categoryId,
-      description,
-      isCompleted,
-    });
-  return response;
-};
-
-export const deleteBudget = async (id: number) => {
-  const response = await deleteRequest('http://localhost:9091/api/budget', { id });
-  return response;
+  return fetch(`${BASE_URL}/${url}`, options);
 };
 
 /* nbrb.by section */

@@ -9,11 +9,11 @@
         class="avatar-container col justify-center">
         <span>{{ account.source }}</span>
         <q-avatar
-          :color="selectedAccountId === account.id ? 'red' : 'red-3'"
+          :color="selectedAccountUuid === account.uuid ? 'red' : 'red-3'"
           size="60px"
           font-size="30px"
           text-color="white"
-          :icon="selectedAccountId === account.id ? 'check' : ''"
+          :icon="selectedAccountUuid === account.uuid ? 'check' : ''"
           @click="selectAccount(account)">
         </q-avatar>
       </div>
@@ -26,7 +26,7 @@ export default {
 
   props: {
     accountList: { type: Array, required: true },
-    selectedAccountId: { type: Number, required: true },
+    selectedAccountUuid: { type: String, required: true },
   },
 
   emits: [

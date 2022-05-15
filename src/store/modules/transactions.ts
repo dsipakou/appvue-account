@@ -4,10 +4,11 @@ import { getDate, getMonth, getYear } from 'date-fns';
 import {
   getTransactions,
   getGroupedTransactions,
+  getGroupedByParentTransactions,
   deleteTransaction,
   updateTransaction,
   createTransaction,
-} from '../../service';
+} from '@/service/transactions';
 import { itemStatus } from '../constants';
 
 const state = {
@@ -20,6 +21,8 @@ const state = {
     items: [],
     status: itemStatus.INIT,
   },
+
+  groupedByParent: [],
 
   archive: {
     month: getMonth(new Date()) + 1,
@@ -36,6 +39,7 @@ const state = {
 const getters = {
   transactionList: (state: any) => state.transactions.items,
   groupedTransactionList: (state: any) => state.groupedTransactions.items,
+  groupedByParentTransactionsList: (state: any) => state.groupedByParent,
   transactionListLoaded: (state: any) => state.transactions.status === itemStatus.LOADED,
   transactionArchive: (state: any) => state.archive,
   transactionLastAdded: (state: any) => state.lastAdded,
@@ -62,6 +66,17 @@ const actions = {
     commit('setGroupedTransactionsStatus', itemStatus.LOADED);
   },
 
+  async fetchGroupedByParentTransaction(
+    { commit }: any,
+    payload: { dateFrom: string, dateTo: string},
+  ) {
+    const response = await getGroupedByParentTransactions(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setGroupedByParent', body);
+    }
+  },
+
   async createTransaction({ commit }: any, payload: any) {
     const response = await createTransaction(payload);
     if (response.status === 201) {
@@ -70,10 +85,10 @@ const actions = {
     }
   },
 
-  async deleteTransaction({ commit }: any, id: number) {
-    const response = await deleteTransaction(id);
+  async deleteTransaction({ commit }: any, uuid: string) {
+    const response = await deleteTransaction(uuid);
     if (response.status === 204) {
-      commit('deleteTransaction', id);
+      commit('deleteTransaction', uuid);
     }
   },
 
@@ -115,6 +130,10 @@ const mutations = {
     state.groupedTransactions.items = amounts;
   },
 
+  setGroupedByParent(state: any, payload: any) {
+    state.groupedByParent = payload;
+  },
+
   setArchiveDay(state: any, day: any) {
     state.archive.day = day;
   },
@@ -137,13 +156,15 @@ const mutations = {
     state.transactions.items.unshift({ ...transaction });
   },
 
-  deleteTransaction(state: any, id: number) {
-    state.transactions.items = state.transactions.items.filter((user: any) => user.id !== id);
+  deleteTransaction(state: any, uuid: string) {
+    state.transactions.items = state.transactions.items.filter(
+      (transaction: any) => transaction.uuid !== uuid,
+    );
   },
 
   updateTransaction(state: any, newItem: any) {
     state.transactions.items = state.transactions.items.map((item: any) => {
-      if (item.id === newItem.id) {
+      if (item.uuid === newItem.uuid) {
         return newItem;
       }
       return item;

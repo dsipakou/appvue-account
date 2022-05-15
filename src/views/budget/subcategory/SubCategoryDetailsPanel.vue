@@ -3,7 +3,7 @@
     class="row main-panel">
     <div class="row col-12">
       <q-icon name="arrow_back" size="33px" class="pointer" @click="closeSubCategory" />
-      <div class="header-title">{{ category.name }}</div>
+      <div class="header-title">{{ title }}</div>
     </div>
     <div class="row col-8">
       <q-timeline color="grey-5" side="right" layout="comfortable" class="timeline">
@@ -31,12 +31,12 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { getWeekOfMonth, getWeeksInMonth } from 'date-fns';
-import { BudgetUsage } from '@/types/Budget';
 import BudgetItem from '@/views/budget/subcategory/components/BudgetItem.vue';
+import { BudgetUsageItem } from '@/types/Budget';
 
 interface Category {
   name: string,
-  items: BudgetUsage[],
+  items: any[],
 }
 
 export default defineComponent({
@@ -52,22 +52,30 @@ export default defineComponent({
   ],
 
   props: {
+    budgets: { type: Array as PropType<Array<BudgetUsageItem>>, required: true },
     category: { type: Object as PropType<Category>, required: true },
     selectedMonth: { type: Date, required: true },
   },
 
   computed: {
+    title(): string {
+      if (this.budgets?.length > 0) return this.budgets[0].title;
+      return '';
+    },
+
     iconBinding(): object {
       return {
         icon: '',
       };
     },
 
-    mergedByBudget(): Array<BudgetUsage> {
-      if (this.category?.items) {
-        return this.category.items.reduce(
-          (acc: Array<BudgetUsage>, item: BudgetUsage) => {
-            const index = acc.findIndex((groupedItem: BudgetUsage) => groupedItem.id === item.id);
+    mergedByBudget(): Array<any> {
+      if (this.budgets) {
+        return this.budgets.reduce(
+          (acc: Array<any>, item: BudgetUsageItem) => {
+            const index = acc.findIndex(
+              (groupedItem: any) => groupedItem.uuid === item.uuid,
+            );
             if (index > -1) {
               acc[index] = {
                 ...acc[index],
@@ -87,10 +95,10 @@ export default defineComponent({
       return [];
     },
 
-    groupedByWeek(): {[key: number]: BudgetUsage[]} {
+    groupedByWeek(): {[key: number]: any[]} {
       if (this.mergedByBudget) {
         return this.mergedByBudget.reduce(
-          (acc: {[key: number]: BudgetUsage[]}, item: BudgetUsage) => {
+          (acc: {[key: number]: any[]}, item: any) => {
             const week = this.getWeek(item.budgetDate);
             const arr = acc[week] || [];
             arr.push(item);
@@ -113,7 +121,7 @@ export default defineComponent({
       this.$emit('closeSubCategory');
     },
 
-    budgetItemClick(item: BudgetUsage) {
+    budgetItemClick(item: any) {
       this.$emit('budgetItemClick', item);
     },
 

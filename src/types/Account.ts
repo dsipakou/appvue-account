@@ -1,10 +1,10 @@
 export interface Account {
-  id: number,
-  userId: number,
+  uuid: string,
+  user: string,
   source: string,
   amount: number,
   description: string,
   isMain: boolean,
   createdAt: string,
-  updatedAt: string,
+  modifiedAt: string,
 }

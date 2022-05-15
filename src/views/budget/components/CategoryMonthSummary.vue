@@ -1,78 +1,60 @@
 <template>
   <div class="container">
     <div class="row title--main">
-     This month
+      This month
     </div>
     <div class="row remains">
-      <span class="number">{{ getDiff(title).toFixed(2) }}</span>
-      <span class="text" v-if="getDiff(title) < 0">over</span>
+      <span class="number">{{ getDiff?.toFixed(2) }}</span>
+      <span class="text" v-if="negativeDiff">over</span>
       <span class="text" v-else>left</span>
     </div>
     <div class="row">
       <q-linear-progress
         size="50px"
-        :value="getProgressRate(title)"
+        :value="getProgressRate"
         class="progress-bar"
-        :color="getDiff(title) < 0 ? 'red-14' : 'green-14'"
+        :color="getDiff < 0 ? 'red-14' : 'green-14'"
         track-color="grey-6">
         <div class="absolute-full flex flex-center progress-text">
-          {{ Math.min((getProgressRate(title) * 100).toFixed(0), 100) }}%
+          {{ Math.min((getProgressRate * 100)?.toFixed(0), 100) }}%
         </div>
       </q-linear-progress>
     </div>
     <div class="row bottom">
       <div class="row col spent-container">
-        <span class="number">{{ getActualAmount(title).toFixed(2) }}</span>
+        <span class="number">{{ categoryUsage.spentInBaseCurrency?.toFixed(2) }}</span>
         <span class="text">spent</span>
       </div>
       <div class="row col overall-container">
         <span class="text">of</span>
-        <span class="number">{{ getPlannedAmount(title).toFixed(2) }}</span>
+        <span class="number">{{ categoryUsage.planned?.toFixed(2) }}</span>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-
-interface BudgetItem {
-  name: string,
-  items: object[],
-  planned: number,
-  actualUsage: number,
-}
+import { CategoryBudgetUsageItem } from '@/types/Budget';
 
 export default defineComponent({
   name: 'Category Month Summary component',
 
   props: {
-    budgetUsage: { type: Array as PropType<BudgetItem[]>, required: true },
-    title: { type: String, required: true },
+    categoryUsage: { type: Object as PropType<CategoryBudgetUsageItem>, required: true },
   },
 
-  methods: {
-    getPlannedAmount(category: string): number {
-      const budgetItem: BudgetItem | undefined = this.budgetUsage.find(
-        (item: BudgetItem) => item.name === category,
-      );
-      return budgetItem?.planned || 0;
+  computed: {
+    getDiff(): number {
+      return this.categoryUsage.planned - this.categoryUsage.spentInBaseCurrency;
     },
 
-    getActualAmount(category: string): number {
-      const budgetItem: BudgetItem | undefined = this.budgetUsage.find(
-        (item: BudgetItem) => item.name === category,
-      );
-      return budgetItem?.actualUsage || 0;
+    negativeDiff() {
+      return this.getDiff < 0;
     },
 
-    getDiff(category: string): number {
-      return this.getPlannedAmount(category) - this.getActualAmount(category);
-    },
-
-    getProgressRate(category: string): number {
-      const planned: number = this.getPlannedAmount(category);
-      if (planned === 0) return 1;
-      return this.getActualAmount(category) / this.getPlannedAmount(category);
+    getProgressRate(): number {
+      if (this.categoryUsage.planned === 0) return 1;
+      return this.categoryUsage.spentInBaseCurrency / this.categoryUsage.planned;
     },
   },
 });

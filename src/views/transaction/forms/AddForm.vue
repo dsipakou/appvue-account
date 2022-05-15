@@ -2,10 +2,10 @@
   <q-card style="width: 400px;">
     <q-card-section>
       <span class="text-h5">
-        {{ getCategory(category.id).name }}
+        {{ getCategory(category.uuid).name }}
       </span>
       <q-chip dense class="q-ml-sm">
-        {{ getCategory(category.id).parentName }}
+        {{ getCategory(category.uuid).parent.name }}
       </q-chip>
     </q-card-section>
 
@@ -96,7 +96,7 @@ export default defineComponent({
 
   props: {
     accountId: { type: Number, required: true },
-    userId: { type: Number, required: true },
+    userId: { type: String, required: true },
     category: { type: Object, required: true },
     transactionLastAdded: { type: Object, default: () => ({}) },
     budgetPlan: { type: Array, required: true },
@@ -147,12 +147,12 @@ export default defineComponent({
   },
 
   methods: {
-    getBudget(id: number): Budget {
-      return this.budgetPlan.find((item: any) => item.id === id) as Budget;
+    getBudget(uuid: string): Budget {
+      return this.budgetPlan.find((item: any) => item.uuid === uuid) as Budget;
     },
 
-    getCategory(id: number) {
-      return this.categoryList!.find((item: any) => item.id === id);
+    getCategory(uuid: string) {
+      return this.categoryList!.find((item: any) => item.uuid === uuid);
     },
 
     getRate(id: number, date: string) {
@@ -176,12 +176,12 @@ export default defineComponent({
 
     create() {
       const transaction = {
-        userId: this.userId,
-        categoryId: this.category.id,
+        user: this.userId,
+        category: this.category.uuid,
         amount: String(evaluate(this.input.amount.replace(',', '.'))),
-        accountId: this.accountId,
-        currencyId: this.input.currency.id,
-        budgetId: this.input.budget?.id || null,
+        account: this.accountId,
+        currency: this.input.currency.uuid,
+        budget: this.input.budget?.uuid || null,
         transactionDate: this.input.transactionDate,
         type: constants.transactionTypes.OUTCOME,
         description: this.input.description,
@@ -196,7 +196,7 @@ export default defineComponent({
       }
       this.setTransactionLastAdded({
         date: this.input.transactionDate,
-        budget: this.input.budgetDone ? null : this.input.budget?.id,
+        budget: this.input.budgetDone ? null : this.input.budget?.uuid,
       });
 
       this.createTransaction(transaction);

@@ -5,7 +5,7 @@ import {
   createCurrency,
   updateCurrency,
   deleteCurrency,
-} from '../../service';
+} from '../../service/currency';
 import * as constants from '../constants';
 
 const state = {
@@ -30,9 +30,9 @@ const actions = {
     const response = await getCurrencies();
     if (response.status === 200) {
       const body = await response.json();
-      commit('setCurrenciesStatus', constants.itemStatus.LOADED);
       commit('setCurrencies', body);
     }
+    commit('setCurrenciesStatus', constants.itemStatus.LOADED);
   },
 
   async createCurrency({ commit }: any, payload: any) {
@@ -52,10 +52,10 @@ const actions = {
     }
   },
 
-  async deleteCurrency({ commit }: any, id: number) {
-    const response = await deleteCurrency(id);
+  async deleteCurrency({ commit }: any, uuid: string) {
+    const response = await deleteCurrency(uuid);
     if (response.status === 204) {
-      commit('deleteCurrency', id);
+      commit('deleteCurrency', uuid);
     }
   },
 
@@ -63,7 +63,7 @@ const actions = {
     commit('selectCurrency', payload);
   },
 
-  async selectCurrencyRange({ commit }: any, payload: Range) {
+  async selectCurrencyRange({ commit }: any, payload: string) {
     commit('setRange', payload);
   },
 };
@@ -79,15 +79,17 @@ const mutations = {
 
   updateCurrency(state: any, newItem: any) {
     state.currencies.items = state.currencies.items.map((item: any) => {
-      if (item.id === newItem.id) {
+      if (item.uuid === newItem.uuid) {
         return newItem;
       }
       return item;
     });
   },
 
-  deleteCurrency(state: any, id: number) {
-    state.currencies.items = state.currencies.items.filter((currency: any) => currency.id !== id);
+  deleteCurrency(state: any, uuid: string) {
+    state.currencies.items = state.currencies.items.filter(
+      (currency: any) => currency.uuid !== uuid,
+    );
   },
 
   selectCurrency(state: any, code: string) {
@@ -105,7 +107,7 @@ const mutations = {
     state.currencies.status = status;
   },
 
-  setRange(state: any, range: Range) {
+  setRange(state: any, range: string) {
     state.currencies.range = range;
   },
 };

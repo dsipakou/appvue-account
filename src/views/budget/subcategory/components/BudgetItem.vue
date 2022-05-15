@@ -27,12 +27,12 @@
       </q-linear-progress>
       <div class="row bottom">
         <div class="row desc-text col-6">
-          <span class="number">{{ getActualUsage }}</span>
+          <span class="number">{{ item.spentInBaseCurrency?.toFixed(2) }}</span>
           <span class="text">spent</span>
         </div>
         <div class="row desc-text justify-end col-6">
           <span class="text">of</span>
-          <span class="number">{{ getPlanned }}</span>
+          <span class="number">{{ item.planned }}</span>
         </div>
       </div>
     </div>
@@ -40,8 +40,8 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { BudgetUsage } from '@/types/Budget';
 import { format, getWeekOfMonth } from 'date-fns';
+import { BudgetUsageItem } from '@/types/Budget';
 
 const DATE_FORMAT = 'dd - MMM';
 
@@ -49,7 +49,7 @@ export default defineComponent({
   name: 'Budget Item',
 
   props: {
-    item: { type: Object as PropType<BudgetUsage>, required: true },
+    item: { type: Object as PropType<BudgetUsageItem>, required: true },
   },
 
   emits: [
@@ -71,13 +71,13 @@ export default defineComponent({
     },
 
     getDate(): string {
-      if (this.item?.amount === undefined) return '';
+      if (this.item?.planned === undefined) return '';
 
       return format(new Date(this.item.budgetDate), DATE_FORMAT);
     },
 
     getActualWeek(): number {
-      if (this.item?.amount === undefined) return 0;
+      if (this.item?.planned === undefined) return 0;
 
       const currentWeek = getWeekOfMonth(new Date(), { weekStartsOn: 1 });
       const budgetWeek = getWeekOfMonth(new Date(this.item.budgetDate), { weekStartsOn: 1 });
@@ -86,50 +86,37 @@ export default defineComponent({
       return -1;
     },
 
-    getPlanned(): string {
-      if (this.item?.amount === undefined) return '';
-
-      return this.item?.amount.toFixed(2);
-    },
-
-    getActualUsage(): string {
-      if (this.item?.amount === undefined) return '';
-
-      return this.item?.spentInBaseCurrency?.toFixed(2) || '0.00';
-    },
-
     getDiff(): string {
-      if (!this.item?.amount === undefined) return '';
+      if (!this.item?.planned === undefined) return '';
 
-      return (this.item.amount - this.item.spentInBaseCurrency).toFixed(2);
+      return (this.item.planned - this.item.spentInBaseCurrency).toFixed(2);
     },
 
     getProgressRate(): number {
-      if (!this.item?.amount === undefined) return 0;
+      if (!this.item?.planned === undefined) return 0;
 
-      if (this.item.amount === 0) return 1;
-      return this.item.spentInBaseCurrency / this.item.amount;
+      if (this.item.planned === 0) return 1;
+      return this.item.spentInBaseCurrency / this.item.planned;
     },
 
     getProgressColor(): string {
-      if (!this.item?.amount === undefined) return '';
+      if (!this.item?.planned === undefined) return '';
 
-      if (this.item.amount === 0) return 'brown-14';
+      if (this.item.planned === 0) return 'brown-14';
       if (this.getProgressRate > 1) return 'red-14';
       return 'green-14';
     },
 
     getProgressRateText(): string {
-      if (!this.item?.amount === undefined) return '';
+      if (!this.item?.planned === undefined) return '';
 
-      if (this.item.amount === 0) return 'Unplanned';
+      if (this.item.planned === 0) return 'Unplanned';
       return `${(this.getProgressRate * 100).toFixed(0)}%`;
     },
   },
 
   methods: {
     budgetItemClick() {
-      console.log(this.item);
       this.$emit('budgetItemClick', this.item);
     },
   },

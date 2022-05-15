@@ -2,19 +2,26 @@
 
 import {
   getRates,
+  getRatesOnDate,
   createRate,
-} from '../../service';
+  updateRate,
+  getRateChartData,
+} from '../../service/rates';
 
 const state = {
   rates: {
     items: [],
+    listOnDate: [],
     isLoading: false,
+    chart: [],
   },
 };
 
 const getters = {
   ratesList: (state: any) => state.rates.items,
+  rateListOnDate: (state: any) => state.rates.listOnDate,
   isRatesListLoading: (state: any) => state.rates.isLoading,
+  ratesChartData: (state: any) => state.rates.chart,
 };
 
 const actions = {
@@ -23,17 +30,48 @@ const actions = {
     const response = await getRates();
     if (response.status === 200) {
       const body = await response.json();
-      commit('setRatesLoading', false);
       commit('setRates', body);
     }
+    commit('setRatesLoading', false);
+  },
+
+  async fetchRatesOnDate({ commit }: any, date: string) {
+    commit('setRatesLoading', true);
+    const response = await getRatesOnDate(date);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setRatesOnDate', body);
+    }
+    commit('setRatesLoading', false);
+  },
+
+  async fetchChartData({ commit }: any, range: number = 30) {
+    commit('setRatesLoading', true);
+    const response = await getRateChartData(range);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setRatesChartData', body);
+    }
+    commit('setRatesLoading', false);
   },
 
   async createRate({ commit }: any, payload: any) {
+    commit('setRatesLoading', true);
     const response = await createRate(payload);
     if (response.status === 201) {
       const body = await response.json();
       commit('createRate', body);
     }
+    commit('setRatesLoading', false);
+  },
+
+  async updateRate({ commit }: any, payload: any) {
+    commit('setRatesLoading', true);
+    const response = await updateRate(payload);
+    if (response.status === 200) {
+      commit('updateRate', payload);
+    }
+    commit('setRatesLoading', false);
   },
 };
 
@@ -42,8 +80,41 @@ const mutations = {
     state.rates.items = rates;
   },
 
+  setRatesOnDate(state: any, rates: any) {
+    state.rates.listOnDate = rates;
+  },
+
+  setRatesChartData(state: any, data: any) {
+    state.rates.chart = data;
+  },
+
   createRate(state: any, rate: any) {
     state.rates.items.unshift({ ...rate });
+    state.rates.listOnDate.unshift({ ...rate });
+  },
+
+  updateRate(state: any, rate: any) {
+    state.rates.items = state.rates.items.map(
+      (item: any) => (
+        item.uuid !== rate.uuid
+          ? item
+          : {
+            ...item,
+            rate: rate.rate,
+          }
+      ),
+    );
+
+    state.rates.listOnDate = state.rates.listOnDate.map(
+      (item: any) => (
+        item.uuid !== rate.uuid
+          ? item
+          : {
+            ...item,
+            rate: rate.rate,
+          }
+      ),
+    );
   },
 
   setRatesLoading(state: any, isLoading: boolean) {

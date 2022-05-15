@@ -1,7 +1,7 @@
 <template>
   <q-card flat bordered
     :style="cardBackground"
-    class="row main-card">
+    class="row main-card" >
     <div v-show="getActualDay === 0" class="absolute-left current-indicator"></div>
     <div class="row col-12 justify-center">
       <span class="header">{{ item.title }}</span>
@@ -40,55 +40,54 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { BudgetUsage } from '@/types/Budget';
 import { getDayOfYear } from 'date-fns';
 
 export default defineComponent({
   name: 'Budget Item',
 
   props: {
-    item: { type: Object as PropType<BudgetUsage>, required: true },
+    item: { type: Object as PropType<any>, required: true },
     updateStatusBudget: { type: Function, required: true },
   },
 
   computed: {
     getPlanned(): string {
-      if (this.item?.amount === undefined) return '';
+      if (this.item?.planned === undefined) return '';
 
-      return this.item?.amount.toFixed(2);
+      return this.item?.planned.toFixed(2);
     },
 
     getActualUsage(): string {
-      if (this.item?.amount === undefined) return '';
+      if (this.item?.planned === undefined) return '';
 
       return this.item?.spentInBaseCurrency?.toFixed(2) || '0.00';
     },
 
     getDiff(): string {
-      if (!this.item?.amount === undefined) return '';
+      if (!this.item?.planned === undefined) return '';
 
-      return (this.item.amount - this.item.spentInBaseCurrency).toFixed(2);
+      return (this.item.planned - this.item.spentInBaseCurrency).toFixed(2);
     },
 
     getProgressRate(): number {
-      if (!this.item?.amount === undefined) return 0;
+      if (!this.item?.planned === undefined) return 0;
 
-      if (this.item.amount === 0) return 1;
-      return this.item.spentInBaseCurrency / this.item.amount;
+      if (this.item.planned === 0) return 1;
+      return this.item.spentInBaseCurrency / this.item.planned;
     },
 
     getProgressColor(): string {
-      if (!this.item?.amount === undefined) return '';
+      if (!this.item?.planned === undefined) return '';
 
-      if (this.item.amount === 0) return 'brown-14';
+      if (this.item.planned === 0) return 'brown-14';
       if (this.getProgressRate > 1) return 'red-14';
       return 'green-14';
     },
 
     getProgressRateText(): string {
-      if (!this.item?.amount === undefined) return '';
+      if (!this.item?.planned === undefined) return '';
 
-      if (this.item.amount === 0) return 'Unplanned';
+      if (this.item.planned === 0) return 'Unplanned';
       return `${(this.getProgressRate * 100).toFixed(0)}%`;
     },
 
@@ -106,7 +105,7 @@ export default defineComponent({
     },
 
     getActualDay(): number {
-      if (this.item?.amount === undefined) return 0;
+      if (this.item?.planned === undefined) return 0;
 
       const currentDay = getDayOfYear(new Date());
       const budgetDay = getDayOfYear(new Date(this.item.budgetDate));

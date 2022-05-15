@@ -1,6 +1,6 @@
 <template>
-  <q-card flat class="container" @click="selectSubCategory(item.name)">
-    <div class="row col-12 title--main">{{ item.name }}</div>
+  <q-card flat class="container" @click="selectSubCategory(item.uuid)">
+    <div class="row col-12 title--main">{{ item.title }}</div>
     <div class="row progress-container">
       <div class="row col-12 justify-center remains">
         <span class="number">{{ getDiff }}</span>
@@ -8,7 +8,7 @@
         <span class="text" v-else>left</span>
       </div>
       <div class="row desc-text multiply">
-        <span>{{ getMultiplier(item.name) }}x</span>
+        <span>{{ item.items?.length }}x</span>
       </div>
       <q-linear-progress
         class="progress-bar"
@@ -22,12 +22,12 @@
       </q-linear-progress>
       <div class="row bottom">
         <div class="row desc-text col-6">
-          <span class="number">{{ getActualUsage }}</span>
+          <span class="number">{{ item.spentInBaseCurrency?.toFixed(2) }}</span>
           <span class="text">spent</span>
         </div>
         <div class="row desc-text justify-end col-6">
           <span class="text">of</span>
-          <span class="number">{{ getPlanned }}</span>
+          <span class="number">{{ item.planned }}</span>
         </div>
       </div>
     </div>
@@ -35,17 +35,14 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { Category } from '@/types';
-import { BudgetPlan } from '@/types/Budget';
+import { GroupedBudgetUsageItem } from '@/types/Budget';
 import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 
 export default defineComponent({
   name: 'SubCategoryCard',
 
   props: {
-    item: { type: Object, required: true },
-    categories: { type: Array as PropType<Category[]>, required: true },
-    budgetPlan: { type: Array as PropType<BudgetPlan[]>, required: true },
+    item: { type: Object as PropType<GroupedBudgetUsageItem>, required: true },
   },
 
   emits: [
@@ -53,21 +50,13 @@ export default defineComponent({
   ],
 
   computed: {
-    getPlanned(): string {
-      return this.item.planned.toFixed(2);
-    },
-
-    getActualUsage(): string {
-      return this.item.actualUsage.toFixed(2);
-    },
-
     getDiff(): string {
-      return (this.item.planned - this.item.actualUsage).toFixed(2);
+      return (this.item.planned - this.item.spentInBaseCurrency).toFixed(2);
     },
 
     getProgressRate(): number {
       if (this.item.planned === 0) return 1;
-      return this.item.actualUsage / this.item.planned;
+      return this.item.spentInBaseCurrency / this.item.planned;
     },
 
     getProgressColor(): string {
@@ -83,16 +72,8 @@ export default defineComponent({
   },
 
   methods: {
-    getCategory(id: number): Category|undefined {
-      return this.categories.find((item: Category) => item.id === id);
-    },
-
-    getMultiplier(title: string): number {
-      return this.budgetPlan.filter((item: BudgetPlan) => item.title === title)?.length || 0;
-    },
-
-    selectSubCategory(title: string) {
-      this.$emit('selectSubCategory', title);
+    selectSubCategory(uuid: string) {
+      this.$emit('selectSubCategory', uuid);
     },
   },
 });

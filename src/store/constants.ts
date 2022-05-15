@@ -9,6 +9,15 @@ export const itemStatus = {
 
 /* eslint-disable no-shadow */
 export enum ChartRange {
-  Month = 'MONTH',
-  Quater = 'QUATER',
+  Month = 30,
+  Quater = 90,
+  HalfAYear = 180,
+  Year = 365,
 }
+
+export const rangeLabels = [
+  { label: '30 days', value: ChartRange.Month },
+  { label: '90 days', value: ChartRange.Quater },
+  { label: '180 days', value: ChartRange.HalfAYear },
+  { label: '1 year', value: ChartRange.Year },
+];

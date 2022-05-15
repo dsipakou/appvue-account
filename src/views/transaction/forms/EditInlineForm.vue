@@ -44,6 +44,7 @@ export default {
     currencyList: Array,
     ratesList: Array,
     userList: Array,
+    fetchBudgetPlan: Function,
     updateTransaction: Function,
     currencyListLoaded: Boolean,
   },

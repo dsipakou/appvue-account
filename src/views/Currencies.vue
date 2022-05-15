@@ -1,32 +1,44 @@
 <template>
   <div class="q-pa-md">
+    <q-btn rounded
+      color="primary"
+      class="btn-add fixed"
+      icon="add"
+      @click="ratesForm = true"
+    />
     <div class="row col-12">
-      <div v-for="currency in notBaseCurrencies" :key="currency.id">
+      <div v-for="currency in notBaseCurrencies" :key="currency.uuid">
         <CurrencyCard
           :currency="currency"
-          :rate="getLastRateForCurrency(currency.id)"
+          :rate="getLastRateForCurrency(currency.uuid)"
           :selectCurrency="selectCurrency"
           :selectedCurrencies="selectedCurrencies"
         />
       </div>
     </div>
     <div class="row col-12 chart-area">
-      <div class="row col-8">
-        <div class="row justify-between chart-buttons">
-          <div class="range-button active-range-button">30 days</div>
-          <div class="range-button inactive-range-button">90 days</div>
-          <div class="range-button">180 days</div>
-          <div class="range-button">1 year</div>
+      <div class="row col-12 justify-center">
+        <div>
+          <q-btn-group flat>
+            <q-btn no-caps
+              class="range-button"
+              v-for="item in rangeLabels"
+              :key="item.value"
+              :label="item.label"
+              :class="currencyRange === item.value
+                ? 'active-range-button'
+                : 'inactive-range-button'"
+              @click="selectCurrencyRange(item.value)"
+              />
+          </q-btn-group>
         </div>
         <CurrencyChart
           style="height: 300px;"
           :ratesList="ratesList"
           :currencyList="currencyList"
+          :data="ratesChartData"
           :selectedCurrencies="selectedCurrencies"
           :range="selectedRange" />
-      </div>
-      <div class="row col-4">
-        <q-date v-model="selectedDays" multiple mask="YYYY-MM-DD"></q-date>
       </div>
     </div>
     <div class="row justify-center">
@@ -42,23 +54,6 @@
         @click="createForm = true">
         Add currency
       </q-btn>
-    </div>
-    <div class="row justify-center q-mt-lg">
-      <div class="col-6">
-        <div class="column">
-          Base currency: {{ baseCurrency?.verbalName }}
-          <q-btn no-caps dense rounded style="width: 40px;" label="Edit"></q-btn>
-          <div class="row justify-start" v-for="currency in notBaseCurrencies" :key="currency.id">
-            <CurrencyItem
-              :currency="currency"
-              :createRate="createRate"
-              @save="save($event)"
-              @edit="edit($event)"
-              @remove="remove($event)"
-            />
-          </div>
-        </div>
-      </div>
     </div>
     <q-dialog v-model="createForm">
       <AddForm
@@ -77,25 +72,29 @@
         :deleteCurrency="deleteCurrency"
         @closeForm="confirmForm = false" />
     </q-dialog>
-    <div class="row">
-      <q-select map-options
-        v-model="rangeSelect"
-        label="Period"
-        :options="rangeOptions"
-        class="col-2" />
-    </div>
+    <q-dialog v-model="ratesForm">
+      <RatesForm
+        :currencies="currencyList"
+        :rateListOnDate="rateListOnDate"
+        :isRatesListLoading="isRatesListLoading"
+        :createRate="createRate"
+        :updateRate="updateRate"
+        :fetchRatesOnDate="fetchRatesOnDate"
+        @closeForm="ratesForm = false" />
+    </q-dialog>
   </div>
 </template>
+
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
 import CurrencyChart from '@/views/currency/components/CurrencyChart.vue';
-import { ChartRange } from '@/store/constants';
+import { ChartRange, rangeLabels } from '@/store/constants';
 import AddForm from '@/views/currency/forms/AddForm.vue';
 import EditForm from '@/views/currency/forms/EditForm.vue';
+import RatesForm from '@/views/currency/forms/RatesForm.vue';
 import ConfirmForm from '@/views/currency/forms/ConfirmForm.vue';
-import CurrencyItem from '@/views/currency/components/CurrencyItem.vue';
 import CurrencyCard from '@/views/currency/components/CurrencyCard.vue';
 import { Currency, Rate } from '@/types';
 import { getRate } from '../service';
@@ -107,8 +106,8 @@ export default defineComponent({
     CurrencyChart,
     AddForm,
     EditForm,
+    RatesForm,
     ConfirmForm,
-    CurrencyItem,
     CurrencyCard,
   },
 
@@ -131,18 +130,9 @@ export default defineComponent({
       selectedRange: ref(ChartRange.Month),
       createForm: ref(false),
       editForm: ref(false),
+      ratesForm: ref(false),
       confirmForm: ref(false),
-      rangeSelect: ref(null),
-      rangeOptions: [
-        {
-          value: ChartRange.Month,
-          label: '30 days',
-        },
-        {
-          value: ChartRange.Quater,
-          label: '90 days',
-        },
-      ],
+      rangeLabels,
     };
   },
 
@@ -152,6 +142,8 @@ export default defineComponent({
       'selectedCurrencies',
       'currencyRange',
       'ratesList',
+      'rateListOnDate',
+      'ratesChartData',
       'isCurrencyListLoading',
       'isRatesListLoading',
     ]),
@@ -168,20 +160,23 @@ export default defineComponent({
   methods: {
     ...mapActions([
       'createRate',
+      'updateRate',
       'createCurrency',
       'updateCurrency',
       'deleteCurrency',
       'fetchCurrencies',
       'fetchRates',
+      'fetchRatesOnDate',
+      'fetchChartData',
       'selectCurrency',
       'selectCurrencyRange',
     ]),
 
-    async isRateExist(selectedDay: string, currencyId: number) {
+    async isRateExist(selectedDay: string, currencyUuid: string) {
       return this.ratesList.find((rate: Rate) => {
         const selectedDate = moment(selectedDay).startOf('day');
         const existingDate = moment(rate.rateDate).startOf('day');
-        return selectedDate.isSame(existingDate) && currencyId === rate.currencyId;
+        return selectedDate.isSame(existingDate) && currencyUuid === rate.currency;
       });
     },
 
@@ -192,11 +187,11 @@ export default defineComponent({
           const fullCurrency = this.currencyList.find(
             (item: Currency) => item.code === currency.code,
           );
-          const existingRate = await this.isRateExist(day, fullCurrency.id);
+          const existingRate = await this.isRateExist(day, fullCurrency.uuid);
           if (!existingRate && !currency.isBase) {
             const rate = await getRate(currency.code, day);
             const payload = {
-              currencyId: fullCurrency.id,
+              currency: fullCurrency.uuid,
               rateDate: day,
               rate,
               description: '',
@@ -208,41 +203,21 @@ export default defineComponent({
       this.ratesInProgress = false;
     },
 
-    edit(currency: Currency) {
-      this.selectedCurrency = currency;
-      this.editForm = true;
-    },
-
-    remove(currency: Currency) {
-      this.selectedCurrency = currency;
-      this.confirmForm = true;
-    },
-
-    save() {
-      console.log('Saved!');
-    },
-
-    getLastRateForCurrency(currencyId: number) {
-      return this.ratesList.filter((item: Rate) => item.currencyId === currencyId)[0];
-    },
-  },
-
-  watch: {
-    rangeSelect(data) {
-      if (data) {
-        this.selectCurrencyRange(data.value);
-        this.selectedRange = data.value;
-      }
+    getLastRateForCurrency(currencyUuid: string) {
+      return this.ratesList.filter((item: Rate) => item.currency === currencyUuid)[0];
     },
   },
 
   beforeMount() {
     this.fetchCurrencies();
     this.fetchRates();
+    this.fetchChartData(this.currencyRange);
   },
 
-  mounted() {
-    this.rangeSelect = this.currencyRange;
+  watch: {
+    currencyRange() {
+      this.fetchChartData(this.currencyRange);
+    },
   },
 });
 </script>
@@ -261,8 +236,10 @@ export default defineComponent({
   align-items: center;
   height: 33px;
   width: 132px;
-  border-radius: 5px;
+  border-radius: 5px !important;
   font-size: 16px;
+  color: #047A94;
+  margin: 0 20px;
 }
 
 .inactive-range-button {
@@ -275,7 +252,15 @@ export default defineComponent({
 }
 
 .active-range-button {
-  background-color: #047A94;
-  color: white;
+  background-color: #047A94 !important;
+  color: white !important;
+}
+
+.btn-add {
+  width: 55px !important;
+  height: 55px !important;
+  right: 30px;
+  bottom: 30px;
+  z-index: 10;
 }
 </style>

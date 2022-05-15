@@ -6,15 +6,19 @@
           <q-avatar
             color="primary"
             text-color="white">
-            {{ category.name[0] }}
+            {{ transaction.categoryDetails?.name[0] }}
           </q-avatar>
         </div>
         <div class="row items-center" v-if="!editMode">
           <div class="col-7 align-center">
             <div class="text-h6" @click="clickItem">
-              {{ transaction.type === 'income' ? account.source : category.name }}
+              {{
+                transaction.type === 'income'
+                ? transaction.accountDetails.source
+                : transaction.categoryDetails?.name
+              }}
               <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
-                {{ category.parentName }}
+                {{ transaction.categoryDetails?.parentName }}
               </q-chip>
             </div>
             <div class="text-subtitle2">
@@ -23,14 +27,14 @@
           </div>
           <div class="col self-center">
             <q-chip square outline color="primary"
-               class="q-ml-sm overflow-hidden align-center text-caption">
+              class="q-ml-sm overflow-hidden align-center text-caption">
               <q-avatar
                 color="primary"
                 text-color="white"
                 class="vertical-middle"
                 icon="credit_card" />
                 <span>
-                  {{ account.source }}
+                  {{ transaction.accountDetails.source }}
                 </span>
             </q-chip>
           </div>
@@ -40,7 +44,8 @@
               color="info"
               text-color="white"
               class="text-caption text-weight-bold">
-              {{ transaction.amount }} {{ getCurrency(transaction.currencyId)?.sign }}
+              {{ transaction.amount }}
+              {{ getCurrency(transaction.currency)?.sign }}
             </q-chip>
           </div>
           <div class="col self-center items-end">
@@ -61,7 +66,7 @@
                     <q-item-label>Edit</q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup @click="deleteTransaction(transaction.id)">
+                <q-item clickable v-close-popup @click="deleteTransaction(transaction.uuid)">
                   <q-item-section>
                     <q-item-label>Delete</q-item-label>
                   </q-item-section>
@@ -80,6 +85,7 @@
             :currencyListLoaded="currencyListLoaded"
             :ratesList="ratesList"
             :userList="userList"
+            :fetchBudgetPlan="fetchBudgetPlan"
             :updateTransaction="updateTransaction"
             @close="editMode = false"/>
         </div>
@@ -96,6 +102,7 @@
       :currencyListLoaded="currencyListLoaded"
       :ratesList="ratesList"
       :userList="userList"
+      :fetchBudgetPlan="fetchBudgetPlan"
       :updateTransaction="updateTransaction"
       @closeForm="editForm = false"
     />
@@ -121,7 +128,7 @@ interface InputData {
 }
 
 interface ShortTransaction {
-  id: number,
+  uuid: string,
   amount?: string,
   baseAmount: string,
   sign: string,
@@ -146,16 +153,15 @@ export default defineComponent({
   },
 
   props: {
-    account: { type: Object as PropType<Account>, required: true },
     accountList: { type: Array as PropType<Array<Account>>, required: true },
     budgetPlan: { type: Array, required: true },
-    category: { type: Object as PropType<Category>, required: true },
     categoryList: { type: Array as PropType<Array<Category>>, required: true },
     currencyList: { type: Array as PropType<Array<Currency>>, required: true },
     currencyListLoaded: { type: Boolean, required: true },
     ratesList: { type: Array as PropType<Array<Rate>>, required: true },
     selectedCurrencies: { type: Array as PropType<Array<any>>, required: true },
     userList: { type: Array, required: true },
+    fetchBudgetPlan: { type: Function, required: true },
     updateTransaction: { type: Function, required: true },
     deleteTransaction: { type: Function, required: true },
     transaction: { type: Object as PropType<Transaction>, required: true },
@@ -191,9 +197,9 @@ export default defineComponent({
       if (this.currencyListLoaded) {
         const baseCurrency = this.currencyList.find((item) => item.isBase);
         const objDefault: ShortTransaction = {
-          id: transaction.currencyId,
-          amount: transaction.amount.toFixed(2),
-          baseAmount: transaction.baseAmount.toFixed(2),
+          uuid: transaction.currency,
+          amount: transaction.amount?.toFixed(2),
+          baseAmount: transaction.spentInBaseCurrency?.toFixed(2),
           sign: baseCurrency!.sign,
         } as ShortTransaction;
 
@@ -202,8 +208,8 @@ export default defineComponent({
         Object.values(this.selectedCurrencies).forEach((currency) => {
           const rate = this.getRate(currency.id, transaction.transactionDate);
           const obj = {
-            id: currency.value,
-            baseAmount: rate ? (transaction.baseAmount / rate.rate).toFixed(2) : '-',
+            uuid: currency.value,
+            baseAmount: rate ? (transaction.baseAmount / rate.rate)?.toFixed(2) : '-',
             sign: currency.sign,
           } as ShortTransaction;
 
@@ -214,16 +220,16 @@ export default defineComponent({
       return currencies;
     },
 
-    getRate(id: number, date: string): Rate | undefined {
+    getRate(uuid: string, date: string): Rate | undefined {
       return this.ratesList.find((item) => {
         const transactionDate = moment(date).startOf('day');
         const rateDate = moment(item.rateDate).startOf('day');
-        return transactionDate.isSame(rateDate) && item.currencyId === id;
+        return transactionDate.isSame(rateDate) && item.currency === uuid;
       });
     },
 
-    getCurrency(id: number): Currency | undefined {
-      return this.currencyList.find((item) => item.id === id);
+    getCurrency(uuid: string): Currency | undefined {
+      return this.currencyList.find((item) => item.uuid === uuid);
     },
 
     clickItem() {

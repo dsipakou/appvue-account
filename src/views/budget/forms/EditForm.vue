@@ -1,5 +1,5 @@
 <template>
-  <input type="hidden" v-model="input.id" />
+  <input type="hidden" v-model="input.uuid" />
   <input type="hidden" v-model="input.isCompleted" />
   <q-card style="width: 400px;">
     <q-card-section>
@@ -23,16 +23,12 @@
       </q-card-section>
     </q-card-section>
     <q-card-section>
-      <q-select
-        outlined
+      <q-select outlined label-stacked map-options emit-value
         label="Category"
-        label-stacked
-        map-options
-        emit-value
-        option-value="id"
+        option-value="uuid"
         option-label="name"
         :options="categories"
-        v-model="input.categoryId" />
+        v-model="input.category" />
     </q-card-section>
     <q-card-section>
       <q-input
@@ -72,35 +68,35 @@ export default {
   data() {
     return {
       input: {
-        id: -1,
+        uuid: '',
         isCompleted: false,
         title: '',
         amount: 0,
         budgetDate: '',
-        categoryId: 0,
+        category: '',
         description: '',
       },
     };
   },
 
   mounted() {
-    this.input.id = this.item.id;
+    this.input.uuid = this.item.uuid;
     this.input.isCompleted = this.item.isCompleted;
     this.input.title = this.item.title;
-    this.input.amount = this.item.amount;
+    this.input.amount = this.item.planned;
     this.input.budgetDate = this.item.budgetDate;
-    this.input.categoryId = this.item.categoryId;
+    this.input.category = this.item.category;
     this.input.description = this.item.description;
   },
 
   methods: {
     update() {
       const budget = {
-        id: this.input.id,
+        uuid: this.input.uuid,
         budgetDate: this.input.budgetDate,
         title: this.input.title,
         amount: this.input.amount,
-        categoryId: this.input.categoryId,
+        category: this.input.category,
         description: this.input.description,
         isCompleted: this.input.isCompleted,
       };
@@ -109,7 +105,7 @@ export default {
     },
 
     remove() {
-      this.deleteBudget(this.input.id);
+      this.deleteBudget(this.input.uuid);
       this.$emit('closeForm');
     },
 
@@ -117,7 +113,7 @@ export default {
       const budget = {
         title: this.input.title,
         amount: this.input.amount,
-        categoryId: this.input.categoryId,
+        category: this.input.category,
         description: this.input.description,
       };
       this.$emit('duplicateClick', budget);

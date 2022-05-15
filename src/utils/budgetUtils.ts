@@ -1,16 +1,16 @@
 /* eslint max-len: ["error", { "code": 120, "ignoreComments": true }] */
 /* eslint class-methods-use-this: ["error", { "exceptMethods": ["groupedByName", "sortByField", "countPlannedBudget", "groupedByCategory"]}] */
 
-import { BudgetUsage } from '@/types/Budget';
+import { CategoryBudgetUsageItem } from '@/types/Budget';
 import { Category } from '@/types/Category';
 
 interface GroupedByName {
-  [key: string]: BudgetUsage[],
+  [key: string]: any[],
 }
 
 export interface GroupedByCategoryItem {
   name: string,
-  items: BudgetUsage[],
+  items: any[],
   planned: number,
   actualUsage: number,
 }
@@ -20,7 +20,7 @@ interface GroupedByCategory {
 }
 
 interface CountPlannedBudget {
-  ids: number[],
+  uuids: string[],
   sum: number,
 }
 
@@ -46,42 +46,42 @@ class BudgetUtils {
     );
   }
 
-  private countPlannedBudget(items: BudgetUsage[]): CountPlannedBudget {
+  private countPlannedBudget(items: any[]): CountPlannedBudget {
     return items.reduce(
-      (acc: CountPlannedBudget, subItem: BudgetUsage) => {
-        if (!acc.ids.includes(subItem.id)) {
-          acc.ids.push(subItem.id);
-          acc.sum += subItem.amount;
+      (acc: CountPlannedBudget, subItem: any) => {
+        if (!acc.uuids.includes(subItem.uuid)) {
+          acc.uuids.push(subItem.uuid);
+          acc.sum += subItem.planned;
         }
         return acc;
-      }, { ids: [], sum: 0 },
+      }, { uuids: [], sum: 0 },
     );
   }
 
-  private groupedByName(budgetList: BudgetUsage[]): GroupedByName {
-    const group = budgetList.reduce((acc: GroupedByName, item: BudgetUsage) => {
-      const arr: BudgetUsage[] = acc[`${item.title}${item.categoryId}`] || [];
-      arr.push(item);
-      acc[`${item.title}${item.categoryId}`] = arr;
+  private groupedByName(budgetList: any[]): GroupedByName {
+    const group = budgetList.reduce((acc: GroupedByName, budgetUsage: any) => {
+      const arr: any[] = acc[`${budgetUsage.title}${budgetUsage.category}`] || [];
+      arr.push(budgetUsage);
+      acc[`${budgetUsage.title}${budgetUsage.category}`] = arr;
       return acc;
     }, {});
     return group;
   }
 
   private groupedByCategory(
-    budgetList: BudgetUsage[],
+    budgetList: any[],
     categoryItems: Category[],
   ): GroupedByCategory {
     const categoryClass: GroupedByCategory = {};
     Object.values(this.groupedByName(budgetList)).forEach((value) => {
-      const { categoryId, title } = value[0];
-      const categoryName = categoryId === null
+      const { category, title } = value[0];
+      const categoryName = category === null
         ? 'undefined'
-        : categoryItems.find((category: Category) => (
-          category.id === categoryId
+        : categoryItems.find((item: Category) => (
+          item.uuid === category
         ))!.name;
       const arr: GroupedByCategoryItem[] = categoryClass[categoryName] || [];
-      const sortedGroupedBudgets: BudgetUsage[] = this.sortByField(value, 'budgetName');
+      const sortedGroupedBudgets: any[] = this.sortByField(value, 'budgetName');
       const countedPlannedObject: CountPlannedBudget = this.countPlannedBudget(value);
       const group: GroupedByCategoryItem = {
         name: title,
@@ -101,7 +101,7 @@ class BudgetUtils {
   }
 
   groupedBudgetUsage(
-    budgetList: BudgetUsage[],
+    budgetList: any[],
     categoryItems: Category[],
   ): GroupedBudgetUsageItem[] {
     const groupedList: GroupedBudgetUsageItem[] = [];
@@ -127,10 +127,12 @@ class BudgetUtils {
     return this.sortByField(groupedList, 'name');
   }
 
-  static mergedByBudget(items: BudgetUsage[]): BudgetUsage[] {
+  static mergedByBudget(items: any[]): any[] {
     return items.reduce(
-      (acc: BudgetUsage[], item: BudgetUsage) => {
-        const index: number = acc.findIndex((groupedItem: BudgetUsage) => groupedItem.id === item.id);
+      (acc: any[], item: any) => {
+        const index: number = acc.findIndex(
+          (groupedItem: any) => groupedItem.uuid === item.uuid,
+        );
         if (index > -1) {
           acc[index] = {
             ...acc[index],

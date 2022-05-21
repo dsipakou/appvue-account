@@ -4,8 +4,9 @@
       <span class="text-h5">
         {{ getCategory(category.uuid).name }}
       </span>
-      <q-chip dense class="q-ml-sm">
-        {{ getCategory(category.uuid).parent.name }}
+      <br />
+      <q-chip dense class="q-ml-sm q-px-md">
+        {{ getCategory(category.parent).name }}
       </q-chip>
     </q-card-section>
 

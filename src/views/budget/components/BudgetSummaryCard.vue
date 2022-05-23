@@ -45,7 +45,7 @@ import { defineComponent } from 'vue';
 const MAX_CHART_HEIGHT = 40;
 
 export default defineComponent({
-  name: 'Monthly Summary Card',
+  name: 'Budget Summary Card',
 
   props: {
     planned: { type: Number, required: true },

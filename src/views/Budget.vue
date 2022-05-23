@@ -9,14 +9,14 @@
     <div class="row col-12 relative-position">
       <div class="row col-12 justify-center vertical-middle">
         <div class="row col-4 justify-center items-center">
-          <MonthlySummaryCard
-            :planned="plannedMonth"
-            :spent="spentMonth"
+          <BudgetSummaryCard
+            :planned="budgetType === 'monthly' ? plannedMonth : plannedWeekly"
+            :spent="budgetType === 'monthly' ? spentMonth : spentWeekly"
           >
             <template v-slot:header>
               {{ budgetType.charAt(0).toUpperCase() + budgetType.slice(1) }} summary
             </template>
-          </MonthlySummaryCard>
+          </BudgetSummaryCard>
         </div>
         <div class="row col-4 budget-toggle">
           <q-tabs no-caps dense
@@ -96,7 +96,7 @@ import WeekBudget from '@/views/budget/WeekBudget.vue';
 import MonthlyBudget from '@/views/budget/MonthlyBudget.vue';
 import AddForm from '@/views/budget/forms/AddForm.vue';
 import EditForm from '@/views/budget/forms/EditForm.vue';
-import MonthlySummaryCard from '@/views/budget/components/MonthlySummaryCard.vue';
+import BudgetSummaryCard from '@/views/budget/components/BudgetSummaryCard.vue';
 
 export default {
   name: 'Budget',
@@ -106,7 +106,7 @@ export default {
     MonthlyBudget,
     AddForm,
     EditForm,
-    MonthlySummaryCard,
+    BudgetSummaryCard,
   },
 
   setup() {
@@ -189,6 +189,14 @@ export default {
 
     spentMonth() {
       return this.budgetUsage.reduce((acc, item) => acc + item.spentInBaseCurrency, 0);
+    },
+
+    plannedWeekly() {
+      return this.weeklyUsage.reduce((acc, item) => acc + item.planned, 0);
+    },
+
+    spentWeekly() {
+      return this.weeklyUsage.reduce((acc, item) => acc + item.spentInBaseCurrency, 0);
     },
 
     actualSum() {

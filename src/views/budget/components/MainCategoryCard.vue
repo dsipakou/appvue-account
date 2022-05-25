@@ -10,7 +10,10 @@
           <div class="planned-chart" :style="plannedHeight"></div>
         </div>
         <div class="row col-6 items-end">
-          <div class="actual-chart" :style="actualHeight"></div>
+          <div
+            class="actual-chart"
+            :class="planned > spent ? 'bg-green' : 'bg-red'"
+            :style="actualHeight"></div>
           <span class="actual-text">  {{ spent.toFixed(2) }}</span>
         </div>
       </div>
@@ -123,14 +126,21 @@ export default defineComponent({
 
 .planned-chart {
   width: 7px;
-  background-color: #23A8F5;
+  background-color: #d2d2d2;
   margin: 0 5px 0 11px;
 }
 
 .actual-chart {
   width: 7px;
-  background-color: #23A8F5;
   margin: 0 11px 0 6px;
+}
+
+.bg-green {
+  background-color: chartreuse;
+}
+
+.bg-red {
+  background-color: crimson;
 }
 
 .category-name {

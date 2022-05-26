@@ -63,7 +63,8 @@ const actions = {
   async createBudget({ commit }: any, payload: any) {
     const response = await createBudget(payload);
     if (response.status === 201) {
-      console.log('created');
+      const body = await response.json();
+      console.log(body);
     }
   },
 

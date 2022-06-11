@@ -49,6 +49,7 @@ export default {
   inheritAttrs: false,
 
   emits: [
+    'addBudget',
     'closeForm',
   ],
 

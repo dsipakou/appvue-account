@@ -397,16 +397,16 @@ export default {
 
     edit(account) {
       const {
-        id,
-        userId,
+        uuid,
+        user,
         source,
         amount,
         description,
         isMain,
       } = account;
 
-      this.input.id = id;
-      this.input.user = userId;
+      this.input.uuid = uuid;
+      this.input.user = user;
       this.input.source = source;
       this.input.amount = amount;
       this.input.description = description;
@@ -449,8 +449,8 @@ export default {
 
     update() {
       const account = {
-        id: this.input.id,
-        userId: this.input.user,
+        uuid: this.input.uuid,
+        user: this.input.user,
         source: this.input.source,
         amount: this.input.amount.toString(),
         description: this.input.description,

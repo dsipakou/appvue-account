@@ -33,6 +33,8 @@
         clearable
         outlined
         map-options
+        option-value="uuid"
+        option-label="username"
         v-model="input.user"
         :options="userList"
         label="User" />

@@ -90,79 +90,14 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="createIncomeForm">
-      <q-card class="shadow-24" style="width: 400px;">
-        <q-card-section>
-          <h4>Add income</h4>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section>
-          <q-select
-            clearable
-            outlined
-            map-options
-            v-model="input.account"
-            :options="accounts"
-            label="Account" />
-        </q-card-section>
-        <q-card-section>
-          <q-select
-            clearable
-            outlined
-            map-options
-            option-value="id"
-            option-label="name"
-            v-model="input.category"
-            :options="systemCategories"
-            label="Category" />
-        </q-card-section>
-        <q-card-section>
-          <q-select
-            clearable
-            outlined
-            map-options
-            v-model="input.user"
-            :options="users"
-            label="User" />
-        </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label label="Amount" v-model="input.amount" />
-        </q-card-section>
-        <q-card-section>
-          <q-select
-            outlined
-            label="Currency"
-            label-stacked
-            :loading="!currencyListLoaded"
-            :readonly="!currencyListLoaded"
-            :options="availableCurrencies"
-            option-value="id"
-            option-label="verbalName"
-            v-model="input.currency" />
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            outlined
-            type="date"
-            stack-label
-            label="Date"
-            v-model="input.transactionDate"
-            />
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            outlined
-            stack-label
-            type="textarea"
-            label="Description"
-            v-model="input.description" />
-        </q-card-section>
-
-        <q-card-actions align="center" class="action-buttons">
-          <q-btn color="primary" rounded style="width: 100px;" @click="createIncome()">Save</q-btn>
-        </q-card-actions>
-      </q-card>
+      <AddForm
+        :currencyListLoaded="currencyListLoaded"
+        :accountList="accountList"
+        :categoryList="categoryList"
+        :currencyList="currencyList"
+        :ratesList="ratesList"
+        :userList="userList"
+      />
     </q-dialog>
     <q-dialog v-model="updateAccountForm">
       <q-card class="shadow-24" style="width: 400px;">
@@ -282,12 +217,14 @@ import {
 import moment from 'moment';
 import { ref } from 'vue';
 import CreditCard from '@/views/accounts/components/CreditCard.vue';
+import AddForm from '@/views/accounts/forms/AddForm.vue';
 import { transactionTypes } from '../utils/constants';
 
 export default {
   name: 'AccountList',
 
   components: {
+    AddForm,
     CreditCard,
   },
 

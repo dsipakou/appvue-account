@@ -8,3 +8,13 @@ export interface Account {
   createdAt: string,
   modifiedAt: string,
 }
+
+export interface AccountSaveForm {
+  account: string,
+  amount: number,
+  category: string,
+  user: string,
+  currency: string,
+  transactionDate: string,
+  description: string,
+}

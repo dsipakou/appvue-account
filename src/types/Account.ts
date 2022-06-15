@@ -30,3 +30,12 @@ export interface AccountSaveForm {
   isMain: boolean,
   description: string,
 }
+
+export interface AccountEditForm {
+  uuid: string,
+  user: User,
+  source: string,
+  amount: number,
+  isMain: boolean,
+  description: string,
+}

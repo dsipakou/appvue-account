@@ -4,31 +4,25 @@
       <div class="header">
         <span>Your accounts</span>
         <div>
-          <q-btn
-            rounded
+          <q-btn rounded unelevated
             color="primary"
             icon="add"
-            unelevated
             @click="addIncome()">
             Add income
           </q-btn>
         </div>
         <div>
-          <q-btn
-            rounded
+          <q-btn rounded unelevated
             color="primary"
             icon="add"
-            unelevated
             @click="addAccount()">
             Add account
           </q-btn>
         </div>
         <div>
-          <q-btn
-            rounded
+          <q-btn rounded unelevated
             color="primary"
             icon="add"
-            unelevated
             @click="transferMoneyClick()">
             Transfer money
           </q-btn>
@@ -67,53 +61,11 @@
       />
     </q-dialog>
     <q-dialog v-model="updateAccountForm">
-      <q-card class="shadow-24" style="width: 400px;">
-        <q-card-section>
-          <h4>Edit account</h4>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-form>
-          <input type="hidden" v-model="input.id" />
-          <q-card-section>
-            <q-select
-              clearable
-              outlined
-              map-options
-              v-model="input.user"
-              :options="users"
-              label="User" /> </q-card-section>
-          <q-card-section>
-            <q-input outlined stack-label label="Source" v-model="input.source" />
-          </q-card-section>
-          <q-card-section>
-            <q-input outlined stack-label label="Amount" v-model="input.amount" />
-          </q-card-section>
-          <q-card-section>
-            <q-checkbox outlined stack-label label="Main Account" v-model="input.isMain" />
-          </q-card-section>
-          <q-card-section>
-            <q-input
-              outlined
-              stack-label
-              type="textarea"
-              label="Description"
-              v-model="input.description" />
-          </q-card-section>
-
-          <q-card-actions align="center" class="action-buttons">
-            <q-btn color="primary" rounded style="width: 100px;" @click="update()">Save</q-btn>
-            <q-btn
-              color="negative"
-              rounded
-              style="width: 100px;"
-              label="Remove"
-              @click="removeAccount(input.id)"
-              />
-          </q-card-actions>
-        </q-form>
-      </q-card>
+      <EditForm
+        :account="editingAccount"
+        :userList="userList"
+        @remove="removeAccount($event)"
+      />
     </q-dialog>
     <q-dialog v-model="transferMoneyForm">
       <q-card class="shadow-24" style="width: 400px;">
@@ -185,6 +137,7 @@ import moment from 'moment';
 import { ref } from 'vue';
 import CreditCard from '@/views/accounts/components/CreditCard.vue';
 import AddForm from '@/views/accounts/forms/AddForm.vue';
+import EditForm from '@/views/accounts/forms/EditForm.vue';
 import AddIncomeForm from '@/views/accounts/forms/AddIncomeForm.vue';
 // import { transactionTypes } from '../utils/constants';
 
@@ -194,6 +147,7 @@ export default {
   components: {
     AddForm,
     AddIncomeForm,
+    EditForm,
     CreditCard,
   },
 
@@ -211,6 +165,7 @@ export default {
       showModal: false,
       availableCurrencies: [],
       defaultCurrency: '',
+      editingAccount: null,
       input: {
         user: '',
         source: '',
@@ -302,21 +257,8 @@ export default {
     },
 
     edit(account) {
-      const {
-        uuid,
-        user,
-        source,
-        amount,
-        description,
-        isMain,
-      } = account;
+      this.editingAccount = account;
 
-      this.input.uuid = uuid;
-      this.input.user = user;
-      this.input.source = source;
-      this.input.amount = amount;
-      this.input.description = description;
-      this.input.isMain = isMain;
       this.updateAccountForm = true;
     },
 
@@ -415,8 +357,8 @@ export default {
       this.transferMoneyForm = true;
     },
 
-    removeAccount(id) {
-      this.deleteAccount(id);
+    removeAccount(uuid) {
+      this.deleteAccount(uuid);
       this.updateAccountForm = false;
     },
 

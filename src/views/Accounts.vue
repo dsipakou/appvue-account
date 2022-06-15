@@ -50,53 +50,20 @@
       </div>
     </div>
     <q-dialog v-model="createAccountForm">
-      <q-card class="shadow-24" style="width: 400px;">
-        <q-card-section>
-          <h4>Create account</h4>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section>
-          <q-select
-            clearable
-            outlined
-            map-options
-            v-model="input.user"
-            :options="users"
-            label="User" />
-        </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label label="Source" v-model="input.source" />
-        </q-card-section>
-        <q-card-section>
-          <q-input outlined stack-label label="Amount" v-model="input.amount" />
-        </q-card-section>
-        <q-card-section>
-          <q-checkbox outlined stack-label label="Main Account" v-model="input.isMain" />
-        </q-card-section>
-        <q-card-section>
-          <q-input
-            outlined
-            stack-label
-            type="textarea"
-            label="Description"
-            v-model="input.description" />
-        </q-card-section>
-
-        <q-card-actions align="center" class="action-buttons">
-          <q-btn color="primary" rounded style="width: 100px;" @click="create()">Save</q-btn>
-        </q-card-actions>
-      </q-card>
+      <AddForm
+        :userList="userList"
+        @save="createAccount($event)"
+      />
     </q-dialog>
     <q-dialog v-model="createIncomeForm">
-      <AddForm
+      <AddIncomeForm
         :currencyListLoaded="currencyListLoaded"
         :accountList="accountList"
         :categoryList="categoryList"
         :currencyList="currencyList"
         :ratesList="ratesList"
         :userList="userList"
+        @save="createIncome($event)"
       />
     </q-dialog>
     <q-dialog v-model="updateAccountForm">
@@ -218,13 +185,15 @@ import moment from 'moment';
 import { ref } from 'vue';
 import CreditCard from '@/views/accounts/components/CreditCard.vue';
 import AddForm from '@/views/accounts/forms/AddForm.vue';
-import { transactionTypes } from '../utils/constants';
+import AddIncomeForm from '@/views/accounts/forms/AddIncomeForm.vue';
+// import { transactionTypes } from '../utils/constants';
 
 export default {
   name: 'AccountList',
 
   components: {
     AddForm,
+    AddIncomeForm,
     CreditCard,
   },
 
@@ -363,24 +332,25 @@ export default {
       this.createAccountForm = false;
     },
 
-    createIncome() {
-      const rate = this.getRate(
-        this.input.currency.id,
-        this.input.transactionDate,
-      );
+    createIncome(inputData) {
+      console.log(inputData);
+      // const rate = this.getRate(
+      //   this.input.currency.id,
+      //   this.input.transactionDate,
+      // );
 
-      const transaction = {
-        userId: this.input.user.value || this.input.user,
-        categoryId: this.input.category.id,
-        amount: this.input.amount,
-        rate: rate?.rate || 1,
-        accountId: this.input.account.value || this.input.account,
-        transactionDate: new Date().toISOString().substr(0, 10),
-        type: transactionTypes.INCOME,
-        description: this.input.description,
-      };
+      // const transaction = {
+      //   userId: this.input.user.value || this.input.user,
+      //   categoryId: this.input.category.id,
+      //   amount: this.input.amount,
+      //   rate: rate?.rate || 1,
+      //   accountId: this.input.account.value || this.input.account,
+      //   transactionDate: new Date().toISOString().substr(0, 10),
+      //   type: transactionTypes.INCOME,
+      //   description: this.input.description,
+      // };
 
-      this.createTransaction(transaction);
+      // this.createTransaction(transaction);
       this.createIncomeForm = false;
     },
 

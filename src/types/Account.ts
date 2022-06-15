@@ -1,3 +1,7 @@
+import { Category } from './Category';
+import { Currency } from './Currency';
+import { User } from './User';
+
 export interface Account {
   uuid: string,
   user: string,
@@ -9,12 +13,20 @@ export interface Account {
   modifiedAt: string,
 }
 
-export interface AccountSaveForm {
-  account: string,
+export interface AccountSaveIncomeForm {
+  account: Account,
   amount: number,
-  category: string,
-  user: string,
-  currency: string,
+  category: Category,
+  user: User,
+  currency: Currency,
   transactionDate: string,
+  description: string,
+}
+
+export interface AccountSaveForm {
+  user: User,
+  source: string,
+  amount: number,
+  isMain: boolean,
   description: string,
 }

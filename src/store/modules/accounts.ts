@@ -5,6 +5,7 @@ import {
   createAccount,
   deleteAccount,
   updateAccount,
+  CreateAccountRequest,
 } from '../../service/accounts';
 
 const state = {
@@ -30,7 +31,7 @@ const actions = {
     }
   },
 
-  async createAccount({ commit }: any, payload: any) {
+  async createAccount({ commit }: any, payload: CreateAccountRequest) {
     const response = await createAccount(payload);
     if (response.status === 201) {
       const body = await response.json();

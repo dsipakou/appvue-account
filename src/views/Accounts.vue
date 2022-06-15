@@ -52,7 +52,7 @@
     <q-dialog v-model="createAccountForm">
       <AddForm
         :userList="userList"
-        @save="createAccount($event)"
+        @save="create($event)"
       />
     </q-dialog>
     <q-dialog v-model="createIncomeForm">
@@ -320,13 +320,13 @@ export default {
       this.updateAccountForm = true;
     },
 
-    create() {
+    create(payload) {
       const account = {
-        userId: this.input.user.value,
-        source: this.input.source,
-        amount: this.input.amount,
-        description: this.input.description,
-        isMain: this.input.isMain,
+        user: payload.user.uuid,
+        source: payload.source,
+        amount: payload.amount,
+        description: payload.description,
+        isMain: payload.isMain,
       };
       this.createAccount(account);
       this.createAccountForm = false;

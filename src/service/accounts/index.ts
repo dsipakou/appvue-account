@@ -5,7 +5,7 @@ import {
   deleteRequest,
 } from '../index';
 
-interface CreateAccountRequest {
+export interface CreateAccountRequest {
   user: string,
   source: string,
   amount: number,

@@ -13,7 +13,7 @@ export interface CreateAccountRequest {
   isMain: boolean,
 }
 
-interface UpdateAccountRequest extends CreateAccountRequest {
+export interface UpdateAccountRequest extends CreateAccountRequest {
   uuid: string,
 }
 

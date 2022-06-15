@@ -6,6 +6,7 @@ import {
   deleteAccount,
   updateAccount,
   CreateAccountRequest,
+  UpdateAccountRequest,
 } from '../../service/accounts';
 
 const state = {
@@ -46,7 +47,7 @@ const actions = {
     }
   },
 
-  async updateAccount({ commit }: any, payload: any) {
+  async updateAccount({ commit }: any, payload: UpdateAccountRequest) {
     const response = await updateAccount(payload);
     if (response.status === 200) {
       const body = await response.json();

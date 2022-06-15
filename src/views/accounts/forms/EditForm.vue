@@ -62,7 +62,6 @@ export default defineComponent({
   props: {
     account: { type: Object as PropType<AccountEditForm>, required: true },
     userList: { type: Array as PropType<Array<User>>, required: true },
-
   },
 
   data() {

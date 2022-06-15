@@ -29,7 +29,7 @@
         </div>
       </div>
       <div id="account-list" class="row">
-        <div v-for="account in accountList" class="col-3 q-ml-sm" :key="account.id">
+        <div v-for="account in accountList" class="col-3 q-ml-sm" :key="account.uuid">
           <CreditCard
             :title=account.source
             @click="edit(account)"
@@ -64,6 +64,7 @@
       <EditForm
         :account="editingAccount"
         :userList="userList"
+        @update="editAccount($event)"
         @remove="removeAccount($event)"
       />
     </q-dialog>
@@ -257,7 +258,10 @@ export default {
     },
 
     edit(account) {
-      this.editingAccount = account;
+      this.editingAccount = {
+        ...account,
+        user: this.userList.find((item) => item.uuid === account.user),
+      };
 
       this.updateAccountForm = true;
     },
@@ -296,16 +300,15 @@ export default {
       this.createIncomeForm = false;
     },
 
-    update() {
+    editAccount(payload) {
       const account = {
-        uuid: this.input.uuid,
-        user: this.input.user,
-        source: this.input.source,
-        amount: this.input.amount.toString(),
-        description: this.input.description,
-        isMain: this.input.isMain,
+        uuid: payload.uuid,
+        user: payload.user.uuid,
+        source: payload.source,
+        amount: payload.amount,
+        isMain: payload.isMain,
+        description: payload.description,
       };
-
       this.updateAccount(account);
       this.updateAccountForm = false;
     },

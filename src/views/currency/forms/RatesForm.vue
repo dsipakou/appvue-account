@@ -72,6 +72,10 @@ export default defineComponent({
     notBaseCurrencies(): Currency[] {
       return this.currencies.filter((item: Currency) => !item.isBase);
     },
+
+    baseCurrency(): string {
+      return this.currencies.find((item: Currency) => item.isBase)?.uuid || '';
+    },
   },
 
   methods: {
@@ -81,7 +85,7 @@ export default defineComponent({
 
     save() {
       this.currencyItems.forEach(
-        (item: InstanceType<typeof CurrencyItem>) => item.save(),
+        (item: InstanceType<typeof CurrencyItem>) => item.save(this.baseCurrency),
       );
     },
   },

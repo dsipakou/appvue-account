@@ -3,9 +3,7 @@
     <q-card-section horizontal class="justify-between">
       <div class="row q-pa-md">
         <div class="col-1 align-center">
-          <q-avatar
-            color="primary"
-            text-color="white">
+          <q-avatar color="primary" text-color="white">
             {{ transaction.categoryDetails?.name[0] }}
           </q-avatar>
         </div>
@@ -39,8 +37,7 @@
             </q-chip>
           </div>
           <div class="q-ml-md">
-            <q-chip
-              dense
+            <q-chip dense
               color="info"
               text-color="white"
               class="text-caption text-weight-bold">
@@ -108,6 +105,7 @@
     />
   </q-dialog>
 </template>
+
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
 import moment from 'moment';
@@ -206,10 +204,10 @@ export default defineComponent({
         currencies.push(objDefault);
 
         Object.values(this.selectedCurrencies).forEach((currency) => {
-          const rate = this.getRate(currency.id, transaction.transactionDate);
+          const value = transaction.spentInCurrencies[currency.code]?.amount?.toFixed(2);
           const obj = {
-            uuid: currency.value,
-            baseAmount: rate ? (transaction.baseAmount / rate.rate)?.toFixed(2) : '-',
+            uuid: currency.uuid,
+            baseAmount: value || '-',
             sign: currency.sign,
           } as ShortTransaction;
 

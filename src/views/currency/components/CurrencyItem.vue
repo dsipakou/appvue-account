@@ -20,7 +20,7 @@ import { Rate } from '@/types';
 export default defineComponent({
   name: 'CurrencyItem',
 
-  emits: ['save', 'edit', 'remove'],
+  emits: ['edit', 'remove'],
 
   setup() {
     return {
@@ -43,7 +43,7 @@ export default defineComponent({
   },
 
   methods: {
-    save() {
+    save(baseCurrency: string) {
       if (this.currencyDate && this.rate.length > 5) {
         if (this.rateOnDate) {
           if (Number(this.rate) !== this.rateOnDate.rate) {
@@ -57,6 +57,7 @@ export default defineComponent({
             currency: this.currency.uuid,
             rateDate: this.currencyDate,
             rate: Number(this.rate),
+            baseCurrency,
           });
         }
       }

@@ -9,6 +9,7 @@ interface CreateRateRequest {
   rateDate: string,
   rate: number,
   description?: string,
+  baseCurrency: string,
 }
 
 interface UpdateRateRequest {

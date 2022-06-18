@@ -10,6 +10,12 @@ export interface TransactionAccount {
   source: string,
 }
 
+export interface TransactionSpentCurrency {
+  amount: number,
+  currency: string,
+  sign: string,
+}
+
 export interface Transaction {
   uuid: string,
   account: string,
@@ -21,6 +27,7 @@ export interface Transaction {
   user: string,
   amount: number,
   spentInBaseCurrency: number,
+  spentInCurrencies: TransactionSpentCurrency[],
   baseAmount: number,
   rate: number,
   transactionDate: string,

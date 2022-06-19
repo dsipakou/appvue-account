@@ -39,6 +39,7 @@ export const createRate = async (data: CreateRateRequest) => {
       rateDate: data.rateDate,
       rate: Number(data.rate),
       description: data.description,
+      baseCurrency: data.baseCurrency,
     });
   return response;
 };

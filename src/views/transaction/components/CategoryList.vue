@@ -1,5 +1,11 @@
 <template>
   <div v-if="!isCategoryListLoading">
+    <div class="main-category-container">
+      <div v-for="category in mainCategories" :key="category.uuid" class="main-category-inner">
+        <q-icon size="lg" name="thumb_up" />
+        <span style="display: flex;">{{ category.name }}</span>
+      </div>
+    </div>
     <div class="row justify-center">
       <div class="col-10 items-center sub-categories">
         <div v-if="isAvailable" class="row justify-center">
@@ -100,6 +106,27 @@ export default {
 <style>
 .main-category-tab {
   max-height: 124px;
+}
+
+.main-category-container {
+  display: flex;
+  overflow: scroll;
+  overflow-y: hidden;
+}
+
+.main-category-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: left;
+  border-radius: 2px;
+  background: white;
+  margin: 0 2px;
+  min-width: 80px;
+  max-width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .main-categories-list {

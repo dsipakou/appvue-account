@@ -111,7 +111,7 @@ export default {
       input: {
         account: '',
         amount: '',
-        budget: null,
+        budget: '',
         category: '',
         currency: '',
         description: '',
@@ -167,7 +167,7 @@ export default {
         uuid: this.input.uuid,
         user: this.input.user,
         category: this.input.category,
-        budget: this.input.budget,
+        budget: this.input.budget.uuid,
         amount: this.input.amount.toString(),
         currency: this.input.currency.uuid,
         account: this.input.account,

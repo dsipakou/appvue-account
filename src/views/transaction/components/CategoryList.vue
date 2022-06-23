@@ -1,9 +1,14 @@
 <template>
   <div v-if="!isCategoryListLoading">
     <div class="main-category-container">
-      <div v-for="category in mainCategories" :key="category.uuid" class="main-category-inner">
+      <div v-for="category in mainCategories"
+        class="main-category-inner"
+        :key="category.uuid"
+        :name="category.uuid"
+        @click="chooseCategory(category)"
+      >
         <q-icon size="lg" name="thumb_up" />
-        <span style="display: flex;">{{ category.name }}</span>
+        <span class="main-category-title">{{ category.name }}</span>
       </div>
     </div>
     <div class="row justify-center">
@@ -30,12 +35,6 @@
           active-bg-color="white"
           active-color="primary"
           class="text-dark">
-          <q-tab :ripple="false"
-            v-for="category in mainCategories"
-            :name="category.uuid"
-            :label="category.name"
-            :key="category.uuid"
-            @click="chooseCategory(category)"/>
         </q-tabs>
       </div>
     </div>
@@ -122,11 +121,17 @@ export default {
   border-radius: 2px;
   background: white;
   margin: 0 2px;
+  padding: 4px 2px 0 2px;
   min-width: 80px;
   max-width: 80px;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.main-category-title {
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
 }
 
 .main-categories-list {

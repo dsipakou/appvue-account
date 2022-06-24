@@ -20,6 +20,7 @@
     </div>
     <CategoryList
       :categoryList="categoryList"
+      :selectedCategory="selectedCategory"
       :isCategoryListLoading="isCategoryListLoading"
       :isAvailable="selectedAccountUuid !== ''"
       @selectCategory="selectCategory($event)"

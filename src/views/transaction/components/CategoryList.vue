@@ -3,6 +3,7 @@
     <div class="main-category-container">
       <div v-for="category in mainCategories"
         class="main-category-inner"
+        :class="selectedMainCategory === category.uuid ? 'selected' : ''"
         :key="category.uuid"
         :name="category.uuid"
         @click="chooseCategory(category)"
@@ -58,6 +59,7 @@ export default {
 
   data() {
     return {
+      selectedMainCategory: '',
       subCategories: [],
     };
   },
@@ -89,6 +91,7 @@ export default {
 
   methods: {
     chooseCategory(category) {
+      this.selectedMainCategory = category.uuid;
       this.subCategories = this.categoryList.filter((item) => item.parent === category.uuid);
     },
 
@@ -102,7 +105,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .main-category-tab {
   max-height: 124px;
 }
@@ -132,6 +135,11 @@ export default {
   text-align: center;
   width: 100%;
   overflow: hidden;
+}
+
+.selected {
+  background: grey;
+  color: white;
 }
 
 .main-categories-list {

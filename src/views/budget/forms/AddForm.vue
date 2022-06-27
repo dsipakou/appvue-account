@@ -1,14 +1,29 @@
 <template>
-  <q-card style="width: 400px;">
+  <q-card style="width: 500px;">
     <q-card-section>
       <h4>Make your plans</h4>
     </q-card-section>
-    <q-card-section>
-      <q-input outlined stack-label label="Name" autofocus v-model="input.title" />
+    <q-card-section horizontal class="justify-between">
+      <q-card-section style="width: 100%;">
+        <q-input outlined stack-label label="Name" autofocus v-model="input.title" />
+      </q-card-section>
+      <q-card-section style="width: auto;">
+        <q-select outlined label-stacked map-options emit-value
+          label="Category"
+          option-value="uuid"
+          option-label="name"
+          :options="categories"
+          style="width: 200px;"
+          v-model="input.category" />
+      </q-card-section>
     </q-card-section>
+
     <q-card-section horizontal class="justify-between">
       <q-card-section>
-        <q-input outlined stack-label label="Amount" v-model.number="input.amount" />
+        <q-input outlined stack-label
+          label="Amount"
+          v-model="input.amount"
+        />
       </q-card-section>
       <q-card-section>
         <q-input outlined stack-label
@@ -18,13 +33,13 @@
           />
       </q-card-section>
       <q-card-section>
-        <q-select outlined label-stacked map-options emit-value
-          label="Category"
-          option-value="uuid"
-          option-label="name"
-          :options="categories"
-          style="width: 200px;"
-          v-model="input.category" />
+        <q-select outlined clearable label-stacked map-options emit-value
+          label="Repeat"
+          option-value="name"
+          option-label="value"
+          :options="recurrent_options"
+          style="width: 180px;"
+          v-model="input.recurrent" />
       </q-card-section>
     </q-card-section>
     <q-card-section>
@@ -43,6 +58,8 @@
 </template>
 
 <script>
+import { RECURRENT_OPTIONS } from '@/service/budget';
+
 export default {
   name: 'AddForm',
 
@@ -64,6 +81,7 @@ export default {
           title: '',
           description: '',
           categoryId: 0,
+          recurrent: null,
         };
       },
     },
@@ -71,12 +89,14 @@ export default {
 
   data() {
     return {
+      recurrent_options: RECURRENT_OPTIONS,
       input: {
         budgetDate: '',
         amount: 0,
         title: '',
         description: '',
         categoryId: 0,
+        recurrent: null,
       },
     };
   },
@@ -90,6 +110,7 @@ export default {
         amount: this.input.amount,
         category: this.input.category,
         description: this.input.description,
+        recurrent: this.input.recurrent,
       };
 
       this.createBudget(budget);

@@ -6,29 +6,39 @@
       <h4>Update your plans</h4>
     </q-card-section>
     <q-card-section horizontal class="justify-between">
-      <q-card-section>
+      <q-card-section style="width: 100%;">
         <q-input outlined stack-label label="Name" v-model="input.title" />
       </q-card-section>
       <q-card-section>
-        <q-input outlined stack-label label="Amount" v-model.number="input.amount" />
-      </q-card-section>
-      <q-card-section>
-        <q-input
-          outlined
-          type="date"
-          stack-label
-          label="Date"
-          v-model="input.budgetDate"
-          />
+        <q-select outlined label-stacked map-options emit-value
+          label="Category"
+          option-value="uuid"
+          option-label="name"
+          :options="categories"
+          style="width: 200px;"
+          v-model="input.category" />
       </q-card-section>
     </q-card-section>
-    <q-card-section>
-      <q-select outlined label-stacked map-options emit-value
-        label="Category"
-        option-value="uuid"
-        option-label="name"
-        :options="categories"
-        v-model="input.category" />
+    <q-card-section horizontal class="justify-between">
+      <q-card-section>
+        <q-input outlined stack-label label="Amount" v-model="input.amount" />
+      </q-card-section>
+      <q-card-section>
+        <q-input outlined stack-label
+          type="date"
+          label="Date"
+          v-model="input.budgetDate"
+        />
+      </q-card-section>
+      <q-card-section>
+        <q-select outlined clearable label-stacked map-options emit-value
+          label="Repeat"
+          option-value="name"
+          option-label="value"
+          :options="recurrent_options"
+          style="width: 180px;"
+          v-model="input.recurrent" />
+      </q-card-section>
     </q-card-section>
     <q-card-section>
       <q-input
@@ -48,6 +58,8 @@
 </template>
 
 <script>
+import { RECURRENT_OPTIONS } from '@/service/budget';
+
 export default {
   name: 'EditForm',
 
@@ -67,6 +79,7 @@ export default {
 
   data() {
     return {
+      recurrent_options: RECURRENT_OPTIONS,
       input: {
         uuid: '',
         isCompleted: false,
@@ -74,6 +87,7 @@ export default {
         amount: 0,
         budgetDate: '',
         category: '',
+        recurrent: null,
         description: '',
       },
     };
@@ -86,6 +100,7 @@ export default {
     this.input.amount = this.item.planned;
     this.input.budgetDate = this.item.budgetDate;
     this.input.category = this.item.category;
+    this.input.recurrent = this.item.recurrent;
     this.input.description = this.item.description;
   },
 
@@ -97,6 +112,7 @@ export default {
         title: this.input.title,
         amount: this.input.amount,
         category: this.input.category,
+        recurrent: this.input.recurrent,
         description: this.input.description,
         isCompleted: this.input.isCompleted,
       };

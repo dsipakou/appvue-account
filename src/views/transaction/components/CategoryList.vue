@@ -112,8 +112,10 @@ export default {
 
 .main-category-container {
   display: flex;
-  overflow: scroll;
-  overflow-y: hidden;
+  width: 80%;
+  margin: auto;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .main-category-inner {
@@ -123,7 +125,7 @@ export default {
   justify-content: left;
   border-radius: 2px;
   background: white;
-  margin: 0 2px;
+  margin: 2px;
   padding: 4px 2px 0 2px;
   min-width: 80px;
   max-width: 80px;

@@ -6,6 +6,17 @@ import {
   deleteRequest,
 } from '../index';
 
+export const RECURRENT_OPTIONS = [
+  {
+    name: 'weekly',
+    value: 'Weekly',
+  },
+  {
+    name: 'monthly',
+    value: 'Monthly',
+  },
+];
+
 interface GetBudgetRequest {
   dateFrom: string,
   dateTo: string,
@@ -17,6 +28,7 @@ interface CreateBudgetRequest {
   amount: number,
   category: string,
   description: string,
+  recurrent: string | null,
 }
 
 interface UpdateBudgetRequest extends CreateBudgetRequest {
@@ -53,6 +65,7 @@ export const createBudget = async (data: CreateBudgetRequest) => {
       title: data.title,
       category: data.category,
       amount: data.amount,
+      recurrent: data.recurrent,
       description: data.description,
     });
   return response;
@@ -65,6 +78,7 @@ export const updateBudget = async (data: UpdateBudgetRequest) => {
       title: data.title,
       amount: data.amount,
       category: data.category,
+      recurrent: data.recurrent,
       description: data.description,
       isCompleted: data.isCompleted,
     });

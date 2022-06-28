@@ -27,6 +27,7 @@ export interface BudgetUsageItem {
   planned: number,
   spentInBaseCurrency: number,
   spentInOriginalCurrency: number,
+  recurrent: string,
   isCompleted: boolean,
   transactions: BudgetTransactionItem[],
   createdAt: string,

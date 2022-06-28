@@ -1,6 +1,12 @@
 <template>
   <q-card flat class="container" @click="selectSubCategory(item.uuid)">
-    <div class="row col-12 title--main">{{ item.title }}</div>
+    <div class="row col-12 title--main">
+      <span>{{ item.title }}</span>
+      <div v-show="isMonthlyRecurrent" class="recurrent-icon">
+        <q-icon name="autorenew" style="padding-right: 5px; align-self: center;" />
+        <span>monthly</span>
+      </div>
+    </div>
     <div class="row progress-container">
       <div class="row col-12 justify-center remains">
         <span class="number">{{ getDiff }}</span>
@@ -69,6 +75,10 @@ export default defineComponent({
       if (this.item.planned === 0) return 'Unplanned';
       return `${(this.getProgressRate * 100).toFixed(0)}%`;
     },
+
+    isMonthlyRecurrent(): boolean {
+      return this.item.items.every((item) => item.recurrent === 'monthly');
+    },
   },
 
   methods: {
@@ -101,6 +111,14 @@ export default defineComponent({
   white-space: nowrap;
   font-size: 18px;
   padding: 15px 0 0 15px;
+  justify-content: space-between;
+}
+
+.recurrent-icon {
+  display: flex;
+  align-self: center;
+  font-size: 13px;
+  padding-right: 15px;
 }
 
 .caption--main {

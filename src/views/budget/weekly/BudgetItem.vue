@@ -11,6 +11,12 @@
         <q-icon v-if="item.isCompleted" name="lock" class="lock-icon" @click="completeBudget()" />
         <q-icon v-else name="lock_open" class="lock-icon" @click="completeBudget()" />
       </div>
+      <div
+        class="absolute-right flex flex-center"
+        style="padding-right: 15px;"
+        v-show="isRecurrent">
+        <q-icon name="autorenew" />
+      </div>
       <q-linear-progress
           class="progress-bar"
           :value="getProgressRate"
@@ -112,6 +118,10 @@ export default defineComponent({
       if (currentDay === budgetDay) return 0;
       if (currentDay < budgetDay) return 1;
       return -1;
+    },
+
+    isRecurrent(): boolean {
+      return this.item?.recurrent;
     },
   },
 

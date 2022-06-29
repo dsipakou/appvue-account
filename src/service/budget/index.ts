@@ -41,6 +41,11 @@ export const getBudget = async () => {
   return response;
 };
 
+export const getBudgetArchive = async (data: any) => {
+  const response = await getRequest(`budget/archive?date=${data.date}`);
+  return response;
+};
+
 export const getBudgetUsage = async (data: GetBudgetForPeriod) => {
   const url = `budget/usage?dateFrom=${data.dateFrom}&dateTo=${data.dateTo}`;
   const response = await getRequest(url);

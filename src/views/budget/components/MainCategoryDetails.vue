@@ -5,12 +5,16 @@
       {{ categoryUsage.categoryName }}
     </div>
     <div class="row col-12">
-      <div class="row col justify-center">
+      <div class="row col-6 justify-center">
         <CategoryMonthSummary
           :categoryUsage="categoryUsage"
         />
       </div>
-      <div class="row col"></div>
+      <div class="row col">
+        <CategoryLastSixMonths
+          :categoryUsage="categoryUsage"
+        />
+      </div>
     </div>
     <div class="row justify-start">
       <div
@@ -30,6 +34,7 @@
 import { defineComponent, PropType } from 'vue';
 import SubCategoryCard from '@/views/budget/components/SubCategoryCard.vue';
 import CategoryMonthSummary from '@/views/budget/components/CategoryMonthSummary.vue';
+import CategoryLastSixMonths from '@/views/budget/components/CategoryLastSixMonths.vue';
 import { CategoryBudgetUsageItem } from '@/types/Budget';
 
 export default defineComponent({
@@ -38,6 +43,7 @@ export default defineComponent({
   components: {
     SubCategoryCard,
     CategoryMonthSummary,
+    CategoryLastSixMonths,
   },
 
   emits: [

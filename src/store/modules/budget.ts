@@ -10,6 +10,7 @@ import {
   updateBudget,
   deleteBudget,
   getWeeklyBudgetUsage,
+  getBudgetArchive,
 } from '../../service/budget';
 
 const state = {
@@ -17,6 +18,7 @@ const state = {
   usage: [],
   weeklyUsage: [],
   plan: [],
+  archive: [],
   budgetToggle: BudgetToggle.Monthly,
   isLoading: false,
 };
@@ -56,6 +58,16 @@ const actions = {
     if (response.status === 200) {
       const body = await response.json();
       commit('setBudgetPlan', body);
+    }
+    commit('setBudgetLoading', false);
+  },
+
+  async fetchBudgetArchive({ commit }: any, payload: string) {
+    commit('setBudgetLoading', true);
+    const response = await getBudgetArchive(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setBudgetArchive', body);
     }
     commit('setBudgetLoading', false);
   },
@@ -101,6 +113,10 @@ const mutations = {
 
   setBudgetPlan(state: any, budget: any) {
     state.plan = budget;
+  },
+
+  setBudgetArchive(state: any, archive: any) {
+    state.archive = archive;
   },
 
   setBudgetLoading(state: any, isLoading: boolean) {

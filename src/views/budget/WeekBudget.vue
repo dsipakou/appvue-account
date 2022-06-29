@@ -18,6 +18,7 @@
             <BudgetItem
               :item="item"
               :updateStatusBudget="updateStatusBudget"
+              @budgetItemClick="budgetItemClick(item)"
             />
           </div>
         </q-timeline-entry>
@@ -52,6 +53,10 @@ export default defineComponent({
   components: {
     BudgetItem,
   },
+
+  emits: [
+    'budgetItemClick',
+  ],
 
   props: {
     weeklyUsage: { type: Array as PropType<Array<BudgetUsageItem>>, required: true },
@@ -90,6 +95,11 @@ export default defineComponent({
 
     currentDayItem(date: { full: string, formatted: string }) {
       return isSameDay(new Date(), new Date(date.full));
+    },
+
+    budgetItemClick(item: any) {
+      console.log('click');
+      this.$emit('budgetItemClick', item);
     },
   },
 });

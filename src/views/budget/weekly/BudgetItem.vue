@@ -1,7 +1,9 @@
 <template>
   <q-card flat bordered
     :style="cardBackground"
-    class="row main-card" >
+    class="row main-card"
+    @click="budgetItemClick"
+  >
     <div v-show="getActualDay === 0" class="absolute-left current-indicator"></div>
     <div class="row col-12 justify-center">
       <span class="header">{{ item.title }}</span>
@@ -50,6 +52,10 @@ import { getDayOfYear } from 'date-fns';
 
 export default defineComponent({
   name: 'Budget Item',
+
+  emits: [
+    'budgetItemClick',
+  ],
 
   props: {
     item: { type: Object as PropType<any>, required: true },
@@ -132,6 +138,10 @@ export default defineComponent({
         isCompleted: !this.item.isCompleted,
       };
       this.updateStatusBudget(item);
+    },
+
+    budgetItemClick() {
+      this.$emit('budgetItemClick');
     },
   },
 });

@@ -51,6 +51,7 @@
         :categoryItems="categoryList"
         :selectedDay="selectedMonth"
         :updateStatusBudget="updateStatusBudget"
+        @budgetItemClick="budgetItemClick($event)"
         v-show="budgetType === 'weekly'"
       />
     </div>
@@ -154,7 +155,7 @@ export default {
 
     selectMonthOptions() {
       const options = [];
-      for (let i = 0; i < 12; i += 1) {
+      for (let i = -1; i < 12; i += 1) {
         const month = startOfDay(subMonths(new Date(), i));
         let label = format(month, 'MMMM yyyy');
         if (i === 0) label += ' (current)';
@@ -169,11 +170,13 @@ export default {
 
     selectWeekOptions() {
       const options = [];
-      for (let i = 0; i < 20; i += 1) {
+      for (let i = -1; i < 20; i += 1) {
         const day = startOfDay(subWeeks(new Date(), i));
         const from = startOfWeek(day, { weekStartsOn: 1 });
         const to = endOfWeek(day, { weekStartsOn: 1 });
-        const label = `${format(from, 'dd-MMM-yyyy')} - ${format(to, 'dd-MMM-yyyy')}`;
+        const label = i === 0
+          ? 'Current week'
+          : `${format(from, 'dd-MMM-yyyy')} - ${format(to, 'dd-MMM-yyyy')}`;
         options.push({
           label,
           value: day,
@@ -221,6 +224,7 @@ export default {
       'fetchMonthlyUsage',
       'fetchWeeklyUsage',
       'fetchBudgetedTransactions',
+      'fetchBudgetArchive',
       'createBudget',
       'updateBudget',
       'updateStatusBudget',
@@ -249,6 +253,9 @@ export default {
       this.fetchWeeklyUsage({
         dateFrom: format(startWeek, DATE_FORMAT),
         dateTo: format(endWeek, DATE_FORMAT),
+      });
+      this.fetchBudgetArchive({
+        date: format(startMonth, DATE_FORMAT),
       });
     },
 

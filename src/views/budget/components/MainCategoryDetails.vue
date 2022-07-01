@@ -10,9 +10,9 @@
           :categoryUsage="categoryUsage"
         />
       </div>
-      <div class="row col">
+      <div class="row col-6">
         <CategoryLastSixMonths
-          :categoryUsage="categoryUsage"
+          :budgetArchive="budgetArchive"
         />
       </div>
     </div>
@@ -35,7 +35,7 @@ import { defineComponent, PropType } from 'vue';
 import SubCategoryCard from '@/views/budget/components/SubCategoryCard.vue';
 import CategoryMonthSummary from '@/views/budget/components/CategoryMonthSummary.vue';
 import CategoryLastSixMonths from '@/views/budget/components/CategoryLastSixMonths.vue';
-import { CategoryBudgetUsageItem } from '@/types/Budget';
+import { CategoryBudgetUsageItem, BudgetArchive } from '@/types/Budget';
 
 export default defineComponent({
   name: 'MainCategoryDetails',
@@ -52,6 +52,7 @@ export default defineComponent({
 
   props: {
     budgetUsage: { type: Array, required: true },
+    budgetArchive: { type: Array as PropType<BudgetArchive[]>, required: true },
     categoryUsage: { type: Object as PropType<CategoryBudgetUsageItem>, required: true },
     items: { type: Array, required: true },
     categories: { type: Array, required: true },

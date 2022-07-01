@@ -38,12 +38,14 @@
       <MonthlyBudget
         v-show="budgetType === 'monthly'"
         :budgetUsage="budgetUsage"
+        :budgetArchive="budgetArchive"
         :categoryItems="categoryList"
         :createBudget="createBudget"
         :updateBudget="updateBudget"
         :deleteBudget="deleteBudget"
         :selectedMonth="budgetSelectedMonth"
         :updateStatusBudget="updateStatusBudget"
+        :fetchBudgetArchive="fetchBudgetArchive"
         @budgetItemClick="budgetItemClick($event)"
         />
       <WeekBudget
@@ -147,6 +149,7 @@ export default {
       'categoryList',
       'budgetSelectedMonth',
       'selectedMonth',
+      'budgetArchive',
     ]),
 
     categories() {
@@ -253,9 +256,6 @@ export default {
       this.fetchWeeklyUsage({
         dateFrom: format(startWeek, DATE_FORMAT),
         dateTo: format(endWeek, DATE_FORMAT),
-      });
-      this.fetchBudgetArchive({
-        date: format(startMonth, DATE_FORMAT),
       });
     },
 

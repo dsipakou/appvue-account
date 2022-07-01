@@ -27,6 +27,7 @@ const getters = {
   budgetUsage: (state: any) => state.usage,
   weeklyUsage: (state: any) => state.weeklyUsage,
   budgetPlan: (state: any) => state.plan,
+  budgetArchive: (state: any) => state.archive,
   budgetSelectedMonth: (state: any) => state.selectedMonth,
   isBudgetListLoading: (state: any) => state.isLoading,
 };

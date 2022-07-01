@@ -47,6 +47,11 @@ export interface BudgetPlan extends Budget {
   categoryName: string,
 }
 
+export interface BudgetArchive {
+  month: string,
+  planned: number,
+}
+
 export interface CategoryBudgetUsageItem {
   uuid: string,
   categoryName: string,

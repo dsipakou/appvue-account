@@ -17,6 +17,7 @@
       <div class="row" v-show="activeCategory.categoryName && !activeSubCategory">
         <MainCategoryDetails
           :budgetUsage="budgetUsage"
+          :budgetArchive="budgetArchive"
           :categoryUsage="activeCategory"
           :items="activeBudget"
           :categories="categoryItems"
@@ -26,7 +27,7 @@
       <div class="row" v-show="activeSubCategory !== undefined">
         <SubCategoryDetailsPanel
           :budgets="activeSubCategory?.items"
-          :category="activeSubCategoryObject"
+          :category="activeSubCategory"
           :selectedMonth="selectedMonth"
           @closeSubCategory="closeSubCategory"
           @budgetItemClick="budgetItemClick($event)"
@@ -41,7 +42,16 @@ import MainCategoryCard from '@/views/budget/components/MainCategoryCard.vue';
 import MainCategoryDetails from '@/views/budget/components/MainCategoryDetails.vue';
 import SubCategoryDetailsPanel from '@/views/budget/subcategory/SubCategoryDetailsPanel.vue';
 import { Category } from '@/types';
-import { CategoryBudgetUsageItem, BudgetPlan, GroupedBudgetUsageItem } from '@/types/Budget';
+import {
+  CategoryBudgetUsageItem,
+  BudgetPlan,
+  GroupedBudgetUsageItem,
+  BudgetArchive,
+} from '@/types/Budget';
+import {
+  DATE_FORMAT,
+} from '@/utils/dateTimeUtils';
+import { format } from 'date-fns';
 
 export default defineComponent({
   name: 'MonthlyBudget',
@@ -58,6 +68,7 @@ export default defineComponent({
 
   props: {
     categoryItems: { type: Array as PropType<Category[]>, required: true },
+    budgetArchive: { type: Array as PropType<BudgetArchive[]>, required: true },
     createBudget: { type: Function, required: true },
     updateBudget: { type: Function, required: true },
     deleteBudget: { type: Function, required: true },
@@ -65,6 +76,7 @@ export default defineComponent({
     budgetPlan: { type: Array as PropType<BudgetPlan[]>, required: true },
     selectedMonth: { type: Date, required: true },
     updateStatusBudget: { type: Function, required: true },
+    fetchBudgetArchive: { type: Function, required: true },
   },
 
   data() {
@@ -97,6 +109,14 @@ export default defineComponent({
     budgetItemClick(item: CategoryBudgetUsageItem) {
       this.$emit('budgetItemClick', item);
     },
+
+    fetchArchive() {
+      console.log('fetching archive');
+      this.fetchBudgetArchive({
+        date: format(this.selectedMonth, DATE_FORMAT),
+        category: this.activeCategory.uuid,
+      });
+    },
   },
 
   watch: {
@@ -108,6 +128,11 @@ export default defineComponent({
 
     selectedMonth() {
       this.closeSubCategory();
+      this.fetchArchive();
+    },
+
+    activeCategory() {
+      this.fetchArchive();
     },
   },
 });

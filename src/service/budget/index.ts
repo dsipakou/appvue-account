@@ -42,7 +42,7 @@ export const getBudget = async () => {
 };
 
 export const getBudgetArchive = async (data: any) => {
-  const response = await getRequest(`budget/archive?date=${data.date}`);
+  const response = await getRequest(`budget/archive?date=${data.date}&category=${data.category}`);
   return response;
 };
 

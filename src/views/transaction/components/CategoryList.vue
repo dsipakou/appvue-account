@@ -1,6 +1,6 @@
 <template>
   <div v-if="!isCategoryListLoading">
-    <div class="main-category-container">
+    <div class="row justify-center">
       <div v-for="category in mainCategories"
         class="main-category-inner"
         :class="selectedMainCategory === category.uuid ? 'selected' : ''"
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="row justify-center">
-      <div class="col-10 items-center sub-categories">
+      <div class="col-12 items-center sub-categories">
         <div v-if="isAvailable" class="row justify-center">
           <q-card flat bordered
             v-for="category in subCategories"
@@ -29,33 +29,16 @@
           Choose an account
         </div>
       </div>
-      <div class="col-2 main-categories-list self-end">
-        <q-tabs vertical switch-indicator no-caps dense inline-label
-          v-model="categoryTabs"
-          indicator-color="white"
-          active-bg-color="white"
-          active-color="primary"
-          class="text-dark">
-        </q-tabs>
-      </div>
     </div>
   </div>
 </template>
 <script>
-import { ref } from 'vue';
-
 export default {
   name: 'CategoryList',
 
   emits: [
     'selectCategory',
   ],
-
-  setup() {
-    return {
-      categoryTabs: ref(''),
-    };
-  },
 
   data() {
     return {
@@ -152,7 +135,7 @@ export default {
 
 .sub-categories {
   margin-top: 30px;
-  border-radius: 10px 0 0 10px;
+  border-radius: 10px;
   background-color: white;
   padding: 20px 0;
   justify-content: center;

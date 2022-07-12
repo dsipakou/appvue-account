@@ -17,6 +17,7 @@
         <q-input outlined stack-label autofocus
           ref="price"
           label="Amount"
+          v-on:keydown.enter="createClose()"
           v-model="input.amount" />
       </q-card-section>
       <q-card-section>

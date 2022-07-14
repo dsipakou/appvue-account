@@ -43,7 +43,7 @@
         :createBudget="createBudget"
         :updateBudget="updateBudget"
         :deleteBudget="deleteBudget"
-        :selectedMonth="budgetSelectedMonth"
+        :selectedMonth="selectedMonth"
         :updateStatusBudget="updateStatusBudget"
         :fetchBudgetArchive="fetchBudgetArchive"
         @budgetItemClick="budgetItemClick($event)"
@@ -83,7 +83,6 @@ import { mapActions, mapGetters, useStore } from 'vuex';
 import {
   endOfMonth,
   endOfWeek,
-  startOfDay,
   startOfWeek,
   startOfMonth,
   isSameMonth,
@@ -121,7 +120,7 @@ export default {
       },
     });
     const selectedMonth = computed({
-      get: () => $store.state.budget.selectedMonth,
+      get: () => startOfWeek($store.state.budget.selectedMonth, { weekStartsOn: 1 }),
       set: (val) => {
         $store.commit('setBudgetMonth', val.value);
       },
@@ -159,7 +158,7 @@ export default {
     selectMonthOptions() {
       const options = [];
       for (let i = -1; i < 12; i += 1) {
-        const month = startOfDay(subMonths(new Date(), i));
+        const month = startOfWeek(subMonths(new Date(), i), { weekStartsOn: 1 });
         let label = format(month, 'MMMM yyyy');
         if (i === 0) label += ' (current)';
         options.push({
@@ -174,7 +173,7 @@ export default {
     selectWeekOptions() {
       const options = [];
       for (let i = -1; i < 20; i += 1) {
-        const day = startOfDay(subWeeks(new Date(), i));
+        const day = startOfWeek(subWeeks(new Date(), i), { weekStartsOn: 1 });
         const from = startOfWeek(day, { weekStartsOn: 1 });
         const to = endOfWeek(day, { weekStartsOn: 1 });
         const label = i === 0

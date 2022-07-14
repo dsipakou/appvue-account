@@ -1,16 +1,14 @@
 <template>
   <div v-for="account in mainAccounts"
     :key="account.id"
-    class="avatar-container">
+    class="account-container">
     <span>{{ account.source }}</span>
-    <q-avatar
-      :color="selectedAccountUuid === account.uuid ? 'red': 'red-3'"
-      size="80px"
-      text-color="white"
-      font-size="40px"
-      :icon="selectedAccountUuid === account.uuid ? 'check' : ''"
+    <div
+      class="account-inner"
+      :class="selectedAccountUuid === account.uuid ? 'selected-category': ''"
       @click="selectAccount(account)">
-    </q-avatar>
+      <q-icon name="check" v-show="selectedAccountUuid === account.uuid" />
+    </div>
   </div>
 </template>
 <script>
@@ -39,3 +37,28 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.account-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.account-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 60px;
+  color: white;
+  background-color: rgba(255, 0, 0, 0.2);
+  font-size: 40px;
+  margin: 0 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.selected-category {
+  background-color: red;
+}
+</style>

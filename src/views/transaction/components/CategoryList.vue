@@ -12,9 +12,9 @@
         <span class="main-category-title">{{ category.name }}</span>
       </div>
     </div>
-    <div class="row justify-center">
+    <div class="row justify-center" v-show="selectedMainCategory !== ''">
       <div class="col-12 items-center sub-categories">
-        <div v-if="isAvailable" class="row justify-center">
+        <div class="row justify-center">
           <q-card flat bordered
             v-for="category in subCategories"
             :key="category.uuid"
@@ -24,9 +24,6 @@
               <span>{{ category.name }}</span>
             </div>
           </q-card>
-        </div>
-        <div v-else class="column text-center text-h3 text-wight-bold">
-          Choose an account
         </div>
       </div>
     </div>
@@ -50,7 +47,6 @@ export default {
   props: {
     categoryList: { type: Array, default: () => [] },
     isCategoryListLoading: { type: Boolean, required: true },
-    isAvailable: { type: Boolean, default: false },
   },
 
   computed: {

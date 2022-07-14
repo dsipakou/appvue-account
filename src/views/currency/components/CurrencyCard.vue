@@ -58,11 +58,12 @@ export default defineComponent({
 </script>
 <style>
 .currency-card {
-  height: 119px;
-  width: 236px;
+  height: 186px;
+  width: 205px;
   padding: 10px 0 10px 21px;
   margin-left: 10px;
   cursor: pointer;
+  border-radius: 30px !important;
 }
 
 .inactive {

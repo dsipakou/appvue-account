@@ -22,7 +22,7 @@
       :categoryList="categoryList"
       :selectedCategory="selectedCategory"
       :isCategoryListLoading="isCategoryListLoading"
-      :isAvailable="selectedAccountUuid !== ''"
+      v-show="selectedAccountUuid != ''"
       @selectCategory="selectCategory($event)"
     />
     <div class="row">

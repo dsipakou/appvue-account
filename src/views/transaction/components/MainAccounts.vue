@@ -5,9 +5,9 @@
     <span>{{ account.source }}</span>
     <div
       class="account-inner"
-      :class="selectedAccountUuid === account.uuid ? 'selected-category': ''"
+      :class="isActiveAccount(account) ? 'selected-category': ''"
       @click="selectAccount(account)">
-      <q-icon name="check" v-show="selectedAccountUuid === account.uuid" />
+      <q-icon name="check" v-show="isActiveAccount(account)" />
     </div>
   </div>
 </template>
@@ -33,6 +33,10 @@ export default {
   methods: {
     selectAccount(account) {
       this.$emit('selectAccount', account);
+    },
+
+    isActiveAccount(account) {
+      return this.selectedAccountUuid === account.uuid;
     },
   },
 };

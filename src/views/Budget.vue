@@ -6,6 +6,12 @@
       icon="add"
       @click="createForm = true"
     />
+    <q-btn round
+      color="primary"
+      class="btn-repeat fixed"
+      icon="sync"
+      @click="duplicateForm = true"
+    />
     <div class="row col-12 relative-position">
       <div class="row col-12 justify-center vertical-middle">
         <div class="row col-4 justify-center items-center">
@@ -75,6 +81,9 @@
         @closeForm="editForm = false"
       />
     </q-dialog>
+    <q-dialog v-model="duplicateForm">
+      <DuplicateForm />
+    </q-dialog>
   </div>
 </template>
 <script>
@@ -98,6 +107,7 @@ import WeekBudget from '@/views/budget/WeekBudget.vue';
 import MonthlyBudget from '@/views/budget/MonthlyBudget.vue';
 import AddForm from '@/views/budget/forms/AddForm.vue';
 import EditForm from '@/views/budget/forms/EditForm.vue';
+import DuplicateForm from '@/views/budget/forms/DuplicateForm.vue';
 import BudgetSummaryCard from '@/views/budget/components/BudgetSummaryCard.vue';
 
 export default {
@@ -108,6 +118,7 @@ export default {
     MonthlyBudget,
     AddForm,
     EditForm,
+    DuplicateForm,
     BudgetSummaryCard,
   },
 
@@ -128,6 +139,7 @@ export default {
     return {
       createForm: ref(false),
       editForm: ref(false),
+      duplicateForm: ref(false),
       budgetType,
       selectedMonth,
     };
@@ -287,6 +299,14 @@ export default {
   height: 55px;
   right: 30px;
   bottom: 30px;
+  z-index: 10;
+}
+
+.btn-repeat {
+  width: 55px;
+  height: 55px;
+  right: 30px;
+  bottom: 100px;
   z-index: 10;
 }
 

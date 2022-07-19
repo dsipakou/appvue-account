@@ -11,6 +11,7 @@
         <CurrencyCard
           :currency="currency"
           :rate="getLastRateForCurrency(currency.uuid)"
+          :percentage="getChangePercentageForCurrency(currency.uuid)"
           :selectCurrency="selectCurrency"
           :selectedCurrencies="selectedCurrencies"
         />
@@ -205,6 +206,17 @@ export default defineComponent({
 
     getLastRateForCurrency(currencyUuid: string) {
       return this.ratesList.filter((item: Rate) => item.currency === currencyUuid)[0];
+    },
+
+    getChangePercentageForCurrency(currencyUuid: string) {
+      const prevRate = this.ratesList.filter(
+        (item: Rate) => item.currency === currencyUuid,
+      )[1]?.rate || 0;
+      if (prevRate === 0) {
+        return 0;
+      }
+      const percentage = (1 - prevRate / this.getLastRateForCurrency(currencyUuid).rate) * 100;
+      return percentage.toFixed(4);
     },
   },
 

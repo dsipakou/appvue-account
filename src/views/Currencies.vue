@@ -17,7 +17,7 @@
         />
       </div>
     </div>
-    <div class="row col-12 chart-area">
+    <div class="row col-12 chart-area" v-show="selectedCurrencies.length > 0">
       <div class="row col-12 justify-center">
         <div>
           <q-btn-group flat>
@@ -42,7 +42,7 @@
           :range="selectedRange" />
       </div>
     </div>
-    <div class="row justify-center">
+    <div class="row justify-center q-mt-lg">
       <q-btn rounded
         color="primary"
         @click="getCurrentRate"
@@ -216,7 +216,7 @@ export default defineComponent({
         return 0;
       }
       const percentage = (1 - prevRate / this.getLastRateForCurrency(currencyUuid).rate) * 100;
-      return percentage.toFixed(4);
+      return percentage.toFixed(2);
     },
   },
 

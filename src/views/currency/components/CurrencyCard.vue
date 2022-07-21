@@ -15,7 +15,11 @@
       </div>
     </div>
     <div class="row col-12 cur-percentage">
-      <span><span v-show="percentage > 0">+</span>{{ percentage }}%</span>
+      <span
+        :class="{'text-red': percentage < 0, 'text-green': percentage > 0}"
+      >
+        <span v-show="percentage > 0">+</span>{{ percentage }}%
+      </span>
     </div>
     <div class="row col-12 cur-date">
       <span>{{ formattedDate }}</span>
@@ -101,14 +105,14 @@ export default defineComponent({
 }
 
 .cur-percentage {
-  padding-top: 3px;
-  font-size: 16px;
-  font-weight: 500;
+  padding-top: 5px;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .cur-date {
   padding: 5px 25px 0 0;
-  font-size: 14px;
+  font-size: 12px;
   justify-content: end;
 }
 </style>

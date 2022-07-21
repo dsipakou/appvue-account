@@ -9,7 +9,7 @@
     <q-btn round
       color="primary"
       class="btn-repeat fixed"
-      icon="sync"
+      icon="call_split"
       @click="duplicateForm = true"
     />
     <div class="row col-12 relative-position">

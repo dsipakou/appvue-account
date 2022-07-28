@@ -116,7 +116,7 @@ export default {
         item.day <= day && item.month === month
       ));
       const overall = sums.reduce((acc, item) => (
-        acc + item.amountSum
+        acc + item.groupedAmount
       ), 0);
       return overall.toFixed(2);
     },

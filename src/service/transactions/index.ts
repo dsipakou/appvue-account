@@ -37,7 +37,7 @@ export const getGroupedTransactions = async ({
   dateTo,
   currency,
 }: GroupedTransactionRequest) => {
-  const response = await getRequest(`transactions/month?dateFrom=${dateFrom}&dateTo=${dateTo}&currency=${currency}`);
+  const response = await getRequest(`transactions/report?dateFrom=${dateFrom}&dateTo=${dateTo}&currency=${currency}`);
   return response;
 };
 

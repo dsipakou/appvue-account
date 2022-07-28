@@ -123,6 +123,7 @@ export default {
     this.input.title = this.budget.title;
     this.input.description = this.budget.description;
     this.input.category = this.budget.category;
+    this.input.recurrent = this.budget.recurrent;
   },
 };
 </script>

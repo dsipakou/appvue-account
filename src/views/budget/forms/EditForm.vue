@@ -131,6 +131,7 @@ export default {
         amount: this.input.amount,
         category: this.input.category,
         description: this.input.description,
+        recurrent: this.input.recurrent,
       };
       this.$emit('duplicateClick', budget);
     },

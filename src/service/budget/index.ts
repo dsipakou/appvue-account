@@ -1,4 +1,4 @@
-import { GetBudgetForPeriod } from '@/types/Budget';
+import { BudgetToggle, GetBudgetForPeriod } from '@/types/Budget';
 import {
   getRequest,
   postRequest,
@@ -92,5 +92,10 @@ export const updateBudget = async (data: UpdateBudgetRequest) => {
 
 export const deleteBudget = async (uuid: number) => {
   const response = await deleteRequest(`budget/${uuid}/`);
+  return response;
+};
+
+export const duplicateBudget = async (type: string) => {
+  const response = await postRequest('budget/duplicate/', { type });
   return response;
 };

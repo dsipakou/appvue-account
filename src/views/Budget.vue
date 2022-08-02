@@ -1,17 +1,20 @@
 <template>
   <div>
-    <q-btn round
-      color="primary"
-      class="btn-add fixed"
-      icon="add"
-      @click="createForm = true"
-    />
-    <q-btn round
-      color="primary"
-      class="btn-repeat fixed"
-      icon="call_split"
-      @click="duplicateForm = true"
-    />
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn fab
+        color="primary"
+        position="bottom-right"
+        icon="add"
+        @click="createForm = true"
+      />
+    </q-page-sticky>
+    <q-page-sticky position="bottom-right" :offset="[18, 88]">
+      <q-btn fab
+        color="primary"
+        icon="call_split"
+        @click="duplicateForm = true"
+      />
+    </q-page-sticky>
     <div class="row col-12 relative-position">
       <div class="row col-12 justify-center vertical-middle">
         <div class="row col-4 justify-center items-center">
@@ -81,8 +84,12 @@
         @closeForm="editForm = false"
       />
     </q-dialog>
-    <q-dialog v-model="duplicateForm">
-      <DuplicateForm />
+    <q-dialog
+      v-model="duplicateForm"
+      @hide="clearDuplicatedItems">
+      <DuplicateForm
+        :duplicatedItems="budgetDuplicatedItems"
+        :duplicateBudget="duplicateBudget" />
     </q-dialog>
   </div>
 </template>
@@ -161,6 +168,7 @@ export default {
       'budgetSelectedMonth',
       'selectedMonth',
       'budgetArchive',
+      'budgetDuplicatedItems',
     ]),
 
     categories() {
@@ -243,6 +251,8 @@ export default {
       'updateBudget',
       'updateStatusBudget',
       'deleteBudget',
+      'duplicateBudget',
+      'clearDuplicatedItems',
     ]),
 
     makeDuplicate(budget) {
@@ -292,22 +302,6 @@ export default {
 }
 
 .header>h4 { margin-right: 20px;
-}
-
-.btn-add {
-  width: 55px;
-  height: 55px;
-  right: 30px;
-  bottom: 30px;
-  z-index: 10;
-}
-
-.btn-repeat {
-  width: 55px;
-  height: 55px;
-  right: 30px;
-  bottom: 100px;
-  z-index: 10;
 }
 
 .budget-toggle {

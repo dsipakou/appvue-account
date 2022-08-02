@@ -11,6 +11,7 @@ import {
   deleteBudget,
   getWeeklyBudgetUsage,
   getBudgetArchive,
+  duplicateBudget,
 } from '../../service/budget';
 
 const state = {
@@ -20,6 +21,7 @@ const state = {
   plan: [],
   archive: [],
   budgetToggle: BudgetToggle.Monthly,
+  duplicatedItems: [],
   isLoading: false,
 };
 
@@ -29,6 +31,7 @@ const getters = {
   budgetPlan: (state: any) => state.plan,
   budgetArchive: (state: any) => state.archive,
   budgetSelectedMonth: (state: any) => state.selectedMonth,
+  budgetDuplicatedItems: (state: any) => state.duplicatedItems,
   isBudgetListLoading: (state: any) => state.isLoading,
 };
 
@@ -101,6 +104,18 @@ const actions = {
       console.log('deleted');
     }
   },
+
+  async duplicateBudget({ commit }: any, type: string) {
+    const response = await duplicateBudget(type);
+    if (response.status === 200) {
+      const data = await response.json();
+      commit('setDuplicatedItems', data);
+    }
+  },
+
+  async clearDuplicatedItems({ commit }: any) {
+    commit('clearDuplicatedItems');
+  },
 };
 
 const mutations = {
@@ -148,6 +163,14 @@ const mutations = {
 
   setBudgetMonth(state: any, value: string) {
     state.selectedMonth = value;
+  },
+
+  setDuplicatedItems(state: any, value: any) {
+    state.duplicatedItems = value;
+  },
+
+  clearDuplicatedItems(state: any) {
+    state.duplicatedItems = [];
   },
 };
 

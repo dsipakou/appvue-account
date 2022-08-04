@@ -1,5 +1,10 @@
 <template>
   <div class="q-pa-md">
+    <q-tree
+      :nodes="treeItems"
+      label-key="name"
+      node-key="label"
+    />
     <div class="row">
       <div class="header">
         <span>Your categories</span>
@@ -207,8 +212,18 @@ export default {
       'categoryList',
     ]),
 
+    treeItems() {
+      return this.parentCategories.map((item) => {
+        const children = this.categoryByParent(item.uuid);
+        return {
+          ...item,
+          label: item.name,
+          children,
+        };
+      });
+    },
+
     isAllowedToSave() {
-      console.log('isAllowedHere');
       return (
         !this.categoryList.some((item) => (
           item.name === this.input.name
@@ -219,6 +234,7 @@ export default {
         && !!this.input.parent
       );
     },
+
     parentCategories() {
       return this.categoryList.filter((item) => (
         item.parent === null && !item.is_income

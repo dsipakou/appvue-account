@@ -88,8 +88,10 @@
       v-model="duplicateForm"
       @hide="clearDuplicatedItems">
       <DuplicateForm
+        :getDuplicateCandidates="getDuplicateBudgetCandidates"
         :duplicatedItems="budgetDuplicatedItems"
-        :duplicateBudget="duplicateBudget" />
+        :duplicateBudget="duplicateBudget"
+        :isLoading="isBudgetListLoading"/>
     </q-dialog>
   </div>
 </template>
@@ -169,6 +171,7 @@ export default {
       'selectedMonth',
       'budgetArchive',
       'budgetDuplicatedItems',
+      'isBudgetListLoading',
     ]),
 
     categories() {
@@ -253,6 +256,7 @@ export default {
       'deleteBudget',
       'duplicateBudget',
       'clearDuplicatedItems',
+      'getDuplicateBudgetCandidates',
     ]),
 
     makeDuplicate(budget) {

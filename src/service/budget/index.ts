@@ -95,7 +95,12 @@ export const deleteBudget = async (uuid: number) => {
   return response;
 };
 
-export const duplicateBudget = async (type: string) => {
-  const response = await postRequest('budget/duplicate/', { type });
+export const getDuplicateCandidates = async (type: string) => {
+  const response = await getRequest(`budget/duplicate?type=${type}`);
+  return response;
+};
+
+export const duplicateBudget = async (uuids: string[]) => {
+  const response = await postRequest('budget/duplicate/', { uuids });
   return response;
 };

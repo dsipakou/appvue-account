@@ -12,6 +12,7 @@ import {
   getWeeklyBudgetUsage,
   getBudgetArchive,
   duplicateBudget,
+  getDuplicateCandidates,
 } from '../../service/budget';
 
 const state = {
@@ -105,12 +106,20 @@ const actions = {
     }
   },
 
-  async duplicateBudget({ commit }: any, type: string) {
-    const response = await duplicateBudget(type);
+  async getDuplicateBudgetCandidates({ commit }: any, type: string) {
+    commit('setBudgetLoading', true);
+    const response = await getDuplicateCandidates(type);
     if (response.status === 200) {
       const data = await response.json();
       commit('setDuplicatedItems', data);
     }
+    commit('setBudgetLoading', false);
+  },
+
+  async duplicateBudget({ commit }: any, uuids: string[]) {
+    commit('setBudgetLoading', true);
+    const response = await duplicateBudget(uuids);
+    commit('setBudgetLoading', false);
   },
 
   async clearDuplicatedItems({ commit }: any) {

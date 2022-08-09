@@ -20,7 +20,7 @@ export interface ResetUserPayload {
 }
 
 export const userLogin = async ({ email, password }: LoginPayload) => {
-  const response = await postRequest('http://localhost:9091/api/login', { email, password });
+  const response = await postRequest('users/login/', { email, password });
   return response;
 };
 

@@ -1,10 +1,5 @@
 <template>
   <div class="q-pa-md">
-    <q-tree
-      :nodes="treeItems"
-      label-key="name"
-      node-key="label"
-    />
     <div class="row">
       <div class="header">
         <span>Your categories</span>
@@ -15,6 +10,33 @@
             @click="add()">
             Add category
           </q-btn>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row col-4">
+        <q-tree
+          :nodes="treeItems"
+          label-key="name"
+          node-key="uuid"
+          v-model:selected="selectedCategoryUuid"
+        />
+      </div>
+      <div class="row col-8 q-mt-lg">
+        <div v-show="selectedCategoryUuid" class="text-h4">
+          <span class="q-px-md shadow-1 text-bold" v-show="currentCategory.parent">
+            {{ currentCategory.parent ? getCategory(currentCategory.parent).name : '' }}
+          </span>
+          <span class="q-px-sm" v-show="currentCategory.parent">></span>
+          <span
+            class="q-px-md shadow-1"
+            style="line-height: 2em;"
+            v-if="!editMode"
+            @click="editMode=true"
+          >
+              {{ currentCategory.name }}
+          </span>
+          <q-input v-else v-model="input.name"></q-input>
         </div>
       </div>
     </div>
@@ -142,6 +164,7 @@ export default {
     return {
       createForm: ref(false),
       updateForm: ref(false),
+      selectedCategoryUuid: ref(null),
     };
   },
 
@@ -151,6 +174,7 @@ export default {
       showModal: false,
       currentCategory: {},
       formTitle: '',
+      editMode: false,
       input: {
         name: '',
         parentUuid: null,
@@ -178,7 +202,6 @@ export default {
     },
 
     edit(category) {
-      console.log(category);
       this.currentCategory = category;
       this.formTitle = category.name;
       this.input.uuid = category.uuid;
@@ -205,6 +228,15 @@ export default {
 
     categoryByParent(parentUuid) {
       return this.categoryList.filter((item) => item.parent === parentUuid);
+    },
+
+    getCategory(uuid) {
+      return this.categoryList.find((item) => item.uuid === uuid);
+    },
+
+    selectCategory(uuid) {
+      this.currentCategory = this.getCategory(uuid);
+      this.input.name = this.currentCategory.name;
     },
   },
   computed: {
@@ -258,6 +290,13 @@ export default {
         obj.value = item.uuid;
         return obj;
       });
+    },
+  },
+
+  watch: {
+    selectedCategoryUuid() {
+      this.editMode = false;
+      this.selectCategory(this.selectedCategoryUuid);
     },
   },
 };

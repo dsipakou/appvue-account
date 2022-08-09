@@ -68,6 +68,8 @@
     </div>
     <q-dialog v-model="createForm">
       <AddForm
+        :users="userList"
+        :activeUser="activeUser"
         :categories="categories"
         :createBudget="createBudget"
         :budget="budgetCopy"
@@ -167,11 +169,13 @@ export default {
       'weeklyUsage',
       'budgetedTransactions',
       'categoryList',
+      'userList',
       'budgetSelectedMonth',
       'selectedMonth',
       'budgetArchive',
       'budgetDuplicatedItems',
       'isBudgetListLoading',
+      'activeUser',
     ]),
 
     categories() {

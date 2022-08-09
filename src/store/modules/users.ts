@@ -12,6 +12,7 @@ import {
 import idb, { User } from '@/utils/indexDBUtils';
 
 const state = {
+  email: null,
   username: null,
   token: null,
   users: {
@@ -21,7 +22,7 @@ const state = {
 };
 
 const getters = {
-  activeUser: (state: any) => state.username,
+  activeUser: (state: any) => state.email,
   token: (state: any) => state.token,
   userList: (state: any) => state.users.items,
   isUserListLoading: (state: any) => state.users.isLoading,
@@ -37,13 +38,15 @@ const actions = {
 
   async loginUser({ commit }: any, payload: LoginPayload) {
     const user = {
-      username: payload.email,
+      username: '',
+      email: payload.email,
       token: '',
     } as User;
     const response = await userLogin(payload);
     if (response.status === 200) {
       const data = await response.json();
       user.token = data.token;
+      user.username = data.username;
       await idb.addUser(user);
       commit('login', user);
     } else {
@@ -53,7 +56,7 @@ const actions = {
   },
 
   async logoutUser({ commit }: any) {
-    await idb.removeUser({ username: state.username || '', token: state.token || '' });
+    await idb.removeUser({ email: state.email || '', token: state.token || '', username: state.username || '' });
     commit('logout');
   },
 
@@ -85,11 +88,13 @@ const actions = {
 const mutations = {
   login(state: any, user: User) {
     state.username = user.username;
+    state.email = user.email;
     state.token = user.token;
   },
 
   logout(state: any) {
     state.username = null;
+    state.email = null;
     state.token = null;
   },
 

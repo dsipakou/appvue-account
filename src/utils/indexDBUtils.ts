@@ -3,8 +3,9 @@ const DB_VERSION: number = 1;
 let DB: any | null;
 
 export interface User {
-  username: string,
+  email: string,
   token: string,
+  username: string,
 }
 
 export default {
@@ -33,7 +34,7 @@ export default {
         const db = target.result;
         const objectStore = db.createObjectStore('userAuth', {
           autoIncrement: true,
-          keyPath: 'username',
+          keyPath: 'email',
         });
       };
 
@@ -56,8 +57,8 @@ export default {
         const target = e.target as IDBRequest;
         const cursor = target.result;
         if (cursor) {
-          if (cursor.value.username !== user.username) {
-            store.delete(cursor.value.username);
+          if (cursor.value.email === user.email) {
+            store.delete(cursor.value.email);
           }
           cursor.continue();
         }
@@ -67,7 +68,7 @@ export default {
   },
 
   async removeUser(user: User): Promise<any> {
-    if (!user?.username) {
+    if (!user?.email) {
       return false;
     }
     const db = await this.getDb();
@@ -79,7 +80,7 @@ export default {
       };
 
       const store = trans.objectStore('userAuth');
-      store.delete(user.username);
+      store.delete(user.email);
     });
   },
 

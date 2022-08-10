@@ -25,6 +25,8 @@ interface GetBudgetRequest {
 interface CreateBudgetRequest {
   budgetDate: string,
   title: string,
+  user: string,
+  currency: string,
   amount: number,
   category: string,
   description: string,
@@ -70,6 +72,8 @@ export const createBudget = async (data: CreateBudgetRequest) => {
       title: data.title,
       category: data.category,
       amount: data.amount,
+      user: data.user,
+      currency: data.currency,
       recurrent: data.recurrent,
       description: data.description,
     });

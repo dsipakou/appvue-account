@@ -182,7 +182,7 @@ export default {
   computed: {
     categories() {
       const filteredCategoryList = this.categoryList.filter((item) => (
-        item.parent && !item.isIncome
+        item.parent && item.type !== 'INC'
       ));
       const modifiedCategoryList = filteredCategoryList.map((item) => (
         {

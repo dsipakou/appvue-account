@@ -141,6 +141,8 @@ export default {
       const budget = {
         uuid: this.input.uuid,
         budgetDate: this.input.budgetDate,
+        user: this.input.user,
+        currency: this.input.currency,
         title: this.input.title,
         amount: this.input.amount,
         category: this.input.category,

@@ -181,7 +181,7 @@ export default {
     ]),
 
     categories() {
-      return this.categoryList.filter((item) => !item.parent && !item.isIncome);
+      return this.categoryList.filter((item) => !item.parent && item.type !== 'INC');
     },
 
     selectMonthOptions() {

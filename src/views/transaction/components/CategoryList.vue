@@ -52,7 +52,7 @@ export default {
   computed: {
     mainCategories() {
       const categories = this.categoryList.filter((item) => (
-        item.parent === null && !item.isIncome
+        item.parent === null && item.type !== 'INC'
       )).sort((a, b) => {
         const left = a.name;
         const right = b.name;

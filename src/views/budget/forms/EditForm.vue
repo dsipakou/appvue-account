@@ -87,6 +87,8 @@ export default {
         amount: 0,
         budgetDate: '',
         category: '',
+        user: '',
+        currency: '',
         recurrent: null,
         description: '',
       },
@@ -100,6 +102,8 @@ export default {
     this.input.amount = this.item.planned;
     this.input.budgetDate = this.item.budgetDate;
     this.input.category = this.item.category;
+    this.input.user = this.item.user;
+    this.input.currency = this.item.currency;
     this.input.recurrent = this.item.recurrent;
     this.input.description = this.item.description;
   },

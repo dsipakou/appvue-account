@@ -71,6 +71,7 @@
         :users="userList"
         :activeUser="activeUser"
         :categories="categories"
+        :currencyList="currencyList"
         :createBudget="createBudget"
         :budget="budgetCopy"
         @closeForm="addFormClosed"
@@ -169,6 +170,7 @@ export default {
       'weeklyUsage',
       'budgetedTransactions',
       'categoryList',
+      'currencyList',
       'userList',
       'budgetSelectedMonth',
       'selectedMonth',

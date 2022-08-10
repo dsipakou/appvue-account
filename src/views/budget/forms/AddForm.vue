@@ -46,6 +46,15 @@
         />
       </q-card-section>
       <q-card-section>
+        <q-select outlined clearable label-stacked map-options emit-value
+          label="Currency"
+          option-value="uuid"
+          option-label="verbalName"
+          :options="currencyList"
+          style="width: 150px;"
+          v-model="input.currency" />
+      </q-card-section>
+      <q-card-section>
         <q-input outlined stack-label
           type="date"
           label="Date"
@@ -84,6 +93,7 @@ export default {
   props: {
     categories: { type: Array, required: true },
     users: { type: Array, required: true },
+    currencyList: { type: Array, required: true },
     activeUser: { type: String, default: '' },
     createBudget: { type: Function, required: true },
     budget: {
@@ -110,6 +120,7 @@ export default {
         description: '',
         categoryId: 0,
         user: '',
+        currency: '',
         recurrent: null,
       },
     };
@@ -118,6 +129,10 @@ export default {
   computed: {
     preSelectedUser() {
       return this.users.find((item) => item.email === this.activeUser)?.uuid;
+    },
+
+    defaultCurrency() {
+      return this.currencyList.find((item) => item.isDefault);
     },
   },
 
@@ -144,6 +159,7 @@ export default {
     this.input.description = this.budget.description;
     this.input.user = this.preSelectedUser;
     this.input.category = this.budget.category;
+    this.input.currency = this.defaultCurrency;
     this.input.recurrent = this.budget.recurrent;
   },
 };

@@ -15,12 +15,33 @@
     </div>
     <div class="row">
       <div class="row col-4">
-        <q-tree
-          :nodes="treeItems"
-          label-key="name"
-          node-key="uuid"
-          v-model:selected="selectedCategoryUuid"
-        />
+        <q-expansion-item
+          expand-separator
+          icon="login"
+          label="Income"
+          caption="What was earned"
+        >
+          <q-tree
+            :nodes="incomeTreeItems"
+            label-key="name"
+            node-key="uuid"
+            v-model:selected="selectedCategoryUuid"
+          />
+        </q-expansion-item>
+        <q-expansion-item
+          expand-separator
+          icon="logout"
+          label="Expenses"
+          caption="What was bought"
+        >
+          <q-tree
+            :nodes="expenseTreeItems"
+            label-key="name"
+            node-key="uuid"
+            v-model:selected="selectedCategoryUuid"
+          />
+        </q-expansion-item>
+
       </div>
       <div class="row col-8 q-mt-lg">
         <div v-show="selectedCategoryUuid" class="text-h4">
@@ -37,34 +58,16 @@
               {{ currentCategory.name }}
           </span>
           <q-input v-else v-model="input.name"></q-input>
-        </div>
-      </div>
-    </div>
-    <div class="categories-block" v-for="parent in parentCategories" :key="parent.uuid">
-      <div class="row justify-left">
-        <div class="q-my-sm col-2 categories-block--main">
-          <q-card v-ripple bordered flat
-            class="q-hoverable cursor-pointer parent-card"
-            @click="edit(parent)">
-            <div tabindex="-1" class="q-focus-helper"></div>
-            {{ parent.name }}
-            <q-separator color="white" />
-          </q-card>
-        </div>
-        <div
-          class="col-2 categories-block--child"
-          v-for="child in categoryByParent(parent.uuid)"
-          :key="child.name">
-          <q-card
-            v-ripple
-            class="q-hoverable cursor-pointer sub-card"
-            flat
-            bordered
-            @click="edit(child)">
-            <div tabindex="-1" class="q-focus-helper"></div>
-            {{ child.name }}
-            <q-separator color="white" />
-          </q-card>
+          <div
+            v-show="editMode">
+            <q-btn rounded no-caps unelevated
+              color="negative"
+              icon="delete"
+              @click="removeCategory"
+            >
+              Delete
+            </q-btn>
+          </div>
         </div>
       </div>
     </div>
@@ -192,9 +195,9 @@ export default {
       this.updateForm = false;
     },
 
-    remove() {
-      this.deleteCategory(this.input.uuid);
-      this.updateForm = false;
+    removeCategory() {
+      this.deleteCategory(this.selectedCategoryUuid);
+      this.editMode = false;
     },
 
     categoryByParent(parentUuid) {
@@ -231,6 +234,14 @@ export default {
       });
     },
 
+    incomeTreeItems() {
+      return this.treeItems.filter((item) => item.type === 'INC');
+    },
+
+    expenseTreeItems() {
+      return this.treeItems.filter((item) => item.type === 'EXP');
+    },
+
     isAllowedToSave() {
       return (
         !this.categoryList.some((item) => (
@@ -257,6 +268,14 @@ export default {
         }
         return 0;
       });
+    },
+
+    incomeParentCategories() {
+      return this.parentCategories.filter((item) => item.type === 'INC');
+    },
+
+    expenseParentCategories() {
+      return this.parentCategories.filter((item) => item.type === 'EXP');
     },
 
     parents() {

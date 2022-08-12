@@ -1,5 +1,5 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
-
+/* eslint import/no-cycle: [2, { maxDepth: 2 }] */
 import {
   getCategories,
   createCategory,
@@ -25,9 +25,9 @@ const actions = {
     const response = await getCategories();
     if (response.status === 200) {
       const body = await response.json();
-      commit('setCategoriesLoading', false);
       commit('setCategories', body);
     }
+    commit('setCategoriesLoading', false);
   },
 
   async createCategory({ commit }: any, payload: any) {

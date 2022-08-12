@@ -28,6 +28,12 @@
       <q-btn @click="closeForm" label="Close" />
       <q-btn @click="save" label="Save rates" />
     </q-card-actions>
+    <q-inner-loading
+        :showing="isRatesListLoading"
+        label="Please wait..."
+        label-class="text-blue"
+        label-style="font-size: 1.1em"
+      />
   </q-card>
 </template>
 

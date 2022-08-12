@@ -7,7 +7,8 @@ import {
 
 interface CreateCategoryRequest {
   name: string,
-  parent: string | undefined,
+  parent: string | null,
+  type: string,
 }
 
 interface UpdateCategoryRequest extends CreateCategoryRequest {
@@ -25,6 +26,7 @@ export const createCategory = async (data: CreateCategoryRequest) => {
     {
       name: data.name,
       parent: data.parent,
+      type: data.type,
     });
   return response;
 };

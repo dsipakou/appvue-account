@@ -132,7 +132,11 @@ export default {
     },
 
     defaultCurrency() {
-      return this.currencyList.find((item) => item.isDefault);
+      return this.currencyList.find((item) => item.isDefault).uuid;
+    },
+
+    baseCurrency() {
+      return this.currencyList.find((item) => item.isBase).uuid;
     },
   },
 
@@ -161,7 +165,7 @@ export default {
     this.input.description = this.budget.description;
     this.input.user = this.preSelectedUser;
     this.input.category = this.budget.category;
-    this.input.currency = this.defaultCurrency;
+    this.input.currency = this.baseCurrency;
     this.input.recurrent = this.budget.recurrent;
   },
 };

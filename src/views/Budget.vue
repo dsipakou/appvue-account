@@ -79,7 +79,9 @@
     </q-dialog>
     <q-dialog v-model="editForm">
       <EditForm
+        :users="userList"
         :categories="categories"
+        :currencyList="currencyList"
         :item="selectedBudget"
         :updateBudget="updateBudget"
         :deleteBudget="deleteBudget"

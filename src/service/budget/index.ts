@@ -87,6 +87,8 @@ export const updateBudget = async (data: UpdateBudgetRequest) => {
       title: data.title,
       amount: data.amount,
       category: data.category,
+      currency: data.currency,
+      user: data.user,
       recurrent: data.recurrent,
       description: data.description,
       isCompleted: data.isCompleted,

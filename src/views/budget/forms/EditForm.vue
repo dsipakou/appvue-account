@@ -9,6 +9,17 @@
       <q-card-section style="width: 100%;">
         <q-input outlined stack-label label="Name" v-model="input.title" />
       </q-card-section>
+    </q-card-section>
+    <q-card-section horizontal class="justify-between">
+      <q-card-section>
+        <q-select outlined label-stacked map-options emit-value
+          label="User"
+          option-value="uuid"
+          option-label="username"
+          :options="users"
+          style="width: 100px;"
+          v-model="input.user" />
+      </q-card-section>
       <q-card-section>
         <q-select outlined label-stacked map-options emit-value
           label="Category"
@@ -18,10 +29,28 @@
           style="width: 200px;"
           v-model="input.category" />
       </q-card-section>
+      <q-card-section>
+        <q-select outlined clearable label-stacked map-options emit-value
+          label="Repeat"
+          option-value="name"
+          option-label="value"
+          :options="recurrent_options"
+          style="width: 150px;"
+          v-model="input.recurrent" />
+      </q-card-section>
     </q-card-section>
     <q-card-section horizontal class="justify-between">
       <q-card-section>
         <q-input outlined stack-label label="Amount" v-model="input.amount" />
+      </q-card-section>
+      <q-card-section>
+        <q-select outlined clearable label-stacked map-options emit-value
+          label="Currency"
+          option-value="uuid"
+          option-label="verbalName"
+          :options="currencyList"
+          style="width: 150px;"
+          v-model="input.currency" />
       </q-card-section>
       <q-card-section>
         <q-input outlined stack-label
@@ -29,15 +58,6 @@
           label="Date"
           v-model="input.budgetDate"
         />
-      </q-card-section>
-      <q-card-section>
-        <q-select outlined clearable label-stacked map-options emit-value
-          label="Repeat"
-          option-value="name"
-          option-label="value"
-          :options="recurrent_options"
-          style="width: 180px;"
-          v-model="input.recurrent" />
       </q-card-section>
     </q-card-section>
     <q-card-section>
@@ -66,10 +86,12 @@ export default {
   inheritAttrs: false,
 
   props: {
+    users: { type: Array, required: true },
     updateBudget: { type: Function, required: true },
     deleteBudget: { type: Function, required: true },
     item: { type: Object, required: true },
     categories: { type: Array, required: true },
+    currencyList: { type: Array, required: true },
   },
 
   emits: [
@@ -113,6 +135,8 @@ export default {
       const budget = {
         uuid: this.input.uuid,
         budgetDate: this.input.budgetDate,
+        currency: this.input.currency,
+        user: this.input.user,
         title: this.input.title,
         amount: this.input.amount,
         category: this.input.category,

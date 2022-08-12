@@ -69,42 +69,10 @@
       </div>
     </div>
     <q-dialog v-model="createForm">
-      <q-card>
-        <q-card-section>
-          <h4>
-            Create a category
-          </h4>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section>
-          <q-input outlined stack-label label="Name" v-model="input.name" />
-        </q-card-section>
-        <q-card-section>
-          <q-checkbox v-model="input.isParent" label="Parent category" />
-        </q-card-section>
-        <q-card-section>
-          <q-select
-            clearable
-            outlined
-            map-options
-            v-model="input.parentName"
-            :disable="input.isParent"
-            :options="parents"
-            label="Parent name" />
-        </q-card-section>
-        <q-card-actions align="center" class="action-buttons">
-          <q-btn
-            color="primary"
-            rounded
-            :disabled="!isAllowedToSave"
-            style="width: 100px;"
-            @click="create()">
-            Save
-          </q-btn>
-        </q-card-actions>
-      </q-card>
+      <AddForm
+        :parents="parents"
+        :categoryList="categoryList"
+        @createCategory="create($event)" />
     </q-dialog>
     <q-dialog v-model="updateForm">
       <q-card>
@@ -157,9 +125,15 @@
 <script>
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+import AddForm from '@/views/category/forms/AddForm.vue';
 
 export default {
   name: 'CategoryList',
+
+  components: {
+    AddForm,
+  },
+
   setup() {
     return {
       createForm: ref(false),
@@ -192,12 +166,9 @@ export default {
       this.createForm = true;
     },
 
-    create() {
-      const category = {
-        name: this.input.name,
-        parentUuid: this.input.parentUuid,
-      };
-      this.createCategory(category);
+    create(event) {
+      console.log(event);
+      this.createCategory(event);
       this.createForm = false;
     },
 
@@ -235,8 +206,13 @@ export default {
     },
 
     selectCategory(uuid) {
-      this.currentCategory = this.getCategory(uuid);
-      this.input.name = this.currentCategory.name;
+      if (uuid) {
+        this.currentCategory = this.getCategory(uuid);
+        this.input.name = this.currentCategory.name;
+      } else {
+        this.currentCategory = {};
+        this.input.name = '';
+      }
     },
   },
   computed: {

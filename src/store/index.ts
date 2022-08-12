@@ -1,11 +1,12 @@
 import { createStore } from 'vuex';
-import transactions from './modules/transactions';
-import accounts from './modules/accounts';
-import categories from './modules/categories';
-import users from './modules/users';
-import currencies from './modules/currencies';
-import rates from './modules/rates';
-import budget from './modules/budget';
+/* eslint import/no-cycle: [2, { maxDepth: 2 }] */
+import transactions from '@/store/modules/transactions';
+import accounts from '@/store/modules/accounts';
+import categories from '@/store/modules/categories';
+import users from '@/store/modules/users';
+import currencies from '@/store/modules/currencies';
+import rates from '@/store/modules/rates';
+import budget from '@/store/modules/budget';
 
 export default createStore({
   state: {

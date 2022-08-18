@@ -2,14 +2,19 @@
   <q-card flat class="container" @click="selectSubCategory(item.uuid)">
     <div class="row col-12 title--main">
       <span>{{ item.title }}</span>
-      <div v-show="isMonthlyRecurrent" class="recurrent-icon">
+      <div v-show="isRecurrent" class="recurrent-icon">
         <q-icon name="autorenew" style="padding-right: 5px; align-self: center;" />
-        <span>monthly</span>
+        <span>{{item.items[0].recurrent}}</span>
+      </div>
+      <div v-show="!isCreatedByActiveUser" class="recurrent-icon">
+        <q-badge color="purple">
+          {{ getUsername(item.user) }}
+        </q-badge>
       </div>
     </div>
     <div class="row progress-container">
       <div class="row col-12 justify-center remains">
-        <span class="number">{{ getDiff }}</span>
+        <span class="number">{{ getDiff.toFixed(2) }}</span>
         <span class="text" v-if="getDiff < 0">over</span>
         <span class="text" v-else>left</span>
       </div>
@@ -41,14 +46,16 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { GroupedBudgetUsageItem } from '@/types/Budget';
+import { GroupedBudgetUsageItem, User } from '@/types';
 import '@splidejs/splide/dist/css/themes/splide-skyblue.min.css';
 
 export default defineComponent({
   name: 'SubCategoryCard',
 
   props: {
+    activeUser: { type: String, required: true },
     item: { type: Object as PropType<GroupedBudgetUsageItem>, required: true },
+    userList: { type: Array as PropType<Array<User>>, required: true },
   },
 
   emits: [
@@ -56,8 +63,8 @@ export default defineComponent({
   ],
 
   computed: {
-    getDiff(): string {
-      return (this.item.planned - this.item.spentInBaseCurrency).toFixed(2);
+    getDiff(): number {
+      return this.item.planned - this.item.spentInBaseCurrency;
     },
 
     getProgressRate(): number {
@@ -76,14 +83,24 @@ export default defineComponent({
       return `${(this.getProgressRate * 100).toFixed(0)}%`;
     },
 
-    isMonthlyRecurrent(): boolean {
-      return this.item.items.every((item) => item.recurrent === 'monthly');
+    isRecurrent(): boolean {
+      return this.item.items.every((item) => item.recurrent === 'monthly' || item.recurrent === 'weekly');
+    },
+
+    isCreatedByActiveUser(): boolean {
+      return this.userList.find(
+        (item: User) => item.email === this.activeUser,
+      )?.uuid === this.item.user;
     },
   },
 
   methods: {
     selectSubCategory(uuid: string) {
       this.$emit('selectSubCategory', uuid);
+    },
+
+    getUsername(uuid: string): string {
+      return this.userList.find((item: User) => item.uuid === uuid)!.username;
     },
   },
 });

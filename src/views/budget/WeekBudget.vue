@@ -59,6 +59,7 @@ export default defineComponent({
   ],
 
   props: {
+    activeUser: { type: String, required: true },
     weeklyUsage: { type: Array as PropType<Array<BudgetUsageItem>>, required: true },
     budgetUsage: { type: Array as PropType<any[]>, required: true },
     categoryItems: { type: Array as PropType<Category[]>, required: true },

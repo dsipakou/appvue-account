@@ -12,7 +12,7 @@
                 class="vertical-middle"
                 icon="credit_card" />
                 <span>
-                  {{ account.source }}
+                  {{ account.title }}
                 </span>
             </q-chip>
           </div>

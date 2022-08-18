@@ -12,7 +12,7 @@
             <div class="text-h6" @click="clickItem">
               {{
                 transaction.type === 'income'
-                ? transaction.accountDetails.source
+                ? transaction.accountDetails.title
                 : transaction.categoryDetails?.name
               }}
               <q-chip dense color="teal" text-color="white" class="q-px-sm text-weight-bold">
@@ -32,7 +32,7 @@
                 class="vertical-middle"
                 icon="credit_card" />
                 <span>
-                  {{ transaction.accountDetails.source }}
+                  {{ transaction.accountDetails.title }}
                 </span>
             </q-chip>
           </div>

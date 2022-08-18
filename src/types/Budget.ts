@@ -1,6 +1,7 @@
 export interface Budget {
   uuid: string,
   category: string,
+  user: string,
   title: string,
   amount: number,
   budgetDate: string,
@@ -36,6 +37,7 @@ export interface BudgetUsageItem {
 
 export interface GroupedBudgetUsageItem {
   uuid: string,
+  user: string,
   title: string,
   planned: number,
   spentInBaseCurrency: number,
@@ -54,6 +56,7 @@ export interface BudgetArchive {
 
 export interface CategoryBudgetUsageItem {
   uuid: string,
+  user: string,
   categoryName: string,
   planned: number,
   spentInBaseCurrency: number,

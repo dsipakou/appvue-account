@@ -7,7 +7,7 @@ export interface TransactionCategory {
 
 export interface TransactionAccount {
   uuid: string,
-  source: string,
+  title: string,
 }
 
 export interface TransactionSpentCurrency {

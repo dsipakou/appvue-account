@@ -2,7 +2,7 @@
   <div v-for="account in mainAccounts"
     :key="account.id"
     class="account-container">
-    <span>{{ account.source }}</span>
+    <span>{{ account.title }}</span>
     <div
       class="account-inner"
       :class="isActiveAccount(account) ? 'selected-category': ''"

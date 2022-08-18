@@ -148,7 +148,7 @@ export default defineComponent({
     },
 
     categories(): ModifiedCategory[] {
-      const filteredCategoryList = this.categoryList.filter((item: Category) => !item.isIncome);
+      const filteredCategoryList = this.categoryList.filter((item: Category) => item.type !== 'INC');
       const modifiedCategoryList = filteredCategoryList.map((item: Category) => (
         {
           uuid: item.uuid,
@@ -160,7 +160,7 @@ export default defineComponent({
 
     systemCategories(): Category[] {
       const filteredCategoryList = this.categoryList.filter((item: Category) => (
-        item.isIncome
+        item.type === 'INC'
       ));
       return filteredCategoryList;
     },

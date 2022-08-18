@@ -63,14 +63,20 @@ const mutations = {
     state.categories.items.unshift({ ...category });
   },
 
-  deleteCategory(state: any, id: number) {
-    state.categories.items = state.categories.items.filter((category: any) => category.id !== id);
+  deleteCategory(state: any, uuid: string) {
+    state.categories.items = state.categories.items.filter(
+      (category: any) => category.uuid !== uuid,
+    );
   },
 
   updateCategory(state: any, category: any) {
     state.categories.items = state.categories.items.map((item: any) => {
-      if (item.id === category.id) {
-        return category;
+      if (item.uuid === category.uuid) {
+        return {
+          ...item,
+          name: category.name,
+          parent: category.parent,
+        };
       }
       return item;
     });

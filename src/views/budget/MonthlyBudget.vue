@@ -16,6 +16,8 @@
     <div class="col-8">
       <div class="row" v-show="activeCategory.categoryName && !activeSubCategory">
         <MainCategoryDetails
+          :activeUser="activeUser"
+          :userList="userList"
           :budgetUsage="budgetUsage"
           :budgetArchive="budgetArchive"
           :categoryUsage="activeCategory"
@@ -41,13 +43,14 @@ import { defineComponent, PropType } from 'vue';
 import MainCategoryCard from '@/views/budget/components/MainCategoryCard.vue';
 import MainCategoryDetails from '@/views/budget/components/MainCategoryDetails.vue';
 import SubCategoryDetailsPanel from '@/views/budget/subcategory/SubCategoryDetailsPanel.vue';
-import { Category } from '@/types';
 import {
   CategoryBudgetUsageItem,
   BudgetPlan,
   GroupedBudgetUsageItem,
   BudgetArchive,
-} from '@/types/Budget';
+  User,
+  Category,
+} from '@/types';
 import {
   DATE_FORMAT,
 } from '@/utils/dateTimeUtils';
@@ -67,6 +70,8 @@ export default defineComponent({
   ],
 
   props: {
+    activeUser: { type: String, required: true },
+    userList: { type: Array as PropType<Array<User>>, required: true },
     categoryItems: { type: Array as PropType<Category[]>, required: true },
     budgetArchive: { type: Array as PropType<BudgetArchive[]>, required: true },
     createBudget: { type: Function, required: true },

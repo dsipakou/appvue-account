@@ -16,10 +16,7 @@
           :options="userList"
           label="User" /> </q-card-section>
       <q-card-section>
-        <q-input outlined stack-label label="Source" v-model="input.source" />
-      </q-card-section>
-      <q-card-section>
-        <q-input outlined stack-label label="Amount" v-model="input.amount" />
+        <q-input outlined stack-label label="Name of the account" v-model="input.title" />
       </q-card-section>
       <q-card-section>
         <q-checkbox outlined stack-label label="Main Account" v-model="input.isMain" />
@@ -69,8 +66,7 @@ export default defineComponent({
       input: {
         uuid: this.account.uuid,
         user: this.account.user,
-        source: this.account.source,
-        amount: this.account.amount,
+        title: this.account.title,
         isMain: this.account.isMain,
         description: this.account.description,
       } as AccountEditForm,

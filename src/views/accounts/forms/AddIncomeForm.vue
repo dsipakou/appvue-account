@@ -123,7 +123,7 @@ export default defineComponent({
 
   computed: {
     systemCategories() {
-      return this.categoryList.filter((item: Category) => item.isIncome);
+      return this.categoryList.filter((item: Category) => item.type === 'INC');
     },
   },
 

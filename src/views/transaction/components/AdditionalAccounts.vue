@@ -7,7 +7,7 @@
         v-for="account in secondaryAccounts"
         :key="account.id"
         class="avatar-container col justify-center">
-        <span>{{ account.source }}</span>
+        <span>{{ account.title }}</span>
         <q-avatar
           :color="selectedAccountUuid === account.uuid ? 'red' : 'red-3'"
           size="60px"

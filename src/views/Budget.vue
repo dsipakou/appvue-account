@@ -27,7 +27,7 @@
             </template>
           </BudgetSummaryCard>
         </div>
-        <div class="row col-4 budget-toggle">
+        <div class="row col-3 budget-toggle">
           <q-tabs no-caps dense
             v-model="budgetType"
             indicator-color="transparent"
@@ -36,7 +36,15 @@
             <q-tab name="weekly" label="Weekly" />
           </q-tabs>
         </div>
-        <div class="row col-4 justify-end items-center">
+        <div class="row col-2 items-center q-px-lg">
+          <q-select map-options emit-value
+            option-value="uuid"
+            option-label="username"
+            :options="userOptions"
+            v-model="selectedUsers"
+            />
+        </div>
+        <div class="row col-3 justify-end items-center">
           <q-select map-options
             v-model="selectedMonth"
             :options="budgetType === 'monthly' ? selectMonthOptions : selectWeekOptions"
@@ -46,6 +54,8 @@
       </div>
       <MonthlyBudget
         v-show="budgetType === 'monthly'"
+        :activeUser="activeUser"
+        :userList="userList"
         :budgetUsage="budgetUsage"
         :budgetArchive="budgetArchive"
         :categoryItems="categoryList"
@@ -58,6 +68,7 @@
         @budgetItemClick="budgetItemClick($event)"
         />
       <WeekBudget
+        :activeUser="activeUser"
         :weeklyUsage="weeklyUsage"
         :categoryItems="categoryList"
         :selectedDay="selectedMonth"
@@ -154,6 +165,7 @@ export default {
       createForm: ref(false),
       editForm: ref(false),
       duplicateForm: ref(false),
+      selectedUsers: ref(''),
       budgetType,
       selectedMonth,
     };
@@ -217,6 +229,10 @@ export default {
       }
 
       return options;
+    },
+
+    userOptions() {
+      return [{ uuid: '', username: 'All' }, ...this.userList];
     },
 
     plannedMonth() {
@@ -317,7 +333,7 @@ export default {
 }
 
 .budget-toggle {
-  max-width: 370px;
+  max-width: 310px;
   margin: 30px 0;
   color: white;
   border-radius: 20px;

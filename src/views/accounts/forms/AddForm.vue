@@ -17,10 +17,17 @@
         label="User" />
     </q-card-section>
     <q-card-section>
-      <q-input outlined stack-label label="Source" v-model="input.source" />
+      <q-input outlined stack-label label="Name of the account" v-model="input.title" />
     </q-card-section>
     <q-card-section>
-      <q-input outlined stack-label label="Amount" v-model="input.amount" />
+      <q-select stack-label
+        :options="incomeCategories"
+        map-options
+        emit-value
+        option-value="uuid"
+        option-label="name"
+        v-model="selectedCategory"
+      ></q-select>
     </q-card-section>
     <q-card-section>
       <q-checkbox outlined stack-label label="Main Account" v-model="input.isMain" />
@@ -41,8 +48,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { User, AccountSaveForm } from '@/types';
+import { defineComponent, PropType, ref } from 'vue';
+import { Category, User, AccountSaveForm } from '@/types';
 
 export default defineComponent({
   name: 'Add account form',
@@ -51,7 +58,14 @@ export default defineComponent({
     'save',
   ],
 
+  setup() {
+    return {
+      selectedCategory: ref(null),
+    };
+  },
+
   props: {
+    categoryList: { type: Array as PropType<Array<Category>>, required: true },
     userList: { type: Array as PropType<Array<User>>, required: true },
   },
 
@@ -59,8 +73,7 @@ export default defineComponent({
     return {
       input: {
         user: this.userList.find((_, index) => index === 0),
-        source: '',
-        amount: 0,
+        title: '',
         isMain: false,
         description: '',
       } as AccountSaveForm,
@@ -70,6 +83,12 @@ export default defineComponent({
   methods: {
     save() {
       this.$emit('save', this.input);
+    },
+  },
+
+  computed: {
+    incomeCategories(): Category[] {
+      return this.categoryList.filter((item: Category) => item.type === 'INC');
     },
   },
 });

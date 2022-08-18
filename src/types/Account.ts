@@ -5,8 +5,7 @@ import { User } from './User';
 export interface Account {
   uuid: string,
   user: string,
-  source: string,
-  amount: number,
+  title: string,
   description: string,
   isMain: boolean,
   createdAt: string,
@@ -25,8 +24,7 @@ export interface AccountSaveIncomeForm {
 
 export interface AccountSaveForm {
   user: User,
-  source: string,
-  amount: number,
+  title: string,
   isMain: boolean,
   description: string,
 }
@@ -34,8 +32,7 @@ export interface AccountSaveForm {
 export interface AccountEditForm {
   uuid: string,
   user: User,
-  source: string,
-  amount: number,
+  title: string,
   isMain: boolean,
   description: string,
 }

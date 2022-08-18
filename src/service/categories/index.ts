@@ -1,3 +1,4 @@
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import {
   getRequest,
   postRequest,
@@ -13,7 +14,6 @@ interface CreateCategoryRequest {
 
 interface UpdateCategoryRequest extends CreateCategoryRequest {
   uuid: string,
-  isIncome: boolean,
 }
 
 export const getCategories = async () => {
@@ -36,7 +36,6 @@ export const updateCategory = async (data: UpdateCategoryRequest) => {
     {
       name: data.name,
       parent: data.parent,
-      isIncome: data.isIncome,
     });
   return response;
 };

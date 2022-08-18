@@ -47,9 +47,9 @@
     </div>
     <q-dialog v-model="createForm">
       <AddForm
-        :accountId="selectedAccountUuid"
+        :account="selectedAccountUuid"
         :category="selectedCategory"
-        :userId="selectedUserUuid"
+        :user="selectedUserUuid"
         :budgetPlan="budgetPlan"
         :categoryList="categoryList"
         :currencyList="currencyList"

@@ -1,12 +1,14 @@
 <template>
   <q-card style="width: 400px;">
+    {{ budgetPlan[0] }}
+    {{ account }}
     <q-card-section>
       <span class="text-h5">
-        {{ getCategory(category.uuid).name }}
+        {{ getCategory(category.uuid)?.name }}
       </span>
       <br />
       <q-chip dense class="q-ml-sm q-px-md">
-        {{ getCategory(category.parent).name }}
+        {{ getCategory(category.parent)?.name }}
       </q-chip>
     </q-card-section>
 
@@ -66,11 +68,16 @@
 <script lang="ts">
 import moment from 'moment';
 import { evaluate } from 'mathjs';
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 import * as constants from '@/utils/constants';
 import { getFirstDayOfWeek, getLastDayOfWeek } from '@/utils/dateTimeUtils';
-import { Budget, Currency } from '@/types';
+import {
+  Budget,
+  BudgetPlan,
+  Category,
+  Currency,
+} from '@/types';
 
 interface InputFields {
   amount: string,
@@ -97,13 +104,13 @@ export default defineComponent({
   },
 
   props: {
-    accountId: { type: Number, required: true },
-    userId: { type: String, required: true },
-    category: { type: Object, required: true },
+    account: { type: String, required: true },
+    user: { type: String, required: true },
+    category: { type: Object as PropType<Category>, required: true },
     transactionLastAdded: { type: Object, default: () => ({}) },
-    budgetPlan: { type: Array, required: true },
-    categoryList: { type: Array, requierd: true },
-    currencyList: { type: Array, required: true },
+    budgetPlan: { type: Array as PropType<Array<BudgetPlan>>, required: true },
+    categoryList: { type: Array as PropType<Array<Category>>, requierd: true },
+    currencyList: { type: Array as PropType<Array<Currency>>, required: true },
     ratesList: { type: Array, required: true },
     currencyListLoaded: { type: Boolean, required: true },
     createTransaction: { type: Function, required: true },
@@ -127,18 +134,18 @@ export default defineComponent({
   },
 
   computed: {
-    selectedWeekBudget(): Array<BudgetItem> {
-      const incompletedItems = this.budgetPlan.filter((budget) => (
-        !(budget as Budget).isCompleted
-      )) as Array<BudgetItem>;
+    selectedWeekBudget(): Array<any> {
+      const incompletedItems = this.budgetPlan.filter((budget: BudgetPlan) => (
+        !budget.isCompleted && budget.user === this.user
+      ));
 
-      const completedItems = this.budgetPlan.filter((budget) => (
-        (budget as Budget).isCompleted
-      )) as Array<BudgetItem>;
+      const completedItems = this.budgetPlan.filter((budget: BudgetPlan) => (
+        budget.isCompleted && budget.user === this.user
+      ));
 
       const separator = { id: 0, title: constants.dropdownSeparator, disable: true };
 
-      const items: Array<BudgetItem> = [];
+      const items: Array<any> = [];
 
       items.push(...incompletedItems);
       items.push(separator as BudgetItem);
@@ -178,10 +185,10 @@ export default defineComponent({
 
     create() {
       const transaction = {
-        user: this.userId,
+        user: this.user,
         category: this.category.uuid,
         amount: String(evaluate(this.input.amount.replace(',', '.'))),
-        account: this.accountId,
+        account: this.account,
         currency: this.input.currency.uuid,
         budget: this.input.budget?.uuid || null,
         transactionDate: this.input.transactionDate,

@@ -2,7 +2,7 @@ export interface Category {
   uuid: string,
   name: string,
   parent: string,
-  isIncome: boolean,
+  type: string,
   createdAt: string,
   modifiedAt: string,
 }

@@ -23,7 +23,9 @@
         :key="budget.title"
       >
         <SubCategoryCard
+          :activeUser="activeUser"
           :item=budget
+          :userList="userList"
           @selectSubCategory="selectSubCategory($event)"
         />
       </div>
@@ -35,7 +37,7 @@ import { defineComponent, PropType } from 'vue';
 import SubCategoryCard from '@/views/budget/components/SubCategoryCard.vue';
 import CategoryMonthSummary from '@/views/budget/components/CategoryMonthSummary.vue';
 import CategoryLastSixMonths from '@/views/budget/components/CategoryLastSixMonths.vue';
-import { CategoryBudgetUsageItem, BudgetArchive } from '@/types/Budget';
+import { CategoryBudgetUsageItem, BudgetArchive, User } from '@/types';
 
 export default defineComponent({
   name: 'MainCategoryDetails',
@@ -51,6 +53,8 @@ export default defineComponent({
   ],
 
   props: {
+    activeUser: { type: String, required: true },
+    userList: { type: Array as PropType<Array<User>>, required: true },
     budgetUsage: { type: Array, required: true },
     budgetArchive: { type: Array as PropType<BudgetArchive[]>, required: true },
     categoryUsage: { type: Object as PropType<CategoryBudgetUsageItem>, required: true },

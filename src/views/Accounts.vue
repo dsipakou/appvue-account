@@ -31,7 +31,7 @@
       <div id="account-list" class="row">
         <div v-for="account in accountList" class="col-3 q-ml-sm" :key="account.uuid">
           <CreditCard
-            :title=account.source
+            :title=account.title
             @click="edit(account)"
             draggable="true"
             @dragstart="startDrag($event, account)"
@@ -46,6 +46,7 @@
     <q-dialog v-model="createAccountForm">
       <AddForm
         :userList="userList"
+        :categoryList="categoryList"
         @save="create($event)"
       />
     </q-dialog>
@@ -71,9 +72,9 @@
     <q-dialog v-model="transferMoneyForm">
       <q-card class="shadow-24" style="width: 400px;">
         <q-card-section>
-          <span class="text-h5">{{ getAccount(input.sourceAccount).source }}</span>
+          <span class="text-h5">{{ getAccount(input.sourceAccount).title }}</span>
           <span class="text-h5"> -> </span>
-          <span class="text-h5">{{ getAccount(input.destinationAccount).source }}</span>
+          <span class="text-h5">{{ getAccount(input.destinationAccount).title }}</span>
         </q-card-section>
 
         <q-separator />
@@ -103,9 +104,6 @@
               stack-label
               label="Date"
               v-model="input.transactionDate" />
-          </q-card-section>
-          <q-card-section>
-            <q-input outlined stack-label label="Amount" v-model="input.amount" />
           </q-card-section>
           <q-card-section>
             <q-input
@@ -169,8 +167,7 @@ export default {
       editingAccount: null,
       input: {
         user: '',
-        source: '',
-        amount: 0,
+        title: '',
         transactionDate: '',
         isMain: false,
         description: '',
@@ -243,14 +240,12 @@ export default {
       const category = this.systemCategories[0];
       this.input.category = category;
       this.input.transactionDate = new Date().toISOString().substr(0, 10);
-      this.input.amount = '';
       this.createIncomeForm = true;
     },
 
     addAccount() {
       this.input.user = '';
-      this.input.source = '';
-      this.input.amount = '';
+      this.input.title = '';
       this.input.description = '';
       this.input.isMain = false;
 
@@ -269,8 +264,7 @@ export default {
     create(payload) {
       const account = {
         user: payload.user.uuid,
-        source: payload.source,
-        amount: payload.amount,
+        title: payload.title,
         description: payload.description,
         isMain: payload.isMain,
       };
@@ -304,8 +298,7 @@ export default {
       const account = {
         uuid: payload.uuid,
         user: payload.user.uuid,
-        source: payload.source,
-        amount: payload.amount,
+        title: payload.title,
         isMain: payload.isMain,
         description: payload.description,
       };

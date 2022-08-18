@@ -41,32 +41,38 @@
             v-model:selected="selectedCategoryUuid"
           />
         </q-expansion-item>
-
       </div>
-      <div class="row col-8 q-mt-lg">
-        <div v-show="selectedCategoryUuid" class="text-h4">
-          <span class="q-px-md shadow-1 text-bold" v-show="currentCategory.parent">
-            {{ currentCategory.parent ? getCategory(currentCategory.parent).name : '' }}
-          </span>
-          <span class="q-px-sm" v-show="currentCategory.parent">></span>
-          <span
-            class="q-px-md shadow-1"
-            style="line-height: 2em;"
-            v-if="!editMode"
-            @click="editMode=true"
-          >
-              {{ currentCategory.name }}
-          </span>
-          <q-input v-else v-model="input.name"></q-input>
-          <div
-            v-show="editMode">
-            <q-btn rounded no-caps unelevated
-              color="negative"
-              icon="delete"
-              @click="removeCategory"
-            >
-              Delete
-            </q-btn>
+      <div class="row col-8 q-mt-lg" style="align-items: start;">
+        <div v-show="selectedCategoryUuid" class="row">
+          <div v-if="!editMode" style="cursor: pointer;">
+            <div v-show="currentCategory.parent"
+              style="margin: 0 0 10px 40px;">
+              <span
+                class="q-px-md text-h4 shadow-1 text-bold"
+                style="height: max-content;"
+                @click="editMode=true"
+              >
+                {{ currentCategory.parent ? getCategory(currentCategory.parent).name : '' }}
+              </span>
+            </div>
+            <div>
+              <span
+                class="q-px-md shadow-1 text-h5"
+                style="height: max-content;"
+                @click="editMode=true"
+              >
+                  {{ currentCategory.name }}
+              </span>
+            </div>
+          </div>
+          <div v-else>
+            <InlineEdit
+              :parentCategories="parentCategories"
+              :category="currentCategory"
+              @cancel="cancel"
+              @remove="remove"
+              @update="update($event)"
+            />
           </div>
         </div>
       </div>
@@ -77,84 +83,38 @@
         :categoryList="categoryList"
         @createCategory="create($event)" />
     </q-dialog>
-    <q-dialog v-model="updateForm">
-      <q-card>
-        <input type="hidden" v-model="input.uuid" />
-        <q-card-section>
-          <h4>
-            {{ formTitle }}
-          </h4>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section>
-          <q-input outlined stack-label label="Name" v-model="input.name" />
-        </q-card-section>
-        <q-card-section>
-          <q-checkbox v-model="input.isParent" label="Parent category" />
-        </q-card-section>
-        <q-card-section>
-          <q-select
-            clearable
-            outlined
-            map-options
-            v-model="input.parentName"
-            :disable="input.isParent"
-            :options="parents"
-            label="Parent name" />
-        </q-card-section>
-        <q-card-actions align="center" class="action-buttons">
-          <q-btn
-            color="primary"
-            rounded
-            :disabled="!isAllowedToSave"
-            style="width: 100px;"
-            @click="update()">
-            Save
-          </q-btn>
-          <q-btn
-            color="negative"
-            rounded
-            style="width: 100px;"
-            @click="remove()">
-            Remove
-          </q-btn>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
+
 <script>
 import { ref } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import AddForm from '@/views/category/forms/AddForm.vue';
+import InlineEdit from '@/views/category/forms/InlineEdit.vue';
 
 export default {
   name: 'CategoryList',
 
   components: {
     AddForm,
+    InlineEdit,
   },
 
   setup() {
     return {
       createForm: ref(false),
-      updateForm: ref(false),
       selectedCategoryUuid: ref(null),
+      selectedParentUuid: ref(null),
     };
   },
 
   data() {
     return {
       categories: [],
-      showModal: false,
       currentCategory: {},
-      formTitle: '',
       editMode: false,
       input: {
         name: '',
-        parentUuid: null,
       },
     };
   },
@@ -169,34 +129,38 @@ export default {
       this.createForm = true;
     },
 
+    cancel() {
+      this.editMode = false;
+      this.selectCategory(this.selectedCategoryUuid);
+      if (this.currentCategory.parent) {
+        this.selectedParentUuid = this.currentCategory.parent;
+      }
+    },
+
     create(event) {
-      console.log(event);
       this.createCategory(event);
       this.createForm = false;
     },
 
-    edit(category) {
-      this.currentCategory = category;
-      this.formTitle = category.name;
-      this.input.uuid = category.uuid;
-      this.input.name = category.name;
-      this.input.parentUuid = category.parentUuid;
-      this.updateForm = true;
-    },
-
-    update() {
+    update(payload) {
       const category = {
-        id: this.input.uuid,
-        name: this.input.name,
-        parent: this.input.parent,
-        isIncome: false,
+        uuid: this.selectedCategoryUuid,
+        name: payload.name,
+        parent: payload.parent,
       };
       this.updateCategory(category);
-      this.updateForm = false;
+      this.currentCategory = {
+        ...this.currentCategory,
+        name: payload.name,
+        parent: payload.parent,
+      };
+      this.editMode = false;
     },
 
-    removeCategory() {
+    remove() {
       this.deleteCategory(this.selectedCategoryUuid);
+      this.selectedCategoryUuid = null;
+      this.selectedParentUuid = null;
       this.editMode = false;
     },
 
@@ -211,10 +175,12 @@ export default {
     selectCategory(uuid) {
       if (uuid) {
         this.currentCategory = this.getCategory(uuid);
+        this.selectedParentUuid = this.currentCategory.parent;
         this.input.name = this.currentCategory.name;
       } else {
         this.currentCategory = {};
         this.input.name = '';
+        this.selectedParentUuid = '';
       }
     },
   },
@@ -240,18 +206,6 @@ export default {
 
     expenseTreeItems() {
       return this.treeItems.filter((item) => item.type === 'EXP');
-    },
-
-    isAllowedToSave() {
-      return (
-        !this.categoryList.some((item) => (
-          item.name === this.input.name
-          && (item.parentUuid === this.input.parentUuid
-            || item.parent === this.input.parent?.label)
-          && item.isParent === this.input.isParent
-        ))
-        && !!this.input.parent
-      );
     },
 
     parentCategories() {
@@ -292,6 +246,9 @@ export default {
     selectedCategoryUuid() {
       this.editMode = false;
       this.selectCategory(this.selectedCategoryUuid);
+      if (this.currentCategory.parent) {
+        this.selectedParentUuid = this.currentCategory.parent;
+      }
     },
   },
 };

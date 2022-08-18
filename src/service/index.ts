@@ -1,4 +1,3 @@
-// const TOKEN = store.getters.users.token;
 /* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 
 import store from '@/store';

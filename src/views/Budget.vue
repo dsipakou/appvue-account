@@ -40,13 +40,15 @@
           <q-select map-options emit-value
             option-value="uuid"
             option-label="username"
+            label="User"
             :options="userOptions"
-            v-model="selectedUsers"
+            v-model="selectedUser"
             />
         </div>
         <div class="row col-3 justify-end items-center">
           <q-select map-options
             v-model="selectedMonth"
+            label="Period"
             :options="budgetType === 'monthly' ? selectMonthOptions : selectWeekOptions"
             class="periodDropdown"
           />
@@ -165,7 +167,7 @@ export default {
       createForm: ref(false),
       editForm: ref(false),
       duplicateForm: ref(false),
-      selectedUsers: ref(''),
+      selectedUser: ref(''),
       budgetType,
       selectedMonth,
     };
@@ -236,11 +238,13 @@ export default {
     },
 
     plannedMonth() {
-      return this.budgetUsage.reduce((acc, item) => acc + item.planned, 0);
+      return this.budgetUsage.reduce((acc, item) => acc + item.planned, 0) || 0;
     },
 
     spentMonth() {
-      return this.budgetUsage.reduce((acc, item) => acc + item.spentInBaseCurrency, 0);
+      return this.budgetUsage.reduce(
+        (acc, item) => acc + item.spentInBaseCurrency, 0,
+      ) || 0;
     },
 
     plannedWeekly() {
@@ -298,14 +302,28 @@ export default {
       const endMonth = endOfMonth(new Date(this.selectedMonth));
       const endWeek = endOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
       const startWeek = startOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
-      this.fetchMonthlyUsage({
+      let monthPayload = {
         dateFrom: format(startMonth, DATE_FORMAT),
         dateTo: format(endMonth, DATE_FORMAT),
-      });
-      this.fetchWeeklyUsage({
+      };
+      if (this.selectedUser) {
+        monthPayload = {
+          ...monthPayload,
+          user: this.selectedUser,
+        };
+      }
+      this.fetchMonthlyUsage(monthPayload);
+      let weekPayload = {
         dateFrom: format(startWeek, DATE_FORMAT),
         dateTo: format(endWeek, DATE_FORMAT),
-      });
+      };
+      if (this.selectedUser) {
+        weekPayload = {
+          ...weekPayload,
+          user: this.selectedUser,
+        };
+      }
+      this.fetchWeeklyUsage(weekPayload);
     },
 
     addFormClosed() {
@@ -319,6 +337,9 @@ export default {
 
   watch: {
     selectedMonth() {
+      this.fetchAllBudget();
+    },
+    selectedUser() {
       this.fetchAllBudget();
     },
   },

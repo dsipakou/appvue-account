@@ -25,6 +25,7 @@ export interface AccountSaveIncomeForm {
 export interface AccountSaveForm {
   user: User,
   title: string,
+  category: string,
   isMain: boolean,
   description: string,
 }
@@ -33,6 +34,7 @@ export interface AccountEditForm {
   uuid: string,
   user: User,
   title: string,
+  category: string,
   isMain: boolean,
   description: string,
 }

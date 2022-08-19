@@ -56,7 +56,6 @@ export interface BudgetArchive {
 
 export interface CategoryBudgetUsageItem {
   uuid: string,
-  user: string,
   categoryName: string,
   planned: number,
   spentInBaseCurrency: number,
@@ -67,6 +66,7 @@ export interface CategoryBudgetUsageItem {
 export interface GetBudgetForPeriod {
   dateFrom: string,
   dateTo: string,
+  user?: string,
 }
 
 /* eslint-disable no-shadow */

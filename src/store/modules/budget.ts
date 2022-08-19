@@ -3,6 +3,7 @@
 import { GetBudgetForPeriod, BudgetToggle } from '@/types/Budget';
 import { startOfDay } from 'date-fns';
 
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import {
   getBudgetUsage,
   getBudgetPlan,

@@ -1,7 +1,5 @@
 <template>
   <q-card style="width: 400px;">
-    {{ budgetPlan[0] }}
-    {{ account }}
     <q-card-section>
       <span class="text-h5">
         {{ getCategory(category.uuid)?.name }}

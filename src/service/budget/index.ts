@@ -1,4 +1,5 @@
-import { BudgetToggle, GetBudgetForPeriod } from '@/types/Budget';
+import { GetBudgetForPeriod } from '@/types/Budget';
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import {
   getRequest,
   postRequest,
@@ -49,13 +50,19 @@ export const getBudgetArchive = async (data: any) => {
 };
 
 export const getBudgetUsage = async (data: GetBudgetForPeriod) => {
-  const url = `budget/usage?dateFrom=${data.dateFrom}&dateTo=${data.dateTo}`;
+  let url = `budget/usage?dateFrom=${data.dateFrom}&dateTo=${data.dateTo}`;
+  if (data.user) {
+    url += `&user=${data.user}`;
+  }
   const response = await getRequest(url);
   return response;
 };
 
 export const getWeeklyBudgetUsage = async (data: GetBudgetForPeriod) => {
-  const url = `budget/weekly-usage?dateFrom=${data.dateFrom}&dateTo=${data.dateTo}`;
+  let url = `budget/weekly-usage?dateFrom=${data.dateFrom}&dateTo=${data.dateTo}`;
+  if (data.user) {
+    url += `&user=${data.user}`;
+  }
   const response = await getRequest(url);
   return response;
 };

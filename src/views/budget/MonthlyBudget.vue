@@ -45,7 +45,6 @@ import MainCategoryDetails from '@/views/budget/components/MainCategoryDetails.v
 import SubCategoryDetailsPanel from '@/views/budget/subcategory/SubCategoryDetailsPanel.vue';
 import {
   CategoryBudgetUsageItem,
-  BudgetPlan,
   GroupedBudgetUsageItem,
   BudgetArchive,
   User,
@@ -78,7 +77,6 @@ export default defineComponent({
     updateBudget: { type: Function, required: true },
     deleteBudget: { type: Function, required: true },
     budgetUsage: { type: Array as PropType<CategoryBudgetUsageItem[]>, required: true },
-    budgetPlan: { type: Array as PropType<BudgetPlan[]>, required: true },
     selectedMonth: { type: Date, required: true },
     updateStatusBudget: { type: Function, required: true },
     fetchBudgetArchive: { type: Function, required: true },
@@ -116,7 +114,6 @@ export default defineComponent({
     },
 
     fetchArchive() {
-      console.log('fetching archive');
       this.fetchBudgetArchive({
         date: format(this.selectedMonth, DATE_FORMAT),
         category: this.activeCategory.uuid,

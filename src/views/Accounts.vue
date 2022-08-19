@@ -64,6 +64,7 @@
     <q-dialog v-model="updateAccountForm">
       <EditForm
         :account="editingAccount"
+        :categoryList="categoryList"
         :userList="userList"
         @update="editAccount($event)"
         @remove="removeAccount($event)"
@@ -265,6 +266,7 @@ export default {
       const account = {
         user: payload.user.uuid,
         title: payload.title,
+        category: payload.category,
         description: payload.description,
         isMain: payload.isMain,
       };
@@ -299,6 +301,7 @@ export default {
         uuid: payload.uuid,
         user: payload.user.uuid,
         title: payload.title,
+        category: payload.category,
         isMain: payload.isMain,
         description: payload.description,
       };

@@ -7,7 +7,8 @@ import {
 
 export interface CreateAccountRequest {
   user: string,
-  source: string,
+  title: string,
+  category: string,
   amount: number,
   description: string,
   isMain: boolean,
@@ -23,10 +24,12 @@ export const getAccounts = async () => {
 };
 
 export const createAccount = async (data: CreateAccountRequest) => {
+  console.log(data);
   const response = await postRequest('accounts/',
     {
       user: data.user,
-      source: data.source,
+      title: data.title,
+      category: data.category,
       amount: data.amount,
       description: data.description,
       isMain: data.isMain,
@@ -35,10 +38,12 @@ export const createAccount = async (data: CreateAccountRequest) => {
 };
 
 export const updateAccount = async (data: UpdateAccountRequest) => {
+  console.log(data);
   const response = await patchRequest(`accounts/${data.uuid}/`,
     {
       user: data.user,
-      source: data.source,
+      title: data.title,
+      category: data.category,
       amount: data.amount,
       description: data.description,
       isMain: data.isMain,

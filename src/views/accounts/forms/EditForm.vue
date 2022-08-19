@@ -1,25 +1,37 @@
 <template>
   <q-card class="shadow-24" style="width: 400px;">
-    <q-card-section>
-      <h4>Edit account</h4>
+    <q-card-section class="row justify-center">
+      <h5>Modify Account</h5>
     </q-card-section>
-
-    <q-separator />
-
     <q-form>
       <input type="hidden" v-model="input.uuid" />
-      <q-card-section>
-        <q-select outlined map-options
-          option-value="uuid"
-          option-label="username"
-          v-model="input.user"
-          :options="userList"
-          label="User" /> </q-card-section>
-      <q-card-section>
-        <q-input outlined stack-label label="Name of the account" v-model="input.title" />
+      <q-card-section horizontal class="justify-between">
+        <q-card-section class="col">
+          <q-input outlined stack-label label="Name of the account" v-model="input.title" />
+        </q-card-section>
+        <q-card-section class="col">
+          <q-select outlined map-options
+            option-value="uuid"
+            option-label="username"
+            v-model="input.user"
+            :options="userList"
+            label="User" />
+        </q-card-section>
       </q-card-section>
-      <q-card-section>
-        <q-checkbox outlined stack-label label="Main Account" v-model="input.isMain" />
+      <q-card-section horizontal class="row">
+        <q-card-section class="col">
+          <q-select stack-label outlined
+            :options="incomeCategories"
+            map-options
+            emit-value
+            option-value="uuid"
+            option-label="name"
+            v-model="input.category"
+            label="Assigned income category" />
+        </q-card-section>
+        <q-card-section class="col-4">
+          <q-checkbox outlined stack-label label="Main Account" v-model="input.isMain" />
+        </q-card-section>
       </q-card-section>
       <q-card-section>
         <q-input
@@ -29,7 +41,6 @@
           label="Description"
           v-model="input.description" />
       </q-card-section>
-
       <q-card-actions align="center" class="action-buttons">
         <q-btn color="primary" rounded style="width: 100px;" @click="update()">Save</q-btn>
         <q-btn
@@ -45,8 +56,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { User, AccountEditForm } from '@/types';
+import { defineComponent, PropType, ref } from 'vue';
+import { Category, User, AccountEditForm } from '@/types';
 
 export default defineComponent({
   name: 'Edit account form',
@@ -58,19 +69,28 @@ export default defineComponent({
 
   props: {
     account: { type: Object as PropType<AccountEditForm>, required: true },
+    categoryList: { type: Array as PropType<Array<Category>>, required: true },
     userList: { type: Array as PropType<Array<User>>, required: true },
   },
 
   data() {
+    console.log(this.account);
     return {
       input: {
         uuid: this.account.uuid,
         user: this.account.user,
         title: this.account.title,
+        category: this.account.category,
         isMain: this.account.isMain,
         description: this.account.description,
       } as AccountEditForm,
     };
+  },
+
+  computed: {
+    incomeCategories(): Category[] {
+      return this.categoryList.filter((item: Category) => item.type === 'INC');
+    },
   },
 
   methods: {

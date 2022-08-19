@@ -26,8 +26,8 @@
         emit-value
         option-value="uuid"
         option-label="name"
-        v-model="selectedCategory"
-      ></q-select>
+        v-model="input.category"
+        label="Assigned income category" />
     </q-card-section>
     <q-card-section>
       <q-checkbox outlined stack-label label="Main Account" v-model="input.isMain" />
@@ -58,12 +58,6 @@ export default defineComponent({
     'save',
   ],
 
-  setup() {
-    return {
-      selectedCategory: ref(null),
-    };
-  },
-
   props: {
     categoryList: { type: Array as PropType<Array<Category>>, required: true },
     userList: { type: Array as PropType<Array<User>>, required: true },
@@ -74,6 +68,7 @@ export default defineComponent({
       input: {
         user: this.userList.find((_, index) => index === 0),
         title: '',
+        category: '',
         isMain: false,
         description: '',
       } as AccountSaveForm,

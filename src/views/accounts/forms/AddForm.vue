@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { Category, User, AccountSaveForm } from '@/types';
 
 export default defineComponent({

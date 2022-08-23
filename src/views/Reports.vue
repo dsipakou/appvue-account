@@ -15,6 +15,13 @@
           <q-icon name="toll" />
         </template>
       </q-select>
+      <q-select outlined dense map-options
+        class="q-ml-lg"
+        :options="[{label: 'Income', value: 'INC'}, {label: 'Expenses', value: 'EXP'}]"
+        v-model="cashflowType"
+      >
+
+      </q-select>
     </div>
     <q-markup-table
       :separator="separator"
@@ -51,6 +58,7 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import moment from 'moment';
 import {
@@ -62,6 +70,12 @@ import {
 
 export default {
   name: 'Reports',
+
+  setup() {
+    return {
+      cashflowType: ref('EXP'),
+    };
+  },
 
   data() {
     return {

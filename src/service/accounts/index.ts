@@ -40,7 +40,6 @@ export const createAccount = async (data: CreateAccountRequest) => {
 };
 
 export const updateAccount = async (data: UpdateAccountRequest) => {
-  console.log(data);
   const response = await patchRequest(`accounts/${data.uuid}/`,
     {
       user: data.user,

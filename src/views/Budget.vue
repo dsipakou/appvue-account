@@ -278,6 +278,7 @@ export default {
       'fetchWeeklyUsage',
       'fetchBudgetedTransactions',
       'fetchBudgetArchive',
+      'fetchCurrencies',
       'createBudget',
       'updateBudget',
       'updateStatusBudget',
@@ -333,6 +334,7 @@ export default {
 
   beforeMount() {
     this.fetchAllBudget();
+    this.fetchCurrencies();
   },
 
   watch: {

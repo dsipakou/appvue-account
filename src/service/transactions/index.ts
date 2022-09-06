@@ -1,3 +1,4 @@
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import {
   getRequest,
   postRequest,
@@ -8,6 +9,11 @@ import {
 interface TransactionRequest {
   sorting: string,
   limit: string,
+  dateFrom: string,
+  dateTo: string,
+}
+
+interface IncomeRequest {
   dateFrom: string,
   dateTo: string,
 }
@@ -23,6 +29,15 @@ export const getTransactions = async ({
     queryString += `&dateFrom=${dateFrom}&dateTo=${dateTo}`;
   }
   const response = await getRequest(`transactions?${queryString}`);
+  return response;
+};
+
+export const getIncome = async ({
+  dateFrom = '',
+  dateTo = '',
+}: IncomeRequest) => {
+  const qs = `dateFrom=${dateFrom}&dateTo=${dateTo}`;
+  const response = await getRequest(`transactions/income?${qs}`);
   return response;
 };
 

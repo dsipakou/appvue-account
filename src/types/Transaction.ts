@@ -11,9 +11,7 @@ export interface TransactionAccount {
 }
 
 export interface TransactionSpentCurrency {
-  amount: number,
-  currency: string,
-  sign: string,
+  [key: string]: number,
 }
 
 export interface Transaction {
@@ -27,7 +25,7 @@ export interface Transaction {
   user: string,
   amount: number,
   spentInBaseCurrency: number,
-  spentInCurrencies: TransactionSpentCurrency[],
+  spentInCurrencies: TransactionSpentCurrency,
   baseAmount: number,
   rate: number,
   transactionDate: string,

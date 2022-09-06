@@ -15,12 +15,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue';
-import { Rate } from '@/types';
+import { Rate, RateItem } from '@/types';
 
 export default defineComponent({
   name: 'CurrencyItem',
 
-  emits: ['edit', 'remove'],
+  emits: ['edit', 'remove', 'change'],
 
   setup() {
     return {
@@ -30,7 +30,7 @@ export default defineComponent({
 
   props: {
     currency: { type: Object, required: true },
-    currencyDate: { type: String },
+    rateDate: { type: String },
     rateListOnDate: { type: Array as PropType<Array<Rate>>, required: true },
     createRate: { type: Function, required: true },
     updateRate: { type: Function, required: true },
@@ -44,7 +44,7 @@ export default defineComponent({
 
   methods: {
     save(baseCurrency: string) {
-      if (this.currencyDate && this.rate.length > 5) {
+      if (this.rateDate && this.rate.length > 5) {
         if (this.rateOnDate) {
           if (Number(this.rate) !== this.rateOnDate.rate) {
             this.updateRate({
@@ -55,7 +55,7 @@ export default defineComponent({
         } else {
           this.createRate({
             currency: this.currency.uuid,
-            rateDate: this.currencyDate,
+            rateDate: this.rateDate,
             rate: Number(this.rate),
             baseCurrency,
           });
@@ -79,6 +79,14 @@ export default defineComponent({
       } else {
         this.rate = '';
       }
+    },
+
+    rate() {
+      const payload: RateItem = {
+        code: this.currency.code,
+        rate: this.rate,
+      };
+      this.$emit('change', payload);
     },
   },
 });

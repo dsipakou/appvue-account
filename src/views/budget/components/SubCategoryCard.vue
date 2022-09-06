@@ -2,14 +2,14 @@
   <q-card flat class="container" @click="selectSubCategory(item.uuid)">
     <div class="row col-12 title--main">
       <span>{{ item.title }}</span>
-      <div v-show="isRecurrent" class="recurrent-icon">
-        <q-icon name="autorenew" style="padding-right: 5px; align-self: center;" />
-        <span>{{item.items[0].recurrent}}</span>
-      </div>
       <div v-show="!isCreatedByActiveUser" class="recurrent-icon">
         <q-badge color="purple">
           {{ getUsername(item.user) }}
         </q-badge>
+      </div>
+      <div v-show="isRecurrent" class="recurrent-icon">
+        <q-icon name="autorenew" style="padding-right: 5px; align-self: center;" />
+        <span>{{item.items[0].recurrent}}</span>
       </div>
     </div>
     <div class="row progress-container">

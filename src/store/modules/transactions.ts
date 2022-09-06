@@ -1,13 +1,15 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
-
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import { getDate, getMonth, getYear } from 'date-fns';
 import {
   getTransactions,
   getGroupedTransactions,
   getGroupedByParentTransactions,
+  getIncome,
   deleteTransaction,
   updateTransaction,
   createTransaction,
+
 } from '@/service/transactions';
 import { itemStatus } from '../constants';
 
@@ -15,6 +17,10 @@ const state = {
   transactions: {
     items: [],
     status: itemStatus.INIT,
+  },
+
+  income: {
+    items: [],
   },
 
   groupedTransactions: {
@@ -77,6 +83,16 @@ const actions = {
     }
   },
 
+  async fetchIncome({ commit }: any, payload: { dateFrom: string, dateTo: string}) {
+    commit('setTransactionsStatus', itemStatus.LOADING);
+    const response = await getIncome(payload);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setIncome', body);
+    }
+    commit('setTransactionsStatus', itemStatus.LOADED);
+  },
+
   async createTransaction({ commit }: any, payload: any) {
     const response = await createTransaction(payload);
     if (response.status === 201) {
@@ -132,6 +148,10 @@ const mutations = {
 
   setGroupedByParent(state: any, payload: any) {
     state.groupedByParent = payload;
+  },
+
+  setIncome(state: any, payload: any) {
+    state.income.items = payload;
   },
 
   setArchiveDay(state: any, day: any) {

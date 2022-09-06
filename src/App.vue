@@ -18,6 +18,20 @@
           label="Login"
           to="/login" />
 
+        <q-select outlined label-stacked dense
+          label="Active Currency"
+          bg-color="white"
+          style="max-width: 200px;"
+          :options="currencyList"
+          option-value="code"
+          option-label="verbalName"
+          map-options
+          emit-value
+          v-model="activeCurrency"
+          />
+
+        <q-space />
+
         <span
           v-show="activeUser">{{this.activeUser}}
         </span>
@@ -159,9 +173,16 @@ export default {
     };
   },
 
+  data() {
+    return {
+      activeCurrency: 'USD',
+    };
+  },
+
   computed: {
     ...mapGetters([
       'activeUser',
+      'currencyList',
     ]),
   },
 
@@ -169,20 +190,27 @@ export default {
     ...mapActions([
       'fetchAccounts',
       'fetchCategories',
-      'fetchUsers',
       'fetchCurrencies',
+      'fetchUsers',
       'fetchRates',
       'logoutUser',
       'loadUser',
+      'changeCurrency',
     ]),
+  },
+
+  watch: {
+    activeCurrency() {
+      this.changeCurrency(this.activeCurrency);
+    },
   },
 
   beforeMount() {
     this.fetchAccounts();
     this.fetchCategories();
-    this.fetchUsers();
     this.fetchCurrencies();
     this.fetchRates();
+    this.fetchUsers();
     this.loadUser();
   },
 };

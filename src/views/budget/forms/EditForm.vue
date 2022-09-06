@@ -47,7 +47,7 @@
         <q-select outlined clearable label-stacked map-options emit-value
           label="Currency"
           option-value="uuid"
-          option-label="verbalName"
+          option-label="code"
           :options="currencyList"
           style="width: 150px;"
           v-model="input.currency" />

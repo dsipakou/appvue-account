@@ -1,9 +1,12 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 
+import { BatchedRatesRequestPayload } from '@/types';
 import {
   getRates,
   getRatesOnDate,
   createRate,
+  createBatchedRate,
   updateRate,
   getRateChartData,
 } from '../../service/rates';
@@ -61,6 +64,16 @@ const actions = {
     if (response.status === 201) {
       const body = await response.json();
       commit('createRate', body);
+    }
+    commit('setRatesLoading', false);
+  },
+
+  async createBatchedRate({ commit }: any, payload: BatchedRatesRequestPayload) {
+    commit('setRatesLoading', true);
+    const response = await createBatchedRate(payload);
+    if (response.status === 201) {
+      const body = await response.json();
+      console.log(body);
     }
     commit('setRatesLoading', false);
   },

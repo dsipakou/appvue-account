@@ -1,9 +1,11 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 
 import {
   getUsers,
   userLogin,
   createUser,
+  changeCurrency,
   resetUser,
   LoginPayload,
   SignupPayload,
@@ -15,6 +17,7 @@ const state = {
   email: null,
   username: null,
   token: null,
+  defaultCurrency: null,
   users: {
     items: [],
     isLoading: false,
@@ -25,6 +28,7 @@ const getters = {
   activeUser: (state: any) => state.email,
   token: (state: any) => state.token,
   userList: (state: any) => state.users.items,
+  defaultCurrency: (state: any) => state.users.defaultCurrency,
   isUserListLoading: (state: any) => state.users.isLoading,
 };
 
@@ -45,8 +49,10 @@ const actions = {
     const response = await userLogin(payload);
     if (response.status === 200) {
       const data = await response.json();
+      console.log(data);
       user.token = data.token;
       user.username = data.username;
+      user.defaultCurrency = data.currency;
       await idb.addUser(user);
       commit('login', user);
     } else {
@@ -74,6 +80,13 @@ const actions = {
     }
   },
 
+  async changeCurrency({ commit }: any, currencyCode: string) {
+    const response = await changeCurrency(currencyCode);
+    if (response.status === 200) {
+      commit('updateCurrency', currencyCode);
+    }
+  },
+
   async fetchUsers({ commit }: any) {
     commit('setUsersLoading', true);
     const response = await getUsers();
@@ -90,16 +103,28 @@ const mutations = {
     state.username = user.username;
     state.email = user.email;
     state.token = user.token;
+    state.defaultCurrency = user.defaultCurrency;
   },
 
   logout(state: any) {
     state.username = null;
     state.email = null;
     state.token = null;
+    state.defaultCurrency = null;
   },
 
   setUsers(state: any, users: any) {
     state.users.items = users;
+  },
+
+  async updateCurrency(state: any, currencyCode: string) {
+    const user = {
+      email: state.email,
+      token: state.token,
+      username: state.username,
+      defaultCurrency: currencyCode,
+    } as User;
+    await idb.addUser(user);
   },
 
   setUsersLoading(state: any, isLoading: boolean) {

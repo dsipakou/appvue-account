@@ -58,6 +58,7 @@ export default defineComponent({
   ],
 
   props: {
+    activeUser: { type: String, required: true },
     item: { type: Object as PropType<any>, required: true },
     updateStatusBudget: { type: Function, required: true },
   },

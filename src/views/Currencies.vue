@@ -79,6 +79,7 @@
         :rateListOnDate="rateListOnDate"
         :isRatesListLoading="isRatesListLoading"
         :createRate="createRate"
+        :createBatchedRate="createBatchedRate"
         :updateRate="updateRate"
         :fetchRatesOnDate="fetchRatesOnDate"
         @closeForm="ratesForm = false" />
@@ -161,12 +162,12 @@ export default defineComponent({
   methods: {
     ...mapActions([
       'createRate',
+      'createBatchedRate',
       'updateRate',
       'createCurrency',
       'updateCurrency',
       'deleteCurrency',
       'fetchCurrencies',
-      'fetchRates',
       'fetchRatesOnDate',
       'fetchChartData',
       'selectCurrency',
@@ -222,7 +223,6 @@ export default defineComponent({
 
   beforeMount() {
     this.fetchCurrencies();
-    this.fetchRates();
     this.fetchChartData(this.currencyRange);
   },
 

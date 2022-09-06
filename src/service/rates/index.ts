@@ -1,3 +1,5 @@
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
+import { BatchedRatesRequestPayload } from '@/types';
 import {
   getRequest,
   patchRequest,
@@ -41,6 +43,11 @@ export const createRate = async (data: CreateRateRequest) => {
       description: data.description,
       baseCurrency: data.baseCurrency,
     });
+  return response;
+};
+
+export const createBatchedRate = async (payload: BatchedRatesRequestPayload) => {
+  const response = await postRequest('rates/batched/', payload);
   return response;
 };
 

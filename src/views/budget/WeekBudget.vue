@@ -18,6 +18,7 @@
             <BudgetItem
               :item="item"
               :updateStatusBudget="updateStatusBudget"
+              :activeUser="activeUser"
               @budgetItemClick="budgetItemClick(item)"
             />
           </div>

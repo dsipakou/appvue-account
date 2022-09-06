@@ -11,11 +11,12 @@
               v-for="currency in notBaseCurrencies"
               :key="currency.uuid"
               :currency="currency"
-              :currencyDate="selectedDay"
+              :rateDate="selectedDay"
               :rateListOnDate="rateListOnDate"
               :createRate="createRate"
               :updateRate="updateRate"
               :ref="item => currencyItems.add(item)"
+              @change="rateChange($event)"
             />
           </div>
         </div>
@@ -39,7 +40,12 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
-import { Currency, Rate } from '@/types';
+import {
+  Currency,
+  Rate,
+  RateItem,
+  BatchedRatesRequestPayload,
+} from '@/types';
 import CurrencyItem from '@/views/currency/components/CurrencyItem.vue';
 
 export default defineComponent({
@@ -64,6 +70,7 @@ export default defineComponent({
     rateListOnDate: { type: Array as PropType<Array<Rate>>, required: true },
     isRatesListLoading: { type: Boolean, required: true },
     createRate: { type: Function, required: true },
+    createBatchedRate: { type: Function, required: true },
     updateRate: { type: Function, required: true },
     fetchRatesOnDate: { type: Function, required: true },
   },
@@ -71,6 +78,7 @@ export default defineComponent({
   data() {
     return {
       currencyItems: new Set() as Set<InstanceType<typeof CurrencyItem>>,
+      requestPayload: { baseCurrency: '', rateDate: '', items: [] } as BatchedRatesRequestPayload,
     };
   },
 
@@ -80,7 +88,7 @@ export default defineComponent({
     },
 
     baseCurrency(): string {
-      return this.currencies.find((item: Currency) => item.isBase)?.uuid || '';
+      return this.currencies.find((item: Currency) => item.isBase)?.code || '';
     },
   },
 
@@ -90,16 +98,37 @@ export default defineComponent({
     },
 
     save() {
-      this.currencyItems.forEach(
-        (item: InstanceType<typeof CurrencyItem>) => item.save(this.baseCurrency),
-      );
+      this.createBatchedRate(this.requestPayload);
+      // this.currencyItems.forEach(
+      //   (item: InstanceType<typeof CurrencyItem>) => item.save(this.baseCurrency),
+      // );
+    },
+
+    rateChange(payload: RateItem) {
+      if (!this.requestPayload.items.find(
+        (item: RateItem) => payload.code === item.code,
+      )) {
+        this.requestPayload.items.push(payload);
+      } else {
+        this.requestPayload.items = this.requestPayload.items.map((item: RateItem) => {
+          if (item.code === payload.code) {
+            return payload;
+          }
+          return item;
+        });
+      }
     },
   },
 
   watch: {
     selectedDay() {
       this.fetchRatesOnDate(this.selectedDay);
+      this.requestPayload.rateDate = this.selectedDay;
     },
+  },
+
+  mounted() {
+    this.requestPayload.baseCurrency = this.baseCurrency;
   },
 });
 </script>

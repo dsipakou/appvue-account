@@ -6,6 +6,7 @@ export interface User {
   email: string,
   token: string,
   username: string,
+  defaultCurrency?: string,
 }
 
 export default {
@@ -49,20 +50,14 @@ export default {
       const trans = db.transaction(['userAuth'], 'readwrite');
       trans.oncomplete = () => {
         res(null);
+        console.log('success');
+      };
+
+      trans.onerror = (e: any) => {
+        console.log(`error`);
       };
 
       const store = trans.objectStore('userAuth');
-
-      store.openCursor().onsuccess = (e: any) => {
-        const target = e.target as IDBRequest;
-        const cursor = target.result;
-        if (cursor) {
-          if (cursor.value.email === user.email) {
-            store.delete(cursor.value.email);
-          }
-          cursor.continue();
-        }
-      };
       store.put(user);
     });
   },

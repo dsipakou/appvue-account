@@ -204,7 +204,7 @@ export default defineComponent({
         currencies.push(objDefault);
 
         Object.values(this.selectedCurrencies).forEach((currency) => {
-          const value = transaction.spentInCurrencies[currency.code]?.amount?.toFixed(2);
+          const value = transaction.spentInCurrencies[currency.code]?.toFixed(2);
           const obj = {
             uuid: currency.uuid,
             baseAmount: value || '-',

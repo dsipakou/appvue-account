@@ -145,7 +145,6 @@ export default {
     this.fetchTransactions({
       sorting: this.transactionsSorting,
     });
-    this.fetchRates();
     this.fetchCurrencies();
   },
 
@@ -160,7 +159,6 @@ export default {
   methods: {
     ...mapActions([
       'fetchTransactions',
-      'fetchRates',
       'fetchCurrencies',
       'createTransaction',
       'deleteTransaction',

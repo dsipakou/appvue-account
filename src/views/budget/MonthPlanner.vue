@@ -95,7 +95,6 @@ export default {
   methods: {
     ...mapActions([
       'fetchMonthlyUsage',
-      'fetchCategories',
       'createBudget',
       'updateBudget',
       'deleteBudget',
@@ -142,7 +141,6 @@ export default {
     const dateFrom = `${moment().format('YYYY-MM')}-01`;
     const dateTo = `${moment().add(1, 'month').format('YYYY-MM')}-01`;
     this.fetchMonthlyUsage({ dateFrom, dateTo });
-    this.fetchCategories();
   },
 
   mounted() {

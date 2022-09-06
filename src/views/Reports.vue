@@ -15,7 +15,7 @@
           <q-icon name="toll" />
         </template>
       </q-select>
-      <q-select outlined dense map-options
+      <q-select outlined dense map-options emit-value
         class="q-ml-lg"
         :options="[{label: 'Income', value: 'INC'}, {label: 'Expenses', value: 'EXP'}]"
         v-model="cashflowType"
@@ -27,7 +27,9 @@
       :separator="separator"
       flat
       bordered
-      dense>
+      v-show="cashflowType === 'EXP'"
+      dense
+    >
       <thead>
         <tr>
           <th>Days</th>
@@ -54,6 +56,9 @@
         </tr>
       </tbody>
     </q-markup-table>
+    <div v-show="cashflowType === 'INC'">
+      <Income />
+    </div>
   </div>
 </template>
 
@@ -67,9 +72,14 @@ import {
   isSameDay,
   parse,
 } from 'date-fns';
+import Income from '@/views/reports/components/Income.vue';
 
 export default {
   name: 'Reports',
+
+  components: {
+    Income,
+  },
 
   setup() {
     return {
@@ -123,6 +133,7 @@ export default {
     ...mapActions([
       'fetchCurrencies',
       'fetchGroupedTransaction',
+      'fetchIncome',
     ]),
 
     currentDayAmount(month, day) {
@@ -161,6 +172,7 @@ export default {
     const dateFrom = this.monthSequence[0];
     const dateTo = format(addMonths(new Date(dateFrom), 12), 'yyyy-MM');
     this.fetchCurrencies();
+    this.fetchIncome({ dateFrom, dateTo });
     this.selectedCurrency = this.baseCurrency;
     this.fetchGroupedTransaction({ dateFrom, dateTo, currency: 'USD' });
   },

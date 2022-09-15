@@ -35,6 +35,7 @@
           :currencyList="currencyList"
           :ratesList="ratesList"
           :userList="userList"
+          :defaultCurrency="defaultCurrency"
           :fetchBudgetPlan="fetchBudgetPlan"
           :updateTransaction="updateTransaction"
           :deleteTransaction="deleteTransaction"
@@ -132,6 +133,7 @@ export default {
       'currencyList',
       'ratesList',
       'budgetPlan',
+      'defaultCurrency',
       'transactionLastAdded',
       'currencyListLoaded',
       'transactionListLoaded',

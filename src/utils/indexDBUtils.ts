@@ -54,7 +54,7 @@ export default {
       };
 
       trans.onerror = (e: any) => {
-        console.log(`error`);
+        console.log('error');
       };
 
       const store = trans.objectStore('userAuth');

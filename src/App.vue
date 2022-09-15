@@ -155,27 +155,29 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import {
   mapActions,
   mapGetters,
+  useStore,
 } from 'vuex';
 
 export default {
   setup() {
+    const $store = useStore();
     const leftDrawerOpen = ref(false);
-
+    const activeCurrency = computed({
+      get: () => $store.state.users.defaultCurrency,
+      set: (val) => {
+        $store.commit('updateCurrency', val);
+      },
+    });
     return {
       leftDrawerOpen,
+      activeCurrency,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
-    };
-  },
-
-  data() {
-    return {
-      activeCurrency: 'USD',
     };
   },
 

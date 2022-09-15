@@ -159,6 +159,7 @@ export default defineComponent({
     ratesList: { type: Array as PropType<Array<Rate>>, required: true },
     selectedCurrencies: { type: Array as PropType<Array<any>>, required: true },
     userList: { type: Array, required: true },
+    userDefaultCurrency: { type: String, required: true },
     fetchBudgetPlan: { type: Function, required: true },
     updateTransaction: { type: Function, required: true },
     deleteTransaction: { type: Function, required: true },
@@ -193,11 +194,13 @@ export default defineComponent({
     transactionCurrencyList(transaction: Transaction): Array<ShortTransaction> {
       const currencies = [];
       if (this.currencyListLoaded) {
-        const baseCurrency = this.currencyList.find((item) => item.isBase);
+        const baseCurrency = this.currencyList.find(
+          (item) => item.code === this.userDefaultCurrency,
+        );
         const objDefault: ShortTransaction = {
           uuid: transaction.currency,
           amount: transaction.amount?.toFixed(2),
-          baseAmount: transaction.spentInBaseCurrency?.toFixed(2),
+          baseAmount: transaction.spentInCurrencies[this.userDefaultCurrency]?.toFixed(2),
           sign: baseCurrency!.sign,
         } as ShortTransaction;
 

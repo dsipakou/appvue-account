@@ -28,7 +28,7 @@ const getters = {
   activeUser: (state: any) => state.email,
   token: (state: any) => state.token,
   userList: (state: any) => state.users.items,
-  defaultCurrency: (state: any) => state.users.defaultCurrency,
+  defaultCurrency: (state: any) => state.defaultCurrency,
   isUserListLoading: (state: any) => state.users.isLoading,
 };
 
@@ -49,7 +49,6 @@ const actions = {
     const response = await userLogin(payload);
     if (response.status === 200) {
       const data = await response.json();
-      console.log(data);
       user.token = data.token;
       user.username = data.username;
       user.defaultCurrency = data.currency;
@@ -124,6 +123,7 @@ const mutations = {
       username: state.username,
       defaultCurrency: currencyCode,
     } as User;
+    state.defaultCurrency = currencyCode;
     await idb.addUser(user);
   },
 

@@ -57,6 +57,7 @@
       <MonthlyBudget
         v-show="budgetType === 'monthly'"
         :activeUser="activeUser"
+        :defaultCurrency="defaultCurrency"
         :userList="userList"
         :budgetUsage="budgetUsage"
         :budgetArchive="budgetArchive"
@@ -194,6 +195,7 @@ export default {
       'budgetDuplicatedItems',
       'isBudgetListLoading',
       'activeUser',
+      'defaultCurrency',
     ]),
 
     categories() {
@@ -242,6 +244,11 @@ export default {
     },
 
     spentMonth() {
+      if (this.defaultCurrency !== '') {
+        return this.budgetUsage.reduce(
+          (acc, item) => acc + item.spentInCurrencies[this.defaultCurrency], 0,
+        );
+      }
       return this.budgetUsage.reduce(
         (acc, item) => acc + item.spentInBaseCurrency, 0,
       ) || 0;

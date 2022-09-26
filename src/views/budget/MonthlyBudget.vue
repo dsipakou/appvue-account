@@ -7,7 +7,7 @@
         :key="item.categoryName">
         <MainCategoryCard
           :planned="item.planned"
-          :spent="item.spentInBaseCurrency"
+          :spent="amountInDefaultCurrency(item)"
           :title="item.categoryName"
           :activeCategory="activeCategory.categoryName"
           @categoryClick=mainCategoryClick($event) />
@@ -70,6 +70,7 @@ export default defineComponent({
 
   props: {
     activeUser: { type: String, required: true },
+    defaultCurrency: { type: String, required: true },
     userList: { type: Array as PropType<Array<User>>, required: true },
     categoryItems: { type: Array as PropType<Category[]>, required: true },
     budgetArchive: { type: Array as PropType<BudgetArchive[]>, required: true },
@@ -118,6 +119,14 @@ export default defineComponent({
         date: format(this.selectedMonth, DATE_FORMAT),
         category: this.activeCategory.uuid,
       });
+    },
+
+    amountInDefaultCurrency(budget: CategoryBudgetUsageItem): any {
+      if (this.defaultCurrency in budget.spentInCurrencies) {
+        return budget.spentInCurrencies[this.defaultCurrency];
+      }
+
+      return budget.spentInOriginalCurrency;
     },
   },
 

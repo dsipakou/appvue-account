@@ -60,6 +60,7 @@ export interface CategoryBudgetUsageItem {
   planned: number,
   spentInBaseCurrency: number,
   spentInOriginalCurrency: number,
+  spentInCurrencies: {[key: string]: number},
   budgets: GroupedBudgetUsageItem[],
 }
 

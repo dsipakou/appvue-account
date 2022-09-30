@@ -33,12 +33,12 @@
       </q-linear-progress>
       <div class="row bottom">
         <div class="row desc-text col-6">
-          <span class="number">{{ item.spentInBaseCurrency?.toFixed(2) }}</span>
+          <span class="number">{{ spentInDefaultCurrency?.toFixed(2) }}</span>
           <span class="text">spent</span>
         </div>
         <div class="row desc-text justify-end col-6">
           <span class="text">of</span>
-          <span class="number">{{ item.planned }}</span>
+          <span class="number">{{ plannedInDefaultCurrency?.toFixed(2) }}</span>
         </div>
       </div>
     </div>
@@ -55,6 +55,7 @@ export default defineComponent({
   props: {
     activeUser: { type: String, required: true },
     item: { type: Object as PropType<GroupedBudgetUsageItem>, required: true },
+    defaultCurrency: { type: String, requried: true },
     userList: { type: Array as PropType<Array<User>>, required: true },
   },
 
@@ -63,23 +64,37 @@ export default defineComponent({
   ],
 
   computed: {
+    plannedInDefaultCurrency(): number {
+      if (this.item?.plannedInCurrencies && this.defaultCurrency) {
+        return this.item.plannedInCurrencies[this.defaultCurrency] || 0;
+      }
+      return 0;
+    },
+
+    spentInDefaultCurrency(): number {
+      if (this.item?.spentInCurrencies && this.defaultCurrency) {
+        return this.item.spentInCurrencies[this.defaultCurrency] || 0;
+      }
+      return 0;
+    },
+
     getDiff(): number {
-      return this.item.planned - this.item.spentInBaseCurrency;
+      return this.plannedInDefaultCurrency - this.spentInDefaultCurrency;
     },
 
     getProgressRate(): number {
-      if (this.item.planned === 0) return 1;
-      return this.item.spentInBaseCurrency / this.item.planned;
+      if (this.plannedInDefaultCurrency === 0) return 1;
+      return this.spentInDefaultCurrency / this.plannedInDefaultCurrency;
     },
 
     getProgressColor(): string {
-      if (this.item.planned === 0) return 'brown-14';
+      if (this.plannedInDefaultCurrency === 0) return 'brown-14';
       if (this.getProgressRate > 1) return 'red-14';
       return 'green-14';
     },
 
     getProgressRateText(): string {
-      if (this.item.planned === 0) return 'Unplanned';
+      if (this.plannedInDefaultCurrency === 0) return 'Unplanned';
       return `${(this.getProgressRate * 100).toFixed(0)}%`;
     },
 

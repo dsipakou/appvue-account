@@ -16,15 +16,25 @@
             <span>{{ `Week ${i + 1}` }}</span>
           </template>
           <div v-show="groupedByWeek[i + 1]">
-            <div v-for="item in groupedByWeek[i + 1]" :key="item">
+            <div
+              class="row align-center"
+              v-for="item in groupedByWeek[i + 1]"
+              :key="item">
               <BudgetItem
                 :item="item"
+                :defaultCurrency="defaultCurrency"
                 @budgetItemClick="budgetItemClick($event)"
               />
+              <span class="transactions-button" @click="selectBudget(item)">></span>
             </div>
           </div>
         </q-timeline-entry>
       </q-timeline>
+    </div>
+    <div class="row col-4">
+      <TransactionList
+        :transactions="selectedItem?.transactions"
+      />
     </div>
   </q-card>
 </template>
@@ -32,6 +42,7 @@
 import { defineComponent, PropType } from 'vue';
 import { getWeekOfMonth, getWeeksInMonth } from 'date-fns';
 import BudgetItem from '@/views/budget/subcategory/components/BudgetItem.vue';
+import TransactionList from '@/views/budget/components/TransactionList.vue';
 import { BudgetUsageItem } from '@/types/Budget';
 
 interface Category {
@@ -44,6 +55,7 @@ export default defineComponent({
 
   components: {
     BudgetItem,
+    TransactionList,
   },
 
   emits: [
@@ -55,6 +67,13 @@ export default defineComponent({
     budgets: { type: Array as PropType<Array<BudgetUsageItem>>, required: true },
     category: { type: Object as PropType<Category>, required: true },
     selectedMonth: { type: Date, required: true },
+    defaultCurrency: { type: String, required: true },
+  },
+
+  data() {
+    return {
+      selectedItem: undefined as BudgetUsageItem | undefined,
+    };
   },
 
   computed: {
@@ -125,6 +144,15 @@ export default defineComponent({
       this.$emit('budgetItemClick', item);
     },
 
+    selectBudget(item: BudgetUsageItem) {
+      if (this.selectedItem === undefined) {
+        console.log('set');
+        this.selectedItem = item;
+      } else {
+        this.selectedItem = undefined;
+      }
+    },
+
     getWeek(date: string): number {
       return getWeekOfMonth(new Date(date), { weekStartsOn: 1 });
     },
@@ -168,5 +196,10 @@ export default defineComponent({
   font-size: 12px !important;
   font-weight: normal !important;
   color: rgba(0, 0, 0, 1) !important;
+}
+
+.transactions-button {
+  margin: auto;
+  cursor: pointer;
 }
 </style>

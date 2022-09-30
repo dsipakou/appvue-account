@@ -8,6 +8,7 @@
       <div class="row col-6 justify-center">
         <CategoryMonthSummary
           :categoryUsage="categoryUsage"
+          :defaultCurrency="defaultCurrency"
         />
       </div>
       <div class="row col-6">
@@ -25,6 +26,7 @@
         <SubCategoryCard
           :activeUser="activeUser"
           :item=budget
+          :defaultCurrency="defaultCurrency"
           :userList="userList"
           @selectSubCategory="selectSubCategory($event)"
         />
@@ -58,6 +60,7 @@ export default defineComponent({
     budgetUsage: { type: Array, required: true },
     budgetArchive: { type: Array as PropType<BudgetArchive[]>, required: true },
     categoryUsage: { type: Object as PropType<CategoryBudgetUsageItem>, required: true },
+    defaultCurrency: { type: String, required: true },
     items: { type: Array, required: true },
     categories: { type: Array, required: true },
   },

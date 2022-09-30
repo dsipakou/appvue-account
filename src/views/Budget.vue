@@ -240,6 +240,11 @@ export default {
     },
 
     plannedMonth() {
+      if (this.defaultCurrency !== '') {
+        return this.budgetUsage.reduce(
+          (acc, item) => acc + item.plannedInCurrencies[this.defaultCurrency], 0,
+        ) || 0;
+      }
       return this.budgetUsage.reduce((acc, item) => acc + item.planned, 0) || 0;
     },
 

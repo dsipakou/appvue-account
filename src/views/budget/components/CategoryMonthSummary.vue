@@ -22,12 +22,12 @@
     </div>
     <div class="row bottom">
       <div class="row col spent-container">
-        <span class="number">{{ categoryUsage.spentInBaseCurrency?.toFixed(2) }}</span>
+        <span class="number">{{ spentInDefaultCurrency?.toFixed(2) }}</span>
         <span class="text">spent</span>
       </div>
       <div class="row col overall-container">
         <span class="text">of</span>
-        <span class="number">{{ categoryUsage.planned?.toFixed(2) }}</span>
+        <span class="number">{{ plannedInDefaultCurrency?.toFixed(2) }}</span>
       </div>
     </div>
   </div>
@@ -41,20 +41,35 @@ export default defineComponent({
 
   props: {
     categoryUsage: { type: Object as PropType<CategoryBudgetUsageItem>, required: true },
+    defaultCurrency: { type: String, required: true },
   },
 
   computed: {
     getDiff(): number {
-      return this.categoryUsage.planned - this.categoryUsage.spentInBaseCurrency;
+      return this.plannedInDefaultCurrency - this.spentInDefaultCurrency;
     },
 
     negativeDiff() {
       return this.getDiff < 0;
     },
 
+    plannedInDefaultCurrency() {
+      if (this.categoryUsage?.plannedInCurrencies) {
+        return this.categoryUsage.plannedInCurrencies[this.defaultCurrency];
+      }
+      return 0;
+    },
+
+    spentInDefaultCurrency() {
+      if (this.categoryUsage?.spentInCurrencies) {
+        return this.categoryUsage.spentInCurrencies[this.defaultCurrency];
+      }
+      return 0;
+    },
+
     getProgressRate(): number {
-      if (this.categoryUsage.planned === 0) return 1;
-      return this.categoryUsage.spentInBaseCurrency / this.categoryUsage.planned;
+      if (this.plannedInDefaultCurrency === 0) return 1;
+      return this.spentInDefaultCurrency / this.plannedInDefaultCurrency;
     },
   },
 });

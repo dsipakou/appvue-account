@@ -27,12 +27,12 @@
       </q-linear-progress>
       <div class="row bottom">
         <div class="row desc-text col-6">
-          <span class="number">{{ item.spentInBaseCurrency?.toFixed(2) }}</span>
+          <span class="number">{{ spentInDefaultCurrency.toFixed(2) }}</span>
           <span class="text">spent</span>
         </div>
         <div class="row desc-text justify-end col-6">
           <span class="text">of</span>
-          <span class="number">{{ item.planned }}</span>
+          <span class="number">{{ plannedInDefaultCurrency.toFixed(2) }}</span>
         </div>
       </div>
     </div>
@@ -50,6 +50,7 @@ export default defineComponent({
 
   props: {
     item: { type: Object as PropType<BudgetUsageItem>, required: true },
+    defaultCurrency: { type: String, required: true },
   },
 
   emits: [
@@ -57,6 +58,20 @@ export default defineComponent({
   ],
 
   computed: {
+    plannedInDefaultCurrency(): number {
+      if (this.item?.plannedInCurrencies && this.defaultCurrency) {
+        return this.item.plannedInCurrencies[this.defaultCurrency] || 0;
+      }
+      return 0;
+    },
+
+    spentInDefaultCurrency(): number {
+      if (this.item?.spentInCurrencies && this.defaultCurrency) {
+        return this.item.spentInCurrencies[this.defaultCurrency] || 0;
+      }
+      return 0;
+    },
+
     cardBackground() {
       let color = '#FFFFFF';
       if (this.getActualWeek === 0) {
@@ -87,30 +102,22 @@ export default defineComponent({
     },
 
     getDiff(): string {
-      if (!this.item?.planned === undefined) return '';
-
-      return (this.item.planned - this.item.spentInBaseCurrency).toFixed(2);
+      return (this.plannedInDefaultCurrency - this.spentInDefaultCurrency).toFixed(2);
     },
 
     getProgressRate(): number {
-      if (!this.item?.planned === undefined) return 0;
-
-      if (this.item.planned === 0) return 1;
+      if (this.plannedInDefaultCurrency === 0) return 1;
       return this.item.spentInBaseCurrency / this.item.planned;
     },
 
     getProgressColor(): string {
-      if (!this.item?.planned === undefined) return '';
-
-      if (this.item.planned === 0) return 'brown-14';
+      if (this.plannedInDefaultCurrency === 0) return 'brown-14';
       if (this.getProgressRate > 1) return 'red-14';
       return 'green-14';
     },
 
     getProgressRateText(): string {
-      if (!this.item?.planned === undefined) return '';
-
-      if (this.item.planned === 0) return 'Unplanned';
+      if (this.plannedInDefaultCurrency === 0) return 'Unplanned';
       return `${(this.getProgressRate * 100).toFixed(0)}%`;
     },
   },
@@ -125,6 +132,7 @@ export default defineComponent({
 <style scoped>
 .card {
   height: 90px;
+  width: 300px;
   cursor: pointer;
 }
 

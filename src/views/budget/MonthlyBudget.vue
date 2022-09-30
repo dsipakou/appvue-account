@@ -6,8 +6,8 @@
         v-for="item in budgetUsage"
         :key="item.categoryName">
         <MainCategoryCard
-          :planned="item.planned"
-          :spent="amountInDefaultCurrency(item)"
+          :planned="plannedInDefaultCurrency(item)"
+          :spent="spentInDefaultCurrency(item)"
           :title="item.categoryName"
           :activeCategory="activeCategory.categoryName"
           @categoryClick=mainCategoryClick($event) />
@@ -21,6 +21,7 @@
           :budgetUsage="budgetUsage"
           :budgetArchive="budgetArchive"
           :categoryUsage="activeCategory"
+          :defaultCurrency="defaultCurrency"
           :items="activeBudget"
           :categories="categoryItems"
           @selectSubCategory="selectSubCategory($event)"
@@ -31,6 +32,7 @@
           :budgets="activeSubCategory?.items"
           :category="activeSubCategory"
           :selectedMonth="selectedMonth"
+          :defaultCurrency="defaultCurrency"
           @closeSubCategory="closeSubCategory"
           @budgetItemClick="budgetItemClick($event)"
         />
@@ -121,7 +123,15 @@ export default defineComponent({
       });
     },
 
-    amountInDefaultCurrency(budget: CategoryBudgetUsageItem): any {
+    plannedInDefaultCurrency(budget: CategoryBudgetUsageItem): any {
+      if (this.defaultCurrency in budget.plannedInCurrencies) {
+        return budget.plannedInCurrencies[this.defaultCurrency].toFixed(2);
+      }
+
+      return budget.planned;
+    },
+
+    spentInDefaultCurrency(budget: CategoryBudgetUsageItem): any {
       if (this.defaultCurrency in budget.spentInCurrencies) {
         return budget.spentInCurrencies[this.defaultCurrency];
       }

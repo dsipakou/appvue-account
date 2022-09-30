@@ -17,6 +17,7 @@ export interface BudgetTransactionItem {
   currencyCode: string,
   spentInBaseCurrency: number,
   spentInOriginalCurrency: number,
+  spentInCurrencies: {[key: string]: number},
 }
 
 export interface BudgetUsageItem {
@@ -26,8 +27,10 @@ export interface BudgetUsageItem {
   category: string,
   description: string,
   planned: number,
+  plannedInCurrencies: {[key: string]: number},
   spentInBaseCurrency: number,
   spentInOriginalCurrency: number,
+  spentInCurrencies: {[key: string]: number},
   recurrent: string,
   isCompleted: boolean,
   transactions: BudgetTransactionItem[],
@@ -40,6 +43,8 @@ export interface GroupedBudgetUsageItem {
   user: string,
   title: string,
   planned: number,
+  plannedInCurrencies: {[key: string]: number}
+  spentInCurrencies: {[key: string]: number}
   spentInBaseCurrency: number,
   spentInOriginalCurrency: number,
   items: BudgetUsageItem[],
@@ -58,6 +63,7 @@ export interface CategoryBudgetUsageItem {
   uuid: string,
   categoryName: string,
   planned: number,
+  plannedInCurrencies: {[key: string]: number},
   spentInBaseCurrency: number,
   spentInOriginalCurrency: number,
   spentInCurrencies: {[key: string]: number},

@@ -54,12 +54,13 @@
         :budgetPlan="budgetPlan"
         :categoryList="categoryList"
         :currencyList="currencyList"
-        :ratesList="ratesList"
+        :availableRates="availableRates"
         :transactionLastAdded="transactionLastAdded"
         :currencyListLoaded="currencyListLoaded"
         :createTransaction="createTransaction"
         :setTransactionLastAdded="setTransactionLastAdded"
         :fetchBudgetPlan="fetchBudgetPlan"
+        :getAvailableRates="getAvailableRates"
         :updateBudget="updateBudget"
         @closeForm="createForm = false"
       />
@@ -71,10 +72,11 @@
         :budgetPlan="budgetPlan"
         :categoryList="categoryList"
         :currencyList="currencyList"
+        :availableRates="availableRates"
         :currencyListLoaded="currencyListLoaded"
-        :ratesList="ratesList"
         :userList="userList"
         :fetchBudgetPlan="fetchBudgetPlan"
+        :getAvailableRates="getAvailableRates"
         :updateTransaction="updateTransaction"
         @closeForm="editForm = false"
       />
@@ -132,6 +134,7 @@ export default {
       'categoryList',
       'currencyList',
       'ratesList',
+      'availableRates',
       'budgetPlan',
       'defaultCurrency',
       'transactionLastAdded',
@@ -162,6 +165,7 @@ export default {
     ...mapActions([
       'fetchTransactions',
       'fetchCurrencies',
+      'getAvailableRates',
       'createTransaction',
       'deleteTransaction',
       'updateTransaction',

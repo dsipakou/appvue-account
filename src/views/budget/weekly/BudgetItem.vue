@@ -30,7 +30,7 @@
       </q-linear-progress>
       <div class="row bottom">
         <div class="row desc-text col-4">
-          <span class="number">{{ getActualUsage }}</span>
+          <span class="number">{{ spentInDefaultCurrency.toFixed(2) }}</span>
           <span class="text">spent</span>
         </div>
         <div class="row justify-center col-4">
@@ -40,7 +40,7 @@
         </div>
         <div class="row desc-text justify-end col-4">
           <span class="text">of</span>
-          <span class="number">{{ getPlanned }}</span>
+          <span class="number">{{ plannedInDefaultCurrency.toFixed(2) }}</span>
         </div>
       </div>
     </div>
@@ -60,33 +60,32 @@ export default defineComponent({
   props: {
     activeUser: { type: String, required: true },
     item: { type: Object as PropType<any>, required: true },
+    defaultCurrency: { type: String, required: true },
     updateStatusBudget: { type: Function, required: true },
   },
 
   computed: {
-    getPlanned(): string {
-      if (this.item?.planned === undefined) return '';
-
-      return this.item?.planned.toFixed(2);
+    plannedInDefaultCurrency(): number {
+      if (this.item?.plannedInCurrencies && this.defaultCurrency) {
+        return this.item.plannedInCurrencies[this.defaultCurrency] || 0;
+      }
+      return 0;
     },
 
-    getActualUsage(): string {
-      if (this.item?.planned === undefined) return '';
-
-      return this.item?.spentInBaseCurrency?.toFixed(2) || '0.00';
+    spentInDefaultCurrency(): number {
+      if (this.item?.spentInCurrencies && this.defaultCurrency) {
+        return this.item.spentInCurrencies[this.defaultCurrency] || 0;
+      }
+      return 0;
     },
 
     getDiff(): string {
-      if (!this.item?.planned === undefined) return '';
-
-      return (this.item.planned - this.item.spentInBaseCurrency).toFixed(2);
+      return (this.plannedInDefaultCurrency - this.spentInDefaultCurrency).toFixed(2);
     },
 
     getProgressRate(): number {
-      if (!this.item?.planned === undefined) return 0;
-
-      if (this.item.planned === 0) return 1;
-      return this.item.spentInBaseCurrency / this.item.planned;
+      if (this.plannedInDefaultCurrency === 0) return 1;
+      return this.spentInDefaultCurrency / this.plannedInDefaultCurrency;
     },
 
     getProgressColor(): string {

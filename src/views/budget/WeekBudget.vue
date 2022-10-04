@@ -17,6 +17,7 @@
           <div v-for="item in getDayBudget(day.full)" :key="item">
             <BudgetItem
               :item="item"
+              :defaultCurrency="defaultCurrency"
               :updateStatusBudget="updateStatusBudget"
               :activeUser="activeUser"
               @budgetItemClick="budgetItemClick(item)"
@@ -66,6 +67,7 @@ export default defineComponent({
     categoryItems: { type: Array as PropType<Category[]>, required: true },
     selectedDay: { type: Date, required: true },
     updateStatusBudget: { type: Function, required: true },
+    defaultCurrency: { type: String, required: true },
   },
 
   computed: {

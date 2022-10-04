@@ -1,10 +1,12 @@
 <template>
-  <div class="column">
-    <span>Transactions</span>
+  <div class="column container" v-show="transactions?.length > 0">
+    <span class="text-h5">Transactions</span>
     <div
+      class="inner"
       v-for="item in transactions"
       :key="item.uuid">
-      {{ item.spentInCurrencies['BYN'] }}
+      {{ item.transactionDate }} |
+      {{ item.spentInCurrencies[defaultCurrency].toFixed(2) }}
     </div>
   </div>
 </template>
@@ -18,6 +20,20 @@ export default defineComponent({
 
   props: {
     transactions: { type: Array as PropType<Array<BudgetUsageItem>>, required: true },
+    defaultCurrency: { type: String, required: true },
   },
 });
 </script>
+
+<style scoped>
+.container {
+  border: 1px solid #7b7575;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.inner {
+  border-top: 1px solid #7b7575;
+  padding-top: 3px;
+}
+</style>

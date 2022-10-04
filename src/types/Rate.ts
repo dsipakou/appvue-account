@@ -18,3 +18,7 @@ export interface BatchedRatesRequestPayload {
   baseCurrency: string,
   items: RateItem[],
 }
+
+export interface AvailableRates {
+  [key: string]: boolean,
+}

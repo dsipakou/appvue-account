@@ -18,6 +18,7 @@ export interface BudgetTransactionItem {
   spentInBaseCurrency: number,
   spentInOriginalCurrency: number,
   spentInCurrencies: {[key: string]: number},
+  transactionDate: string,
 }
 
 export interface BudgetUsageItem {

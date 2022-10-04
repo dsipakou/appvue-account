@@ -101,10 +101,13 @@ const actions = {
   },
 
   async deleteBudget({ commit }: any, id: number) {
+    commit('setBudgetLoading', true);
     const response = await deleteBudget(id);
     if (response.status === 204) {
+      commit('deleteBudget', id);
       console.log('deleted');
     }
+    commit('setBudgetLoading', false);
   },
 
   async getDuplicateBudgetCandidates({ commit }: any, type: string) {
@@ -181,6 +184,10 @@ const mutations = {
 
   clearDuplicatedItems(state: any) {
     state.duplicatedItems = [];
+  },
+
+  deleteBudget(state: any, id: number) {
+    console.log('deleting...');
   },
 };
 

@@ -34,6 +34,7 @@
     <div class="row col-4">
       <TransactionList
         :transactions="selectedItem?.transactions"
+        :defaultCurrency="defaultCurrency"
       />
     </div>
   </q-card>

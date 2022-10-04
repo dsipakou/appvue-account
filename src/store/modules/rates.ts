@@ -1,7 +1,7 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 /* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 
-import { BatchedRatesRequestPayload } from '@/types';
+import { AvailableRates, BatchedRatesRequestPayload } from '@/types';
 import {
   getRates,
   getRatesOnDate,
@@ -9,6 +9,7 @@ import {
   createBatchedRate,
   updateRate,
   getRateChartData,
+  getAvailableRates,
 } from '../../service/rates';
 
 const state = {
@@ -17,11 +18,13 @@ const state = {
     listOnDate: [],
     isLoading: false,
     chart: [],
+    availableRates: {},
   },
 };
 
 const getters = {
   ratesList: (state: any) => state.rates.items,
+  availableRates: (state: any) => state.rates.availableRates,
   rateListOnDate: (state: any) => state.rates.listOnDate,
   isRatesListLoading: (state: any) => state.rates.isLoading,
   ratesChartData: (state: any) => state.rates.chart,
@@ -34,6 +37,16 @@ const actions = {
     if (response.status === 200) {
       const body = await response.json();
       commit('setRates', body);
+    }
+    commit('setRatesLoading', false);
+  },
+
+  async getAvailableRates({ commit }: any, date: string) {
+    commit('setRatesLoading', true);
+    const response = await getAvailableRates(date);
+    if (response.status === 200) {
+      const body = await response.json();
+      commit('setAvailableRates', body);
     }
     commit('setRatesLoading', false);
   },
@@ -91,6 +104,10 @@ const actions = {
 const mutations = {
   setRates(state: any, rates: any) {
     state.rates.items = rates;
+  },
+
+  setAvailableRates(state: any, availableRates: AvailableRates) {
+    state.rates.availableRates = availableRates;
   },
 
   setRatesOnDate(state: any, rates: any) {

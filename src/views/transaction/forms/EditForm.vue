@@ -47,8 +47,9 @@
       <CurrencyDropdown
         :currencyList="currencyList"
         :selectedCurrencyId="transaction.currencyId"
-        :ratesList="ratesList"
+        :availableRates="availableRates"
         :selectedDate="activeDate"
+        :getAvailableRates="getAvailableRates"
         :currencyListLoaded="currencyListLoaded"
         @selectCurrency="input.currency = $event" />
     </q-card-section>
@@ -75,7 +76,6 @@
   </q-card>
 </template>
 <script>
-import moment from 'moment';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 import * as constants from '@/utils/constants';
 import { getFirstDayOfWeek, getLastDayOfWeek } from '@/utils/dateTimeUtils';
@@ -93,12 +93,13 @@ export default {
     budgetPlan: Array,
     categoryList: Array,
     currencyList: Array,
-    ratesList: Array,
     userList: Array,
     fetchBudgetPlan: { type: Function, required: true, default: () => {} },
     updateTransaction: Function,
     deleteTransaction: Function,
     currencyListLoaded: Boolean,
+    availableRates: { type: Object, required: true },
+    getAvailableRates: { type: Function, required: true },
   },
 
   emits: [
@@ -148,14 +149,6 @@ export default {
 
     getParentCategory(uuid) {
       return this.categoryList.find((item) => item.uuid === uuid);
-    },
-
-    getRate(uuid, date) {
-      return this.ratesList.find((item) => {
-        const transactionDate = moment(date).startOf('day');
-        const rateDate = moment(item.rateDate).startOf('day');
-        return transactionDate.isSame(rateDate) && item.currency === uuid;
-      });
     },
 
     getUser(uuid) {

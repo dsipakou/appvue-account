@@ -75,6 +75,7 @@
         :weeklyUsage="weeklyUsage"
         :categoryItems="categoryList"
         :selectedDay="selectedMonth"
+        :defaultCurrency="defaultCurrency"
         :updateStatusBudget="updateStatusBudget"
         @budgetItemClick="budgetItemClick($event)"
         v-show="budgetType === 'weekly'"
@@ -260,10 +261,20 @@ export default {
     },
 
     plannedWeekly() {
+      if (this.defaultCurrency !== '') {
+        return this.weeklyUsage.reduce(
+          (acc, item) => acc + item.plannedInCurrencies[this.defaultCurrency] || 0, 0,
+        ) || 0;
+      }
       return this.weeklyUsage.reduce((acc, item) => acc + item.planned, 0);
     },
 
     spentWeekly() {
+      if (this.defaultCurrency !== '') {
+        return this.weeklyUsage.reduce(
+          (acc, item) => acc + item.spentInCurrencies[this.defaultCurrency] || 0, 0,
+        );
+      }
       return this.weeklyUsage.reduce((acc, item) => acc + item.spentInBaseCurrency, 0);
     },
 

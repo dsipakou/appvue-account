@@ -58,3 +58,8 @@ export const updateRate = async (data: UpdateRateRequest) => {
     });
   return response;
 };
+
+export const getAvailableRates = async (date: string) => {
+  const response = await getRequest(`rates/available?date=${date}`);
+  return response;
+};

@@ -29,8 +29,9 @@
       <q-card-section style="min-width: 200px;">
         <CurrencyDropdown
           :currencyList="currencyList"
-          :ratesList="ratesList"
+          :availableRates="availableRates"
           :selectedDate="activeDate"
+          :getAvailableRates="getAvailableRates"
           :currencyListLoaded="currencyListLoaded"
           @selectCurrency="input.currency = $event" />
       </q-card-section>
@@ -64,13 +65,13 @@
   </q-card>
 </template>
 <script lang="ts">
-import moment from 'moment';
 import { evaluate } from 'mathjs';
 import { defineComponent, PropType } from 'vue';
 import CurrencyDropdown from '@/components/dropdown/CurrencyDropdown.vue';
 import * as constants from '@/utils/constants';
 import { getFirstDayOfWeek, getLastDayOfWeek } from '@/utils/dateTimeUtils';
 import {
+  AvailableRates,
   Budget,
   BudgetPlan,
   Category,
@@ -109,11 +110,12 @@ export default defineComponent({
     budgetPlan: { type: Array as PropType<Array<BudgetPlan>>, required: true },
     categoryList: { type: Array as PropType<Array<Category>>, requierd: true },
     currencyList: { type: Array as PropType<Array<Currency>>, required: true },
-    ratesList: { type: Array, required: true },
     currencyListLoaded: { type: Boolean, required: true },
     createTransaction: { type: Function, required: true },
     setTransactionLastAdded: { type: Function, required: true },
     fetchBudgetPlan: { type: Function, required: true },
+    availableRates: { type: Object as PropType<AvailableRates>, required: true },
+    getAvailableRates: { type: Function, required: true },
     updateBudget: { type: Function, required: true },
   },
 
@@ -160,14 +162,6 @@ export default defineComponent({
 
     getCategory(uuid: string) {
       return this.categoryList!.find((item: any) => item.uuid === uuid);
-    },
-
-    getRate(id: number, date: string) {
-      return this.ratesList.find((item: any) => {
-        const transactionDate = moment(date).startOf('day');
-        const rateDate = moment(item.rateDate).startOf('day');
-        return transactionDate.isSame(rateDate) && item.currencyId === id;
-      });
     },
 
     setActiveDate() {

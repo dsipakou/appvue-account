@@ -9,17 +9,16 @@
     v-model="currencyModel" />
 </template>
 <script>
-import moment from 'moment';
-
 export default {
   name: 'CurrencyDropdown',
 
   props: {
     currencyList: Array,
     selectedCurrencyId: { type: Number, default: -1 },
-    ratesList: Array,
+    availableRates: { type: Object, required: true },
     selectedDate: { type: String, default: new Date().toISOString().substr(0, 10) },
     currencyListLoaded: Boolean,
+    getAvailableRates: { type: Function, required: true },
   },
 
   data() {
@@ -45,20 +44,14 @@ export default {
   },
 
   methods: {
-    isRateExist(id) {
-      return this.ratesList.some((item) => {
-        const inputDate = moment(this.selectedDate).startOf('day');
-        const rateDate = moment(item.rateDate).startOf('day');
-        return rateDate.isSame(inputDate) && item.currencyId === id;
-      });
+    isRateExist(currencyCode) {
+      return this.availableRates[currencyCode];
     },
 
-    getAvailableCurrencies() {
+    async getAvailableCurrencies() {
+      await this.getAvailableRates(this.selectedDate);
       const extendedCurrencyList = this.currencyList.map((item) => {
-        if (item.isBase) {
-          return item;
-        }
-        if (!this.isRateExist(item.id)) {
+        if (!this.isRateExist(item.code)) {
           return {
             ...item,
             verbalName: `${item.verbalName} (no exchange rate)`,
@@ -83,8 +76,8 @@ export default {
   },
 
   watch: {
-    selectedDate() {
-      this.getAvailableCurrencies();
+    async selectedDate() {
+      await this.getAvailableCurrencies();
       this.currencyModel = this.preSelectedCurrency;
     },
 

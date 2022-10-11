@@ -107,7 +107,7 @@ export default defineComponent({
 
     getProgressRate(): number {
       if (this.plannedInDefaultCurrency === 0) return 1;
-      return this.item.spentInBaseCurrency / this.item.planned;
+      return this.spentInDefaultCurrency / this.plannedInDefaultCurrency;
     },
 
     getProgressColor(): string {

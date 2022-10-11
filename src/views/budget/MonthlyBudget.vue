@@ -22,7 +22,6 @@
           :budgetArchive="budgetArchive"
           :categoryUsage="activeCategory"
           :defaultCurrency="defaultCurrency"
-          :items="activeBudget"
           :categories="categoryItems"
           @selectSubCategory="selectSubCategory($event)"
         />
@@ -30,8 +29,6 @@
       <div class="row" v-show="activeSubCategory !== undefined">
         <SubCategoryDetailsPanel
           :budgets="activeSubCategory?.items"
-          :category="activeSubCategory"
-          :selectedMonth="selectedMonth"
           :defaultCurrency="defaultCurrency"
           @closeSubCategory="closeSubCategory"
           @budgetItemClick="budgetItemClick($event)"
@@ -40,6 +37,7 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import MainCategoryCard from '@/views/budget/components/MainCategoryCard.vue';
@@ -49,13 +47,10 @@ import {
   CategoryBudgetUsageItem,
   GroupedBudgetUsageItem,
   BudgetArchive,
+  BudgetActiveMonth,
   User,
   Category,
 } from '@/types';
-import {
-  DATE_FORMAT,
-} from '@/utils/dateTimeUtils';
-import { format } from 'date-fns';
 
 export default defineComponent({
   name: 'MonthlyBudget',
@@ -76,12 +71,8 @@ export default defineComponent({
     userList: { type: Array as PropType<Array<User>>, required: true },
     categoryItems: { type: Array as PropType<Category[]>, required: true },
     budgetArchive: { type: Array as PropType<BudgetArchive[]>, required: true },
-    createBudget: { type: Function, required: true },
-    updateBudget: { type: Function, required: true },
-    deleteBudget: { type: Function, required: true },
     budgetUsage: { type: Array as PropType<CategoryBudgetUsageItem[]>, required: true },
-    selectedMonth: { type: Date, required: true },
-    updateStatusBudget: { type: Function, required: true },
+    selectedMonthRange: { type: Object as PropType<BudgetActiveMonth>, required: true },
     fetchBudgetArchive: { type: Function, required: true },
   },
 
@@ -118,7 +109,7 @@ export default defineComponent({
 
     fetchArchive() {
       this.fetchBudgetArchive({
-        date: format(this.selectedMonth, DATE_FORMAT),
+        date: this.selectedMonthRange.dateFrom,
         category: this.activeCategory.uuid,
       });
     },
@@ -158,6 +149,7 @@ export default defineComponent({
   },
 });
 </script>
+
 <style scoped>
 .main-category-container {
   margin: 5px 0;

@@ -82,3 +82,13 @@ export enum BudgetToggle {
   Monthly = 'monthly',
   Weekly = 'weekly',
 }
+
+export interface BudgetActiveMonth {
+  dateFrom: string,
+  dateTo: string,
+}
+
+export interface BudgetActiveWeek {
+  dateFrom: string,
+  dateTo: string,
+}

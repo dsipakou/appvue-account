@@ -28,6 +28,7 @@
     </div>
   </q-card>
 </template>
+
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import {
@@ -36,7 +37,7 @@ import {
   format,
   isSameDay,
 } from 'date-fns';
-import { Category } from '@/types';
+import { BudgetActiveWeek, Category } from '@/types';
 import BudgetItem from '@/views/budget/weekly/BudgetItem.vue';
 import { BudgetUsageItem } from '@/types/Budget';
 
@@ -65,7 +66,7 @@ export default defineComponent({
     weeklyUsage: { type: Array as PropType<Array<BudgetUsageItem>>, required: true },
     budgetUsage: { type: Array as PropType<any[]>, required: true },
     categoryItems: { type: Array as PropType<Category[]>, required: true },
-    selectedDay: { type: Date, required: true },
+    selectedWeekRange: { type: Object as PropType<BudgetActiveWeek>, required: true },
     updateStatusBudget: { type: Function, required: true },
     defaultCurrency: { type: String, required: true },
   },
@@ -78,7 +79,10 @@ export default defineComponent({
     },
 
     weekDays(): { full: Date, formated: string }[] {
-      const firstDayOfWeek = startOfWeek(new Date(this.selectedDay), { weekStartsOn: 1 });
+      const firstDayOfWeek = startOfWeek(
+        new Date(this.selectedWeekRange.dateFrom),
+        { weekStartsOn: 1 },
+      );
       const days = [];
       for (let i = 0; i < 7; i += 1) {
         days.push({
@@ -102,7 +106,6 @@ export default defineComponent({
     },
 
     budgetItemClick(item: any) {
-      console.log('click');
       this.$emit('budgetItemClick', item);
     },
   },

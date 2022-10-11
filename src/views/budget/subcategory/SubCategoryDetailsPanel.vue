@@ -46,11 +46,6 @@ import BudgetItem from '@/views/budget/subcategory/components/BudgetItem.vue';
 import TransactionList from '@/views/budget/components/TransactionList.vue';
 import { BudgetUsageItem } from '@/types/Budget';
 
-interface Category {
-  name: string,
-  items: any[],
-}
-
 export default defineComponent({
   name: 'Sub category details',
 
@@ -66,8 +61,6 @@ export default defineComponent({
 
   props: {
     budgets: { type: Array as PropType<Array<BudgetUsageItem>>, required: true },
-    category: { type: Object as PropType<Category>, required: true },
-    selectedMonth: { type: Date, required: true },
     defaultCurrency: { type: String, required: true },
   },
 
@@ -147,7 +140,6 @@ export default defineComponent({
 
     selectBudget(item: BudgetUsageItem) {
       if (this.selectedItem === undefined) {
-        console.log('set');
         this.selectedItem = item;
       } else {
         this.selectedItem = undefined;

@@ -86,7 +86,6 @@ export default {
   inheritAttrs: false,
 
   emits: [
-    'addBudget',
     'closeForm',
   ],
 
@@ -141,7 +140,7 @@ export default {
   },
 
   methods: {
-    save() {
+    async save() {
       const budget = {
         uuid: this.input.uuid,
         budgetDate: this.input.budgetDate,
@@ -154,8 +153,9 @@ export default {
         recurrent: this.input.recurrent,
       };
 
-      this.createBudget(budget);
+      await this.createBudget(budget);
       this.$emit('closeForm');
+      this.$emit('update');
     },
   },
 

@@ -97,6 +97,7 @@ export default {
   emits: [
     'closeForm',
     'duplicateClick',
+    'update',
   ],
 
   data() {
@@ -131,7 +132,7 @@ export default {
   },
 
   methods: {
-    update() {
+    async update() {
       const budget = {
         uuid: this.input.uuid,
         budgetDate: this.input.budgetDate,
@@ -144,13 +145,15 @@ export default {
         description: this.input.description,
         isCompleted: this.input.isCompleted,
       };
-      this.updateBudget(budget);
+      await this.updateBudget(budget);
       this.$emit('closeForm');
+      this.$emit('update');
     },
 
-    remove() {
-      this.deleteBudget(this.input.uuid);
+    async remove() {
+      await this.deleteBudget(this.input.uuid);
       this.$emit('closeForm');
+      this.$emit('update');
     },
 
     duplicate() {

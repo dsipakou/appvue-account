@@ -61,7 +61,6 @@ export default defineComponent({
     budgetArchive: { type: Array as PropType<BudgetArchive[]>, required: true },
     categoryUsage: { type: Object as PropType<CategoryBudgetUsageItem>, required: true },
     defaultCurrency: { type: String, required: true },
-    items: { type: Array, required: true },
     categories: { type: Array, required: true },
   },
 

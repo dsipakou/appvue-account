@@ -46,10 +46,16 @@
             />
         </div>
         <div class="row col-3 justify-end items-center">
-          <q-select map-options
-            v-model="selectedMonth"
+          <q-select map-options v-if="budgetType === 'monthly'"
+            v-model="selectedMonthRange"
             label="Period"
-            :options="budgetType === 'monthly' ? selectMonthOptions : selectWeekOptions"
+            :options="selectMonthOptions"
+            class="periodDropdown"
+          />
+          <q-select map-options v-else
+            v-model="selectedWeekRange"
+            label="Week"
+            :options="selectWeekOptions"
             class="periodDropdown"
           />
         </div>
@@ -62,19 +68,15 @@
         :budgetUsage="budgetUsage"
         :budgetArchive="budgetArchive"
         :categoryItems="categoryList"
-        :createBudget="createBudget"
-        :updateBudget="updateBudget"
-        :deleteBudget="deleteBudget"
-        :selectedMonth="selectedMonth"
-        :updateStatusBudget="updateStatusBudget"
+        :selectedMonthRange="selectedMonthRange"
         :fetchBudgetArchive="fetchBudgetArchive"
         @budgetItemClick="budgetItemClick($event)"
-        />
+      />
       <WeekBudget
         :activeUser="activeUser"
         :weeklyUsage="weeklyUsage"
         :categoryItems="categoryList"
-        :selectedDay="selectedMonth"
+        :selectedWeekRange="selectedWeekRange"
         :defaultCurrency="defaultCurrency"
         :updateStatusBudget="updateStatusBudget"
         @budgetItemClick="budgetItemClick($event)"
@@ -90,6 +92,7 @@
         :createBudget="createBudget"
         :budget="budgetCopy"
         @closeForm="addFormClosed"
+        @update="update"
         />
     </q-dialog>
     <q-dialog v-model="editForm">
@@ -102,6 +105,7 @@
         :deleteBudget="deleteBudget"
         @duplicateClick="makeDuplicate($event)"
         @closeForm="editForm = false"
+        @update="update"
       />
     </q-dialog>
     <q-dialog
@@ -153,31 +157,50 @@ export default {
 
   setup() {
     const $store = useStore();
+
     const budgetType = computed({
       get: () => $store.state.budget.budgetToggle,
       set: (val) => {
         $store.commit('setBudgetToggle', val);
       },
     });
-    const selectedMonth = computed({
-      get: () => startOfWeek($store.state.budget.selectedMonth, { weekStartsOn: 1 }),
+
+    const selectedMonthRange = computed({
+      get: () => $store.state.budget.activeMonth,
       set: (val) => {
-        $store.commit('setBudgetMonth', val.value);
+        $store.commit('setActiveMonth', val.value);
       },
     });
+
+    const selectedWeekRange = computed({
+      get: () => $store.state.budget.activeWeek,
+      set: (val) => {
+        $store.commit('setActiveWeek', val.value);
+      },
+    });
+
+    const selectedUser = computed({
+      get: () => $store.state.budget.user,
+      set: (val) => {
+        $store.commit('setBudgetUser', val);
+      },
+    });
+
     return {
       createForm: ref(false),
       editForm: ref(false),
       duplicateForm: ref(false),
-      selectedUser: ref(''),
       budgetType,
-      selectedMonth,
+      selectedWeekRange,
+      selectedMonthRange,
+      selectedUser,
     };
   },
 
   data() {
     return {
       selectedBudget: {},
+      selectedMonth: new Date(),
       budgetCopy: {},
     };
   },
@@ -197,6 +220,8 @@ export default {
       'isBudgetListLoading',
       'activeUser',
       'defaultCurrency',
+      'budgetActiveMonth',
+      'budgetActiveWeek',
     ]),
 
     categories() {
@@ -206,12 +231,16 @@ export default {
     selectMonthOptions() {
       const options = [];
       for (let i = -1; i < 12; i += 1) {
-        const month = startOfWeek(subMonths(new Date(), i), { weekStartsOn: 1 });
-        let label = format(month, 'MMMM yyyy');
+        const startMonth = startOfMonth(subMonths(new Date(), i));
+        const endMonth = endOfMonth(subMonths(new Date(), i));
+        let label = format(startMonth, 'MMMM yyyy');
         if (i === 0) label += ' (current)';
         options.push({
           label,
-          value: month,
+          value: {
+            dateFrom: format(startMonth, DATE_FORMAT),
+            dateTo: format(endMonth, DATE_FORMAT),
+          },
         });
       }
 
@@ -221,15 +250,17 @@ export default {
     selectWeekOptions() {
       const options = [];
       for (let i = -1; i < 20; i += 1) {
-        const day = startOfWeek(subWeeks(new Date(), i), { weekStartsOn: 1 });
-        const from = startOfWeek(day, { weekStartsOn: 1 });
-        const to = endOfWeek(day, { weekStartsOn: 1 });
+        const weekStart = startOfWeek(subWeeks(new Date(), i), { weekStartsOn: 1 });
+        const weekEnd = endOfWeek(subWeeks(new Date(), i), { weekStartsOn: 1 });
         const label = i === 0
           ? 'Current week'
-          : `${format(from, 'dd-MMM-yyyy')} - ${format(to, 'dd-MMM-yyyy')}`;
+          : `${format(weekStart, 'dd-MMM-yyyy')} - ${format(weekEnd, 'dd-MMM-yyyy')}`;
         options.push({
           label,
-          value: day,
+          value: {
+            dateFrom: format(weekStart, DATE_FORMAT),
+            dateTo: format(weekEnd, DATE_FORMAT),
+          },
         });
       }
 
@@ -309,6 +340,8 @@ export default {
       'duplicateBudget',
       'clearDuplicatedItems',
       'getDuplicateBudgetCandidates',
+      'setActiveMonth',
+      'setActiveWeek',
     ]),
 
     makeDuplicate(budget) {
@@ -322,47 +355,33 @@ export default {
     },
 
     fetchAllBudget() {
-      const startMonth = startOfMonth(new Date(this.selectedMonth));
-      const endMonth = endOfMonth(new Date(this.selectedMonth));
-      const endWeek = endOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
-      const startWeek = startOfWeek(new Date(this.selectedMonth), { weekStartsOn: 1 });
-      let monthPayload = {
-        dateFrom: format(startMonth, DATE_FORMAT),
-        dateTo: format(endMonth, DATE_FORMAT),
-      };
-      if (this.selectedUser) {
-        monthPayload = {
-          ...monthPayload,
-          user: this.selectedUser,
-        };
-      }
-      this.fetchMonthlyUsage(monthPayload);
-      let weekPayload = {
-        dateFrom: format(startWeek, DATE_FORMAT),
-        dateTo: format(endWeek, DATE_FORMAT),
-      };
-      if (this.selectedUser) {
-        weekPayload = {
-          ...weekPayload,
-          user: this.selectedUser,
-        };
-      }
-      this.fetchWeeklyUsage(weekPayload);
+      this.fetchMonthlyUsage();
+      this.fetchWeeklyUsage();
     },
 
     addFormClosed() {
       this.fetchAllBudget();
     },
+
+    update() {
+      this.fetchAllBudget();
+    },
   },
 
   beforeMount() {
-    this.fetchAllBudget();
     this.fetchCurrencies();
+    this.fetchAllBudget();
   },
 
   watch: {
     selectedMonth() {
       this.fetchAllBudget();
+    },
+    budgetActiveMonth() {
+      this.fetchMonthlyUsage();
+    },
+    budgetActiveWeek() {
+      this.fetchWeeklyUsage();
     },
     selectedUser() {
       this.fetchAllBudget();

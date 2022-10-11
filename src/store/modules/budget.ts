@@ -1,7 +1,20 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
 
-import { GetBudgetForPeriod, BudgetToggle } from '@/types/Budget';
-import { startOfDay } from 'date-fns';
+import {
+  GetBudgetForPeriod,
+  BudgetToggle,
+  BudgetActiveMonth,
+  BudgetActiveWeek,
+} from '@/types/Budget';
+import { DATE_FORMAT } from '@/utils/dateTimeUtils';
+import {
+  startOfDay,
+  startOfWeek,
+  startOfMonth,
+  endOfWeek,
+  endOfMonth,
+  format,
+} from 'date-fns';
 
 /* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import {
@@ -16,8 +29,22 @@ import {
   getDuplicateCandidates,
 } from '../../service/budget';
 
+const monthStart = startOfMonth(new Date());
+const monthEnd = endOfMonth(new Date());
+const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
+const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 });
+
 const state = {
+  user: '',
   selectedMonth: startOfDay(new Date()),
+  activeMonth: {
+    dateFrom: format(monthStart, DATE_FORMAT),
+    dateTo: format(monthEnd, DATE_FORMAT),
+  },
+  activeWeek: {
+    dateFrom: format(weekStart, DATE_FORMAT),
+    dateTo: format(weekEnd, DATE_FORMAT),
+  },
   usage: [],
   weeklyUsage: [],
   plan: [],
@@ -33,14 +60,17 @@ const getters = {
   budgetPlan: (state: any) => state.plan,
   budgetArchive: (state: any) => state.archive,
   budgetSelectedMonth: (state: any) => state.selectedMonth,
+  budgetActiveMonth: (state: any) => state.activeMonth,
+  budgetActiveWeek: (state: any) => state.activeWeek,
   budgetDuplicatedItems: (state: any) => state.duplicatedItems,
+  budgetUser: (state: any) => state.user,
   isBudgetListLoading: (state: any) => state.isLoading,
 };
 
 const actions = {
-  async fetchMonthlyUsage({ commit }: any, payload: GetBudgetForPeriod) {
+  async fetchMonthlyUsage({ commit }: any) {
     commit('setBudgetLoading', true);
-    const response = await getBudgetUsage(payload);
+    const response = await getBudgetUsage({ ...state.activeMonth, user: state.user });
     if (response.status === 200) {
       const body = await response.json();
       commit('setBudgetUsage', body);
@@ -48,9 +78,9 @@ const actions = {
     commit('setBudgetLoading', false);
   },
 
-  async fetchWeeklyUsage({ commit }: any, payload: GetBudgetForPeriod) {
+  async fetchWeeklyUsage({ commit }: any) {
     commit('setBudgetLoading', true);
-    const response = await getWeeklyBudgetUsage(payload);
+    const response = await getWeeklyBudgetUsage({ ...state.activeWeek, user: state.user });
     if (response.status === 200) {
       const body = await response.json();
       commit('setWeeklyBudgetUsage', body);
@@ -78,11 +108,10 @@ const actions = {
     commit('setBudgetLoading', false);
   },
 
-  async createBudget({ commit }: any, payload: any) {
+  async createBudget({ dispatch }: any, payload: any) {
     const response = await createBudget(payload);
     if (response.status === 201) {
-      const body = await response.json();
-      console.log(body);
+      console.log('saved');
     }
   },
 
@@ -128,6 +157,18 @@ const actions = {
 
   async clearDuplicatedItems({ commit }: any) {
     commit('clearDuplicatedItems');
+  },
+
+  async setActiveMonth({ commit }: any, payload: BudgetActiveMonth) {
+    commit('setActiveMonth', payload);
+  },
+
+  async setActiveWeek({ commit }: any, payload: BudgetActiveWeek) {
+    commit('setActiveWeek', payload);
+  },
+
+  async setBudgetUser({ commit }: any, userUuid: string) {
+    commit('setBudgetUser', userUuid);
   },
 };
 
@@ -188,6 +229,18 @@ const mutations = {
 
   deleteBudget(state: any, id: number) {
     console.log('deleting...');
+  },
+
+  setActiveMonth(state: any, payload: BudgetActiveMonth) {
+    state.activeMonth = payload;
+  },
+
+  setActiveWeek(state: any, payload: BudgetActiveWeek) {
+    state.activeWeek = payload;
+  },
+
+  setBudgetUser(state: any, userUuid: string) {
+    state.user = userUuid;
   },
 };
 

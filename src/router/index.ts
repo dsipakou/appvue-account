@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import DailyTransactions from '@/views/transaction/DailyTransactions.vue';
+import TableTransactions from '@/views/transaction/TableTransactions.vue';
 import Home from '@/views/Home.vue';
 import { Login, PasswordReset, Signup } from '@/views/user';
 import Accounts from '@/views/Accounts.vue';
@@ -45,6 +46,11 @@ const routes = [
     path: '/transactions/daily',
     name: 'DailyTransactions',
     component: DailyTransactions,
+  },
+  {
+    path: '/transactions/table',
+    name: 'TableTransactions',
+    component: TableTransactions,
   },
   {
     path: '/categories',

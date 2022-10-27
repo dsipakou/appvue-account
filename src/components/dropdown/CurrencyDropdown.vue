@@ -1,6 +1,5 @@
 <template>
   <q-select outlined label-stacked
-    label="Currency"
     :options="availableCurrencies"
     :loading="!currencyListLoaded"
     :readonly="!currencyListLoaded"
@@ -84,6 +83,13 @@ export default {
     currencyModel() {
       this.$emit('selectCurrency', this.currencyModel);
     },
+  },
+
+  async mounted() {
+    if (this.selectedDate) {
+      await this.getAvailableCurrencies();
+      this.currencyModel = this.preSelectedCurrency;
+    }
   },
 };
 </script>

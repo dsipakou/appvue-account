@@ -5,6 +5,10 @@
         class="text-primary text-weight-bold"
         label="Daily Transactions >"
         to="/transactions/daily"/>
+      <q-btn flat no-caps
+        class="text-primary text-weight-bold"
+        label="Table Transactions >"
+        to="/transactions/table"/>
       <div class="row justify-center">
         <MainAccounts
           :accountList="accountList"

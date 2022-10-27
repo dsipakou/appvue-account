@@ -1,4 +1,5 @@
 /* eslint no-shadow: ["error", { "allow": ["state"] }] */
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 
 import {
   getCurrencies,
